@@ -1,0 +1,11 @@
+/* Apply theme colors to Storybook preview area */
+.sb-show-main {
+  background-color: var(--color-background) !important;
+  color: var(--color-foreground) !important;
+}
+
+/* Ensure the preview iframe also uses theme colors */
+#storybook-preview-iframe {
+  background-color: var(--color-background) !important;
+  color: var(--color-foreground) !important;
+} 
