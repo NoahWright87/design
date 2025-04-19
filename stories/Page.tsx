@@ -4,6 +4,7 @@ import { Button } from '../src/components/Button/Button';
 import { Footer } from '../src/components/Footer/Footer';
 import { Header } from '../src/components/Header/Header';
 import { ThemeProvider } from '../src/tokens/ThemeProvider';
+import { Section } from '../src/components/Section/Section';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -74,7 +75,7 @@ const PageContentComponent: React.FC = () => {
         ]}
       />
       
-      <PageContent>
+      {/* <PageContent>
         <PageSection>
           <SectionTitle>Getting Started</SectionTitle>
           <SectionText>
@@ -97,7 +98,34 @@ const PageContentComponent: React.FC = () => {
           </FeatureList>
           <Button variant="outline">Learn More</Button>
         </PageSection>
-      </PageContent>
+      </PageContent> */}
+
+      <Section
+        gutters='none'
+        bgColor='#999'
+        hasBottomBorder
+
+      >
+        TODO: Make a Hero
+      </Section>
+
+      <Section
+      >
+        Content goes here
+      </Section>
+
+      <Section gutters='minimal'
+        bgColor='--color-primary'
+        hasTopBorder
+        hasBottomBorder
+      >
+        <em>Callouts can be a little wider.</em>
+      </Section>
+
+      <Section>
+        More content goes here
+      </Section>
+
 
       <Footer />
     </PageContainer>

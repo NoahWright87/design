@@ -17,6 +17,24 @@ declare module '@emotion/react' {
       error: string;
       errorDark: string;
     };
+    fonts: {
+      body: string;
+      heading: string;
+      monospace: string;
+    };
+    spacing: {
+      small: string;
+      medium: string;
+      large: string;
+    };
+    headerStyles: {
+      fontSize: string;
+      fontWeight: string;
+      lineHeight: string;
+    };
+    animations: {
+      // Define animation properties here if needed in the future
+    };
   }
 }
 
@@ -35,6 +53,24 @@ export interface Theme extends EmotionTheme {
     error: string;
     errorDark: string;
   };
+  fonts: {
+    body: string;
+    heading: string;
+    monospace: string;
+  };
+  spacing: {
+    small: string;
+    medium: string;
+    large: string;
+  };
+  headerStyles: {
+    fontSize: string;
+    fontWeight: string;
+    lineHeight: string;
+  };
+  animations: {
+    // Define animation properties here if needed in the future
+  };
 }
 
 export const lightTheme: Theme = {
@@ -51,6 +87,24 @@ export const lightTheme: Theme = {
     warningDark: '#E65100',
     error: '#D32F2F',
     errorDark: '#B71C1C',
+  },
+  fonts: {
+    body: 'Arial, sans-serif',
+    heading: 'Georgia, serif',
+    monospace: 'Courier New, monospace',
+  },
+  spacing: {
+    small: '8px',
+    medium: '16px',
+    large: '32px',
+  },
+  headerStyles: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    lineHeight: '1.5',
+  },
+  animations: {
+    // Leave blank for now
   },
 };
 
@@ -69,6 +123,10 @@ export const darkTheme: Theme = {
     error: lightTheme.colors.errorDark,
     errorDark: lightTheme.colors.error,
   },
+  fonts: lightTheme.fonts,
+  spacing: lightTheme.spacing,
+  headerStyles: lightTheme.headerStyles,
+  animations: lightTheme.animations,
 };
 
 export const globalStyles = css`

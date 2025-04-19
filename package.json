@@ -1,9 +1,16 @@
 {
   "name": "design",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Design system component library",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
   "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --external react --external @emotion/react --external @emotion/styled",
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -23,11 +30,15 @@
     "@storybook/react-vite": "^8.6.11",
     "@storybook/test": "^8.6.11",
     "@storybook/testing-library": "^0.2.1",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
     "@vitest/browser": "^3.1.1",
     "@vitest/coverage-v8": "^3.1.1",
     "playwright": "^1.51.1",
     "prop-types": "^15.8.1",
     "storybook": "^8.6.11",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
     "vitest": "^3.1.1"
   },
   "dependencies": {

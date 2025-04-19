@@ -28,9 +28,8 @@ export const Footer: React.FC = () => {
   return (
     <StyledFooter>
       <FooterText>
-        Made with ❤️ by{' '}
-        <FooterLink href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">
-          Your Name
+        <FooterLink href="https://github.com/NoahWright87" target="_blank" rel="noopener noreferrer">
+          &copy; {new Date().getFullYear()} Noah Wright
         </FooterLink>
       </FooterText>
     </StyledFooter>
