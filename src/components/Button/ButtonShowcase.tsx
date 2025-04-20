@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from './Button';
 
-export const ButtonShowcase: React.FC = () => {
+export const ButtonShowcase = (): React.ReactElement => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <div>

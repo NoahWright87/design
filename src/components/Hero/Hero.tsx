@@ -63,7 +63,7 @@ const ImageContainer = styled.div`
   }
 `;
 
-export const Hero: React.FC<HeroProps> = ({
+export const Hero = ({
   children,
   image,
   imageAlt = '',
@@ -71,7 +71,7 @@ export const Hero: React.FC<HeroProps> = ({
   bgColor = 'secondary',
   hasBottomBorder = true,
   ...sectionProps
-}) => {
+}: HeroProps): React.ReactElement => {
   return (
     <Section 
       gutters="none" 

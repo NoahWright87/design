@@ -43,7 +43,7 @@ const ColorValue = styled.span`
   border-radius: 4px;
 `;
 
-export const ColorPalette: React.FC = () => {
+export const ColorPalette = (): React.ReactElement => {
   const colors = {
     foreground: 'var(--color-foreground)',
     background: 'var(--color-background)',

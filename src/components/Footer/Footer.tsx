@@ -24,7 +24,7 @@ const FooterLink = styled.a`
   }
 `;
 
-export const Footer: React.FC = () => {
+export const Footer = (): React.ReactElement => {
   return (
     <StyledFooter>
       <FooterText>

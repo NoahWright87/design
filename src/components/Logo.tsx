@@ -13,7 +13,7 @@ const logoStyles = css`
   }
 `;
 
-export const Logo: React.FC = () => {
+export const Logo = (): React.ReactElement => {
   return (
     <div css={logoStyles}>
         {/* TODO: Create a better logo later */}

@@ -111,11 +111,8 @@ const SunCircleReflection = styled.circle`
 `;
 
 // SunReflection component
-export const SunReflection: React.FC = () => {
-  
-
-
-const reflections = Array.from({ length: rippleCount }, (_, i) => ({
+export const SunReflection = (): React.ReactElement => {
+  const reflections = Array.from({ length: rippleCount }, (_, i) => ({
     delay: (i * animationSpeed) / rippleCount + Math.random() * 1.5, // Random delay for each reflection
     x: 80,
     width: 40,

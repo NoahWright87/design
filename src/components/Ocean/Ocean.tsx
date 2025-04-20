@@ -59,10 +59,10 @@ const Wave = styled.div<{ delay: string; animationDuration: string }>`
   }
 `;
 
-export const Ocean: React.FC<OceanProps> = ({ 
+export const Ocean = ({ 
   height = '200px',
   width = '100%'
-}) => {
+}: OceanProps): React.ReactElement => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Optional: Add responsive behavior or interaction effects

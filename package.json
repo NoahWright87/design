@@ -1,5 +1,5 @@
 {
-  "name": "design",
+  "name": "nwright-design",
   "version": "1.0.0",
   "description": "Design system component library",
   "main": "dist/index.js",
@@ -10,7 +10,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --external react --external @emotion/react --external @emotion/styled",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

@@ -124,13 +124,13 @@ const StyledButton = styled.button<{ styles: any }>`
   ${props => props.styles}
 `;
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button = ({
   children,
   onClick,
   variant = 'primary',
   size = 'medium',
   disabled = false,
-}) => {
+}: ButtonProps): React.ReactElement => {
   const styles = [baseStyles, getVariantStyles(variant), sizeStyles[size]];
 
   return (
