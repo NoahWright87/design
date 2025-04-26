@@ -20,12 +20,18 @@ export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
    * @default false
    */
   hasBottomBorder?: boolean;
+  /**
+   * Whether to show a top border
+   * @default false
+   */
+  hasTopBorder?: boolean;
 }
 
 const StyledSection = styled.section<{
   bgColor: BackgroundColor;
   gutters: 'none' | 'small' | 'normal' | 'large';
   hasBottomBorder: boolean;
+  hasTopBorder: boolean;
 }>`
   width: 100%;
   background-color: ${props => `var(--color-${props.bgColor})`};
@@ -46,6 +52,7 @@ const StyledSection = styled.section<{
     }
   }}
   ${props => props.hasBottomBorder && `border-bottom: 1px solid var(--color-primary);`}
+  ${props => props.hasTopBorder && `border-top: 1px solid var(--color-primary);`}
 `;
 
 export const Section = ({
@@ -53,6 +60,7 @@ export const Section = ({
   bgColor = 'background',
   gutters = 'normal',
   hasBottomBorder = false,
+  hasTopBorder = false,
   ...rest
 }: SectionProps): React.ReactElement => {
   return (
@@ -60,6 +68,7 @@ export const Section = ({
       bgColor={bgColor} 
       gutters={gutters} 
       hasBottomBorder={hasBottomBorder}
+      hasTopBorder={hasTopBorder}
       {...rest}
     >
       {children}

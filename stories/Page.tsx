@@ -114,16 +114,16 @@ const PageContentComponent: React.FC = () => {
         Content goes here
       </Section>
 
-      <Section gutters='minimal'
-        bgColor='--color-primary'
-        hasTopBorder
-        hasBottomBorder
+      <Section gutters='small'
+        bgColor='primary'
+        hasTopBorder={true}
+        hasBottomBorder={true}
       >
         <em>Callouts can be a little wider.</em>
       </Section>
 
       <Section>
-        More content goes here
+        More content goes here, with <Button>buttons</Button> and <Button variant="secondary">links</Button>.
       </Section>
 
 

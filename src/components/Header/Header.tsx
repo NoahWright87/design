@@ -42,14 +42,14 @@ interface HeaderProps {
   }>;
 }
 
-// Changed from React.FC<HeaderProps> to a more compatible function declaration
-export const Header = ({
+// Using React.FC to ensure better JSX component compatibility
+export const Header: React.FC<HeaderProps> = ({
   navItems = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
   ],
-}: HeaderProps): React.ReactElement => {
+}) => {
   return (
     <StyledHeader>
       <LogoContainer>
