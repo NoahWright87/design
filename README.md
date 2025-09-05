@@ -1,7 +1,10 @@
 # @noahwright/design
 
-**Hyper-minimal React design system.** Modern browsers only. Learning in public; use at your own risk.  
-Focus: SSR-safe, tiny, fast. No styling beyond two tokens for now.
+This is a ***hyper-minimal React design system*** I'm using as a playground.  That means:
+
+- 💻 Modern browsers only.  Makes things a lot simpler and supports *most* people.
+- ⚠️ I'm "learning in public" and may break things along the way.  Use at your own risk.
+- 🤖 Agents will do most of the heavy lifting.  Guiding them to build the site is half the project. 
 
 ## Install
 
@@ -140,3 +143,8 @@ npm publish --access public
 ```
 
 ---
+
+## Repository notes
+
+- Agent guidance: See `AGENTS.md` for machine-focused instructions and conventions.
+- Changelog: Add entries to `CHANGELOG.md` before committing changes or opening a PR.
