@@ -66,3 +66,11 @@ npm run build
 
 ## Contact the human
 - After finishing requested edits, end with a single clear question for next steps, for example: "Run Storybook now, or publish the package?"
+
+## Update these docs as needed
+When following these instructions, you're bound to make mistakes. When that happens
+and a user has to correct you, ask if you should make edits to this document
+to prevent similar mistakes in the future.
+
+- If you identify a gap or ambiguity in these instructions, propose an update to the human.
+- Always await confirmation before making changes in this doc, unless the human has already requested the update.
