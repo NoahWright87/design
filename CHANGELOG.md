@@ -12,12 +12,15 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 ### vX.X.X
-- Make package ESM-only: added `exports` (import-only) and removed `main` to avoid advertising a CJS entrypoint.
-- Stop producing CommonJS: updated `tsup.config.ts` to emit only `esm` (removed `cjs` format).
-- Verified build locally: ran `npm run build` — produced `dist/index.mjs`, source map, and typings (`.d.mts`); no CJS artifacts.
-- Note: typings are currently emitted as `.d.mts`; can change to `.d.ts` on request.
+- 
 
 ## Version history
+
+### v1.0.5
+- Make package ESM-only: added `exports` (import-only) and removed `main` to avoid advertising a CJS entrypoint.
+- Stop producing CommonJS: updated `tsup.config.ts` to emit only `esm` (removed `cjs` format).
+- Added components: `Header`, `Footer`, and `Layout` (Layout accepts `header`/`footer` nodes to pad content).
+- Added Storybook stories for new components and updated existing stories to import from package root.
 
 ### v1.0.4
 - Release: bump package to `v1.0.4` and publish to npm.
