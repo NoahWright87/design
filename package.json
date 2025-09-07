@@ -4,7 +4,6 @@
   "description": "Noah Wright's hyper-minimal React design system. Learning in public; use at your own risk.",
   "license": "MIT",
   "private": false,
-  "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
@@ -12,6 +11,11 @@
     "src/styles/theme.css",
     "README.md"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs"
+    }
+  },
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",

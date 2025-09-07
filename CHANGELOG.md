@@ -12,7 +12,10 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 ### vX.X.X
-- *Keep a running list of changes as you go.*
+- Make package ESM-only: added `exports` (import-only) and removed `main` to avoid advertising a CJS entrypoint.
+- Stop producing CommonJS: updated `tsup.config.ts` to emit only `esm` (removed `cjs` format).
+- Verified build locally: ran `npm run build` — produced `dist/index.mjs`, source map, and typings (`.d.mts`); no CJS artifacts.
+- Note: typings are currently emitted as `.d.mts`; can change to `.d.ts` on request.
 
 ## Version history
 
