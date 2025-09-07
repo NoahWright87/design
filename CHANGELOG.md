@@ -16,7 +16,8 @@ This file documents planned and completed changes for the repository.
 
 ## Version history
 
-ℹ️ Add an h3 for a new version, ordered with the newest version at the top.  Transfer `WIP` bullet points below that header before merging to `main`.
+### v1.0.4
+- Release: bump package to `v1.0.4` and publish to npm.
 
 ### v0.1.0 — Initial scaffold
 - Project scaffold created (components, storybook, build).
