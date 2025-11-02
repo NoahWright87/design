@@ -6,9 +6,27 @@
   height: 48px;
   display: flex;
   align-items: center;
-  justify-content: center;
   background: var(--background, #fff);
   color: var(--foreground, #000);
   z-index: 1000;
   box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.nw-header__slot{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nw-header__slot--left,
+.nw-header__slot--right{
+  flex: 0 0 auto;
+}
+
+.nw-header__slot--center{
+  flex: 1 1 auto;
+  justify-content: center;
+  text-align: center;
 }
