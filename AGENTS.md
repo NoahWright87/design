@@ -27,6 +27,11 @@ This file provides explicit, agent-focused guidance for working in this reposito
 - When editing files via the helper tools, use the repository's existing style and keep changes focused.
 - Always reference filenames and symbols in backticks, e.g., `src/index.ts`.
 
+## Storybook examples and `stories/examples/`
+- Put example and composed Storybook stories under `stories/examples/`.
+  - Example pages are composed pages that show several components together (e.g., a landing page, a color swatches page, or a full-page layout demo).
+- Do not place one-off/simple component stories in `stories/examples/`; keep simple component stories near the component or under the main `stories/` directory structure.
+
 ## Commands and environment
 - Use the repository root as the working directory for shell commands.
 - On Windows (PowerShell) use `cd` to change directories. Example:

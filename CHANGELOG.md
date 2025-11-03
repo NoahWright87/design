@@ -12,7 +12,10 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 ### vX.X.X
-- 
+- Implemented header framework: added `Avatar`, `HamburgerMenu`, `Menu`, and `MenuItem` components with minimal CSS using `--foreground`/`--background` tokens.
+- Added Storybook stories for all new components and integration examples; updated Layout story to demonstrate complete header with menus.
+- Avatar shows pointer cursor when clickable; Menu supports left/right alignment with proper positioning.
+- Remove duplicate loose component files under `src/components` (Button.tsx, Heading.tsx, Link.tsx, Text.tsx); consolidate to per-component directories with `index.tsx`.
 
 ## Version history
 

@@ -1,0 +1,24 @@
+.nw-menu-item {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  background: var(--background, #fff);
+  color: var(--foreground, #000);
+  border: 0;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.nw-menu-item:hover,
+.nw-menu-item:focus {
+  outline: none;
+  background: color-mix(in srgb, var(--foreground, #000) 6%, var(--background, #fff));
+}
+
+@supports not (color-mix: in srgb) {
+  /* Fallback: keep minimal without extra colors */
+  .nw-menu-item:hover,
+  .nw-menu-item:focus {
+    text-decoration: underline;
+  }
+}
