@@ -12,10 +12,13 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 ### vX.X.X
-- Initial implementation of the highly-opinionated flex `Container` component (direction, spacing, colors, sizing) plus Storybook stories.
-- Added Playwright visual regression tests for curated component variations and example pages; baselines stored in `tests/visual/__screenshots__/`.
+- (No active work in progress)
 
 ## Version history
+
+### v1.0.7
+- Initial implementation of the highly-opinionated flex `Container` component (direction, spacing, colors, sizing) plus Storybook stories.
+- Added Playwright visual regression tests for curated component variations and example pages; baselines stored in `tests/visual/*-snapshots/`.
 
 ### v1.0.6
 - Implemented header framework: added `Avatar`, `HamburgerMenu`, `Menu`, and `MenuItem` components with minimal CSS using `--foreground`/`--background` tokens.
