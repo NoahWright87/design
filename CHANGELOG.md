@@ -13,6 +13,7 @@ This file documents planned and completed changes for the repository.
 
 ### vX.X.X
 - Initial implementation of the highly-opinionated flex `Container` component (direction, spacing, colors, sizing) plus Storybook stories.
+- Added Playwright visual regression tests for curated component variations and example pages; baselines stored in `tests/visual/__screenshots__/`.
 
 ## Version history
 

@@ -5,3 +5,7 @@ storybook-static
 .vscode
 .idea
 *.tgz
+
+# Playwright
+/test-results/
+/playwright-report/

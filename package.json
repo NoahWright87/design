@@ -20,13 +20,17 @@
     "build": "tsup",
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots",
+    "test:visual:ui": "playwright test --ui"
   },
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "@storybook/addon-essentials": "^8.1.0",
     "@storybook/react-vite": "^8.1.0",
     "@types/react": "^18.2.0",
