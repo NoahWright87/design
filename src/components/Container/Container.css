@@ -1,0 +1,27 @@
+.nw-container { display: flex; flex-wrap: wrap; box-sizing: border-box; }
+.nw-container.vertical { flex-direction: column; }
+.nw-container.horizontal { flex-direction: row; }
+
+/* Padding presets */
+.nw-p-none { padding: 0; }
+.nw-p-xs { padding: 0.125rem; }
+.nw-p-sm { padding: 0.25rem; }
+.nw-p-md { padding: 0.5rem; }
+.nw-p-lg { padding: 1rem; }
+.nw-p-xl { padding: 2rem; }
+
+/* Margin presets */
+.nw-m-none { margin: 0; }
+.nw-m-xs { margin: 0.125rem; }
+.nw-m-sm { margin: 0.25rem; }
+.nw-m-md { margin: 0.5rem; }
+.nw-m-lg { margin: 1rem; }
+.nw-m-xl { margin: 2rem; }
+
+/* Item spacing (gap) presets */
+.nw-gap-none { gap: 0; }
+.nw-gap-xs { gap: 0.125rem; }
+.nw-gap-sm { gap: 0.25rem; }
+.nw-gap-md { gap: 0.5rem; }
+.nw-gap-lg { gap: 1rem; }
+.nw-gap-xl { gap: 2rem; }

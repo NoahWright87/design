@@ -9,6 +9,7 @@ export * from "./components/Avatar/index.js";
 export * from "./components/HamburgerMenu/index.js";
 export * from "./components/Menu/index.js";
 export * from "./components/Menu/MenuItem.js";
+export * from "./components/Container/Container.js";
 
 /** Typed theme input for generating a CSS file at build time. */
 export type Theme = {

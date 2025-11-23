@@ -12,13 +12,16 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 ### vX.X.X
+- Initial implementation of the highly-opinionated flex `Container` component (direction, spacing, colors, sizing) plus Storybook stories.
+
+## Version history
+
+### v1.0.6
 - Implemented header framework: added `Avatar`, `HamburgerMenu`, `Menu`, and `MenuItem` components with minimal CSS using `--foreground`/`--background` tokens.
 - Added Storybook stories for all new components and integration examples; updated Layout story to demonstrate complete header with menus.
 - Avatar shows pointer cursor when clickable; Menu supports left/right alignment with proper positioning.
 - Remove duplicate loose component files under `src/components` (Button.tsx, Heading.tsx, Link.tsx, Text.tsx); consolidate to per-component directories with `index.tsx`.
-
-## Version history
-
+- Added highly-opinionated flex `Container` component with spacing, direction, colors, and size props plus Storybook stories.
 ### v1.0.5
 - Make package ESM-only: added `exports` (import-only) and removed `main` to avoid advertising a CJS entrypoint.
 - Stop producing CommonJS: updated `tsup.config.ts` to emit only `esm` (removed `cjs` format).
