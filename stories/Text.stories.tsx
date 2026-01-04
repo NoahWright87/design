@@ -3,7 +3,8 @@ import { Text } from "../src";
 
 const meta: Meta<typeof Text> = {
   title: "Components/Text",
-  component: Text
+  component: Text,
+  tags: ["autodocs"],
 };
 export default meta;
 

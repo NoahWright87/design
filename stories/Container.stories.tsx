@@ -4,6 +4,7 @@ import { Container } from "../src";
 const meta: Meta<typeof Container> = {
   title: "Components/Container",
   component: Container,
+  tags: ["autodocs"],
   args: {
     direction: "vertical",
     padding: "md",

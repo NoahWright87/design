@@ -3,7 +3,8 @@ import { Footer } from "../src/components/Footer";
 
 const meta: Meta<typeof Footer> = {
   title: "Components/Footer",
-  component: Footer
+  component: Footer,
+  tags: ["autodocs"],
 };
 export default meta;
 

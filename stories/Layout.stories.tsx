@@ -3,7 +3,8 @@ import { Layout, Header, Footer, Text, Menu, MenuItem, Avatar, HamburgerMenu } f
 
 const meta: Meta<typeof Layout> = {
   title: "Components/Layout",
-  component: Layout
+  component: Layout,
+  tags: ["autodocs"],
 };
 export default meta;
 

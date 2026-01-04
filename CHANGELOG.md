@@ -16,6 +16,13 @@ This file documents planned and completed changes for the repository.
 
 ## Version history
 
+### v1.0.8
+- **Modal action callbacks fixed:** added optional `id` field to `ModalActionProps` and updated `onClose` signature to pass action label/id instead of hardcoded "confirm", so each button click correctly indicates which action was chosen.
+- **Theme tokens refined:** removed `--surface` token for minimalism (use `--background` directly); kept 7 core tokens: foreground, background, primary, secondary, confirm, danger, overlay.
+- **Storybook autodocs enabled:** added `tags: ["autodocs"]` to all component stories for auto-generated docs pages; improved Card story controls to handle subtitle/text props correctly.
+- **Modal story improvements:** fixed layout viewport to fullscreen for better modal preview visibility; corrected action button callbacks to display the actual chosen action (e.g., "You chose: No, Cancel").
+- **Enhanced Showcase example:** added Card grid and interactive Modal demo to demonstrate multi-component composition and real-world usage patterns.
+
 ### v1.0.7
 - Initial implementation of the highly-opinionated flex `Container` component (direction, spacing, colors, sizing) plus Storybook stories.
 - Added Playwright visual regression tests for curated component variations and example pages; baselines stored in `tests/visual/*-snapshots/`.

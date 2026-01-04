@@ -4,6 +4,7 @@ import { HamburgerMenu } from "../src";
 const meta: Meta<typeof HamburgerMenu> = {
   title: "Components/HamburgerMenu",
   component: HamburgerMenu,
+  tags: ["autodocs"],
   argTypes: {
     isOpen: {
       control: "boolean",

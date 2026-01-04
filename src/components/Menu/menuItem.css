@@ -1,24 +1,39 @@
 .nw-menu-item {
   appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   width: 100%;
   text-align: left;
-  background: var(--background, #fff);
+  background: transparent;
   color: var(--foreground, #000);
   border: 0;
   padding: 10px 12px;
   cursor: pointer;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
 .nw-menu-item:hover,
-.nw-menu-item:focus {
+.nw-menu-item:focus-visible {
   outline: none;
   background: color-mix(in srgb, var(--foreground, #000) 6%, var(--background, #fff));
 }
 
+.nw-menu-item__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+}
+
+.nw-menu-item__text { line-height: 1.4; }
+
 @supports not (color-mix: in srgb) {
   /* Fallback: keep minimal without extra colors */
   .nw-menu-item:hover,
-  .nw-menu-item:focus {
+  .nw-menu-item:focus-visible {
     text-decoration: underline;
+    background: transparent;
   }
 }

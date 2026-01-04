@@ -4,6 +4,7 @@ import { Header } from "../src/components/Header";
 const meta: Meta<typeof Header> = {
   title: "Components/Header",
   component: Header,
+  tags: ["autodocs"],
   argTypes: {
     left: {
       control: "text",

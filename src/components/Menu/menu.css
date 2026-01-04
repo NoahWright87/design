@@ -4,58 +4,67 @@
 }
 
 .nw-menu__trigger {
-  background: none;
-  border: 0;
-  padding: 0;
+  background: var(--background, #fff);
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  padding: 8px 10px;
   color: var(--foreground, #000);
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
 
 .nw-menu__panel {
   position: absolute;
-  min-width: 160px;
+  min-width: 200px;
   background: var(--background, #fff);
   color: var(--foreground, #000);
-  border: 1px solid currentColor;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 12px;
   box-sizing: border-box;
-  margin-top: 8px;
-  z-index: 1000;
+  margin-top: 10px;
+  z-index: 1100;
   display: flex;
   flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  opacity: 0;
+  transform: translateY(6px) scale(0.99);
+  transform-origin: top;
+  transition: opacity 140ms ease, transform 140ms ease;
 }
 
-.nw-menu--right .nw-menu__panel {
-  right: 0;
-  left: auto;
+.nw-menu--open .nw-menu__panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-.nw-menu:not(.nw-menu--right) .nw-menu__panel {
-  left: 0;
-  right: auto;
-}
+.nw-menu--right .nw-menu__panel { right: 0; left: auto; }
+.nw-menu:not(.nw-menu--right) .nw-menu__panel { left: 0; right: auto; }
 
-.nw-menu__item + .nw-menu__item {
-  border-top: 1px solid currentColor;
-}
+.nw-menu__item + .nw-menu__item { border-top: 1px solid color-mix(in srgb, currentColor 10%, transparent); }
 
-.nw-menu__overlay {
-  display: none;
-}
+.nw-menu__overlay { display: none; }
 
 @media (max-width: 600px) {
-  .nw-menu__overlay {
+  .nw-menu--open .nw-menu__overlay {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.2);
-    z-index: 999;
+    background: var(--overlay, rgba(0,0,0,0.2));
+    z-index: 1090;
   }
   .nw-menu__panel {
     position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0) scale(1);
+    right: auto;
+    top: 64px;
     margin-top: 0;
-    z-index: 1000;
+    width: min(360px, 94vw);
+    z-index: 1100;
   }
 }
 

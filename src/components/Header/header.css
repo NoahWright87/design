@@ -3,14 +3,15 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 48px;
+  height: 56px;
   display: flex;
   align-items: center;
+  gap: 12px;
   background: var(--background, #fff);
   color: var(--foreground, #000);
-  z-index: 1000;
+  z-index: 1200;
   box-shadow: 0 1px 0 rgba(0,0,0,0.06);
-  padding: 0 12px;
+  padding: 0 16px;
   box-sizing: border-box;
 }
 
@@ -20,13 +21,84 @@
   gap: 8px;
 }
 
-.nw-header__slot--left,
-.nw-header__slot--right{
-  flex: 0 0 auto;
-}
+.nw-header__slot--left{ flex: 0 0 auto; }
 
 .nw-header__slot--center{
   flex: 1 1 auto;
   justify-content: center;
   text-align: center;
+}
+
+.nw-header__center{ display: inline-flex; align-items: center; gap: 6px; }
+.nw-header__center--mobile{ display: none; }
+
+.nw-header__slot--right{
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+.nw-header__slot-content{ display: flex; align-items: center; gap: 8px; }
+
+.nw-header__menu-button{
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  background: var(--background, #fff);
+  color: var(--foreground, #000);
+  cursor: pointer;
+  padding: 0;
+}
+
+.nw-header__menu-icon{
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 999px;
+  box-shadow: 0 -6px 0 currentColor, 0 6px 0 currentColor;
+}
+
+.nw-header__mobile-overlay,
+.nw-header__mobile-panel{
+  display: none;
+}
+
+@media (max-width: 768px){
+  .nw-header{ padding: 0 12px; }
+
+  .nw-header__slot--center{ justify-content: flex-start; text-align: left; }
+  .nw-header__center--desktop{ display: none; }
+  .nw-header__center--mobile{ display: inline-flex; }
+  .nw-header__slot--right{ display: none; }
+
+  .nw-header__menu-button{ display: inline-flex; }
+
+  .nw-header__mobile-overlay{
+    position: fixed;
+    inset: 0;
+    background: var(--overlay, rgba(0,0,0,0.6));
+    z-index: 1190;
+  }
+
+  .nw-header__mobile-panel{
+    position: fixed;
+    top: 56px;
+    right: 0;
+    width: min(360px, 90vw);
+    background: var(--background, #fff);
+    color: var(--foreground, #000);
+    box-shadow: -8px 0 24px rgba(0,0,0,0.08);
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1195;
+  }
+
+  .nw-header--mobile-open .nw-header__mobile-overlay{ display: block; }
+  .nw-header--mobile-open .nw-header__mobile-panel{ display: flex; }
 }

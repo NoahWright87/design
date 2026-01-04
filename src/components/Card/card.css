@@ -1,0 +1,30 @@
+.nw-card {
+  border-radius: 16px;
+  background: var(--background, #fff);
+  color: var(--foreground, #000);
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-sizing: border-box;
+}
+
+.nw-card--elevated {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.nw-card__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.nw-card__subtitle {
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--foreground, #000) 70%, transparent);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.nw-card__content {
+  line-height: 1.6;
+}

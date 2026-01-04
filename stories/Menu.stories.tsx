@@ -4,6 +4,7 @@ import { Menu, MenuItem, Avatar, HamburgerMenu } from "../src";
 const meta: Meta<typeof Menu> = {
   title: "Components/Menu",
   component: Menu,
+  tags: ["autodocs"],
   argTypes: {
     align: {
       control: "select",

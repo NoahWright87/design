@@ -19,28 +19,62 @@ Peer deps required in your app:
 
 ## What’s included
 
-- Components: `Button`, `Link`, `Heading`, `Text` (minimal props only)
-- Base CSS: `src/styles/theme.css` with `--foreground`, `--background`
-- Typed theme tools: `Theme`, `buildThemeCss(theme)` → returns a CSS string
+- **Core components**: `Button`, `Link`, `Heading`, `Text`, `Header`, `Footer`, `Layout`, `Container`, `Card`, `Modal`
+- **Utility components**: `Avatar`, `HamburgerMenu`, `Menu`, `MenuItem`
+- **Base CSS**: `src/styles/theme.css` with semantic color tokens (`--foreground`, `--background`, `--primary`, `--secondary`, `--confirm`, `--danger`, `--overlay`)
+- **Theme utilities**: `Theme` type, `buildThemeCss(theme)` function, light/dark toggle (`setThemeMode`, `toggleThemeMode`, `getThemeMode`)
 
 ## Usage (components)
 
 ```tsx
-import { Button, Link, Heading, Text } from "@noahwright/design";
+import {
+  Button,
+  Link,
+  Heading,
+  Text,
+  Header,
+  Card,
+  Modal,
+  Menu,
+  MenuItem,
+  setThemeMode,
+  toggleThemeMode,
+} from "@noahwright/design";
+import { useState } from "react";
 
 export function Example() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
-      <Heading level={1}>Hello</Heading>
-      <Text>Welcome to the 90s (but fast).</Text>
-      <Button onClick={() => console.log("hey")}>Click</Button>
-      <Link href="#nowhere">A link</Link>
+      <Header
+        left={<span>Logo</span>}
+        center={<Heading level={2}>My App</Heading>}
+        right={<Button onClick={() => toggleThemeMode()}>🌙</Button>}
+        mobileMenu={<Menu trigger="≡" items={[]} />}
+      />
+
+      <main>
+        <Card title="Welcome" subtitle="To the design system">
+          <Text>A hyper-minimal, highly opinionated system.</Text>
+          <Button onClick={() => setIsModalOpen(true)}>Learn More</Button>
+        </Card>
+
+        <Modal
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="About This System"
+          actions={[{ label: "Got it", variant: "primary" }]}
+        >
+          <Text>Built for learning, built in public, and built by agents.</Text>
+        </Modal>
+      </main>
     </>
   );
 }
 ```
 
-## Theming (typed, build-time)
+## Theming (typed, build-time + runtime toggle)
 
 In your app repo, create a typed `theme.ts`:
 
@@ -50,11 +84,16 @@ import type { Theme } from "@noahwright/design";
 
 export const theme: Theme = {
   foreground: "#111111",
-  background: "#ffffff"
+  background: "#ffffff",
+  primary: "#2563eb",
+  secondary: "#9333ea",
+  confirm: "#16a34a",
+  danger: "#dc2626",
+  overlay: "rgba(15, 23, 42, 0.6)",
 };
 ```
 
-Generate `public/theme.css` at build time (no handwritten CSS):
+Generate `public/theme.css` at build time:
 
 ```ts
 // scripts/build-theme.ts
@@ -65,32 +104,51 @@ import { theme } from "../theme";
 writeFileSync("public/theme.css", buildThemeCss(theme), "utf8");
 ```
 
-Add a script (using `tsx` runner is convenient):
+### Light/Dark Theme Toggle
 
-```json
-{
-  "scripts": {
-    "build:theme": "tsx scripts/build-theme.ts"
-  },
-  "devDependencies": {
-    "tsx": "^4.7.0"
-  }
+Use `setThemeMode`, `getThemeMode`, or `toggleThemeMode`:
+
+```tsx
+import { toggleThemeMode } from "@noahwright/design";
+
+export function ThemeToggle() {
+  return (
+    <button onClick={() => toggleThemeMode()}>
+      {getThemeMode() === "dark" ? "☀️" : "🌙"}
+    </button>
+  );
 }
 ```
 
-Import your generated CSS (Next.js example):
+The system applies a `data-theme="dark"` attribute to `<html>` and provides dark-mode colors via CSS variable overrides. Customize dark colors in your theme or update `src/styles/theme.css`.
 
-```tsx
-// app/layout.tsx or pages/_app.tsx
-import "../public/theme.css";
+## Old browser redirect (optional)
+
+```html
+<script>
+  if (!("CSS" in window) || !CSS.supports("color", "color-mix(in srgb, white 50%, black)")) {
+    location.href = "/fallback.html";
+  }
+</script>
 ```
 
-> You can also inject it SSR-only via `<style>` if you prefer (see below).
+## SSR (build-time theme, optional inline style)
 
-## Optional SSR inline style
+For static/build-time theme injection:
+
+```ts
+// scripts/build-theme.ts
+import { writeFileSync } from "node:fs";
+import { buildThemeCss } from "@noahwright/design";
+import { theme } from "../theme";
+
+writeFileSync("public/theme.css", buildThemeCss(theme), "utf8");
+```
+
+Or inline via SSR:
 
 ```tsx
-// Next.js Server Component layout example
+// Next.js Server Component layout
 import { buildThemeCss } from "@noahwright/design";
 import { theme } from "../theme";
 
@@ -106,15 +164,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-## Old browser redirect (optional)
-
-```html
-<script>
-  if (!("CSS" in window) || !CSS.supports("color", "color-mix(in srgb, white 50%, black)")) {
-    location.href = "/fallback.html";
-  }
-</script>
-```
+No runtime side effects at module level; fully SSR-safe.
 
 ## Philosophy & Constraints
 
