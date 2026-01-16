@@ -51,21 +51,21 @@ export const ResponsiveHeaderWithMenu: Story = {
     return (
       <div style={{ minHeight: "100vh", background: "var(--background)" }}>
         <Header
-          left={<span style={{ fontWeight: "bold" }}>MyApp</span>}
-          center={<span style={{ fontSize: "0.9rem" }}>Home</span>}
+          left={<span style={{ fontWeight: "bold" }}>🏠</span>}
+          leftLabel="MyApp"
+          center={<span>📋</span>}
+          centerLabel="Home"
           right={<ThemeToggle />}
-          mobileTitle={<span>MA</span>}
-          mobileMenu={<Menu trigger="📋" items={navItems} />}
-          menuButtonLabel="Navigation"
+          rightLabel="Theme"
         />
 
         <main style={{ padding: "20px", paddingTop: "80px" }}>
           <div style={{ maxWidth: "600px", margin: "0 auto" }}>
             <h1>Responsive Header</h1>
             <p>
-              On desktop: full navigation in center, logo on left, theme toggle on right.
+              On desktop: labels appear next to elements.
             </p>
-            <p>On mobile: hamburger menu, abbreviated title, theme toggle.</p>
+            <p>On mobile: only icons/elements visible, labels hidden.</p>
           </div>
         </main>
       </div>
@@ -79,11 +79,12 @@ export const HeaderWithAvatarMenu: Story = {
       <div style={{ minHeight: "100vh", background: "var(--background)" }}>
         <Header
           left={
-            <span style={{ fontWeight: "bold" }}>Logo</span>
+            <span style={{ fontWeight: "bold" }}>🌐</span>
           }
+          leftLabel="Logo"
           center={
             <Menu
-              trigger="User Account"
+              trigger="User"
               items={[
                 { text: "Profile", href: "/profile" },
                 { text: "Settings", href: "/settings" },
@@ -92,9 +93,9 @@ export const HeaderWithAvatarMenu: Story = {
               align="right"
             />
           }
+          centerLabel="Account"
           right={<ThemeToggle />}
-          mobileTitle={<span>App</span>}
-          menuButtonLabel="Menu"
+          rightLabel="Theme"
         />
 
         <main style={{ padding: "20px", paddingTop: "80px" }}>

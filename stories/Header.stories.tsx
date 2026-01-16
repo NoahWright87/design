@@ -17,6 +17,18 @@ const meta: Meta<typeof Header> = {
     right: {
       control: "text",
       description: "Content for the right slot"
+    },
+    leftLabel: {
+      control: "text",
+      description: "Label for left slot (hidden on mobile)"
+    },
+    centerLabel: {
+      control: "text",
+      description: "Label for center slot (hidden on mobile)"
+    },
+    rightLabel: {
+      control: "text",
+      description: "Label for right slot (hidden on mobile)"
     }
   }
 };
@@ -29,5 +41,16 @@ export const Basic: Story = {
     left: "Logo",
     center: "Page title",
     right: "Profile"
+  }
+};
+
+export const WithLabels: Story = {
+  args: {
+    left: "🏠",
+    leftLabel: "Home",
+    center: "📄",
+    centerLabel: "Documents",
+    right: "👤",
+    rightLabel: "Profile"
   }
 };
