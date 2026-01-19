@@ -1,0 +1,1 @@
+TODO: Describe an example site that resembles someone's personal portfolio

@@ -12,7 +12,13 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 ### vX.X.X
-- (No active work in progress)
+- Spec-driven docs: added `specs/components/button/button.spec.md` describing current Button behavior as source of truth for tests.
+- Spec framework: added `specs/README.md` with conventions and test mapping guidance.
+- Backlog convention: introduced per-component `*.todo.md` files; added `specs/components/button/button.todo.md` and linked from the Button spec.
+- Example specs: added specs for all existing Storybook example pages (Colors, HeaderIntegration, HeaderResponsive, Showcase); updated `specs/examples/README.md` with conventions and future backlog items.
+- Component specs: added complete specs and backlog files for all remaining components: Heading, Link, Text, Avatar, Card, Container, Header, Footer, HamburgerMenu, Layout, Menu, MenuItem, Modal.
+ - Root atomic spec: added `specs/design-system.spec.md` with atomic design philosophy, design philosophy (approachability, personality, motion, performance), and authoring rules; added `specs/design-system.todo.md` for component organization and future taxonomy; updated `specs/README.md` with folder/naming conventions and reference to root spec.
+- Atomic reorganization: reorganized `src/components/` and `specs/components/` into atomic structure with `molecules/` and `organisms/` subdirectories; updated all Storybook story titles to show nested atomic hierarchy; updated `src/index.ts` exports.
 
 ## Version history
 

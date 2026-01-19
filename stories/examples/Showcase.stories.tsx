@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { Meta } from '@storybook/react';
-import Header from '../../src/components/Header';
-import Footer from '../../src/components/Footer';
-import { Heading } from '../../src/components/Heading';
-import { Text } from '../../src/components/Text';
-import { Button } from '../../src/components/Button';
-import { Link } from '../../src/components/Link';
-import { Card } from '../../src/components/Card';
-import { Modal } from '../../src/components/Modal';
+import { Header, Footer, Heading, Text, Button, Link, Card, Modal } from '../../src';
 
 export default {
   title: 'Examples/Showcase',

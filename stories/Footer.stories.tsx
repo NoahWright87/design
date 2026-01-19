@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Footer } from "../src/components/Footer";
+import { Footer } from "../src";
 
 const meta: Meta<typeof Footer> = {
-  title: "Components/Footer",
+  title: "Components/Organisms/Footer",
   component: Footer,
   tags: ["autodocs"],
 };

@@ -1,8 +1,9 @@
+import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Header, Menu, MenuItem, Button, getThemeMode, toggleThemeMode } from "../../src";
 
 const meta: Meta<typeof Header> = {
-  title: "Examples/Header Integration",
+  title: "Examples/Header Responsive",
   component: Header,
   parameters: {
     layout: "fullscreen",
@@ -37,8 +38,6 @@ function ThemeToggle() {
     </button>
   );
 }
-
-import * as React from "react";
 
 export const ResponsiveHeaderWithMenu: Story = {
   render: () => {

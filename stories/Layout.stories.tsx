@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Layout, Header, Footer, Text, Menu, MenuItem, Avatar, HamburgerMenu } from "../src";
 
 const meta: Meta<typeof Layout> = {
-  title: "Components/Layout",
+  title: "Components/Organisms/Layout",
   component: Layout,
   tags: ["autodocs"],
 };

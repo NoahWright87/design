@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useId, useRef, useState } from "react";
-import { MenuContext, MenuItem, MenuItemProps } from "./MenuItem";
+import { MenuContext, MenuItem, MenuItemProps } from "../../molecules/MenuItem";
 import "./menu.css";
 
 export type OpenCloseIcon = { open: React.ReactNode; close: React.ReactNode };

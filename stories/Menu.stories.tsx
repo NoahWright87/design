@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Menu, MenuItem, Avatar, HamburgerMenu } from "../src";
 
 const meta: Meta<typeof Menu> = {
-  title: "Components/Menu",
+  title: "Components/Organisms/Menu",
   component: Menu,
   tags: ["autodocs"],
   argTypes: {

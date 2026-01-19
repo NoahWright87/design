@@ -1,17 +1,22 @@
-export * from "./components/Button/index.js";
-export * from "./components/Link/index.js";
-export * from "./components/Heading/index.js";
-export * from "./components/Text/index.js";
-export * from "./components/Header/index.js";
-export * from "./components/Footer/index.js";
-export * from "./components/Layout/index.js";
-export * from "./components/Avatar/index.js";
-export * from "./components/HamburgerMenu/index.js";
-export * from "./components/Menu/index.js";
-export * from "./components/Menu/MenuItem.js";
-export * from "./components/Container/Container.js";
-export * from "./components/Card/index.js";
-export * from "./components/Modal/index.js";
+// Molecules
+export * from "./components/molecules/Button/index.js";
+export * from "./components/molecules/Link/index.js";
+export * from "./components/molecules/Heading/index.js";
+export * from "./components/molecules/Text/index.js";
+export * from "./components/molecules/Avatar/index.js";
+export * from "./components/molecules/HamburgerMenu/index.js";
+export * from "./components/molecules/MenuItem.js";
+
+// Organisms
+export * from "./components/organisms/Header/index.js";
+export * from "./components/organisms/Footer/index.js";
+export * from "./components/organisms/Layout/index.js";
+export * from "./components/organisms/Menu/index.js";
+export * from "./components/organisms/Container/Container.js";
+export * from "./components/organisms/Card/index.js";
+export * from "./components/organisms/Modal/index.js";
+
+// Theme utilities
 export * from "./styles/themeToggle.js";
 
 /** Typed theme input for generating a CSS file at build time. */
