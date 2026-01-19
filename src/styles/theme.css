@@ -1,4 +1,5 @@
 :root {
+  /* Colors */
   --foreground: #111111;
   --background: #ffffff;
   --primary: #2563eb;
@@ -6,9 +7,57 @@
   --confirm: #16a34a;
   --danger: #dc2626;
   --overlay: rgba(15, 23, 42, 0.6);
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Typography */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+
+  /* Border radius */
+  --radius: 0.5rem;
+
+  /* Motion - Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+
+  /* Motion - Easing curves */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-bounce-press: cubic-bezier(0.23, 0.33, 0.57, 2.14);
+  --ease-bounce-release: cubic-bezier(0.24, 1.05, 0.38, 2.17);
+
+  /* Motion - Preset bundles for interactive elements */
+  --motion-none-duration: 0ms;
+  --motion-none-easing: linear;
+
+  --motion-subtle-duration: 180ms;
+  --motion-subtle-easing: var(--ease-in-out);
+  --motion-subtle-press-duration: 120ms;
+  --motion-subtle-press-easing: var(--ease-in-out);
+
+  --motion-bouncy-duration: 220ms;
+  --motion-bouncy-easing: var(--ease-bounce-release);
+  --motion-bouncy-press-duration: 150ms;
+  --motion-bouncy-press-easing: var(--ease-bounce-press);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 :root[data-theme="dark"] {
+  /* Colors */
   --foreground: #e5e7eb;
   --background: #0b1120;
   --primary: #60a5fa;
@@ -16,4 +65,9 @@
   --confirm: #22c55e;
   --danger: #f87171;
   --overlay: rgba(0, 0, 0, 0.65);
+
+  /* Shadows - lighter for dark mode */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
 }

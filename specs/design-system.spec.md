@@ -3,6 +3,8 @@
 ## Overview
 This root spec defines the design philosophy and taxonomy for the system and maps current components to atomic levels. It is the source of truth for how the library is organized and how specs and tests should be authored.
 
+**Opinionated by Design:** This design system is built for personal use and reflects specific preferences and workflows. Components are intentionally opinionated with minimal prop surfaces, favoring convention over configuration. A `style` escape hatch is provided on all components for custom CSS when needed, but atomic principles and design tokens should be the default path.
+
 ## Atomic Design Philosophy
 - **Atoms**: Non-rendering design primitives (tokens). Include color, spacing, typography, motion, radius, and shadow. Atoms must not render UI elements or contain layout/interaction logic.
 - **Molecules**: Smallest reusable UI components. May render HTML and, at most, handle a single interaction.

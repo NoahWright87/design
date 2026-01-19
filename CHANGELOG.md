@@ -12,15 +12,17 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 ### vX.X.X
-- Spec-driven docs: added `specs/components/button/button.spec.md` describing current Button behavior as source of truth for tests.
-- Spec framework: added `specs/README.md` with conventions and test mapping guidance.
-- Backlog convention: introduced per-component `*.todo.md` files; added `specs/components/button/button.todo.md` and linked from the Button spec.
-- Example specs: added specs for all existing Storybook example pages (Colors, HeaderIntegration, HeaderResponsive, Showcase); updated `specs/examples/README.md` with conventions and future backlog items.
-- Component specs: added complete specs and backlog files for all remaining components: Heading, Link, Text, Avatar, Card, Container, Header, Footer, HamburgerMenu, Layout, Menu, MenuItem, Modal.
- - Root atomic spec: added `specs/design-system.spec.md` with atomic design philosophy, design philosophy (approachability, personality, motion, performance), and authoring rules; added `specs/design-system.todo.md` for component organization and future taxonomy; updated `specs/README.md` with folder/naming conventions and reference to root spec.
-- Atomic reorganization: reorganized `src/components/` and `specs/components/` into atomic structure with `molecules/` and `organisms/` subdirectories; updated all Storybook story titles to show nested atomic hierarchy; updated `src/index.ts` exports.
+- No changes yet.
 
 ## Version history
+
+### v1.0.9
+- **Button component fully implemented:** Added variants (`solid`, `outline`, `ghost`, `text`), sizes (`small`, `medium`, `large`), semantic/custom colors, icon positioning (`left`, `right`, `center`, `top`, `bottom`), and disabled state with proper accessibility.
+- **Motion system (atoms):** Added motion tokens with presets (`none`, `subtle`, `bouncy`) including distinct press/release easing curves; buttons now feature playful squish-and-bounce animations that respect `prefers-reduced-motion`.
+- **Shadow tokens (atoms):** Added `--shadow-sm/md/lg` tokens that adapt to light/dark themes.
+- **Design tokens expanded:** Added spacing (`--spacing-xs/sm/md/lg/xl`), typography (`--text-xs/sm/md/lg/xl`), and border radius (`--radius`) tokens for cross-component reuse.
+- **Opinionated design system:** Updated root spec to clarify the system is built for personal use with minimal props and a `style` escape hatch on all components.
+- **Spec framework:** Established comprehensive spec structure with atomic design taxonomy, component specs as source of truth for tests, and `*.todo.md` backlog convention; added specs for all components and example pages.
 
 ### v1.0.8
 - **Modal action callbacks fixed:** added optional `id` field to `ModalActionProps` and updated `onClose` signature to pass action label/id instead of hardcoded "confirm", so each button click correctly indicates which action was chosen.
