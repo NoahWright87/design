@@ -1,0 +1,147 @@
+.motionLab {
+  width: 100%;
+  max-width: 75rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  margin: 0 0 0.375rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--foreground);
+  opacity: 0.75;
+  line-height: 1.4;
+  font-size: var(--text-sm);
+}
+
+.previewSticky {
+  position: sticky;
+  top: 1rem;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  border-radius: calc(var(--radius) * 1.125);
+  background: var(--background);
+  border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  margin-bottom: 1.5rem;
+  min-height: 12rem;
+  box-shadow: 0 4px 12px color-mix(in srgb, black 10%, transparent);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (max-width: 48rem) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+.section {
+  border-radius: calc(var(--radius) * 1.125);
+  background: color-mix(in srgb, var(--foreground) 3%, transparent);
+  border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  padding: 0.875rem;
+}
+
+.section__title {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  opacity: 0.7;
+  margin-bottom: 0.625rem;
+}
+
+.section__body {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.hint {
+  color: var(--foreground);
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.easingGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+@media (max-width: 54rem) {
+  .easingGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.easingGraphWrap {
+  border-radius: calc(var(--radius) * 1.125);
+  background: color-mix(in srgb, var(--foreground) 3%, transparent);
+  border: 1px solid color-mix(in srgb, var(--foreground) 16%, transparent);
+  padding: 0.625rem;
+}
+
+.bezierControls {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.readout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.625rem;
+  padding-top: 0.375rem;
+}
+
+.readout__value {
+  font-family: ui-monospace, "SF Mono", Menlo, Monaco, "Cascadia Code", "Courier New", monospace;
+  font-size: 0.75rem;
+  color: var(--foreground);
+  opacity: 0.8;
+}
+
+.readout__copy {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent);
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+  color: var(--foreground);
+  border-radius: calc(var(--radius) * 0.75);
+  padding: 0.5rem 0.625rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: background 140ms ease;
+}
+
+.readout__copy:hover {
+  background: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  min-height: 20rem;
+  color: var(--foreground);
+  opacity: 0.6;
+}

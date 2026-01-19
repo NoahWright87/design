@@ -12,7 +12,7 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 ### vX.X.X
-- No changes yet.
+- **Motion Lab:** Added interactive motion tuning UI for Button and Modal with separate Storybook pages. Includes bezier curve editor, live preview with sticky positioning, preset selector, and portable CSS generation. Fixes React hooks error by using single-adapter per story instead of multi-component switching.
 
 ## Version history
 

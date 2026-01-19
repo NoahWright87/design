@@ -44,6 +44,11 @@ npm run build
 
 - Provide copyable commands in fenced code blocks and specify the shell when relevant.
 
+## Storybook testing
+- **Do not run Storybook automatically.** The human will run `npm run storybook` and test interactively.
+- You may run build/typecheck/test commands for verification.
+- Focus on implementation and correctness; visual testing is the human's responsibility.
+
 ## Testing and verification
 - When you change code, run the smallest reasonable verification (typecheck, build, or focused tests).
 - Share the exact commands run and the salient output (errors or success). Keep large logs trimmed to what matters.
