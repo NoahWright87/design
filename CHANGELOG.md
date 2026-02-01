@@ -11,10 +11,25 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-### vX.X.X
-- **Motion Lab:** Added interactive motion tuning UI for Button and Modal with separate Storybook pages. Includes bezier curve editor, live preview with sticky positioning, preset selector, and portable CSS generation. Fixes React hooks error by using single-adapter per story instead of multi-component switching.
+(No active work items.)
+
 
 ## Version history
+
+### v1.0.10
+- **CSS export fix:** Package now properly exports all component and theme styles. Added side-effect CSS import in main entry, exposed `dist/index.css` via package.json exports with `style` field, and converted Button CSS modules to global classes (`nw-button`, `nw-button--*`). Consuming apps automatically get styles when importing components.
+- **Expanded Theme type:** Made all theme properties optional and added support for overriding all CSS variables (spacing, typography, motion, shadows) via `buildThemeCss()`, not just colors. Function now dynamically generates CSS from provided properties only.
+- **Motion Lab:** Added interactive motion tuning UI for Button and Modal with separate Storybook pages. Includes bezier curve editor, live preview with sticky positioning, preset selector, and portable CSS generation. Fixes React hooks error by using single-adapter per story instead of multi-component switching.
+- **Exports default condition:** Added `default` in package exports so environments resolving CommonJS/unnamed conditions can still load the ESM entry (fixes "No exports main defined" in dev site).
+- **Header non-overlap default:** `Header` now defaults to sticky positioning to avoid covering page content. Use `fixed` prop to opt into fixed positioning, and apply `.nw-with-fixed-header` to the content container for a top offset when needed.
+- **Scrollbar polish:** Global scrollbar now uses theme primary colors, rounded thumb, thin width, and `scrollbar-gutter: stable` to keep layout from shifting when scrollbars appear.
+- **Global base reset:** Added box-sizing reset, body margin removal, and color-scheme hints so headers stay flush to page edges and don't jump when scrolling.
+- **Footer non-overlap:** Footer now defaults to in-flow; optional `sticky` and `fixed` props available. `Layout` component handles flexbox automatically so footer stays at bottom on short pages without covering content.
+- **Modal backdrop coverage:** Modal backdrop now spans full viewport width/height so overlay hides gutters/scrollbars completely.
+- **Menu trigger fix:** Menu now clones custom triggers (e.g., `HamburgerMenu`) instead of wrapping them, preventing nested buttons and hydration mismatches.
+- **Layout refactor:** `Layout` now uses flexbox internally with `.nw-layout__content` wrapper; no helper classes needed. Supports SPA routing by accepting router outlets as children—header/footer stay mounted while content swaps.
+- **Next.js compatibility:** Added `"use client"` directives to Menu, Modal, and MenuItem so they work in Next.js App Router while keeping Layout and other components server-safe.
+- **MobileNav component:** Pure CSS navigation using checkbox hack—fully SSR-compatible, no JavaScript required. Hamburger collapses on mobile, inline on desktop. Use this instead of Menu in server layouts.
 
 ### v1.0.9
 - **Button component fully implemented:** Added variants (`solid`, `outline`, `ghost`, `text`), sizes (`small`, `medium`, `large`), semantic/custom colors, icon positioning (`left`, `right`, `center`, `top`, `bottom`), and disabled state with proper accessibility.
@@ -52,3 +67,4 @@ This file documents planned and completed changes for the repository.
 
 ### v0.1.0 — Initial scaffold
 - Project scaffold created (components, storybook, build).
+

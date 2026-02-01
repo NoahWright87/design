@@ -1,5 +1,4 @@
 .nw-header{
-  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -14,6 +13,10 @@
   padding: 0 16px;
   box-sizing: border-box;
 }
+
+/* Position variants: default sticky to avoid content overlap */
+.nw-header--sticky{ position: sticky; }
+.nw-header--fixed{ position: fixed; }
 
 .nw-header__slot{
   display: flex;
@@ -52,3 +55,6 @@
     display: none;
   }
 }
+
+/* Optional utility: add to a container when using a fixed header */
+.nw-with-fixed-header{ padding-top: 56px; }

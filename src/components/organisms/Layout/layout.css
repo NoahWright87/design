@@ -1,5 +1,9 @@
 .nw-layout{
-  box-sizing: border-box;
   min-height: 100vh;
-  display: block;
+  display: flex;
+  flex-direction: column;
+}
+
+.nw-layout__content{
+  flex: 1 0 auto;
 }

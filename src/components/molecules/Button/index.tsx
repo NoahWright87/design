@@ -1,5 +1,5 @@
 import * as React from "react";
-import styles from "./Button.module.css";
+import "./Button.module.css";
 
 export type ButtonVariant = "solid" | "outline" | "ghost" | "text";
 export type ButtonSize = "small" | "medium" | "large";
@@ -74,11 +74,11 @@ export function Button({
   const { color: buttonColor, contrast: buttonContrast } = resolveColor(color);
   
   const classNames = [
-    styles.button,
-    styles[`button--${variant}`],
-    styles[`button--${size}`],
-    styles[`button--motion-${motion}`],
-    icon && styles[`button--icon-${iconPosition}`],
+    "button",
+    `button--${variant}`,
+    `button--${size}`,
+    `button--motion-${motion}`,
+    icon && `button--icon-${iconPosition}`,
   ]
     .filter(Boolean)
     .join(" ");
@@ -97,8 +97,8 @@ export function Button({
       className={classNames}
       style={inlineStyles}
     >
-      {icon && <span className={styles.button__icon}>{icon}</span>}
-      <span className={styles.button__label}>{children}</span>
+      {icon && <span className="button__icon">{icon}</span>}
+      <span className="button__label">{children}</span>
     </button>
   );
 }

@@ -203,17 +203,17 @@
   .button {
     transition: none;
   }
-  
+
   .button:hover:not(:disabled),
   .button:active:not(:disabled) {
     transform: none;
   }
-  
+
   .button__icon,
   .button__label {
     transition: none;
   }
-  
+
   .button--motion-subtle,
   .button--motion-bouncy {
     transition: none;

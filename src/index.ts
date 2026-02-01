@@ -1,3 +1,5 @@
+import "./styles/theme.css";
+
 // Molecules
 export * from "./components/molecules/Button/index.js";
 export * from "./components/molecules/Link/index.js";
@@ -12,6 +14,7 @@ export * from "./components/organisms/Header/index.js";
 export * from "./components/organisms/Footer/index.js";
 export * from "./components/organisms/Layout/index.js";
 export * from "./components/organisms/Menu/index.js";
+export * from "./components/organisms/MobileNav/index.js";
 export * from "./components/organisms/Container/Container.js";
 export * from "./components/organisms/Card/index.js";
 export * from "./components/organisms/Modal/index.js";
@@ -19,18 +22,75 @@ export * from "./components/organisms/Modal/index.js";
 // Theme utilities
 export * from "./styles/themeToggle.js";
 
-/** Typed theme input for generating a CSS file at build time. */
+/** Typed theme input for generating a CSS file at build time. All fields optional. */
 export type Theme = {
-  foreground: string;
-  background: string;
-  primary: string;
-  secondary: string;
-  confirm: string;
-  danger: string;
-  overlay: string;
+  // Colors
+  foreground?: string;
+  background?: string;
+  primary?: string;
+  secondary?: string;
+  confirm?: string;
+  danger?: string;
+  overlay?: string;
+  
+  // Spacing
+  spacingXs?: string;
+  spacingSm?: string;
+  spacingMd?: string;
+  spacingLg?: string;
+  spacingXl?: string;
+  
+  // Typography
+  textXs?: string;
+  textSm?: string;
+  textMd?: string;
+  textLg?: string;
+  textXl?: string;
+  
+  // Border radius
+  radius?: string;
+  
+  // Motion - Durations
+  durationFast?: string;
+  durationNormal?: string;
+  durationSlow?: string;
+  
+  // Motion - Easing curves
+  easeInOut?: string;
+  easeBounce?: string;
+  easeBouncePress?: string;
+  easeBounceRelease?: string;
+  
+  // Motion - Preset bundles
+  motionNoneDuration?: string;
+  motionNoneEasing?: string;
+  motionSubtleDuration?: string;
+  motionSubtleEasing?: string;
+  motionSubtlePressDuration?: string;
+  motionSubtlePressEasing?: string;
+  motionBouncyDuration?: string;
+  motionBouncyEasing?: string;
+  motionBouncyPressDuration?: string;
+  motionBouncyPressEasing?: string;
+  
+  // Shadows
+  shadowSm?: string;
+  shadowMd?: string;
+  shadowLg?: string;
 };
 
 /** Produce minimal CSS custom properties (as a string) from a typed Theme. */
 export function buildThemeCss(t: Theme): string {
-  return `:root{--foreground:${t.foreground};--background:${t.background};--primary:${t.primary};--secondary:${t.secondary};--confirm:${t.confirm};--danger:${t.danger};--overlay:${t.overlay};}`;
+  const entries: string[] = [];
+  
+  // Helper to convert camelCase to kebab-case
+  const toKebab = (str: string) => str.replace(/[A-Z]/g, m => `-${m.toLowerCase()}`);
+  
+  for (const [key, value] of Object.entries(t)) {
+    if (value !== undefined) {
+      entries.push(`--${toKebab(key)}:${value}`);
+    }
+  }
+  
+  return entries.length > 0 ? `:root{${entries.join(';')};}` : '';
 }

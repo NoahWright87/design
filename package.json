@@ -1,11 +1,12 @@
 {
   "name": "@noahwright/design",
-  "version": "1.0.9",
-  "description": "Noah Wright's hyper-minimal React design system. Learning in public; use at your own risk.",
+  "version": "1.0.10",
+  "description": "Noah Wright's React design system. Learning in public; use at your own risk.",
   "license": "MIT",
   "private": false,
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "style": "dist/index.css",
   "files": [
     "dist",
     "src/styles/theme.css",
@@ -13,8 +14,11 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.mjs"
-    }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./styles.css": "./dist/index.css"
   },
   "scripts": {
     "build": "tsup",
@@ -43,5 +47,5 @@
   "engines": {
     "node": ">=18"
   },
-  "sideEffects": false
+  "sideEffects": ["./dist/index.css", "./src/styles/theme.css", "**/*.css"]
 }

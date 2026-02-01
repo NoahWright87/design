@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 import { useEffect, useId, useRef, useState } from "react";
 import { MenuContext, MenuItem, MenuItemProps } from "../../molecules/MenuItem";
@@ -59,45 +60,19 @@ export function Menu({ trigger, items = [], align = "left", icons, label, childr
       const existingOnClick = (trigger as any).props?.onClick as
         | ((e: React.MouseEvent) => void)
         | undefined;
+      const existingClassName = (trigger as any).props?.className as string | undefined;
 
-      // If the trigger is a native button, just clone; otherwise wrap with a button for semantics
-      if (typeof trigger.type === "string" && trigger.type.toLowerCase() === "button") {
-        return React.cloneElement(trigger, {
-          ...commonAria,
-          onClick: (e: React.MouseEvent) => {
-            existingOnClick?.(e);
-            toggleMenu();
-          },
-          onToggle: toggleMenu,
-          isOpen: open,
-        } as any);
-      }
-
-      if (icons) {
-        return (
-          <button
-            type="button"
-            className="nw-menu__trigger"
-            aria-label={label ?? "Toggle menu"}
-            onClick={toggleMenu}
-            {...commonAria}
-          >
-            {open ? icons.close : icons.open}
-          </button>
-        );
-      }
-
-      return (
-        <button
-          type="button"
-          className="nw-menu__trigger"
-          aria-label={label ?? "Toggle menu"}
-          onClick={toggleMenu}
-          {...commonAria}
-        >
-          {React.cloneElement(trigger, { isOpen: open } as any)}
-        </button>
-      );
+      // Prefer cloning the provided trigger to avoid nested buttons and preserve semantics.
+      return React.cloneElement(trigger, {
+        ...commonAria,
+        className: existingClassName,
+        onClick: (e: React.MouseEvent) => {
+          existingOnClick?.(e);
+          toggleMenu();
+        },
+        onToggle: toggleMenu,
+        isOpen: open,
+      } as any);
     }
 
     // Fallback: wrap arbitrary nodes

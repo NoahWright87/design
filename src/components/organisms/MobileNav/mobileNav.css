@@ -1,0 +1,104 @@
+/* Hide checkbox but keep it accessible */
+.nw-mobile-nav__checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hamburger toggle button */
+.nw-mobile-nav__toggle {
+  width: 24px;
+  height: 18px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+.nw-mobile-nav__toggle span {
+  height: 3px;
+  background: var(--foreground, #000);
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Animate hamburger to X when checked */
+.nw-mobile-nav__checkbox:checked ~ .nw-mobile-nav__toggle span:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+
+.nw-mobile-nav__checkbox:checked ~ .nw-mobile-nav__toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+.nw-mobile-nav__checkbox:checked ~ .nw-mobile-nav__toggle span:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* Navigation content */
+.nw-mobile-nav__content {
+  display: none;
+}
+
+.nw-mobile-nav__checkbox:checked ~ .nw-mobile-nav__content {
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--background, #fff);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 1100;
+}
+
+/* Style for nav items inside */
+.nw-mobile-nav__content a,
+.nw-mobile-nav__content button {
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--foreground, #000);
+  background: none;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.nw-mobile-nav__content a:hover,
+.nw-mobile-nav__content button:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+/* Desktop: show content inline, hide toggle */
+@media (min-width: 769px) {
+  .nw-mobile-nav__toggle {
+    display: none;
+  }
+  
+  .nw-mobile-nav__content {
+    display: flex !important;
+    position: static;
+    box-shadow: none;
+    padding: 0;
+    gap: 8px;
+  }
+  
+  .nw-mobile-nav__content a,
+  .nw-mobile-nav__content button {
+    display: inline-flex;
+    width: auto;
+    padding: 8px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-mobile-nav__toggle span {
+    transition: none;
+  }
+}

@@ -1,8 +1,21 @@
 import * as React from "react";
 import "./footer.css";
 
-export function Footer() {
-  return <footer className="nw-footer">Footer</footer>;
+export type FooterProps = {
+  /** Opt into a fixed footer. Default is static in-flow. */
+  fixed?: boolean;
+  /** Opt into sticky footer. If both fixed and sticky are true, fixed wins. */
+  sticky?: boolean;
+};
+
+export function Footer({ fixed = false, sticky = false }: FooterProps) {
+  const variantClass = fixed
+    ? "nw-footer--fixed"
+    : sticky
+    ? "nw-footer--sticky"
+    : "nw-footer--static";
+
+  return <footer className={`nw-footer ${variantClass}`}>Footer test</footer>;
 }
 
 export default Footer;

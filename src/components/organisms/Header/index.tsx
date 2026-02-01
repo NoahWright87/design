@@ -8,6 +8,11 @@ export type HeaderProps = {
   leftLabel?: React.ReactNode;
   centerLabel?: React.ReactNode;
   rightLabel?: React.ReactNode;
+  /**
+   * Opt-in to a fixed header. By default, the header is sticky
+   * to avoid overlapping page content.
+   */
+  fixed?: boolean;
 };
 
 export function Header({
@@ -17,9 +22,10 @@ export function Header({
   leftLabel,
   centerLabel,
   rightLabel,
+  fixed = false,
 }: HeaderProps) {
   return (
-    <header className="nw-header" role="banner">
+    <header className={`nw-header ${fixed ? "nw-header--fixed" : "nw-header--sticky"}`} role="banner">
       <div className="nw-header__slot nw-header__slot--left">
         <div className="nw-header__slot-element">{left}</div>
         {leftLabel && <div className="nw-header__slot-label">{leftLabel}</div>}
