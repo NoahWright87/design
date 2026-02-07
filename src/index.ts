@@ -1,11 +1,16 @@
 import "./styles/theme.css";
 
+// Atoms
+export * from "./atoms/nonsense.js";
+
 // Molecules
 export * from "./components/molecules/Button/index.js";
 export * from "./components/molecules/Link/index.js";
 export * from "./components/molecules/Heading/index.js";
 export * from "./components/molecules/Text/index.js";
 export * from "./components/molecules/Avatar/index.js";
+export * from "./components/molecules/Image/index.js";
+export * from "./components/molecules/Pill/index.js";
 export * from "./components/molecules/HamburgerMenu/index.js";
 export * from "./components/molecules/MenuItem.js";
 
@@ -18,6 +23,9 @@ export * from "./components/organisms/MobileNav/index.js";
 export * from "./components/organisms/Container/Container.js";
 export * from "./components/organisms/Card/index.js";
 export * from "./components/organisms/Modal/index.js";
+
+// Sites
+export * from "./sites/portfolio/index.js";
 
 // Theme utilities
 export * from "./styles/themeToggle.js";
