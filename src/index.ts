@@ -13,6 +13,10 @@ export * from "./components/molecules/Image/index.js";
 export * from "./components/molecules/Pill/index.js";
 export * from "./components/molecules/HamburgerMenu/index.js";
 export * from "./components/molecules/MenuItem.js";
+export * from "./components/molecules/Input/index.js";
+export * from "./components/molecules/Select/index.js";
+export * from "./components/molecules/Checkbox/index.js";
+export * from "./components/molecules/RadioGroup/index.js";
 
 // Organisms
 export * from "./components/organisms/Header/index.js";

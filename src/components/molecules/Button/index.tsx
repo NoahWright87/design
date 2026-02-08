@@ -1,5 +1,5 @@
 import * as React from "react";
-import "./Button.module.css";
+import "./button.css";
 
 export type ButtonVariant = "solid" | "outline" | "ghost" | "text";
 export type ButtonSize = "small" | "medium" | "large";

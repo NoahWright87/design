@@ -11,7 +11,10 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-(No active work items.)
+- **Form primitives:** Added `Input`, `Select`, `Checkbox`, and `RadioGroup` molecule components with integrated labels, error states, custom-styled controls, and full theme token integration.
+- **Custom controls:** Checkbox and RadioGroup use visually-hidden native inputs with CSS pseudo-element replacements for consistent cross-browser styling while preserving keyboard/a11y behavior.
+- **CardFooter layout helper:** Added `CardFooter` companion component with `align` prop for opinionated footer layouts in Card.
+- **Stories & specs:** Added Storybook stories, spec files for all four form components, and a Contact Form example page composing all form primitives.
 
 
 ## Version history

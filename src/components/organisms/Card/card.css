@@ -28,3 +28,46 @@
 .nw-card__content {
   line-height: 1.6;
 }
+
+.nw-card__footer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--foreground, #000) 14%, transparent);
+  line-height: 1.4;
+}
+
+.nw-card--interactive {
+  cursor: pointer;
+  transition: transform var(--motion-subtle-duration, 180ms) var(--motion-subtle-easing, ease-in-out),
+    box-shadow var(--motion-subtle-duration, 180ms) var(--motion-subtle-easing, ease-in-out);
+}
+
+.nw-card--interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+}
+
+.nw-card--interactive.nw-card--elevated:hover {
+  box-shadow: 0 12px 32px rgba(0,0,0,0.16);
+}
+
+.nw-card-footer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.nw-card-footer--start   { justify-content: flex-start; }
+.nw-card-footer--end     { justify-content: flex-end; }
+.nw-card-footer--center  { justify-content: center; }
+.nw-card-footer--space-between { justify-content: space-between; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-card--interactive {
+    transition: none;
+  }
+
+  .nw-card--interactive:hover {
+    transform: none;
+  }
+}

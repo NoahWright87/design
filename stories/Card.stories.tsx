@@ -1,5 +1,6 @@
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card } from "../src";
+import { Card, CardFooter, Button } from "../src";
 
 const meta: Meta<typeof Card> = {
   title: "Components/Organisms/Card",
@@ -24,6 +25,14 @@ const meta: Meta<typeof Card> = {
     elevated: {
       control: "boolean",
       description: "Apply more shadow/elevation",
+    },
+    footer: {
+      control: "text",
+      description: "Optional footer content",
+    },
+    interactive: {
+      control: "boolean",
+      description: "Enable hover lift and shadow transition",
     },
   },
 };
@@ -75,5 +84,59 @@ export const LongContent: Story = {
         </p>
       </div>
     ),
+  },
+};
+
+export const WithFooter: Story = {
+  args: {
+    title: "Card with Footer",
+    children: "Main content of the card sits here.",
+    footer: <CardFooter align="start">Last updated 2 hours ago</CardFooter>,
+  },
+};
+
+export const FooterWithActions: Story = {
+  args: {
+    title: "Card with Actions",
+    children: "This card has action buttons in the footer.",
+    footer: (
+      <CardFooter>
+        <Button variant="ghost">Cancel</Button>
+        <Button variant="solid">Confirm</Button>
+      </CardFooter>
+    ),
+  },
+};
+
+export const Interactive: Story = {
+  args: {
+    title: "Interactive Card",
+    children: "Hover over this card to see the lift effect.",
+    interactive: true,
+  },
+};
+
+export const InteractiveElevated: Story = {
+  args: {
+    title: "Interactive Elevated Card",
+    children: "Hover to see the elevated shadow step-up.",
+    elevated: true,
+    interactive: true,
+  },
+};
+
+export const FullFeatured: Story = {
+  args: {
+    title: "Full Featured Card",
+    subtitle: "All props enabled",
+    children: "This card uses every available prop together.",
+    footer: (
+      <CardFooter>
+        <Button variant="ghost">Cancel</Button>
+        <Button variant="solid">Confirm</Button>
+      </CardFooter>
+    ),
+    elevated: true,
+    interactive: true,
   },
 };
