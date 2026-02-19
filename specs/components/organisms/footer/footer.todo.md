@@ -1,6 +1,12 @@
 # Footer — Backlog
 
-## Ideas
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 - Custom content: Props for content, navigation links, social icons, copyright text.
 - Multi-column layout: Support for footer sections (About, Links, Contact).
 - Minimal footer: Just copyright info and links.

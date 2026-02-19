@@ -5,10 +5,10 @@ This file provides explicit, agent-focused guidance for working in this reposito
 
 ## Key rules (non-negotiable)
 - Follow the instructions in this repository exactly.
-- Do not add technologies, files, props, styles, or dependencies beyond what the repo's instruction file permits.
-- No runtime side effects at import; maintain SSR-safety (no `window` access, no browser-only APIs at module top level).
-- Peer dependencies only: `react`, `react-dom`. No runtime dependencies.
-- If a requirement is impossible, stop and quote the exact blocking line from the instruction file.
+- Add only technologies, files, props, styles, and dependencies that the repo's instruction file explicitly permits.
+- Maintain SSR-safety: keep all module-level code side-effect-free, and gate any `window` access or browser-only APIs behind runtime checks.
+- Use only `react` and `react-dom` as peer dependencies; all other dependencies belong in devDependencies.
+- When a requirement is impossible, stop and quote the exact blocking line from the instruction file.
 
 ## Preamble before tool use
 - Before making any tool calls or edits, emit a one-line preamble describing what you will do and why. Keep it short (8–12 words).
@@ -30,7 +30,7 @@ This file provides explicit, agent-focused guidance for working in this reposito
 ## Storybook examples and `stories/examples/`
 - Put example and composed Storybook stories under `stories/examples/`.
   - Example pages are composed pages that show several components together (e.g., a landing page, a color swatches page, or a full-page layout demo).
-- Do not place one-off/simple component stories in `stories/examples/`; keep simple component stories near the component or under the main `stories/` directory structure.
+- Simple component stories belong near the component or under the main `stories/` directory structure.
 
 ## Commands and environment
 - Use the repository root as the working directory for shell commands.
@@ -45,8 +45,8 @@ npm run build
 - Provide copyable commands in fenced code blocks and specify the shell when relevant.
 
 ## Storybook testing
-- **Do not run Storybook automatically.** The human will run `npm run storybook` and test interactively.
-- You may run build/typecheck/test commands for verification.
+- Leave Storybook for the human to run interactively via `npm run storybook`.
+- You may run build, typecheck, and test commands for verification.
 - Focus on implementation and correctness; visual testing is the human's responsibility.
 
 ## Testing and verification
@@ -55,12 +55,43 @@ npm run build
 
 ## Progress reporting
 - At task completion, report newly created/modified files and the commands you ran.
-- If you cannot run checks in this environment, state which commands the human should run locally.
+- When checks cannot run in this environment, state which commands the human should run locally.
 - Before committing or opening a PR, update `CHANGELOG.md` under `## WIP` with concise bullet points summarizing your changes; follow `CHANGELOG.md`'s guidance for moving WIP items into `## Version history` when releasing.
 
 ## Stop conditions
-- If an instruction cannot be satisfied, quote the exact line from the original instruction that blocks you and stop. Do not guess or silently modify the requirement.
-- If asked to publish or run destructive commands (for example `npm publish`), require explicit human confirmation.
+- When an instruction cannot be satisfied, quote the exact line from the original instruction that blocks you and stop.
+- Require explicit human confirmation before publishing or running destructive commands (for example `npm publish`).
+
+## Spec authoring
+
+All spec files live in `specs/` and follow the template at `specs/~template.spec.md`. Every spec has an adjacent todo file (`~template.spec.todo.md`).
+
+### Structure
+Every spec must include all six sections in this order:
+1. **Purpose** — one concise paragraph describing what this thing is and why it exists.
+2. **Related** — links to related specs, components, or references.
+3. **Contract** — Inputs, Outputs, and Guarantees/Constraints.
+4. **Behavior** — how it works: happy path, alternate paths, edge cases.
+5. **Interface** — how users or consumers interact with it: layout, visual states, accessibility, API ergonomics.
+6. **Acceptance** — testable criteria defining "done".
+
+Fill in every section with real content. Template placeholder text ("Summarize the intent...", "Refer to inputs...") must be replaced.
+
+### Language
+- Use affirmative language throughout — describe what should happen rather than what should not. Negative qualifiers ("never", "don't", "avoid") are load-bearing words: if skimmed over, they reverse the intended meaning entirely. Affirmative statements degrade gracefully — the core intent survives even if the emphasis is lost.
+  - Prefer: "The button is inert when disabled."
+  - Avoid: "The button should not respond to clicks when disabled."
+- Write in plain English for a human reader, not a linter.
+
+### Specs are design docs, not implementation docs
+- Describe behavior and intent; leave implementation details to the code.
+- Use human-friendly terms for colors (e.g., "the danger color", "red") rather than hex values or CSS variable names.
+- Use relative size descriptions (e.g., "compact", "generous", "small") rather than pixel values.
+- Describe structure in prose rather than listing CSS class names or code blocks.
+
+### Future work
+- Future enhancements belong in the adjacent `.todo.md` file under Sooner, Later, or Backlog sections.
+- Promote items from the todo file into the spec before implementing them.
 
 ## Agent behavior templates
 - One-line receipt + plan (always first):
@@ -78,9 +109,7 @@ npm run build
 - After finishing requested edits, end with a single clear question for next steps, for example: "Run Storybook now, or publish the package?"
 
 ## Update these docs as needed
-When following these instructions, you're bound to make mistakes. When that happens
-and a user has to correct you, ask if you should make edits to this document
-to prevent similar mistakes in the future.
+When following these instructions, mistakes will happen. When a user has to make a correction, ask if edits to this document would prevent similar mistakes in the future.
 
-- If you identify a gap or ambiguity in these instructions, propose an update to the human.
-- Always await confirmation before making changes in this doc, unless the human has already requested the update.
+- When you identify a gap or ambiguity in these instructions, propose an update to the human.
+- Await confirmation before making changes in this doc, unless the human has already requested the update.

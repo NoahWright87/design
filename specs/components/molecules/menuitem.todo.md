@@ -1,6 +1,12 @@
 # MenuItem — Backlog
 
-## Ideas
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 - Disabled state: `disabled` prop to prevent interaction and show inactive styling.
 - Icon positioning: `iconPosition="leading" | "trailing"`.
 - Badge/count: Optional badge display (e.g., unread notification count).

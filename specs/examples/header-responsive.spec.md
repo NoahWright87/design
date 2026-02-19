@@ -1,68 +1,41 @@
-# Header Responsive — Adaptive Layout & Theme Toggle
+# Header Responsive — Adaptive Layout and Theme Toggle
 
-## Overview
-- Purpose: Demonstrate responsive Header behavior and theme toggling (light/dark mode).
-- Implementation: Two story variations showing Header with optional labels that hide on mobile; theme toggle button.
-- Design system integration: Uses Header with left/center/right + optional label props; theme tokens for background; `getThemeMode()`/`toggleThemeMode()` for theme switching.
+## Purpose
+The Header Responsive example demonstrates the header's label-hiding behavior on smaller screens and shows how a theme toggle can be integrated into the right header slot.
 
-## Page Structure
-- Header: Fixed at top; contains icon/element and optional label.
-- ThemeToggle button: Custom styled (transparent, emoji-based, no border).
-- Main content: Below header with left/center/right layout and 20px padding.
-- Responsiveness: Labels hide on mobile (<~600px); only icons/elements visible.
+## Related
+- [Header component](../components/organisms/header/header.spec.md)
+- [Menu component](../components/organisms/menu/menu.spec.md)
 
-## Story Variants
-1. **ResponsiveHeaderWithMenu**:
-   - Left: "🏠" icon + "MyApp" label.
-   - Center: "📋" icon + "Home" label.
-   - Right: ThemeToggle emoji button (☀️ for light, 🌙 for dark).
-   - Content: Explanation of responsive behavior.
+## Contract
 
-2. **HeaderWithAvatarMenu**:
-   - Left: "🌐" icon + "Logo" label.
-   - Center: Menu trigger ("User") with dropdown items (Profile, Settings, Sign Out).
-   - Right: ThemeToggle emoji button.
-   - Content: Instruction to click center menu for user options.
+### Inputs
+User interaction: resizing the viewport, clicking the theme toggle.
 
-## Visuals
-- Header: Fixed position; uses `var(--background)` for main background.
-- Icons: Large emoji (1.5rem, bold).
-- Labels: Display next to icons on desktop; hidden on mobile (implementation detail: CSS/viewport-based).
-- Theme toggle: Emoji button (☀️/🌙) with transparent background, no border, 1.5rem size, pointer cursor.
-- Content area: Centered layout with max-width 600px; padding 20px; top padding 80px to clear header.
+### Outputs
+Two variants showing responsive label hiding and a functional light/dark theme toggle.
 
-## Interactions
-- Theme toggle: Click button to switch between light and dark modes; emoji updates immediately.
-- Menu (variant 2): Click "User" center trigger to open/close dropdown.
-- Responsive: Resize browser to <600px to hide labels; only icons remain visible.
-- Scroll: Header remains fixed; main content scrollable.
+### Guarantees / Constraints
+- Labels are always hidden on small screens regardless of their content.
+- Theme switching takes effect immediately without a page reload.
 
-## Accessibility
-- Header role: Navigation/landmark.
-- Theme toggle: Should have accessible name/label (e.g., aria-label "Toggle theme").
-- Labels: Convey meaning; helpful for context even if hidden on small screens.
-- Menu items: Proper accessibility attributes for dropdown behavior.
+## Behavior
 
-## Constraints & Non-Goals (Current)
-- No explicit mobile menu overlay (header is always visible).
-- Theme mode persisted only during the session (no localStorage).
-- Menu items are simple list; no complex nesting or actions.
+**Label hiding:** Labels configured in header slots are visible on larger screens and hidden on smaller screens. Only the slot content (icon or element) remains visible on small screens.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Header renders fixed at top with left/center/right regions.
-2. Labels are present in left/center/right when available.
-3. On resize to <600px, labels are hidden; icons/elements remain visible.
-4. ThemeToggle button is clickable; emoji changes between ☀️ and 🌙.
-5. Background color responds to theme mode (light vs. dark).
-6. Menu (variant 2) opens/closes on trigger click; items are visible and styled correctly.
-7. No console errors; theme toggle state updates correctly.
+**Theme toggle:** A button in the right slot toggles between light and dark themes. The current theme is reflected by the button's icon and the page's background color.
 
-## Current Story & Test Mapping
-- Story: Examples/Header Responsive — Two stories (ResponsiveHeaderWithMenu, HeaderWithAvatarMenu).
-- Intent: Verify responsive label hiding, icon/element display, and theme toggle functionality.
+**Variant 1:** Left slot has an icon and app-name label. Center has a page label. Right has a theme toggle.
 
-## Backlog
-- Persistent theme mode preference (localStorage/session).
-- Smooth transitions when switching themes.
-- Keyboard shortcuts for theme toggle (e.g., Ctrl+Shift+K).
-- Mobile drawer menu alternative to full-width overlay.
+**Variant 2:** Left has a logo icon and label. Center has a menu trigger. Right has a theme toggle.
+
+## Interface
+
+On desktop-sized viewports, labels are visible alongside slot content. On mobile-sized viewports, labels disappear and only the icons or elements remain. The theme toggle shows a sun icon in light mode and a moon icon in dark mode.
+
+## Acceptance
+1. Both variants render with the correct slot content and labels.
+2. Labels are hidden on small viewports; icons and elements remain visible.
+3. The theme toggle changes the page theme when clicked.
+4. The toggle icon updates to reflect the current theme.
+5. The center menu in variant 2 opens and closes correctly.

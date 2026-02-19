@@ -1,53 +1,49 @@
 # Contact Form — Full-Page Form Composition
 
-## Overview
-- Purpose: Compose all four form primitives (Input, Select, Checkbox, RadioGroup) with Card, Button, Header, Footer, Heading, and Text into a realistic contact form page.
-- Implementation: Single story rendering a complete page with a centered Card containing the form.
-- Design system integration: Demonstrates every form molecule in context with layout and typography components.
+## Purpose
+The Contact Form example composes all four form primitive components — Input, Select, Checkbox, and RadioGroup — with Card, Button, and layout components into a realistic, complete contact form page. It demonstrates how form molecules integrate with the rest of the design system in context.
 
-## Page Structure
-- Header: At top.
-- Main content: Centered column with max-width 560px.
-  - Heading (level 1): "Contact Us"
-  - Text: Introductory copy.
-  - Card: Contains the `<form>` with all fields.
-- Footer: At bottom.
+## Related
+- [Input component](../components/molecules/input/input.spec.md)
+- [Select component](../components/molecules/select/select.spec.md)
+- [Checkbox component](../components/molecules/checkbox/checkbox.spec.md)
+- [RadioGroup component](../components/molecules/radiogroup/radiogroup.spec.md)
 
-## Form Fields
-1. **Input** — "Full name" (text, required, placeholder).
-2. **Input** — "Email" (email type, required, placeholder).
-3. **Select** — "Reason for contact" (placeholder, required, 4 options).
-4. **RadioGroup** — "Preferred response time" (3 options, default "normal").
-5. **Checkbox** — "I agree to the privacy policy".
-6. **Buttons** — Cancel (ghost) and Submit (solid), right-aligned.
+## Contract
 
-## Visuals
-- Page layout: Full-height flex container.
-- Form: Vertical stack with 20px gap inside Card.
-- Buttons: Right-aligned in a flex row at the bottom.
-- All fields use default styling from their respective components.
+### Inputs
+User interaction with form fields — typing, selecting, checking, and submitting.
 
-## Interactions
-- Form `onSubmit` prevents default and shows an alert (illustrative).
-- Cancel button is type="button" (does not submit).
-- All form controls are functional — typing, selecting, checking, choosing.
+### Outputs
+A complete, interactive contact form page. Form submission shows a browser alert for illustration purposes. Canceling does not submit.
 
-## Accessibility
-- Proper heading hierarchy (h1).
-- All form controls have associated labels (wrapping label or fieldset/legend).
-- Required fields marked with `required` attribute and visual asterisk.
-- Semantic `<form>` element wraps all controls.
+### Guarantees / Constraints
+- All form controls are functional — input, selection, and checkbox state all work.
+- The Cancel button does not trigger form submission.
 
-## Acceptance Criteria
-1. Page renders Header, Footer, and centered main content.
-2. Card contains a `<form>` with all five form controls.
-3. Input (text), Input (email), Select, RadioGroup, and Checkbox all render.
-4. Required fields show asterisk indicators.
-5. Select shows placeholder as first disabled option.
-6. RadioGroup has "Within a few days" pre-selected.
-7. Submit triggers `onSubmit`; Cancel does not.
-8. Layout is responsive — form stays readable on narrow viewports.
+## Behavior
 
-## Current Story & Test Mapping
-- Story: Examples/Contact Form — "Page".
-- Intent: Verify all form primitives compose correctly in a realistic page layout.
+The page renders a centered form card with all four form control types. Users can interact with each control independently. Submitting the form triggers an illustrative response. Canceling leaves the form unchanged.
+
+## Interface
+
+The page follows the standard layout: header at top, centered main content, footer at bottom. The main content contains a heading, introductory text, and a card holding the form. Fields are stacked vertically with consistent spacing.
+
+Fields included:
+- Full name (text input, required)
+- Email address (email input, required)
+- Reason for contact (dropdown select with placeholder, required)
+- Preferred response time (radio group with a default selection)
+- Agreement to privacy policy (checkbox)
+
+Action buttons appear at the bottom of the form, right-aligned. The submit button sends the form; the cancel button is neutral and does not submit.
+
+## Acceptance
+1. Header, footer, and centered main content render correctly.
+2. All five form controls render inside the card.
+3. Required fields show a required indicator.
+4. The select shows a placeholder as the initial option.
+5. The radio group has a pre-selected default option.
+6. Submitting the form triggers the submit handler.
+7. The cancel button does not trigger submission.
+8. The layout is readable on narrow viewports.

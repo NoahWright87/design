@@ -1,49 +1,34 @@
 # Link — Semantic Navigation
 
-## Overview
-- Purpose: Render semantic anchor (`<a>`) elements for navigation and external links.
-- Implementation: Maps `href` and `children` to a basic `<a>` tag.
-- Design system integration: No custom styling; uses browser defaults and theme link color.
+## Purpose
+Link renders a semantic anchor element for navigation and external links. It provides a minimal, unstyled wrapper that inherits the browser's default link appearance and behavior.
 
-## API
-- Props:
-  - **href**: String URL or path (required). Destination for the link.
-  - **children**: React node used as the link text. Required.
-- DOM:
-  - Element: `<a>`
-  - Attributes: `href={href}`.
-  - No classes, ids, or inline styles applied.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
 
-## Visuals
-- Appearance: Browser default link styles (blue text, underline, visited color).
-- Text: Exactly the rendered `children` content.
-- No custom variants, colors, or styling overrides.
+## Contract
 
-## Interactions
-- Click: Navigates to the `href` destination (browser default behavior).
-- Keyboard: Accessible via Tab; Enter activates the link.
-- Focus: Uses browser default focus ring.
+### Inputs
+- A destination URL or path (required).
+- Visible link text (required).
 
-## Accessibility
-- Role: Implicit `role="link"` via native `<a>`.
-- Name: Derived from `children` text/content.
-- URL: Conveyed via `href` attribute.
+### Outputs
+A native anchor element that navigates to the provided destination when activated.
 
-## Constraints & Non-Goals (Current)
-- No custom styling, colors, or variants.
-- No router integration (plain `<a>` href-based navigation).
-- No external link indicators (e.g., icons).
-- No styling token integration.
+### Guarantees / Constraints
+- The rendered element is always a native anchor, ensuring full browser-native link behavior.
+- No classes, styles, or custom attributes are added.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders an `<a>` element with the given `href`.
-2. Displays `children` exactly as provided.
-3. Applies no classes, ids, or inline styles.
-4. Link is keyboard-accessible and navigable.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Link — "Basic" with `href="#"` and text "Go somewhere".
-- Intent: Verify correct anchor rendering and content display.
+Link is a static navigation element. Clicking or pressing Enter on a focused link navigates to the destination. There is no additional behavior beyond native anchor semantics.
 
-## Backlog
-- See [link.todo.md](link.todo.md) for future enhancements.
+## Interface
+
+The link appears with the browser's default link styling — underlined text in the theme's default link color, with visited, hover, and active states from the browser. No custom variants or color overrides are provided.
+
+## Acceptance
+1. Renders an anchor element pointing to the provided destination.
+2. Displays the provided text exactly.
+3. Applies no additional classes, styles, or attributes.
+4. Is keyboard-navigable and activatable via Enter.

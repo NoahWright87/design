@@ -1,6 +1,12 @@
 # Header — Backlog
 
-## Ideas
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 - Dropdown menus: Built-in navigation menu support (currently composition-based).
 - Theme toggle: Built-in light/dark mode switcher (currently application responsibility).
 - Sticky header: Optional prop to control sticky vs. fixed positioning.

@@ -1,78 +1,58 @@
-# Modal — Centered Dialog with Backdrop and Actions
+# Modal — Centered Dialog with Backdrop
 
-## Overview
-- Purpose: Render a centered modal dialog with backdrop, title, content, close button, and customizable action buttons.
-- Implementation: Controlled component (`open` prop); backdrop click and Escape close modal; optional action buttons with click handlers.
-- Design system integration: Uses theme colors and tokens via CSS; semantic dialog role; ARIA attributes for accessibility.
+## Purpose
+Modal presents content in a centered overlay dialog that interrupts the current context to demand user attention. It supports a title, body content, a close button, and configurable action buttons, and dismisses via user action.
 
-## API
-- Props:
-  - **open**: Boolean (required). Controls modal visibility.
-  - **onClose**: Callback (required). Called when modal should close; receives action id/label or undefined (for backdrop/escape).
-  - **title**: Optional React node for modal title (displayed in header).
-  - **children**: Optional React node for modal content.
-  - **actions**: Optional array of ModalActionProps. Defines action buttons at bottom.
-    - ModalActionProps: `{ label: string, variant?: "primary" | "secondary" | "confirm" | "danger", onClick?: () => void, id?: string }`.
-  - **closeOnBackdrop**: Boolean (default true). Whether clicking backdrop closes modal.
-  - **closeButtonLabel**: String (default "Close"). Aria-label for close button.
-- DOM:
-  - Backdrop: `<div class="nw-modal__backdrop" role="presentation">`.
-  - Container: `<div role="dialog" aria-modal="true">`.
-  - Header: Title and close button.
-  - Content: `<div class="nw-modal__content">` (if children).
-  - Actions: Footer with action buttons.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
+- [Button component](../../molecules/button/button.spec.md)
 
-## Visuals
-- Backdrop: Semi-transparent overlay; covers full viewport.
-- Modal: Centered white box; rounded corners.
-- Header: Title (if provided) and close button (✕).
-- Content: Scrollable if long.
-- Actions: Row of buttons with variants (primary, secondary, confirm, danger).
-- Focus: Default action button is focused on open (CSS/JS responsibility).
+## Contract
 
-## Interactions
-- Backdrop click: Closes modal (if `closeOnBackdrop={true}`).
-- Close button: Closes modal with action "cancel".
-- Action button click: Calls `onClick`; closes modal with action id/label.
-- Escape key: Closes modal with action "cancel" (always, regardless of `closeOnBackdrop`).
-- Focus trap: Keyboard focus should remain within modal (implicit in accessible dialog).
+### Inputs
+- Visibility flag (required).
+- Close callback (required).
+- Optional title, body content, and action buttons.
+- Optional flag to allow or prevent closing by clicking the backdrop (default: allowed).
+- Optional custom close button label.
 
-## Accessibility
-- Role: `role="dialog"` with `aria-modal="true"`.
-- Title: Associated with dialog via modal structure (not aria-labelledby yet).
-- Close button: `aria-label="Close"` (customizable via `closeButtonLabel`).
-- Actions: Buttons are easily distinguishable by label and variant styling.
-- Escape: Always closes modal (standard dialog behavior).
-- Default action: "Okay" button if no custom actions.
+### Outputs
+When open: a backdrop overlay covering the page and a dialog panel containing the title, content, actions, and close button. When closed: nothing is rendered.
 
-## Constraints & Non-Goals (Current)
-- No focus trap enforcement (responsibility of application or middleware).
-- No animated entrance/exit (CSS-driven).
-- No custom footer content (only action buttons).
-- Backdrop click always closes (if enabled); no customization.
+### Guarantees / Constraints
+- Pressing Escape always closes the modal regardless of the backdrop-close setting.
+- When no custom actions are provided, a default action button is shown.
+- The close callback is always called when the modal closes, with an identifier indicating how it was dismissed.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Modal is not rendered when `open={false}`.
-2. Modal renders when `open={true}`.
-3. Modal displays title (if provided).
-4. Modal displays content children.
-5. Modal displays close button with aria-label.
-6. Action buttons display with correct labels and variants.
-7. Default action is "Okay" if no custom actions provided.
-8. Clicking action button calls its `onClick` and closes modal with action id/label.
-9. Clicking backdrop closes modal (if `closeOnBackdrop={true}`).
-10. Pressing Escape closes modal with action "cancel".
-11. Close button calls `onClose("cancel")`.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Modal — Six variants:
-  - "Basic": Simple modal with default okay button.
-  - "WithCustomTitle": Custom title and content.
-  - "CustomActions": Two custom action buttons (confirm/danger variants).
-  - "MultipleActions": Four action buttons with different variants.
-  - "NoBackdropClose": `closeOnBackdrop={false}`; requires action button click.
-  - "LongContent": Multi-paragraph content to test scrolling.
-- Intent: Verify modal visibility, title/content/actions display, button interaction, and close behavior.
+**Closed:** Nothing is rendered.
 
-## Backlog
-- See [modal.todo.md](modal.todo.md) for future enhancements.
+**Open:** The backdrop covers the page. The dialog panel appears centered, containing the title, content, and actions.
+
+**Backdrop click:** Closes the modal if the backdrop-close setting permits.
+
+**Close button:** Always closes the modal.
+
+**Action buttons:** Call their respective handlers and close the modal with the action's identifier.
+
+**Escape key:** Always closes the modal.
+
+## Interface
+
+The backdrop is a semi-transparent overlay covering the full viewport. The dialog appears centered — rounded corners, themed background, and a close button in the header area. The title appears at the top; body content fills the middle; action buttons sit at the bottom.
+
+When the content is long, the body area scrolls independently of the rest of the dialog. Action buttons use distinct visual variants (confirm, danger, etc.) to communicate their intent.
+
+## Acceptance
+1. Nothing renders when the modal is closed.
+2. The backdrop and dialog render when the modal is open.
+3. The title appears when provided.
+4. Body content renders in the dialog.
+5. A close button is always present.
+6. Action buttons render with correct labels and visual variants.
+7. A default action button appears when no custom actions are provided.
+8. Clicking an action button calls its handler and closes the modal.
+9. Clicking the backdrop closes the modal when backdrop-close is enabled.
+10. Pressing Escape always closes the modal.
+11. Clicking the close button closes the modal.

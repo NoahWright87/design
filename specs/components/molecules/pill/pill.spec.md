@@ -1,89 +1,39 @@
-# Pill Component — Spec
-
-## Overview
-
-A `Pill` is a small, badge-like component used to display tags, labels, skills, or status indicators. It's inherently non-interactive and focuses on clear, compact presentation.
-
-Pill is a **molecule** in atomic design: it renders HTML with a single, focused responsibility (displaying a label in a compact format). It does not accept event handlers or complex composition.
+# Pill — Compact Label Badge
 
 ## Purpose
+Pill displays a short label in a compact, badge-like format used for tags, skills, status indicators, and categorical metadata. It is purely presentational — it displays information without triggering any interaction.
 
-- Display categorical information (skills, tags, topics, status).
-- Provide visual hierarchy and grouping in lists or grids.
-- Remain visually lightweight and scannable.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
 
-## API
+## Contract
 
-```tsx
-export type PillProps = {
-  children: React.ReactNode;
-  variant?: 'default' | 'primary' | 'secondary' | 'confirm' | 'danger';
-  size?: 'small' | 'medium' | 'large';
-};
+### Inputs
+- Label content (required).
+- Optional visual variant — default, primary, secondary, confirm, or danger.
+- Optional size — small, medium, or large.
 
-export function Pill({ children, variant = 'default', size = 'medium' }: PillProps): JSX.Element;
-```
+### Outputs
+An inline badge element displaying the label content in the selected color and size.
 
-### Props
+### Guarantees / Constraints
+- Pills are non-interactive; they accept no click handlers or event callbacks.
+- Content is plain text or simple inline elements; complex composition inside a pill is not supported.
 
-- **children**: Text content or small react node to display inside the pill.
-- **variant**: Visual style. Default is `'default'` (neutral). Other options map to design system colors (primary, secondary, confirm, danger).
-- **size**: Pill size. Options: `'small'` (compact), `'medium'` (standard), `'large'` (spacious).
+## Behavior
 
-### DOM Shape
+Pill is a static display element. It has no state changes, hover effects, or interactive behavior. When interaction is needed, the pill should be wrapped in a Button or Link.
 
-```html
-<span class="nw-pill nw-pill--{variant} nw-pill--{size}">
-  {children}
-</span>
-```
+## Interface
 
-## Visuals
+Pills appear as small, rounded, inline-block badges that fit naturally in flowing text or flex/grid layouts. Color variants use the design system's semantic palette — the default variant uses a neutral tone; other variants use the corresponding color role (primary, confirm, danger, etc.) with appropriate text contrast.
 
-- **Default**: Neutral background (e.g., secondary color or muted gray), dark text.
-- **Primary**: Design system primary color background, contrasting text.
-- **Secondary/Confirm/Danger**: Mapped to design system colors with appropriate contrast.
-- **Size Small**: Reduced padding and font size (e.g., 4px padding, 0.75rem font).
-- **Size Medium**: Standard padding and font size (e.g., 8px padding, 1rem font).
-- **Size Large**: Increased padding and font size (e.g., 12px padding, 1.125rem font).
+Three sizes provide flexibility for different contexts: small is compact for dense displays, medium is standard, and large adds more visual weight.
 
-All pills are inline-block, rounded, and fit naturally in flowing text or flex/grid layouts.
-
-## Interactions
-
-- Non-interactive by design. No onClick, hover, or focus handlers.
-- If interaction is needed (e.g., clickable tags), wrap the pill in a Button or Link component.
-
-## Accessibility
-
-- Pills render as `<span>` with no implicit role.
-- Content is plain text or simple nodes (no complex composition).
-- No ARIA attributes required for passive display.
-- If used within a list (e.g., skill list), the parent list provides semantic context.
-
-## Constraints & Non-Goals
-
-- **Not interactive**: Pills do not handle clicks, selection, or state changes.
-- **No complex content**: Do not nest headings, buttons, or other interactive elements inside.
-- **Minimal styling**: Pills are compact; do not add extra spacing or complex layouts internally.
-
-## Acceptance Criteria
-
-1. Pill renders as an inline-block `<span>` with appropriate classes.
-2. Variant options (default, primary, secondary, confirm, danger) apply corresponding CSS classes.
-3. Size options (small, medium, large) apply corresponding CSS classes.
-4. Text is readable against background color (WCAG AA contrast).
-5. Pill is compact and fits naturally in flowing text or lists.
-6. No interactivity or event handlers.
-
-## Current Example & Test Mapping
-
-- Storybook story: `Molecules / Pill`
-- Visual test: Verify all variant/size combinations.
-- Verify contrast (WCAG AA) for all variants.
-
-## Future Extensions
-
-- Dismissable variant (with close button) — requires a separate `DismissablePill` component.
-- Icon support (e.g., icon before text).
-- Custom color support (beyond semantic palette).
+## Acceptance
+1. Displays the label content in a compact badge shape.
+2. Applies the correct color for each variant.
+3. Applies the correct size for each size option.
+4. Text is readable against the background color for all variants.
+5. Pill is inline and fits naturally in flowing layouts.
+6. No interactivity or event handlers are present.

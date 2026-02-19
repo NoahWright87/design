@@ -1,53 +1,40 @@
 # HamburgerMenu — Mobile Navigation Toggle
 
-## Overview
-- Purpose: Render a mobile-friendly hamburger menu button (three horizontal lines) with open/close state visual feedback.
-- Implementation: Renders a `<button>` with three `<span>` children; animated via CSS based on `isOpen` state.
-- Design system integration: Uses theme colors via CSS; animation/styling via classes.
+## Purpose
+HamburgerMenu renders the classic three-line icon used to open and close mobile navigation menus. It communicates its open/closed state through an animated visual transformation and reports its expanded state to screen readers.
 
-## API
-- Props:
-  - **isOpen**: Optional boolean (default false). Controls visual open/closed state.
-  - **onToggle**: Optional click handler. Called when button is clicked.
-- DOM:
-  - Element: `<button type="button">`
-  - Classes: `hamburger`, `open` (if `isOpen={true}`).
-  - ARIA attributes: `aria-label="Menu"`, `aria-expanded={isOpen}`.
-  - Children: Three `<span>` elements (no classes).
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
+- [Menu component](../../organisms/menu/menu.spec.md)
 
-## Visuals
-- Appearance: Three stacked horizontal lines (classic hamburger icon).
-- Animation: Lines transform when `open` class is applied (CSS-driven).
-  - Typically: top/bottom lines rotate inward, middle line fades or scales.
-- Size: Controlled via CSS (no size prop).
-- Color: Uses theme foreground color via CSS.
+## Contract
 
-## Interactions
-- Click: Invokes `onToggle()` when clicked.
-- Keyboard: Accessible via Tab; Space/Enter activate.
-- Focus: Browser default focus ring.
+### Inputs
+- Optional open state (boolean, default closed).
+- Optional click handler.
 
-## Accessibility
-- Role: Implicit `role="button"` via native `<button>`.
-- ARIA: `aria-label="Menu"` provides name; `aria-expanded={isOpen}` indicates state.
-- Keyboard: Fully keyboard-accessible.
+### Outputs
+A button element displaying three horizontal lines that animate into a transformed shape when open.
 
-## Constraints & Non-Goals (Current)
-- No built-in menu panel (button only; parent handles Menu component).
-- No size variants; styling is CSS-only.
-- No custom icons or label text (always "Menu").
+### Guarantees / Constraints
+- The component is always a native button, ensuring keyboard accessibility.
+- The expanded/collapsed state is always communicated accessibly.
+- The button is a trigger only — it does not contain or manage a menu panel.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders a `<button type="button">` with class `hamburger`.
-2. Renders three `<span>` children (no text).
-3. Applies class `open` when `isOpen={true}`.
-4. Has `aria-label="Menu"` and `aria-expanded={isOpen}`.
-5. `onClick` invokes `onToggle()` handler.
-6. Visual animation via CSS shows open/closed state.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Menu — Used as trigger in menu examples (WithHamburger, LeftAligned).
-- Intent: Verify button rendering, state class application, and click handling.
+Clicking the button invokes the provided click handler. The visual appearance reflects the current open state — lines in the resting position when closed, transformed when open. The button does not directly open or close a menu; the parent component handles that.
 
-## Backlog
-- See [hamburger.todo.md](hamburger.todo.md) for future enhancements.
+## Interface
+
+Three stacked horizontal lines are the default appearance. When the open state is active, the lines animate to indicate the menu is open (for example, forming an X shape). The button has no visible label text — its purpose is conveyed through the icon and its accessible label.
+
+The button is sized by CSS to suit its context and uses the theme foreground color.
+
+## Acceptance
+1. Renders a button containing three line elements.
+2. Shows the lines in the closed/resting position by default.
+3. Shows the transformed open state via CSS when the open state is active.
+4. Carries an accessible label of "Menu" and communicates its expanded state to assistive technology.
+5. Clicking the button invokes the provided handler.
+6. Keyboard activation works the same as clicking.

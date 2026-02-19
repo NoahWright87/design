@@ -1,45 +1,35 @@
-# Heading — Semantic Semantic HTML Levels
+# Heading — Semantic HTML Levels
 
-## Overview
-- Purpose: Render semantic heading elements (`<h1>` through `<h6>`) with a simple, type-safe API.
-- Implementation: Maps a numeric `level` prop to the corresponding HTML heading tag.
-- Design system integration: No custom styling; uses browser defaults and theme text color.
+## Purpose
+Heading renders the correct semantic heading element for any of the six heading levels. It gives consumers a type-safe, intent-clear way to place headings without managing HTML tag names directly.
 
-## API
-- Props:
-  - **level**: 1–6 (required). Determines which `<h>` tag to render.
-  - **children**: React node used as the heading text. Required.
-- DOM:
-  - Element: Dynamic tag (e.g., `<h1>`, `<h2>`, …, `<h6>`).
-  - No classes, ids, or inline styles applied.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
 
-## Visuals
-- Appearance: Browser default heading styles for the chosen level (size, weight, margin).
-- Text: Exactly the rendered `children` content.
-- No custom variants, colors, or styling overrides.
+## Contract
 
-## Interactions
-- Static display; no interactive elements or state.
+### Inputs
+- A heading level from one to six (required).
+- Visible heading text (required).
 
-## Accessibility
-- Role: Implicit semantic roles for each heading level (`role="heading"` with `aria-level`).
-- Structure: Proper heading hierarchy is the responsibility of the page/parent component.
-- Text: Heading name derived from `children`.
+### Outputs
+The corresponding semantic heading element containing the provided text, with no additional styling applied.
 
-## Constraints & Non-Goals (Current)
-- No custom styling, sizes, or color variants.
-- No styling token integration; relies on browser defaults.
-- No margin/padding control; parents must manage spacing.
+### Guarantees / Constraints
+- The rendered element always matches the requested heading level.
+- No classes, styles, or attributes are added beyond the element itself.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders the correct heading tag for the given level (e.g., `<h1>` for level 1).
-2. Displays `children` exactly as provided.
-3. Applies no classes, ids, or inline styles.
-4. Each heading level produces the appropriate semantic role.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Heading — "H1" (level 1), "H2" (level 2).
-- Intent: Verify correct tag rendering and content display.
+Heading is a static display component with no interactive behavior. It renders the appropriate heading element and returns.
 
-## Backlog
-- See [heading.todo.md](heading.todo.md) for future enhancements.
+## Interface
+
+The heading appears with the browser's default styling for the selected level — larger and bolder for level one, progressively smaller toward level six. No custom styling is applied; the design system relies on global styles or parent components to control typography.
+
+Proper heading hierarchy is the responsibility of the page or parent component using this element.
+
+## Acceptance
+1. Renders the correct heading element for each level (one through six).
+2. Displays the provided text content exactly.
+3. Applies no additional classes, styles, or attributes.

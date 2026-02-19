@@ -1,42 +1,32 @@
 # Text — Semantic Paragraph Content
 
-## Overview
-- Purpose: Render semantic paragraph (`<p>`) elements for body text and content blocks.
-- Implementation: Wraps `children` in a `<p>` tag.
-- Design system integration: No custom styling; uses browser defaults and theme text color.
+## Purpose
+Text renders a semantic paragraph element for body text and content blocks. It gives consumers a clear intent-signal that the content is body copy, without applying any custom styling on top of the browser's defaults.
 
-## API
-- Props:
-  - **children**: React node used as the paragraph content. Required.
-- DOM:
-  - Element: `<p>`
-  - No classes, ids, or inline styles applied.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
 
-## Visuals
-- Appearance: Browser default paragraph styling (font size, line-height, margin).
-- Content: Exactly the rendered `children`.
-- No custom variants, colors, or sizing.
+## Contract
 
-## Interactions
-- Static display; no interactive elements or state.
+### Inputs
+- Paragraph content (required).
 
-## Accessibility
-- Role: No special role; semantic paragraph element.
-- Content: Text and inline elements within the paragraph are read as-is.
+### Outputs
+A paragraph element containing the provided content, with no additional styling applied.
 
-## Constraints & Non-Goals (Current)
-- No custom styling, colors, or variants.
-- No sizing/weight control; relies on browser defaults.
-- No margin/padding overrides; parents manage spacing.
+### Guarantees / Constraints
+- The rendered element is always a paragraph.
+- No classes, styles, or attributes are added beyond the element itself.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders a `<p>` element.
-2. Displays `children` exactly as provided.
-3. Applies no classes, ids, or inline styles.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Text — "Basic" with text "Hello world".
-- Intent: Verify correct paragraph rendering and content display.
+Text is a static display component with no interactive behavior. It renders the paragraph element and returns.
 
-## Backlog
-- See [text.todo.md](text.todo.md) for future enhancements.
+## Interface
+
+The text appears with the browser's default paragraph styling — standard font size, line height, and spacing. No custom variants, colors, or size overrides are provided. Spacing between paragraphs is the responsibility of parent components.
+
+## Acceptance
+1. Renders a paragraph element.
+2. Displays the provided content exactly.
+3. Applies no additional classes, styles, or attributes.

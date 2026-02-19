@@ -1,41 +1,33 @@
-# Footer — Simple Page Footer Placeholder
+# Footer — Page Footer Placeholder
 
-## Overview
-- Purpose: Render a simple footer element with a placeholder message.
-- Implementation: Renders a semantic `<footer>` with hardcoded placeholder text.
-- Design system integration: Uses theme colors via CSS; minimal styling.
+## Purpose
+Footer renders a simple semantic footer element with placeholder content. It establishes the bottom boundary of the page and will be expanded with real content in a future iteration.
 
-## API
-- Props: None. Footer is a simple, stateless component.
-- DOM:
-  - Element: `<footer>`
-  - Classes: `nw-footer`.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
+- [Layout component](../layout/layout.spec.md)
 
-## Visuals
-- Appearance: Simple footer bar with placeholder text ("Footer 🤔 maybe... 🤔").
-- Background: Theme background color.
-- Text: Placeholder message (not configurable in current version).
+## Contract
 
-## Interactions
-- Static display; no interactive elements.
+### Inputs
+None. Footer accepts no configuration.
 
-## Accessibility
-- Role: Semantic `<footer>` element.
-- Content: Placeholder text is visible but not critical for accessibility.
+### Outputs
+A semantic footer element containing placeholder text.
 
-## Constraints & Non-Goals (Current)
-- No custom content support (placeholder only).
-- No configurable styling or props.
-- No links or interactive elements.
+### Guarantees / Constraints
+- The footer is always a semantic footer element.
+- It carries no configuration or interactive behavior in its current form.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders a `<footer>` with class `nw-footer`.
-2. Displays placeholder text "Footer 🤔 maybe... 🤔".
-3. No props or interactive behavior.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Footer — renders in Showcase example.
-- Intent: Verify footer element renders without errors.
+Footer renders a single static element with hardcoded placeholder text. There is no dynamic behavior.
 
-## Backlog
-- See [footer.todo.md](footer.todo.md) for future enhancements.
+## Interface
+
+The footer appears as a simple bar at the bottom of the page with a themed background and placeholder text. It carries no interactive elements.
+
+## Acceptance
+1. Renders a semantic footer element.
+2. Displays the placeholder text.
+3. Accepts no props and has no interactive behavior.

@@ -1,78 +1,45 @@
 # Header Integration — Multi-Layout Variants
 
-## Overview
-- Purpose: Demonstrate how Header, Avatar, Menu, MenuItem, and HamburgerMenu compose to create real application headers.
-- Implementation: Four story variations showing different header configurations (standard app, minimal portfolio, left-only, right-only).
-- Design system integration: Uses Header with left/center/right region props; Menu with align; HamburgerMenu and Avatar as triggers.
+## Purpose
+The Header Integration example demonstrates how Header, Avatar, Menu, MenuItem, and HamburgerMenu combine to create functional application headers. Four variants illustrate common header compositions for different use cases.
 
-## Page Structure
-- Header: Fixed at top of viewport (~60px height, sticky behavior).
-- Content: Below header with top padding to prevent overlap; filler content for scroll testing.
-- Menus: Expandable on click; full-width overlay on mobile (<600px).
+## Related
+- [Header component](../components/organisms/header/header.spec.md)
+- [Menu component](../components/organisms/menu/menu.spec.md)
+- [Avatar component](../components/molecules/avatar/avatar.spec.md)
+- [HamburgerMenu component](../components/molecules/hamburger/hamburger.spec.md)
 
-## Story Variants
-1. **StandardAppHeader**: 
-   - Left: HamburgerMenu triggering nav items (Home, About, Services, Contact).
-   - Center: Application title ("My Application").
-   - Right: Avatar triggering account menu (Profile, Settings, Log out).
-   - Use case: Typical app header layout.
+## Contract
 
-2. **MinimalPortfolio**:
-   - Left: HamburgerMenu triggering nav items.
-   - Center: Bold text "Noah Wright".
-   - Right: Avatar with image (`src`).
-   - Use case: Portfolio or personal site.
+### Inputs
+User interaction: clicking menu triggers to open/close menus, clicking menu items.
 
-3. **LeftMenuOnly**:
-   - Left: HamburgerMenu + nav items.
-   - Center: "Centered Title".
-   - Right: Empty.
-   - Use case: Navigation-focused layout.
+### Outputs
+Four rendered header variants, each with functional menus that open, close, and log item selections.
 
-4. **RightMenuOnly**:
-   - Left: Empty.
-   - Center: "My App".
-   - Right: Avatar + account menu.
-   - Use case: Account/settings-focused layout.
+### Guarantees / Constraints
+- Each variant demonstrates a distinct header composition.
+- Menu items respond to clicks but do not perform routing in this example.
 
-## Visuals
-- Header background: Uses theme foreground/background tokens.
-- Menu items: Listed vertically; clickable with console logging.
-- Avatar: Rendered as text label ("Noah Wright") or image (src-based).
-- Fixed positioning: Header stays visible while scrolling content.
+## Behavior
 
-## Interactions
-- Menu open/close: Triggered by clicking HamburgerMenu or Avatar.
-- Menu items: Console log indicates which item was clicked.
-- Scroll: Header remains fixed; content scrolls beneath.
-- Responsive: On resize to <600px, menus expand full-width with overlay.
+Each variant renders a header fixed at the top with content scrollable beneath. Clicking a menu trigger opens the associated dropdown; clicking again or clicking outside closes it. Clicking a menu item logs which item was activated.
 
-## Accessibility
-- Header role: Navigation/landmark region.
-- Menu items: Proper labels and click handlers.
-- Avatar: Accessible label ("Noah Wright") or alt text if image.
-- Keyboard: Menu interaction should follow keyboard navigation conventions.
+**Variant 1 — Standard app header:** Navigation hamburger on the left, application title in the center, account avatar with dropdown on the right.
 
-## Constraints & Non-Goals (Current)
-- No actual routing; menu clicks log to console only.
-- No submenu nesting (MenuItem is simple list).
-- Mobile menu overlay behavior is implicit; not explicitly tested here.
+**Variant 2 — Minimal portfolio:** Navigation hamburger on the left, name in the center, avatar with an image on the right.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Header renders fixed at top with ~60px height.
-2. Each variant (Standard, Minimal, LeftOnly, RightOnly) displays correct regions (left/center/right).
-3. HamburgerMenu and Avatar render appropriately as menu triggers.
-4. Clicking menu triggers opens/closes the menu.
-5. Menu items display correctly and are clickable.
-6. Content below header is scrollable; header remains visible.
-7. No console errors; menu callbacks execute when items are clicked.
+**Variant 3 — Left menu only:** Hamburger navigation on the left, centered title, empty right slot.
 
-## Current Story & Test Mapping
-- Story: Examples/Header Integration — Four stories (StandardAppHeader, MinimalPortfolio, LeftMenuOnly, RightMenuOnly).
-- Intent: Verify header layout variants, menu interactivity, and responsive positioning.
+**Variant 4 — Right menu only:** Empty left slot, application name in the center, avatar with account menu on the right.
 
-## Backlog
-- Actual navigation/routing integration.
-- Submenu/nested menu support.
-- Accessible keyboard shortcuts for menu activation.
-- Animation transitions for menu open/close.
+## Interface
+
+Each header variant spans the full viewport width and is fixed at the top. The left, center, and right slots hold different content in each variant. Menus open as dropdowns below their triggers. Page content below the header is scrollable.
+
+## Acceptance
+1. All four header variants render with the expected content in each slot.
+2. HamburgerMenu and Avatar render as menu triggers where configured.
+3. Clicking a trigger opens and closes the menu.
+4. Menu items are visible and clickable when the menu is open.
+5. Scrollable content remains below the fixed header without overlap.

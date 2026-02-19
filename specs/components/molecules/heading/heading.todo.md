@@ -1,6 +1,12 @@
 # Heading — Backlog
 
-## Ideas
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 - Styling variants: Offer preset heading styles (sans-serif, serif, monospace) or size overrides.
 - Typography tokens: Integrate heading font families, sizes, line-heights from design tokens.
 - Auto-level hierarchy: Accept text content and infer heading level from context.

@@ -1,6 +1,12 @@
 # Modal — Backlog
 
-## Ideas
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 - Focus trap: Trap focus within modal (keyboard navigation stays inside).
 - Animation: Entrance/exit transitions (fade, slide).
 - Size variants: Small, medium, large modal widths.

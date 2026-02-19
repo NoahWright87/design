@@ -1,56 +1,40 @@
 # MenuItem — Individual Menu Item
 
-## Overview
-- Purpose: Render an individual menu item (button or link) within a Menu component; auto-closes menu on click via MenuContext.
-- Implementation: Renders `<button>` or `<a>` based on presence of `href`; consumes MenuContext to trigger menu close.
-- Design system integration: Uses theme colors and token values via CSS; semantic HTML roles.
+## Purpose
+MenuItem renders a single item within a Menu. It appears as either a button or a link depending on whether a destination URL is provided, and it automatically closes its parent menu when activated.
 
-## API
-- Props:
-  - **text**: Optional string for item label (primary).
-  - **label**: Optional string for item label (deprecated alias for `text`).
-  - **icon**: Optional React node for leading icon.
-  - **href**: Optional URL string. If provided, renders as `<a>`; otherwise, `<button>`.
-  - **onClick**: Optional click handler. Called before menu closes.
-- DOM:
-  - Element: `<button role="menuitem">` (if no href) or `<a role="menuitem" href={href}>` (if href).
-  - Classes: `nw-menu-item`, `nw-menu-item__icon`, `nw-menu-item__text`.
-  - Children: Icon span (if icon) and text span.
+## Related
+- [Design System Base Spec](../design-system.spec.md)
+- [Menu component](../organisms/menu/menu.spec.md)
 
-## Visuals
-- Layout: Flex row with optional icon on left, text on right.
-- Background: Theme background (or hover state via CSS).
-- Icon: Optional; rendered as-is (size/styling is responsibility of parent).
-- Text: Item label; uses theme foreground color.
-- Focus: Browser default or CSS-styled focus ring.
+## Contract
 
-## Interactions
-- Click: Executes `onClick` handler; closes parent Menu via MenuContext.
-- Keyboard: Accessible via Tab and Enter/Space (if button) or Enter (if link).
-- Focus: Focusable; included in Tab order.
+### Inputs
+- Label text.
+- Optional leading icon.
+- Optional destination URL.
+- Optional click handler.
 
-## Accessibility
-- Role: `role="menuitem"` (semantic for menu context).
-- Name: Derived from `text`/`label` and icon (if any).
-- Link: If `href`, renders native `<a>` for proper link semantics.
-- Button: If no href, renders native `<button>`.
+### Outputs
+A button or link element styled as a menu item. On activation, the click handler is called and the parent menu closes.
 
-## Constraints & Non-Goals (Current)
-- No icon positioning variants (always leading).
-- No disabled/inactive state prop.
-- No keyboard arrow navigation (parent Menu responsibility, not yet implemented).
+### Guarantees / Constraints
+- Items without a destination URL always render as buttons.
+- Items with a destination URL always render as links.
+- The parent menu always closes when a menu item is activated.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders `<button role="menuitem">` if no `href`.
-2. Renders `<a role="menuitem" href={href}>` if `href` provided.
-3. Displays icon (if provided) before text.
-4. Displays text/label correctly.
-5. Clicking item calls `onClick` and closes parent Menu.
-6. Item is keyboard-accessible via Tab and Enter/Space.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Menu — Used in all menu examples with various labels and click handlers.
-- Intent: Verify button vs. link rendering, icon/text display, click handling, and menu closure.
+Clicking or keyboard-activating a menu item calls the provided click handler and signals the parent menu to close. The icon, if provided, appears before the label text.
 
-## Backlog
-- See [menuitem.todo.md](menuitem.todo.md) for future enhancements.
+## Interface
+
+MenuItem appears as a full-width row within the menu panel. An optional icon appears on the left, followed by the label text. The item highlights on hover using the theme's background. Focus is visible when navigating by keyboard.
+
+## Acceptance
+1. Renders as a button when no destination URL is provided.
+2. Renders as a link when a destination URL is provided.
+3. Displays the icon before the label when an icon is provided.
+4. Displays the label text.
+5. Calls the click handler and closes the parent menu on activation.
+6. Is keyboard-accessible via Tab and Enter/Space.

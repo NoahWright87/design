@@ -1,57 +1,39 @@
-# Header — Fixed Navigation Container with Left/Center/Right Slots
+# Header — Fixed Navigation Bar with Three Slots
 
-## Overview
-- Purpose: Create a fixed header bar with three customizable content regions (left, center, right) and optional labels.
-- Implementation: Renders a semantic `<header>` with three flex slots; supports label text that hides on mobile.
-- Design system integration: Uses theme tokens for colors; fixed positioning via CSS; responsive label hiding.
+## Purpose
+Header provides a fixed navigation bar with three content regions — left, center, and right — for flexible header compositions. Optional text labels can accompany slot content and hide automatically on smaller screens.
 
-## API
-- Props:
-  - **left**: Optional React node for left slot (e.g., HamburgerMenu, logo).
-  - **center**: Optional React node for center slot (e.g., title, menu).
-  - **right**: Optional React node for right slot (e.g., Avatar, theme toggle).
-  - **leftLabel**: Optional text label for left slot (hidden on mobile).
-  - **centerLabel**: Optional text label for center slot (hidden on mobile).
-  - **rightLabel**: Optional text label for right slot (hidden on mobile).
-- DOM:
-  - Element: `<header>`
-  - Role: `role="banner"`.
-  - Classes: `nw-header`.
-  - Sub-structure: Three flex slots with inner element and label divs.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
+- [Layout component](../layout/layout.spec.md)
 
-## Visuals
-- Layout: Fixed at top of viewport; sticky behavior.
-- Height: ~60px (CSS-driven).
-- Background: Theme background color.
-- Slots: Three columns with equal/flex sizing (CSS-driven).
-- Labels: Appear next to elements on desktop; hidden on mobile via CSS media queries.
+## Contract
 
-## Interactions
-- Static layout container; interactive behavior depends on children (Menu, Button, etc.).
+### Inputs
+- Optional content for left, center, and right slots.
+- Optional text labels for each slot (visible on desktop, hidden on mobile).
 
-## Accessibility
-- Role: `role="banner"` for landmark navigation.
-- Content: Accessibility depends on slot contents (ensure proper labels/roles in children).
-- Labels: Visible labels aid screen reader context; hidden labels via CSS don't affect a11y.
+### Outputs
+A fixed header bar with up to three content regions rendered at the top of the viewport.
 
-## Constraints & Non-Goals (Current)
-- No sticky/fixed positioning as prop; CSS-driven (parent responsibility).
-- No responsive breakpoint control via props; CSS-driven.
-- No built-in theme switching UI (example provides one).
+### Guarantees / Constraints
+- The header maintains its position at the top of the viewport as users scroll.
+- Labels use responsive CSS to hide automatically on small screens without JavaScript.
+- Slot content receives no additional styling from the header itself.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders a `<header>` with `role="banner"`.
-2. Left, center, right slots display children correctly.
-3. Left/center/right labels display when provided.
-4. Labels are hidden on mobile (CSS media query, <600px).
-5. No classes or extra styling applied to slot contents.
-6. Fixed positioning maintains header visibility while scrolling.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Header — Two variants:
-  - "Basic": Simple text in three slots.
-  - "WithLabels": Icons in slots with text labels below (responsive).
-- Intent: Verify three-slot layout, label display/hiding, and fixed positioning.
+Header is a layout container. Its behavior is determined by the content placed in each slot — interactive elements like menus, buttons, and avatars behave according to their own specs. The header positions and sizes its slots but manages no state of its own.
 
-## Backlog
-- See [header.todo.md](header.todo.md) for future enhancements.
+## Interface
+
+The header spans the full width of the viewport and is fixed at the top. Three columns hold left, center, and right slot content. Labels, when provided, appear next to their slot content on desktop screens and disappear on mobile.
+
+The header uses the theme background color. Slot content and labels use the theme foreground color.
+
+## Acceptance
+1. Renders a semantic header element fixed at the top of the viewport.
+2. Content appears in the correct left, center, and right columns.
+3. Labels display next to slot content on desktop.
+4. Labels are hidden on mobile-sized viewports.
+5. Header remains visible while page content scrolls beneath it.

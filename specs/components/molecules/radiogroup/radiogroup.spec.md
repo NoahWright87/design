@@ -1,58 +1,55 @@
 # RadioGroup — Custom-Styled Radio Buttons with Group Label
 
-## Overview
-- Purpose: Provides a group of custom-styled radio buttons with a group label via `<fieldset>/<legend>`. Native radio inputs are visually hidden; CSS pseudo-element dots replace the default controls.
-- Implementation: `<fieldset>` with `<legend>` and a list of `<label>` elements, each containing a visually hidden `<input type="radio">`, a styled circle span, and option label text.
-- Design system integration: Uses theme tokens. Selected radio shows primary-colored dot and border.
+## Purpose
+RadioGroup provides a group of radio buttons with a shared group label. The native radio inputs are visually replaced with custom-styled circles while the underlying inputs remain accessible to keyboards and screen readers.
 
-## API
-- Props:
-  - **label**: Required string. Group label rendered as `<legend>`.
-  - **name**: Required string. Shared `name` for all radio inputs.
-  - **options**: Required `RadioOption[]`. Each has `label`, `value`, and optional `disabled`.
-  - **value**: Optional string. Controlled selected value.
-  - **defaultValue**: Optional string. Uncontrolled default.
-  - **onChange**: Optional change handler (fires on any radio in the group).
-  - **disabled**: Optional boolean (default false). Disables all options.
-  - **style**: Optional `React.CSSProperties` on the root fieldset.
-- Types:
-  - `RadioOption`: `{ label: string; value: string; disabled?: boolean }`
-- DOM:
-  - Root: `<fieldset class="nw-radio-group [nw-radio-group--disabled]">`
-  - Sub-elements: `nw-radio-group__legend`, `nw-radio-group__options`, then per option: `nw-radio`, `nw-radio__input` (sr-only), `nw-radio__circle`, `nw-radio__label`.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
 
-## Visuals
-- Legend: Small, 500-weight text above the options.
-- Unchecked: Circle with subtle border.
-- Checked: Primary-colored border with filled inner dot.
-- Focus: Focus ring on the circle via `:focus-visible` on the hidden input.
-- Disabled group: 50% opacity on fieldset.
-- Disabled option: 50% opacity, `not-allowed` cursor on individual label.
-- Transitions respect `prefers-reduced-motion: reduce`.
+## Contract
 
-## Interactions
-- Clicking a label selects that radio.
-- Arrow keys cycle between options within the group (native radio behavior).
-- Tab navigates into/out of the group (native focus management).
+### Inputs
+- Group label text (required).
+- Shared name for all radio inputs (required).
+- An array of option objects, each with a label and value and an optional disabled flag (required).
+- Optional controlled selected value and default selected value.
+- Optional change handler.
+- Optional group-wide disabled flag.
+- Optional style overrides.
 
-## Accessibility
-- `<fieldset>/<legend>` provides group semantics for screen readers.
-- Native `<input type="radio">` is visually hidden but accessible.
-- Wrapping `<label>` per option provides the accessible name.
-- Custom circles have `aria-hidden="true"`.
-- `disabled` attribute set on individual native inputs.
+### Outputs
+A labeled group of radio controls that can be selected by click or arrow key. The selected option is highlighted and the change handler is notified on selection.
 
-## Acceptance Criteria
-1. Renders a `<fieldset>` with class `nw-radio-group`.
-2. Renders a `<legend>` with class `nw-radio-group__legend`.
-3. Renders options in `nw-radio-group__options` container.
-4. Each option is a `<label class="nw-radio">` containing sr-only input, circle, and label text.
-5. All radio inputs share the same `name` attribute.
-6. Passes `value`/`defaultValue` correctly — only the matching option is checked.
-7. `onChange` fires when any option is selected.
-8. Checked option shows primary-colored circle border and inner dot.
-9. Focus ring appears on `nw-radio__circle` when input has `:focus-visible`.
-10. Adds `nw-radio-group--disabled` class when group `disabled` is true.
-11. Individual options can be disabled via `option.disabled`.
-12. Disabled individual options get `nw-radio--disabled` class.
-13. `style` prop applied to root fieldset element.
+### Guarantees / Constraints
+- The group uses native fieldset and legend semantics, understood by all major assistive technologies.
+- Arrow key navigation between options uses native browser radio behavior.
+- Individual options and the entire group can be disabled independently.
+- Transitions respect the user's reduced-motion preference.
+
+## Behavior
+
+Clicking an option label selects that radio and deselects any previously selected option. Arrow keys cycle between options within the group. Tab moves focus in and out of the group.
+
+**Checked:** The selected option shows a primary-colored border and a filled inner dot.
+
+**Disabled (group):** All options are dimmed and do not respond to input.
+
+**Disabled (individual option):** That option is dimmed and unselectable; others remain active.
+
+## Interface
+
+The group label appears above the options. Each option shows a circular indicator followed by its label text. The selected indicator is visually distinct — a primary-colored border with a filled center. Unselected options show a subtle neutral border.
+
+Focus indicators appear on the circle element when navigating by keyboard.
+
+## Acceptance
+1. Displays the group label above the options.
+2. Renders all provided options as selectable radio controls.
+3. All radio inputs in the group share the same name.
+4. Selecting an option updates the visual state to show it as checked.
+5. The change handler fires when any option is selected.
+6. Arrow keys cycle between options.
+7. When the group is disabled, all options are dimmed and unresponsive.
+8. When an individual option is disabled, only that option is dimmed and unresponsive.
+9. A focus indicator appears on the circle when an option receives keyboard focus.
+10. Style overrides apply to the root fieldset.

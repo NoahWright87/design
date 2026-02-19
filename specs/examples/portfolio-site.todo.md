@@ -1,1 +1,10 @@
-TODO: Describe an example site that resembles someone's personal portfolio
+# Portfolio Site — Todo
+
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
+- [ ] TBD

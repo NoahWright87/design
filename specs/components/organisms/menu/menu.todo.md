@@ -1,6 +1,12 @@
 # Menu — Backlog
 
-## Ideas
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 - Nested menus: Support submenu items within menu.
 - Keyboard navigation: Arrow keys to move between items; Enter to select.
 - Grouped items: Item groups with separators or headers.

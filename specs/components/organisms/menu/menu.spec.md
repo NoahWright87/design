@@ -1,67 +1,59 @@
-# Menu — Dropdown Menu with Customizable Trigger and Items
+# Menu — Dropdown Menu
 
-## Overview
-- Purpose: Create a flexible dropdown menu that opens/closes on trigger click, supports alignment, and includes keyboard navigation.
-- Implementation: Stateful component managing open/close; renders trigger wrapper and optional panel with menu items; provides MenuContext for child MenuItem components.
-- Design system integration: Uses theme colors via CSS; responsive overlay on mobile; escape/backdrop click to close.
+## Purpose
+Menu provides a dropdown panel triggered by a custom element such as a hamburger icon, avatar, or button. It manages its own open/closed state, positions the panel relative to the trigger, and closes in response to outside clicks, Escape presses, and item activation.
 
-## API
-- Props:
-  - **trigger**: React node for the clickable element (e.g., Avatar, HamburgerMenu, Button).
-  - **items**: Optional array of MenuItemProps or custom React nodes. Rendered as menu items.
-  - **align**: Optional alignment: `"left"` (default) or `"right"`. Positions dropdown relative to trigger.
-  - **icons**: Optional object with `{ open, close }` nodes for replacing trigger display (if trigger is not a native button).
-  - **label**: Optional aria-label for the trigger wrapper.
-  - **children**: Optional custom React nodes rendered as menu items (alternative to `items` array).
-- DOM:
-  - Root element: `<div class="nw-menu">`.
-  - Trigger: Clone of trigger element or wrapped `<button>`.
-  - Panel: `<div id={panelId} role="menu">` (only rendered when open).
-  - Overlay: `<div class="nw-menu__overlay">` (mobile-only via CSS).
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
+- [MenuItem component](../../molecules/menuitem.spec.md)
+- [HamburgerMenu component](../../molecules/hamburger/hamburger.spec.md)
 
-## Visuals
-- Layout: Dropdown panel below/above trigger; align left or right.
-- Background: Theme colors (menu panel and overlay).
-- Mobile: Full-width overlay on small screens (<600px).
-- Open state: Panel visible; overlay (if mobile) shown.
-- Closed state: Panel and overlay hidden.
+## Contract
 
-## Interactions
-- Click trigger: Open/close menu.
-- Click menu item: Execute item action; auto-close menu.
-- Click outside: Close menu (backdrop click).
-- Escape key: Close menu.
-- Keyboard: MenuItem children are accessible via Tab.
+### Inputs
+- A trigger element (required).
+- Menu items as an array or as child elements.
+- Alignment — left or right of the trigger.
+- Optional icon overrides for the open and closed trigger states.
+- Optional accessible label for the trigger.
 
-## Accessibility
-- Trigger ARIA: `aria-expanded`, `aria-haspopup="menu"`, `aria-controls={panelId}`.
-- Panel role: `role="menu"`.
-- Items: Rendered as MenuItemProps or custom nodes; should have `role="menuitem"` if MenuItem.
-- Label: Trigger has aria-label if provided or generated.
+### Outputs
+An interactive dropdown panel that appears below the trigger when opened and disappears when closed or dismissed.
 
-## Constraints & Non-Goals (Current)
-- No arrow/chevron indicators (trigger responsibility).
-- No nested menus (flat items only).
-- No touch-specific close behavior (Escape/outside click only).
+### Guarantees / Constraints
+- The menu is always closed by default.
+- Clicking outside the open menu always closes it.
+- Pressing Escape always closes the open menu.
+- Activating a menu item always closes the menu.
+- The trigger's accessible state always reflects whether the menu is open or closed.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Menu renders closed by default (no panel visible).
-2. Clicking trigger opens menu (panel visible).
-3. Clicking trigger again closes menu.
-4. Open menu displays all items from `items` array or `children`.
-5. Clicking menu item closes menu and invokes item's `onClick`.
-6. Clicking outside menu (backdrop) closes menu.
-7. Pressing Escape closes menu.
-8. Menu aligns left or right based on `align` prop.
-9. On mobile, overlay div is shown when menu is open.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Menu — Four variants:
-  - "WithHamburger": HamburgerMenu trigger with nav items, left-aligned.
-  - "WithAvatar": Avatar trigger with account items, right-aligned.
-  - "LeftAligned": Button trigger, left-aligned.
-  - "RightAligned": Button trigger, right-aligned.
-- Intent: Verify trigger rendering, menu open/close, item interaction, and alignment.
+**Closed:** The trigger is visible; the panel is not rendered.
 
-## Backlog
-- See [menu.todo.md](menu.todo.md) for future enhancements.
+**Opening:** Clicking the trigger opens the panel and renders menu items.
+
+**Item activation:** Clicking a menu item calls the item's handler and closes the menu.
+
+**Outside click:** Clicking anywhere outside the menu and trigger closes the panel.
+
+**Escape:** Pressing Escape while the menu is open closes the panel.
+
+**Alignment:** The panel aligns to the left or right edge of the trigger based on the alignment configuration.
+
+**Mobile:** On smaller screens, the menu panel expands to a wider overlay format.
+
+## Interface
+
+The trigger element appears in its normal position. When the menu is open, a panel appears below it containing the menu items stacked vertically. Items highlight on hover. The trigger communicates its expanded state to assistive technology.
+
+## Acceptance
+1. Menu is closed on initial render.
+2. Clicking the trigger opens the menu panel.
+3. Clicking the trigger again closes the menu.
+4. All items from the items array or children render in the panel when open.
+5. Clicking an item calls its handler and closes the menu.
+6. Clicking outside the menu closes it.
+7. Pressing Escape closes the menu.
+8. Panel aligns correctly based on the alignment setting.
+9. On small screens, the wider overlay format activates.

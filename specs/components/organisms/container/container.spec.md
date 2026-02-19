@@ -1,61 +1,42 @@
-# Container — Highly Opinionated Flex Layout
+# Container — Flexible Layout Wrapper
 
-## Overview
-- Purpose: Provide a flexible, opinionated layout container with built-in spacing, direction, colors, and sizing.
-- Implementation: Renders a `<div>` with flex layout; applies spacing tokens via CSS classes; colors via inline styles.
-- Design system integration: Tightly integrated with spacing tokens (none, xs, sm, md, lg, xl) and theme colors.
+## Purpose
+Container is an opinionated flex layout wrapper for building consistent, spaced content regions. It handles direction, padding, spacing between children, background color, and sizing, removing the need to hand-write flex styles for common layout scenarios.
 
-## API
-- Props:
-  - **direction**: `"vertical"` (default) or `"horizontal"`. Controls flex direction.
-  - **padding**: Spacing inside container (`"none" | "xs" | "sm" | "md" | "lg" | "xl"`, default `"md"`).
-  - **margin**: Spacing outside container (default `"none"`).
-  - **itemSpacing**: Gap between child elements (default `"sm"`).
-  - **backgroundColor**: CSS color for background (default `"transparent"`).
-  - **foregroundColor**: CSS color for text/foreground (default `"var(--foreground)"`).
-  - **width**: CSS width value or number (number → percentage, default `"100%"`).
-  - **height**: CSS height value or number (number → percentage, default `"auto"`).
-  - **wrap**: Reserved for future options (currently only `"always"` supported).
-  - **children**: React node content.
-- DOM:
-  - Element: `<div>`
-  - Classes: `nw-container`, direction class, padding/margin/gap classes.
-  - Styles: Inline styles for background, foreground, width, height.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
 
-## Visuals
-- Layout: Flex container with configurable direction (row/column).
-- Spacing: Predictable spacing via CSS token classes.
-- Colors: Easily customizable via color props.
-- Sizing: Width/height fully controllable (%, px, rem, etc.).
+## Contract
 
-## Interactions
-- Static layout container; no interactive state.
+### Inputs
+- Direction — vertical or horizontal.
+- Padding inside the container (from a named scale: none, extra-small, small, medium, large, extra-large).
+- Margin outside the container (from the same named scale).
+- Spacing between child elements (from the same named scale).
+- Background and foreground colors.
+- Width and height values.
+- Optional children.
 
-## Accessibility
-- No semantic role beyond generic `<div>`.
-- Content accessibility depends on children; parents must ensure proper hierarchy.
+### Outputs
+A flex container with the requested layout configuration applied.
 
-## Constraints & Non-Goals (Current)
-- `wrap` prop is reserved but currently only supports `"always"`.
-- No flexbox alignment/justify props (opinion: use defaults or extend).
-- No responsive breakpoints; parents manage media queries.
+### Guarantees / Constraints
+- Direction, spacing, and padding all use a fixed named scale, ensuring consistency across uses.
+- Width and height expressed as numbers are interpreted as percentages.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders a `<div>` with class `nw-container`.
-2. Applies direction class (`horizontal` or `vertical`).
-3. Applies padding, margin, and gap classes based on props.
-4. Inline styles for background, foreground, width, height are set correctly.
-5. Width/height numbers are converted to percentages.
-6. Spread and composition work correctly with nested Containers.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Container — Multiple variations:
-  - "Playground": Basic vertical container with placeholder text.
-  - "Directions": Vertical and horizontal nested examples.
-  - "SpacingPresets": Showcase all padding presets.
-  - "ItemSpacingPresets": Showcase all gap presets.
-  - "ColorsAndSizes": Background colors and width/height variations.
-- Intent: Verify direction, spacing, color application, and sizing.
+Container is a static layout component. It applies the requested flex configuration to its children. There is no interactive behavior.
 
-## Backlog
-- See [container.todo.md](container.todo.md) for future enhancements.
+## Interface
+
+Container provides a configurable box that arranges its children either vertically (column) or horizontally (row). Spacing between children is controlled by the named spacing scale. Padding controls the internal breathing room. Background and foreground colors are fully customizable. Width and height can be set to fill the available space or constrained to a specific proportion.
+
+## Acceptance
+1. Arranges children in the specified direction (vertical or horizontal).
+2. Applies internal padding from the selected scale preset.
+3. Applies external margin from the selected scale preset.
+4. Applies the specified gap between children.
+5. Background and foreground colors are reflected in the rendered output.
+6. Width and height are applied correctly; numeric values are treated as percentages.
+7. Nested containers compose correctly.

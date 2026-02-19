@@ -12,9 +12,9 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 - **Form primitives:** Added `Input`, `Select`, `Checkbox`, and `RadioGroup` molecule components with integrated labels, error states, custom-styled controls, and full theme token integration.
-- **Custom controls:** Checkbox and RadioGroup use visually-hidden native inputs with CSS pseudo-element replacements for consistent cross-browser styling while preserving keyboard/a11y behavior.
 - **CardFooter layout helper:** Added `CardFooter` companion component with `align` prop for opinionated footer layouts in Card.
-- **Stories & specs:** Added Storybook stories, spec files for all four form components, and a Contact Form example page composing all form primitives.
+- **Spec overhaul:** Rewrote all specs to follow the template format (Purpose, Related, Contract, Behavior, Interface, Acceptance). Removed placeholder text, technical details (pixel values, CSS class names, code blocks), and negative language. Added proper `## Interface` sections throughout. Moved inline backlogs to adjacent `.todo.md` files.
+- **AGENTS.md:** Added spec authoring guidelines; converted all negative statements to affirmative language.
 
 
 ## Version history

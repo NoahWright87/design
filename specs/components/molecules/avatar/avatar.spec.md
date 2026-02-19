@@ -1,61 +1,50 @@
 # Avatar — User Profile Picture
 
-## Overview
-- Purpose: Display a user's profile picture or initials in a circular container.
-- Implementation: Renders image (`src`) or fallback to first letter of `label`; optionally clickable.
-- Design system integration: Uses theme colors for fallback background; size is fully customizable.
+## Purpose
+Avatar displays a user's profile picture or initials in a compact, circular container. It serves as a visual identity indicator in navigation bars, comment threads, and similar contexts. When no image is provided, it falls back gracefully to an initial derived from the user's name.
 
-## API
-- Props:
-  - **src**: Optional image URL. If provided, displays image.
-  - **alt**: Optional alt text for image (defaults to label if omitted).
-  - **label**: Optional text for fallback initial and aria-label (e.g., "Noah Wright" → "N").
-  - **size**: Optional pixel size (default 32px).
-  - **onClick**: Optional click handler. If provided, avatar renders as button; otherwise, span.
-- DOM:
-  - Element: `<button>` (if `onClick`) or `<span>`.
-  - Classes: `nw-avatar`, `nw-avatar__img` (image), `nw-avatar__fallback` (text).
-  - Styles: `width` and `height` set to `size` pixels.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
 
-## Visuals
-- Shape: Square container (CSS determines roundness via `border-radius`).
-- Image: Fills the container; centered.
-- Fallback: First uppercase letter of `label` on a theme color background.
-- Size: Fully customizable via `size` prop (e.g., 24px, 40px, 64px).
-- Border: Optional CSS-driven (not in props).
+## Contract
 
-## Interactions
-- Pointer: If `onClick` is provided, avatar is clickable; renders as button with pointer cursor.
-- Keyboard: Button variant is keyboard-accessible via Tab and Enter/Space.
-- Focus: Uses browser default focus ring if button.
+### Inputs
+- An optional image source URL.
+- An accessible label describing the user (used as fallback text and accessible name).
+- An optional size for the circular container.
+- An optional click handler.
 
-## Accessibility
-- Role: Implicit `role="button"` if `onClick`; no role if static.
-- Name: `aria-label` is set to `alt` (for image) or `label` (fallback).
-- Image alt: Set to `alt` or `label` (for screen readers).
-- Fallback span: Marked with `aria-hidden` to prevent single letter from being announced separately.
+### Outputs
+An interactive or static circular container showing either a profile image or a single initial character on a themed background.
 
-## Constraints & Non-Goals (Current)
-- No status indicators (online/offline badges).
-- No image cropping or aspect ratio handling (CSS-driven).
-- No name tooltip on hover (application responsibility).
+### Guarantees / Constraints
+- When no image is provided, an initial is always shown.
+- An accessible name is always present.
+- When a click handler is provided, the avatar is interactive and keyboard-accessible.
+- When no click handler is provided, the avatar is a static display element with no interactive role.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders correctly with `src` image URL.
-2. Falls back to first letter initial if no `src`.
-3. Size is applied to both width and height via inline styles.
-4. If `onClick` is provided, renders as a `<button>`.
-5. If no `onClick`, renders as a `<span>`.
-6. `aria-label` is set appropriately for both image and fallback variants.
-7. Image alt text is set to `alt` prop or falls back to `label`.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Avatar — Multiple variants:
-  - "WithImage": Image with `src` and `alt`.
-  - "WithInitial": Fallback text from `label`.
-  - "Small" (24px), "Large" (64px): Size variations.
-  - "Clickable": With `onClick` handler.
-- Intent: Verify image display, fallback rendering, size customization, and click interaction.
+**With an image:** The image is shown inside the circular container, filling it edge-to-edge.
 
-## Backlog
-- See [avatar.todo.md](avatar.todo.md) for future enhancements.
+**Without an image:** The first letter of the label is shown as a large initial on a themed background color.
+
+**Interactive:** When a click handler is provided, the avatar acts as a button — it responds to click and keyboard activation.
+
+**Static:** Without a click handler, the avatar is a non-interactive display element.
+
+## Interface
+
+Avatar appears as a circle containing either an image or an initial. The size is configurable — smaller for inline use, larger for profile contexts.
+
+When used as a button, it shows a pointer cursor and responds to keyboard activation. Its accessible name comes from the label, ensuring screen reader users understand what it represents.
+
+The initial variant uses a themed background color to provide visual interest when no photo is available.
+
+## Acceptance
+1. Displays the provided image when an image source is given.
+2. Displays the first letter of the label when no image source is given.
+3. The circular size reflects the configured size.
+4. When a click handler is provided, the avatar acts as a button activatable by click or keyboard.
+5. When no click handler is provided, the avatar is non-interactive.
+6. An accessible name is present in all cases.

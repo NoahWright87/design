@@ -1,6 +1,12 @@
 # Text — Backlog
 
-## Ideas
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 - Styling variants: Size (small, regular, large), weight (light, regular, bold), color (primary, secondary, muted).
 - Typography tokens: Integrate font families, sizes, line-heights from design tokens.
 - Inline elements: Support for emphasis, strong, code, mark, etc.

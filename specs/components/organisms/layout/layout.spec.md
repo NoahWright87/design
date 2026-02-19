@@ -1,47 +1,38 @@
-# Layout — Page Structure with Header/Footer Padding
+# Layout — Page Structure Wrapper
 
-## Overview
-- Purpose: Provide a simple page layout with optional header and footer, with content padding to prevent overlap.
-- Implementation: Renders a semantic structure with `<header>`, content `<div>`, and `<footer>`; applies fixed padding top/bottom to content area.
-- Design system integration: Padding values (48px) are CSS-driven; no token configuration.
+## Purpose
+Layout provides a page-level structural scaffold that arranges a header, main content area, and footer in the correct visual order. It handles the spacing needed to prevent fixed header and footer elements from overlapping the content.
 
-## API
-- Props:
-  - **header**: Optional React node for header content.
-  - **footer**: Optional React node for footer content.
-  - **children**: Page content (required).
-- DOM:
-  - Elements: `<header>`, `<div class="nw-layout">` (content), `<footer>`.
-  - Content div receives inline styles for padding-top/bottom.
-  - Structure: Fragment wrapper with three sections.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
+- [Header component](../header/header.spec.md)
+- [Footer component](../footer/footer.spec.md)
 
-## Visuals
-- Header: Top section; fixed positioning expected from Header component within.
-- Content: Padded area (48px top, 48px bottom) to prevent overlap with fixed header/footer.
-- Footer: Bottom section.
-- Colors: Uses theme colors for header/footer (via children components).
+## Contract
 
-## Interactions
-- Static layout; interactivity depends on children (Header/Footer content and main content).
+### Inputs
+- Optional header content.
+- Optional footer content.
+- Page content (required).
 
-## Accessibility
-- Semantic structure: `<header>`, content `<div>`, `<footer>` landmarks.
-- Hierarchy: Content area is main; a11y depends on children.
+### Outputs
+A structured page with header, content area, and footer in the correct order with appropriate spacing applied.
 
-## Constraints & Non-Goals (Current)
-- Fixed padding values (48px) not configurable.
-- No responsive padding adjustments (parents manage breakpoints).
-- No built-in header/footer styling (composition approach).
+### Guarantees / Constraints
+- Content is always padded to prevent overlap with fixed header and footer elements.
+- The structure uses semantic landmark elements.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Renders `<header>`, content `<div>`, and `<footer>` in order.
-2. Content div has class `nw-layout` and padding-top/bottom of 48px.
-3. Header and footer display children correctly.
-4. Content area displays children.
+## Behavior
 
-## Current Example & Test Mapping
-- Story: Components/Layout — Used in Showcase example with Header and Footer.
-- Intent: Verify three-section layout structure and content padding.
+Layout is a structural component with no interactive behavior. It positions its three regions — header, content, footer — and applies the appropriate spacing to the content area.
 
-## Backlog
-- See [layout.todo.md](layout.todo.md) for future enhancements.
+## Interface
+
+The page is divided into three sections. The header area sits at the top. The content area fills the middle with top and bottom padding to clear any fixed header and footer. The footer sits at the bottom.
+
+This structure accommodates single-page routing — the header and footer remain mounted while only the content area changes.
+
+## Acceptance
+1. Renders header, content, and footer regions in the correct order.
+2. The content area includes top and bottom padding to prevent overlap with fixed header/footer.
+3. Page content renders correctly within the content area.

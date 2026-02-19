@@ -1,54 +1,54 @@
 # Input — Text Field with Integrated Label
 
-## Overview
-- Purpose: Provides a styled text input with an integrated label, error state, and required indicator.
-- Implementation: Wrapping `<label>` containing a label span, native `<input>`, and optional error message.
-- Design system integration: Uses theme tokens for spacing, colors, radius, and typography.
+## Purpose
+Input provides a styled text field with an integrated label, error state, and required indicator. It handles the visual and semantic connection between the label and the field so consumers can focus on the form data rather than accessibility plumbing.
 
-## API
-- Props:
-  - **label**: Required string. Text for the label.
-  - **name**: Optional string. Input `name` attribute.
-  - **type**: Optional `"text" | "email" | "password" | "number" | "tel" | "url" | "search"` (default `"text"`).
-  - **placeholder**: Optional string. Placeholder text.
-  - **value**: Optional string. Controlled value.
-  - **defaultValue**: Optional string. Uncontrolled default value.
-  - **onChange**: Optional change handler.
-  - **error**: Optional string. When set, displays error styling and message.
-  - **disabled**: Optional boolean (default false). Disables the input.
-  - **required**: Optional boolean (default false). Shows required indicator.
-  - **style**: Optional `React.CSSProperties` on the root wrapper.
-- DOM:
-  - Root: `<label class="nw-input [nw-input--error] [nw-input--disabled]">`
-  - Sub-elements: `nw-input__label`, `nw-input__required`, `nw-input__field`, `nw-input__error`.
+## Related
+- [Design System Base Spec](../../../design-system.spec.md)
 
-## Visuals
-- Label: Small, 500-weight text above the field.
-- Required indicator: Red asterisk after label text.
-- Field: Token-based padding, border, radius, and font. Subtle border with focus ring.
-- Error: Red border on field; red error text below.
-- Disabled: 50% opacity, `not-allowed` cursor.
-- Placeholder: Muted foreground color.
+## Contract
 
-## Interactions
-- Focus: Blue (primary) border and outer glow.
-- Error + focus: Red (danger) border and outer glow.
-- Transitions respect `prefers-reduced-motion: reduce`.
+### Inputs
+- Label text (required).
+- Optional name, type, placeholder, controlled value, and default value.
+- Optional change handler.
+- Optional error message.
+- Optional disabled and required flags.
+- Optional style overrides.
 
-## Accessibility
-- Wrapping `<label>` associates label text with the input — no `id`/`htmlFor` needed.
-- `required` attribute set on the native input when `required` prop is true.
-- `disabled` attribute set on the native input when `disabled` prop is true.
-- Error message is visually adjacent to the field.
+### Outputs
+A labeled text field with appropriate visual states: default, focused, error, and disabled. When an error message is provided, it is displayed below the field with error styling applied to the border.
 
-## Acceptance Criteria
-1. Renders a wrapping `<label>` with class `nw-input`.
-2. Renders label text in `nw-input__label`.
-3. Renders a native `<input>` with class `nw-input__field`.
-4. Passes `type`, `name`, `placeholder`, `value`, `defaultValue`, `disabled`, `required` through to native input.
-5. Shows `nw-input__required` asterisk when `required` is true.
-6. Adds `nw-input--error` class when `error` is set.
-7. Renders `nw-input__error` span with error text when `error` is set.
-8. Adds `nw-input--disabled` class when `disabled` is true.
-9. Focus ring appears via `:focus` on the field.
-10. `style` prop applied to root label element.
+### Guarantees / Constraints
+- The label is always associated with the input for screen reader accessibility.
+- Required and disabled states are communicated to the browser natively.
+- Focus and error styles use design system color tokens.
+- Transitions respect the user's reduced-motion preference.
+
+## Behavior
+
+**Default:** Label and field are visible; the field accepts text input.
+
+**Focused:** The field border changes to the primary color with a subtle glow, indicating it is active.
+
+**Error:** The field border changes to the danger color and the error message appears below the field.
+
+**Error and focused:** The field shows the danger color border and glow simultaneously.
+
+**Disabled:** The field is dimmed and does not accept input. The cursor indicates the field is unavailable.
+
+**Required:** A visual indicator appears after the label text to signal the field is required.
+
+## Interface
+
+The label appears above the field. The field has a bordered, rounded appearance consistent with the design system's form controls. Focus produces a visible color change on the border. Errors produce an additional message below the field in a warning color. Required fields show a small indicator after the label.
+
+## Acceptance
+1. Displays the label text above the field.
+2. Passes type, name, placeholder, value, default value, disabled, and required through to the native input.
+3. Shows a required indicator when the required flag is set.
+4. Applies error styling to the field border when an error message is provided.
+5. Displays the error message below the field when an error is present.
+6. Shows a dimmed appearance and prevents input when disabled.
+7. A focus indicator appears on the field border when it receives keyboard focus.
+8. Style overrides apply to the root wrapper.

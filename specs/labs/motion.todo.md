@@ -1,6 +1,12 @@
 # Motion Lab — Backlog
 
-## Future Enhancements
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 
 ### UI & Interaction
 - [ ] Groupable preset categories (e.g., "Professional", "Playful", "Extreme").

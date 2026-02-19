@@ -1,18 +1,37 @@
 # Design System — Atomic Architecture Spec
 
-## Overview
-This root spec defines the design philosophy and taxonomy for the system and maps current components to atomic levels. It is the source of truth for how the library is organized and how specs and tests should be authored.
+## Purpose
+This root spec defines the design philosophy, taxonomy, and authoring conventions for the design system. It is the source of truth for how the library is organized, how components are categorized, and how specs and tests should be authored.
 
-**Opinionated by Design:** This design system is built for personal use and reflects specific preferences and workflows. Components are intentionally opinionated with minimal prop surfaces, favoring convention over configuration. A `style` escape hatch is provided on all components for custom CSS when needed, but atomic principles and design tokens should be the default path.
+This design system is built for personal use and reflects specific preferences and workflows. Components are intentionally opinionated with minimal configuration surfaces, favoring convention over configuration. A style escape hatch is available on all components for custom overrides when needed, but atomic principles and design tokens should always be the first path.
 
-## Atomic Design Philosophy
-- **Atoms**: Non-rendering design primitives (tokens). Include color, spacing, typography, motion, radius, and shadow. Atoms must not render UI elements or contain layout/interaction logic.
-- **Molecules**: Smallest reusable UI components. May render HTML and, at most, handle a single interaction.
-- **Organisms**: Composed UI structures that define layout and hierarchy, typically orchestrating multiple molecules.
+## Related
+- [Motion tokens](atoms/motion.spec.md)
+- [Shadow tokens](atoms/shadows.spec.md)
+- [Button component](components/molecules/button/button.spec.md)
+- [Header component](components/organisms/header/header.spec.md)
+- [Showcase example](examples/showcase.spec.md)
 
-## Design Philosophy
+## Contract
 
-This design system prioritizes **approachability, forgiveness, and personality** without sacrificing **clarity, performance, or professionalism**.
+### Inputs
+- Design tokens, component specs, and example specs in this repository.
+- Changes to components and tests that must align with the taxonomy and authoring rules defined here.
+
+### Outputs
+- The canonical taxonomy (atoms, molecules, organisms) and system component mapping.
+- Authoring rules that guide spec structure and test traceability.
+
+### Guarantees / Constraints
+- Atoms remain non-rendering design primitives.
+- Molecules remain small, reusable UI components with a single interaction at most.
+- Organisms orchestrate layout and multi-part interactions.
+- Specs are the source of truth for tests and implementation.
+
+## Behavior
+
+### Design Philosophy
+This design system prioritizes **approachability, forgiveness, and personality** without sacrificing clarity, performance, or professionalism.
 
 Interfaces feel:
 - Whimsical, not silly
@@ -20,95 +39,54 @@ Interfaces feel:
 - Polished, not sterile
 - Fast, not flashy
 
-The UI feels *on the user's side* — more "whoops, try again 😅" than "incorrect input 😡".
+The UI feels *on the user's side* — a recoverable experience, not a punishing one.
 
-### Tone & Personality
-The system blends **business-like professionalism** with **playful warmth**.
+**Tone and personality:** The system blends business-like professionalism with playful warmth. Errors are treated as recoverable moments. Success is acknowledged lightly, not celebrated loudly. If the UI had a personality, it would be: calm, a little goofy, competent, and kind.
 
-Errors are treated as recoverable moments, not failures.
-Success is acknowledged lightly, not celebrated loudly.
+**Motion philosophy:** Motion conveys cause and effect, not decoration. Interactions feel soft, springy, or bouncy. Motion never blocks progress or adds artificial delay. Motion is defined via reusable tokens for consistency. All motion respects the user's reduced-motion preference. When motion is reduced, the personality remains — the movement quiets down.
 
-If the UI had a personality, it would be:
-> calm, a little goofy, competent, and kind
+**Performance:** Performance is a feature. The system favors CSS-driven animations, server-side rendering, fast first paint, and minimal client-side work. No design choice should compromise speed, accessibility, or clarity.
 
-### Motion Philosophy
-Motion conveys **cause → effect**, not decoration.
+**Guiding principle:** Design like a professional who doesn't take themselves too seriously.
 
-- Interactions feel soft, springy, or bouncy
-- Motion never blocks progress or adds artificial delay
-- Motion is defined via reusable tokens to ensure consistency
-- All motion respects `prefers-reduced-motion`
+### Atomic Taxonomy
 
-When motion is reduced, the personality remains — the movement quiets down.
+#### Atoms — Non-rendering design primitives
+Atoms are immutable design values with no props and no variation. They define the shared vocabulary: color roles, spacing presets, typography scales, motion timing, radii, and shadows.
 
-### Performance & Implementation Values
-**Performance is a feature.**
+Current atoms:
+- **Color tokens** — semantic roles: foreground, background, primary, secondary, confirm, danger, overlay.
+- **Spacing** — a scale of named size presets used for padding, margin, and gap.
+- **Typography** — font size, weight, and line height presets.
+- **Motion** — timing and easing token presets.
+- **Shadows** — elevation token scale.
+- **Radii** — corner radius presets.
 
-The system favors:
-- CSS-only animations and interactions
-- Server-side rendering
-- Fast first paint and minimal client-side work
-- No runtime side effects at module import
+#### Molecules — Small, reusable UI components
+Molecules are the smallest components that render HTML. Each has at most one focused interaction. Props are "selfish" — about the molecule itself, not about what it contains.
 
-No design choice should compromise speed, accessibility, or clarity.
+Current molecules: Button, Link, Heading, Text, Avatar, HamburgerMenu, MenuItem, Input, Select, Checkbox, RadioGroup, Pill.
 
-### Guiding Principle
-> **Design like a professional who doesn't take themselves too seriously.**
+#### Organisms — Composed UI structures
+Organisms orchestrate molecules and atoms into layout structures and multi-part interactions. Their props describe what goes inside them, not the organism's own behavior.
 
-## Taxonomy — Current System Mapping
-- **Atoms** (tokens, non-rendering):
-  - Theme tokens and CSS variables: colors (`--foreground`, `--background`, `--primary`, `--secondary`, `--confirm`, `--danger`, `--overlay`), spacing presets, radii, shadows, motion.
-  - Sources: `src/styles/theme.css`, `src/styles/tokens.ts`.
+Current organisms: Header, Footer, Layout, Menu, Modal, Card, Container.
 
-- **Molecules** (small reusable components, single interaction at most):
-  - `Button`: Native button, optional `onClick`.
-  - `Link`: Anchor element, navigational.
-  - `Heading`: Semantic heading levels `h1..h6`.
-  - `Text`: Paragraph content.
-  - `Avatar`: Image or initial; optionally clickable.
-  - `HamburgerMenu`: Menu toggle button with animated spans.
-  - `MenuItem`: Button or link with optional icon and text; closes parent menu.
-  - *(Future `Box`: Simple content wrapper molecule under organisms.)*
+## Interface
 
-- **Organisms** (composed structures, layout/hierarchy):
-  - `Header`: Fixed navigation container with left/center/right slots and labels.
-  - `Footer`: Page footer container.
-  - `Layout`: Page scaffold with header/footer and padded content area.
-  - `Menu`: Dropdown with trigger, panel, overlay, keyboard/close orchestration.
-  - `Modal`: Dialog with backdrop, header, content, actions, and close behavior.
-  - `Card`: Rounded content container with optional header, footer, and interactive regions (future).
-  - `Container`: Opinionated flex layout wrapper serving as main content holder between Header and Footer.
+### Authoring New Components
+When creating a new component, determine its level by answering these questions:
 
-## Authoring Rules
+**Is it an immutable design value with no props?** → It is an atom. Zero customization, zero composition.
 
-When creating new components, ask these questions to determine atomicity:
+**Does it render HTML and vary through atoms and simple content?** → It is a molecule. One focused responsibility; one interaction at most. Props are about the molecule, not its contents.
 
-- **Atoms** — Are they immutable design primitives?
-  - Atoms have no props and do not vary. "Warning" is the color it is; you cannot customize or divide it further.
-  - Examples: color tokens, spacing scales, typography presets.
-  - Rule: Zero customization, zero composition.
+**Does it vary through the molecules and atoms it contains?** → It is an organism. It orchestrates and lays out; its props describe what goes inside.
 
-- **Molecules** — Do they vary in appearance/functionality by accepting atoms and simple content?
-  - Molecules accept different atoms and simple content (e.g., text, image URLs, handler functions).
-  - Props are "selfish" — about the molecule itself, not about what it contains.
-  - One focused responsibility; singular interaction if any (e.g., click, toggle).
-  - Examples: Button, Avatar, Card, HamburgerMenu, MenuItem.
-  - Rule: Vary via atoms and simple inputs; no complex child composition.
+### Spec Authoring
+All specs in `specs/components/` and `specs/examples/` are the source of truth for tests. Acceptance criteria in each spec map to Playwright tests — intent-based, not pixel-perfect. Future work lives in the adjacent todo file; promote items into the spec before implementing.
 
-- **Organisms** — Do they vary in their contents (molecules/atoms)?
-  - Organisms contain and orchestrate molecules and may accept simple props (text, URLs).
-  - Most props are defined by the molecules stuffed into them, not by the organism itself.
-  - Multi-part interactions, layout orchestration, state management for multiple regions.
-  - Examples: Header, Footer, Layout, Menu, Modal, Container.
-  - Rule: Props describe what goes inside, not the organism's behavior.
-
-## Specs & Tests
-- All specs in `specs/components/*/*.spec.md` and `specs/examples/*.spec.md` are the source of truth for tests.
-- Acceptance Criteria in each spec must be mapped to Playwright tests (visual and interaction). Prefer intent-based assertions over pixel-perfect.
-- Backlogs live in `*.todo.md` next to each spec. Promote items into specs before implementing.
-- Reference the Authoring Rules above when creating new components to determine their atomicity.
-
-## Acceptance Criteria (Meta)
-1. All components in the library follow atomic design rules based on Authoring Rules above.
+## Acceptance
+1. All components in the library follow the atomic taxonomy defined in this spec.
 2. Specs and tests reference this taxonomy when authoring and reviewing changes.
-3. Tokens are documented as atoms and remain non-rendering.
+3. Atoms are documented as non-rendering primitives that export no UI.

@@ -1,44 +1,36 @@
-# Colors — Theme Tokens Display
+# Colors — Theme Token Display
 
-## Overview
-- Purpose: Visualize all theme color tokens in a grid format so designers and developers can see the current color palette.
-- Implementation: Fetches computed CSS custom property values from `--foreground`, `--background`, `--primary`, `--secondary`, `--confirm`, `--danger`, `--overlay` and renders a labeled color card for each.
-- Design system integration: Directly renders theme tokens from `theme.css`.
+## Purpose
+The Colors example displays all theme color tokens as labeled swatches, giving designers and developers a visual reference for the current color palette at a glance.
 
-## Page Structure
-- Title: "Theme colors"
-- Layout: Flex grid with horizontal wrapping.
-- Cards: Each color token displays a 120px tall swatch, token name, and resolved hex/color value.
-- Padding: 24px outer container.
-- Card spacing: 12px gap between cards.
+## Related
+- [Design System Base Spec](../design-system.spec.md)
 
-## Visuals
-- Card size: 220px wide (adjusts with flex wrap).
-- Swatch height: 120px (full color display).
-- Text: Token name (12px, gray #666) above monospace value (regular size).
-- Border: 1px solid #eee; 8px border-radius.
-- Background: Page background uses `var(--background)`.
+## Contract
 
-## Interactions
-- Static display; no interactive elements.
-- All token values are read from the DOM at mount via `getComputedStyle`.
+### Inputs
+The current theme's color tokens, read from the computed styles of the rendered page.
 
-## Accessibility
-- Role: Informational page; heading conveyed via `<h1>` element.
-- Purpose: Reference tool for designers/developers; not a user-facing UI.
-- Color swatches paired with token names for those unable to rely on color alone.
+### Outputs
+A grid of color swatches, each showing the token's name and resolved color value.
 
-## Acceptance Criteria (Source of Truth for Tests)
-1. Page renders a `<h1>` with "Theme colors".
-2. One color card is rendered for each token in `cssTokenNames`.
-3. Each card displays the token name and its computed value.
-4. Swatch height is ~120px; card width is ~220px.
-5. Cards wrap horizontally with 12px spacing.
-6. No errors when tokens are missing or resolve to `"(not set)"`.
+### Guarantees / Constraints
+- One swatch is rendered per defined color token.
+- When a token is missing or unresolved, the swatch displays a graceful placeholder rather than erroring.
 
-## Current Story & Test Mapping
-- Story: Examples/Colors — "ColorGrid".
-- Intent: Confirm all theme tokens are visible and render without errors.
+## Behavior
 
-## Backlog
-- Potential future enhancements: contrast checker, export color values, copy-to-clipboard for token names.
+On load, the page reads the resolved value of each color token from the page's computed styles and builds a swatch for each. The display is static — there are no interactions.
+
+## Interface
+
+A titled page with a flexible wrapping grid of color swatches. Each swatch shows a solid block of the token's color above its name and resolved value. Swatches wrap horizontally to fill available space.
+
+This page is a developer and designer reference tool, not a user-facing feature.
+
+## Acceptance
+1. The page title is visible.
+2. One swatch renders for each defined color token.
+3. Each swatch displays the token name and its resolved color value.
+4. Swatches arrange in a wrapping grid layout.
+5. Missing or unresolved tokens display a graceful fallback.

@@ -1,120 +1,73 @@
 # Nonsense Atom — Spec
 
-## Overview
-The Nonsense Atom is a utility module that provides whimsical, semi-randomized English nonsense text for use in example pages and composed components. Unlike traditional "lorem ipsum" placeholder text, the nonsense copy aims to feel more natural while remaining intentionally meaningless, adding personality to mockups and preview sites without real content.
-
-The Nonsense Atom is an **atom** in the atomic design sense: it is a non-rendering, zero-dependency utility that exports data and simple accessor functions. It does not render HTML, accept props, or compose with other components.
-
 ## Purpose
-- Provide realistic-looking but meaningless text for example pages (e.g., portfolio site, address form).
-- Avoid repetitive placeholder text; support multiple variants per category to feel "fleshed out."
-- Enable whimsical, on-brand personality in mockup content.
-- Allow example pages to be self-contained and data-driven without hardcoding nonsense strings.
+The Nonsense Atom provides whimsical, semi-randomized English placeholder text for use in example pages and composed components. Unlike generic filler text, nonsense copy feels natural while remaining intentionally meaningless, giving mockups personality without real content.
 
-## Categories
+It is an atom in the atomic design sense: a non-rendering, zero-dependency utility that exports text data and simple accessor functions. It does not render HTML, accept component props, or compose with other components.
 
-### Titles & Headers
-- `shortTitle`: 2–4 word titles (e.g., "Circular Thinking", "Blue Momentum")
-- `longTitle`: 5–8 word subtitles or section headers (e.g., "Empowering Teams Through Data Visualization")
+## Related
+- [Design System Base Spec](../design-system.spec.md)
 
-### Paragraphs
-- `shortParagraph`: 1–2 sentences, ~40–60 words
-- `longParagraph`: 3–4 sentences, ~100–150 words
+## Contract
 
-### Names & Identities
-- `personName`: Individual names (e.g., "Morgan Vex", "Jamie Stohl")
-- `companyName`: Business or organization names (e.g., "Synapse Labs", "Echo & Co")
-- `jobTitle`: Professional roles (e.g., "Lead Vibe Architect", "Chaos Coordinator")
-- `awardName`: Award or recognition names (e.g., "Golden Insight Award", "Innovator's Circle Badge")
+### Inputs
+- A category name identifying the type of content to retrieve (for example, a person's name, a job title, or a short paragraph).
+- Optional count — how many items to return as an array instead of one.
+- Optional seed — a string for reproducible random selection across calls.
 
-### Content & Descriptions
-- `projectName`: Project or product names (e.g., "Wavelength", "Nexus Proto")
-- `skillName`: Individual skill or technology names (e.g., "Intent Mapping", "Color Psychology")
-- `serviceName`: Service or offering names (e.g., "Brand Harmonization", "Strategic Insight Delivery")
-- `testimonialQuote`: Short, glowing testimonial snippet (~20–40 words)
-- `accomplishment`: Outrageous, nonsensical achievement or responsibility (e.g., "Tripled team morale through interpretive meetings")
+### Outputs
+- A single random string from the requested category, or an array of strings if a count is requested.
+- Date values return a human-readable date range string.
+- Abstract image values return a minimal SVG suitable for use as an image source or CSS background.
 
-### Utility
-- `introText`: Opening narrative for intro/hero sections (~30–50 words, upbeat)
-- `ctaText`: Action text for buttons or links (e.g., "Unlock the Chaos", "Begin the Journey", "Dive Deeper")
-- `socialSiteName`: Fictional social or web platform names (e.g., "SpaceBook", "ThoughtWave", "VortexNow")
-- `abstractImage`: Minimal, procedurally-generated abstract SVG (returns an SVG data URL or inline SVG string for use as background or img src)
-- `date`: Programmatically-generated date or date range (with option to specify constraints, e.g., "last 2 years"). Dates should be realistic but arbitrary.
+### Guarantees / Constraints
+- All data is static and bundled; no network requests are made.
+- The atom is side-effect-free and safe for server-side rendering.
+- Each category contains at least ten distinct entries to provide meaningful variety.
+- When a seed is provided, results are reproducible across calls with the same seed.
 
-## API & Usage
+## Behavior
 
-Each category is accessed as a property or function. The atom exports:
+When called with a category name, the atom returns a random entry from that category's pool.
 
-```
-getNonsense(category: string): string
-```
+**With count:** Returns an array of the requested number of entries.
 
-or
+**With seed:** Returns the same result every time the same seed is used, enabling consistent previews across builds.
 
-```
-getNonsense(category: string, options?: { count?: number; seed?: string }): string | string[]
-```
+**Date category:** Accepts optional range constraints and returns a realistic date or date range formatted naturally (for example, "Jan 2024 – Sep 2025").
 
-**Examples:**
-- `getNonsense('shortTitle')` → `"Circular Thinking"`
-- `getNonsense('personName', { count: 3 })` → `["Morgan Vex", "Jamie Stohl", "Alex Ren"]`
-- `getNonsense('abstractImage')` → `"data:image/svg+xml,…"` or inline SVG
-- `getNonsense('date', { months: 24 })` → `"Jan 2024 – Sep 2025"`
+**Image category:** Returns a minimal abstract SVG suitable for use as an image source.
 
-**Optional parameters:**
-- `count`: Return an array of N items instead of one.
-- `seed`: Optional seed for reproducible randomness (useful in tests or for consistent mockups across builds).
+## Interface
 
-## Data Structure
+### Content Categories
 
-Each category must have a list of 10+ entries to provide variety. For example:
+**Titles and headers:**
+- Short titles — two to four word phrases.
+- Long titles — longer subtitles or section headers.
 
-**shortTitle entries:**
-- "Circular Thinking"
-- "Blue Momentum"
-- "Silent Protocol"
-- "Quantum Drift"
-- "Echo Nexus"
-- …(10+ total)
+**Paragraphs:**
+- Short paragraphs — one to two sentences.
+- Long paragraphs — three to four sentences.
 
-**jobTitle entries:**
-- "Lead Vibe Architect"
-- "Chaos Coordinator"
-- "Senior Narrative Engineer"
-- "Chief Paradox Officer"
-- …(10+ total)
+**Names and identities:**
+- Person names, company names, job titles, award names.
 
-**accomplishment entries:**
-- "Tripled team morale through interpretive meetings"
-- "Solved invisible problems with aggressive optimism"
-- "Unified conflicting timelines via emoji consensus"
-- …(10+ total)
+**Content and descriptions:**
+- Project names, skill names, service names, testimonial quotes, accomplishments.
 
-## Constraints & Non-Goals
+**Utility:**
+- Intro text, call-to-action text, fictional social platform names, abstract images, and date ranges.
 
-- **No rendering**: The atom does not export React components or DOM elements. It only provides strings and data.
-- **No HTTP/API calls**: All data is static and bundled.
-- **No props or configuration**: The atom is immutable. Callers invoke functions with optional parameters only.
-- **No backend state**: Placeholder copy is stateless and side-effect-free.
-- **No image generation beyond SVG**: Abstract images are minimal SVGs, not complex graphics. Focus on simplicity.
-- **Non-brand-specific**: Placeholder copy should feel quirky and whimsical but not tied to any real brand or product.
+### Usage
+The atom exposes a single function that accepts a category name and returns a random entry. Callers may request multiple entries at once or supply a seed for reproducible results.
 
-## Acceptance Criteria
-
-1. Atom exports a `getNonsense()` function that accepts a category string.
-2. Each category has at least 10 diverse, whimsical English entries.
-3. `getNonsense(category)` returns a single random entry.
-4. `getNonsense(category, { count: N })` returns an array of N random entries.
-5. Optional `seed` parameter allows reproducible randomness across calls with the same seed.
-6. Date entries are realistic (within user-specified range) and formatted naturally (e.g., "Jan 2024 – Sep 2025").
-7. Abstract images are valid SVG data URLs or inline SVG strings suitable for use as `<img src>` or CSS `background-image`.
-8. All nonsense copy aligns with the design system's personality: quirky, whimsical, English, and intentionally meaningless.
-9. No repeated entries are picked consecutively (optional but encouraged for smoother variety).
-10. Atom is SSR-safe (no `window`, no browser APIs at module level).
-
-## Future Extensions
-
-- **Localization**: Support placeholder categories in other languages (e.g., `shortTitle_fr`, `jobTitle_es`).
-- **Custom palettes**: Allow callers to provide their own entry lists per category.
-- **Weighted randomness**: Some entries could be weighted to appear more/less frequently.
-- **Emoji support**: Add emoji-only categories (e.g., `emoji_mood`, `emoji_skill`).
+## Acceptance
+1. The atom exports a function that accepts a category name and returns a string.
+2. Each category has at least ten distinct entries.
+3. Requesting a count returns an array of that many entries.
+4. Supplying the same seed always returns the same result.
+5. Date entries are formatted naturally and fall within realistic ranges.
+6. Image entries are valid minimal SVGs suitable for use as image sources.
+7. All copy aligns with the design system's personality: quirky, whimsical, and intentionally meaningless.
+8. The atom works correctly in server-side rendering environments.

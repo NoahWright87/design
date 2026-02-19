@@ -1,166 +1,65 @@
-# Motion Lab — Interactive Component Motion Tuning
+# Motion Lab — Interactive Motion Tuning
 
-## Overview
-- Purpose: Visual, interactive playground for designing and tuning component motion (animations) with real-time preview and portable CSS export.
-- Implementation: Single-adapter pages in Storybook; separate story per component (Button, Modal) to avoid React hooks conflicts.
-- Design system integration: Uses motion knobs (duration, easing, transform) to generate CSS custom properties and keyframes; adapters encapsulate component-specific motion logic.
+## Purpose
+Motion Lab is an interactive playground for designing and tuning component animations. It lets developers and designers adjust motion parameters in real time, preview the result on a live component, and export the resulting CSS for use in the design system.
 
-## Architecture
+## Related
+- [Motion tokens](../atoms/motion.spec.md)
+- [Button component](../components/molecules/button/button.spec.md)
+- [Modal component](../components/organisms/modal/modal.spec.md)
 
-### Core Concepts
-- **MotionAdapter**: Defines motion interface for a single component. Contains:
-  - Knobs: Array of motion controls (range, select, toggle).
-  - Presets: Named motion configurations.
-  - `renderPreview()`: Renders live component with current motion values.
-  - `generateCss()`: Outputs portable CSS snippet based on current settings.
+## Contract
 
-- **MotionLab Shell**: Generic UI container that:
-  - Displays preset selector.
-  - Renders knob controls (sliders, dropdowns, toggles).
-  - Shows easing curve graphs for cubic-bezier knobs.
-  - Displays sticky component preview.
-  - Outputs copyable generated CSS.
+### Inputs
+- A motion adapter that defines knobs, presets, and a preview component for a specific component.
+- User interaction: adjusting knobs (sliders, dropdowns, toggles) and selecting presets.
 
-### Knob Types
-1. **Range**: Numeric slider (min/max/step).
-2. **Select**: Dropdown menu (fixed options).
-3. **Toggle**: Boolean switch.
-4. **Bezier knobs** (via Range): Four sliders (x1, y1, x2, y2) for cubic-bezier curves; includes visual easing graph.
+### Outputs
+- A live preview of the component with the current motion values applied.
+- A generated CSS snippet reflecting the current settings, ready to copy and paste.
 
-### Layout
-- Header: Component name and subtitle.
-- **Sticky Preview**: Always visible as user scrolls; renders real component with current motion applied via CSS variables.
-- Controls Grid: 2-column layout (1 column on mobile).
-  - Presets section: Select current preset.
-  - Knob sections: Grouped by category (e.g., "Hover", "Press").
-  - Easing sections: Bezier graph + 4 sliders per easing curve.
-  - Generated CSS: Read-only textarea with copy button.
+### Guarantees / Constraints
+- One adapter per story — multiple adapters in the same story are not supported.
+- The preview always reflects the current knob values in real time.
+- Generated CSS always matches what is shown in the preview.
+- The generated CSS includes a reduced-motion media query.
 
-## API
+## Behavior
 
-### MotionLab Component
-```tsx
-interface MotionLabProps {
-  adapter: MotionAdapter;
-}
+**Opening the lab:** The lab renders with the default preset applied and all knobs set to the preset's values.
 
-export function MotionLab({ adapter }: MotionLabProps)
-```
+**Selecting a preset:** All knobs update to the preset's values and the preview refreshes immediately.
 
-### MotionAdapter Interface
-```tsx
-interface MotionAdapter {
-  id: string;
-  displayName: string;
-  knobs: MotionKnob[];
-  presets: MotionPreset[];
-  renderPreview: (values: MotionValues) => ReactElement;
-  generateCss: (values: MotionValues) => string;
-}
+**Adjusting a knob:** The preview updates as the knob changes; the generated CSS updates to match.
 
-interface MotionKnob {
-  id: string;
-  label: string;
-  type: "range" | "select" | "toggle";
-  defaultValue: number | string | boolean;
-  min?: number;
-  max?: number;
-  step?: number;
-  options?: readonly string[];
-}
+**Copying CSS:** The current CSS snippet is copied to the clipboard and a brief confirmation is shown.
 
-interface MotionPreset {
-  name: string;
-  values: Record<string, number | string | boolean>;
-}
-```
+**Current adapters:**
+- **Button** — controls hover lift, press scale and squish, and timing curves for press and release.
+- **Modal** — controls enter and exit duration, easing curves, and transform type (fade, scale-fade, slide-fade).
 
-### UI Components (Reusable)
-- **Range**: Slider with label and numeric readout.
-- **Select**: Dropdown with label.
-- **Toggle**: Switch with label.
-- **EasingGraph**: SVG cubic-bezier curve visualization with control points and grid lines.
-- **GeneratedCss**: Textarea with copy-to-clipboard button.
+## Interface
 
-## Current Adapters
+The lab is organized into three main areas:
 
-### Button Motion Adapter
-- **Component**: Button (hover, press, release states).
-- **Knobs**:
-  - Hover: lift (px), scale.
-  - Press: scale, squish X/Y, press mode (shrink/squish).
-  - Timing: press duration (ms), release duration (ms).
-  - Easing: separate press and release cubic-bezier curves (x1, y1, x2, y2 each).
-- **Presets**: 5 presets (No motion, Smooth press + smooth release, Smooth press + snap release, Subtle bounce, Extreme bounce).
-- **Story**: `Labs / Motion Lab / Button`.
+**Header:** Component name and description.
 
-### Modal Motion Adapter
-- **Component**: Modal (enter/exit animations).
-- **Knobs**:
-  - Enter: duration (ms), cubic-bezier (x1, y1, x2, y2).
-  - Exit: duration (ms), cubic-bezier (x1, y1, x2, y2).
-  - Transform type: select (fade-only, scale-fade, slide-fade).
-- **Presets**: 4 presets (Fade in/out, Scale + fade smooth, Scale + fade bouncy, Slide + fade).
-- **Story**: `Labs / Motion Lab / Modal`.
+**Sticky preview:** The live component, always visible as the user scrolls through controls.
 
-## Interactions
+**Controls panel:** Preset selector at the top, then grouped knob sections below. Sliders control numeric values; dropdowns select named options; toggles switch boolean settings. Easing knobs include a visual curve graph alongside the sliders.
 
-### User Workflow
-1. Open Motion Lab story for desired component (e.g., Button).
-2. Select a preset from the "Presets" dropdown.
-3. Adjust individual knobs (sliders/toggles) to fine-tune motion.
-4. Watch live preview update in sticky preview panel.
-5. Copy generated CSS from the bottom.
-6. Paste CSS into component styles (or hand to developer).
+**Generated CSS:** A read-only text area at the bottom showing the exportable CSS, with a copy button.
 
-### Preview Behavior
-- Preview is always visible (sticky position) as user scrolls through controls.
-- Component reflects current motion values in real-time.
-- Motion applies via CSS custom properties and inline styles.
+On small screens, the control grid collapses to a single column.
 
-### CSS Generation
-- Outputs portable CSS snippet with all values resolved (no placeholders).
-- Includes keyframes, transitions, easing functions.
-- Respects `prefers-reduced-motion` media query (animations disabled if user prefers).
-- Output updates live as knobs change.
-
-## Accessibility
-- All controls have associated labels (range, select, toggle).
-- Easing graph is decorative (aria-label on SVG).
-- Copy button provides visual feedback ("Copied!" message).
-- Sticky preview has sufficient contrast and padding.
-- Keyboard navigation: all controls are focusable (native inputs).
-
-## Constraints & Non-Goals (Current)
-- No custom easing editor (cubic-bezier only; presets for common curves).
-- No color/layout animation (motion/transform only).
-- No animation library integration (CSS-first approach).
-- No animation timeline scrubber (keyframe preview).
-- No multi-component grouping (one adapter per story).
-
-## Acceptance Criteria (Source of Truth for Tests)
-1. MotionLab renders with correct adapter name in header.
-2. Preset dropdown displays all presets; selecting one updates all knobs.
-3. Each knob control (range, select, toggle) updates its value on user input.
-4. Easing graph updates visually as bezier knobs change.
-5. Preview component updates in real-time as values change.
-6. Generated CSS updates live and reflects current settings.
-7. Copy button copies CSS to clipboard and shows feedback.
-8. Sticky preview remains visible when scrolling through controls.
-9. Button Motion: renders Button with motion applied; presets include bounce/squish effects.
-10. Modal Motion: renders Modal with enter/exit animations; transform type selector works.
-
-## Current Example & Story Mapping
-- Story: `Labs / Motion Lab / Button` — Interactive Button motion tuning.
-  - Preset: "Smooth press + snap release (bouncy)" (default).
-  - Controls: Hover lift/scale, press scale, squish, timing, easing curves.
-  - Intent: Design playful button interactions with overshoot on release.
-
-- Story: `Labs / Motion Lab / Modal` — Interactive Modal motion tuning.
-  - Preset: "Scale + fade (smooth)" (default).
-  - Controls: Enter/exit duration, easing curves, transform style.
-  - Intent: Design modal entrance and exit animations.
-
-## Backlog
-- See `specs/labs/motion.todo.md` (future enhancements).
-
+## Acceptance
+1. The lab renders with the adapter's name in the header.
+2. The preset dropdown shows all available presets; selecting one updates all knobs.
+3. Each knob type (slider, dropdown, toggle) updates its value on user input.
+4. Easing curve graphs update visually as bezier knobs change.
+5. The preview component updates in real time as values change.
+6. The generated CSS updates live and matches the preview.
+7. The copy button copies the CSS to the clipboard and shows brief feedback.
+8. The sticky preview remains visible while scrolling through the controls panel.
+9. The Button adapter renders a button with motion applied; bounce and squish presets work.
+10. The Modal adapter renders a modal with enter and exit animations; the transform type selector works.

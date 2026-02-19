@@ -2,7 +2,13 @@
 
 Purpose: Capture future enhancements and exploratory ideas. Items are aspirational until promoted into the main spec.
 
-## Future Ideas
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 - Loading state: Spinner and `aria-busy` while preventing duplicate actions.
   - Rough acceptance: Visual indicator; keyboard/pointer activation paused; announce state.
 - Animation presets: Predefined motion styles (e.g., bounce, pulse) applied via prop.
@@ -12,7 +18,7 @@ Purpose: Capture future enhancements and exploratory ideas. Items are aspiration
 - Icon library integration: Built-in icon set for the design system.
   - Rough acceptance: Icons are React components; consistent sizing and coloring.
 
-## Open Questions
+### Open Questions
 - Loading state UX: Should spinner replace icon or label, or overlay the button?
 - Animation preset names and visual styles.
 - Minimum supported browsers and focus styles (currently assumes modern evergreen browsers).

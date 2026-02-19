@@ -1,6 +1,12 @@
 # Link — Backlog
 
-## Ideas
+## Sooner
+- [ ] TBD
+
+## Later
+- [ ] TBD
+
+## Backlog
 - Styling variants: Underline, no-underline, contrast (for light/dark backgrounds).
 - External link indicator: Auto-detect external URLs and display icon/aria-label.
 - Router integration: Support NextLink or React Router integration props.

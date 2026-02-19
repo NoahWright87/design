@@ -7,8 +7,16 @@ This directory contains human-readable, plain Markdown specifications that defin
 - Serve as instructions for implementation and refinement by an LLM and by engineers.
 - Drive tests: acceptance criteria in specs should be directly validated by automated tests (e.g., Playwright visual and interaction tests).
 
+## Core rules
+- Each spec directory has a root spec and a neighboring todo spec.
+	- In this repo, root specs are typically named `<name>.spec.md` with a matching `<name>.todo.md`.
+- Additional specs use `{feature}.spec.md` and follow the same structure as the root spec.
+- Specs describe current, shippable behavior; future work belongs in the todo spec.
+- Every spec includes a **Related** section that links only to other specs (no todo links).
+- If a spec grows beyond 300 lines, it should be split. If it reaches 500 lines, it must be split.
+
 ## Directory Structure
-- `design-system.spec.md` — Root spec describing the entire system and atomic design philosophy.
+- `.spec.md` — Root spec describing the entire system and atomic design philosophy.
 - `components/` — Per-component specs (e.g., `button/button.spec.md`).
 - `examples/` — Higher-level, composed example specs (e.g., `address-form.md`, `portfolio-site.md`). Use these to describe multi-component pages or flows.
 
@@ -16,13 +24,14 @@ This directory contains human-readable, plain Markdown specifications that defin
 - Components follow their atomic level implicitly via composition; we do not enforce directory prefixes for atoms/molecules/organisms at this time.
 - Specs live under `specs/components/<name>/*.md` and examples under `specs/examples/*.md`.
 - Each component has a `.spec.md` for current behavior and a `.todo.md` for future backlog items.
-- Root philosophy and design decisions live in `design-system.spec.md` and `design-system.todo.md`.
+- Root philosophy and design decisions live in `.spec.md` and `.spec.todo.md`.
 
 ## Authoring Conventions
 - Format: Plain Markdown.
 - Scope: Describe the current behavior/appearance (not future aspirations). Capture future ideas in a per-component backlog file (`*.todo.md`).
 - Source-of-truth: Acceptance Criteria sections define what tests must verify. Tests should map to these criteria explicitly.
 - Be specific but pragmatic: Prefer intent-based assertions over pixel-perfect expectations to allow platform differences.
+- Use the template in `specs/~template.spec.md` for new specs and ensure each spec includes a **Related** section.
 
 ### Backlog Files (`*.todo.md`)
 - Purpose: Store future enhancements, half-baked ideas, and under-described features for each component.
