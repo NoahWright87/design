@@ -1,7 +1,7 @@
 # Avatar — Backlog
 
 ## Sooner
-- [ ] TBD
+- [ ] Interaction animations: Add hover, press (mousedown), and release (mouseup) animations. Should feel distinct from Button — whimsical but not bouncy.
 
 ## Later
 - [ ] TBD

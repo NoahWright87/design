@@ -1,14 +1,15 @@
 # Link — Backlog
 
 ## Sooner
-- [ ] TBD
+- [ ] `isExternal` prop: Marks a link as external; auto-adds `target="_blank" rel="noopener noreferrer"` and optionally shows an external-link icon. (Promoted from Backlog.)
+- [ ] Animated underline: Replace static underline with an on-hover slide-in animation.
+- [ ] Icon slots: Leading and trailing icon props for decorated links (e.g., download arrow, back chevron). (Promoted from Backlog.)
+- [ ] Variants: Add `subtle` (muted color, underline on hover only) and `prominent` (full color always) variants. (Promoted from Backlog.)
+- [ ] Router `as` prop: Support rendering as a Next.js `<Link>` or React Router `<Link>` via an `as`/component prop. (Promoted from Backlog.)
+- [ ] `isAffiliate` prop: Opens a disclosure popup explaining the affiliate relationship before navigating.
 
 ## Later
 - [ ] TBD
 
 ## Backlog
-- Styling variants: Underline, no-underline, contrast (for light/dark backgrounds).
-- External link indicator: Auto-detect external URLs and display icon/aria-label.
-- Router integration: Support NextLink or React Router integration props.
-- Icon support: Leading/trailing icon props.
 - Disabled state: Non-interactive link appearance.

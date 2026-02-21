@@ -1,7 +1,10 @@
 # Footer — Backlog
 
 ## Sooner
-- [ ] TBD
+- [ ] Left/center/right slots: Mirror Header's slot structure for composable content layout.
+- [ ] `bottom` slot: Conditionally rendered bottom strip (only shows if populated); small, muted styling intended for legal text, copyright, etc.
+- [ ] `hasBottomSeparator` prop: Toggles a border between the main footer area and the bottom slot.
+- [ ] `isSticky` prop: Optionally anchors the footer to the bottom of the viewport when page content is shorter than the screen height.
 
 ## Later
 - [ ] TBD

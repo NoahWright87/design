@@ -1,7 +1,7 @@
 # Card — Backlog
 
 ## Sooner
-- [ ] TBD
+- [ ] Elevated by default: Change default visual treatment to slightly elevated (subtle shadow). Add a `flat` prop to opt out.
 
 ## Later
 - [ ] TBD

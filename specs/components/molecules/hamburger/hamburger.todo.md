@@ -1,13 +1,13 @@
 # HamburgerMenu — Backlog
 
 ## Sooner
-- [ ] TBD
+- [ ] Refactor into `ToggleIcon`: Split HamburgerMenu into a standalone `ToggleIcon` molecule (see `specs/components/molecules/toggleicon/toggleicon.todo.md`) and update `Menu` to accept it as a trigger prop. `HamburgerMenu` should be deprecated/aliased.
 
 ## Later
 - [ ] TBD
 
 ## Backlog
-- Size variants: Configurable size (small, medium, large).
-- Color variants: Custom colors or theme token integration.
-- Animation options: Configurable animation style (rotate, arrow, etc.).
-- Label customization: Custom aria-label or text.
+- ~~Size variants~~ → Will be handled by `ToggleIcon`.
+- ~~Color variants~~ → Will be handled by `ToggleIcon`.
+- ~~Animation options~~ → Will be handled by `ToggleIcon`.
+- ~~Label customization~~ → Will be handled by `ToggleIcon`.

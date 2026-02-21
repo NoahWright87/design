@@ -1,7 +1,7 @@
 # Menu — Backlog
 
 ## Sooner
-- [ ] TBD
+- [ ] `ToggleIcon` trigger: Accept a `ToggleIcon` (or any custom component) as a trigger prop, decoupling the toggle visual from menu behavior. Replaces the built-in hamburger icon from `HamburgerMenu`.
 
 ## Later
 - [ ] TBD
