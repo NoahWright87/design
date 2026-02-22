@@ -26,6 +26,7 @@ This file documents planned and completed changes for the repository.
 - **Avatar:** Hover (tilt + float), press (counter-tilt + squish), release (spring) animations on interactive avatars.
 - **Container:** `noGutters` prop; default adds subtle side-shadow treatment on large screens.
 - **Contact form:** Fixed placeholder text re-randomizing on every keystroke (values now stable via useState).
+- **Tooling:** Added `/knock-out-todos` command; updated AGENTS.md with low-friction tool preference guidance.
 
 
 ## Version history

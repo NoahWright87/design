@@ -32,6 +32,15 @@ This file provides explicit, agent-focused guidance for working in this reposito
   - Example pages are composed pages that show several components together (e.g., a landing page, a color swatches page, or a full-page layout demo).
 - Simple component stories belong near the component or under the main `stories/` directory structure.
 
+## Prefer low-friction tools
+Choose tools that require the least human approval, so work flows without interruptions.
+
+- **Read and Grep** — use these to inspect files and search the codebase. They are always auto-approvable.
+- **Edit and Write** — use these for all file changes, including marking TODO items done (`- [ ]` → `- [x]`), updating the CHANGELOG, and editing CSS or source files. These require no terminal and are generally auto-approvable.
+- **Bash** — reserve for running build, typecheck, and test commands (`npm run typecheck`, `npm run build`). Do not use Bash for file reading, searching, or editing — the dedicated tools are faster and always approved.
+
+The practical rule: if an action can be done with Read, Grep, Edit, or Write, do it that way. Bash is a last resort for things those tools cannot do.
+
 ## Commands and environment
 - Use the repository root as the working directory for shell commands.
 - On Windows (PowerShell) use `cd` to change directories. Example:
