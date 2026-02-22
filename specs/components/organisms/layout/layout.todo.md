@@ -1,7 +1,7 @@
 # Layout — Backlog
 
 ## Sooner
-- [ ] TBD
+- [ ] Evaluate removing Layout: Layout currently acts as a thin wrapper with unclear value-add. Assess whether it can be removed in favor of composing Header, Footer, and Container directly. If removed, update all usages and the export barrel.
 
 ## Later
 - [ ] TBD

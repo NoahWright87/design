@@ -9,4 +9,4 @@
 - [x] Random disabled cursor: When `disabled`, optionally show a randomly selected "no" emoji cursor (🙅 ❌ ⛔ 🚫) via a `randomDisabledCursor` prop.
 
 ## Backlog
-- [ ] TBD
+- [ ] Error layout shift: When the error message appears the label breaks to a 2nd line, shifting layout. Fix so the error state does not affect surrounding element positions (see form-validation.todo.md for shared approach options).
