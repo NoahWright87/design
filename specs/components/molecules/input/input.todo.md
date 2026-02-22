@@ -5,7 +5,7 @@
 - [ ] Required field validation: Show error state when a required field is typed into and then cleared.
 
 ## Later
-- [ ] Random disabled cursor: When `disabled`, optionally show a randomly selected "no" emoji cursor (🙅 ❌ ⛔ 🚫) via a `randomDisabledCursor` prop.
+- [x] Random disabled cursor: When `disabled`, optionally show a randomly selected "no" emoji cursor (🙅 ❌ ⛔ 🚫) via a `randomDisabledCursor` prop.
 
 ## Backlog
 - [ ] TBD

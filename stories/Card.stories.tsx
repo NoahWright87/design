@@ -24,7 +24,11 @@ const meta: Meta<typeof Card> = {
     },
     elevated: {
       control: "boolean",
-      description: "Apply more shadow/elevation",
+      description: "Apply more shadow/elevation (on by default)",
+    },
+    flat: {
+      control: "boolean",
+      description: "Remove elevation; render with base minimal shadow",
     },
     footer: {
       control: "text",
@@ -44,6 +48,14 @@ export const Default: Story = {
   args: {
     title: "Card Title",
     children: "This is a card with title and content.",
+  },
+};
+
+export const Flat: Story = {
+  args: {
+    title: "Flat Card",
+    children: "Opt out of elevation with the flat prop.",
+    flat: true,
   },
 };
 

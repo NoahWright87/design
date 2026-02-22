@@ -18,6 +18,9 @@
 .nw-header--sticky{ position: sticky; }
 .nw-header--fixed{ position: fixed; }
 
+/* Shadow opt-out */
+.nw-header--no-shadow{ box-shadow: none; }
+
 .nw-header__slot{
   display: flex;
   align-items: center;

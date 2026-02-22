@@ -1,5 +1,6 @@
 import * as React from "react";
 import "./select.css";
+import { pickRandomDisabledCursor } from "../_shared/randomDisabledCursor";
 
 export type SelectProps = {
   label: string;
@@ -12,6 +13,8 @@ export type SelectProps = {
   disabled?: boolean;
   required?: boolean;
   placeholder?: string;
+  /** Show a randomly selected "no" emoji cursor when disabled. */
+  randomDisabledCursor?: boolean;
   style?: React.CSSProperties;
 };
 
@@ -26,8 +29,13 @@ export function Select({
   disabled = false,
   required = false,
   placeholder,
+  randomDisabledCursor = false,
   style,
 }: SelectProps) {
+  const [disabledCursor] = React.useState<string>(
+    () => (randomDisabledCursor && disabled) ? pickRandomDisabledCursor() : ""
+  );
+
   const classNames = [
     "nw-select",
     error && "nw-select--error",
@@ -36,8 +44,13 @@ export function Select({
     .filter(Boolean)
     .join(" ");
 
+  const rootStyle: React.CSSProperties = {
+    ...(disabledCursor ? { cursor: disabledCursor } : {}),
+    ...style,
+  };
+
   return (
-    <label className={classNames} style={style}>
+    <label className={classNames} style={rootStyle}>
       <span className="nw-select__label">
         {label}
         {required && <span className="nw-select__required">*</span>}
@@ -51,9 +64,10 @@ export function Select({
           onChange={onChange}
           disabled={disabled}
           required={required}
+          style={disabledCursor ? { cursor: "inherit" } : undefined}
         >
           {placeholder && (
-            <option value="" disabled>
+            <option value="">
               {placeholder}
             </option>
           )}

@@ -1,5 +1,6 @@
 import * as React from "react";
 import "./input.css";
+import { pickRandomDisabledCursor } from "../_shared/randomDisabledCursor";
 
 export type InputProps = {
   label: string;
@@ -12,6 +13,8 @@ export type InputProps = {
   error?: string;
   disabled?: boolean;
   required?: boolean;
+  /** Show a randomly selected "no" emoji cursor when disabled. */
+  randomDisabledCursor?: boolean;
   style?: React.CSSProperties;
 };
 
@@ -26,8 +29,13 @@ export function Input({
   error,
   disabled = false,
   required = false,
+  randomDisabledCursor = false,
   style,
 }: InputProps) {
+  const [disabledCursor] = React.useState<string>(
+    () => (randomDisabledCursor && disabled) ? pickRandomDisabledCursor() : ""
+  );
+
   const classNames = [
     "nw-input",
     error && "nw-input--error",
@@ -36,8 +44,13 @@ export function Input({
     .filter(Boolean)
     .join(" ");
 
+  const rootStyle: React.CSSProperties = {
+    ...(disabledCursor ? { cursor: disabledCursor } : {}),
+    ...style,
+  };
+
   return (
-    <label className={classNames} style={style}>
+    <label className={classNames} style={rootStyle}>
       <span className="nw-input__label">
         {label}
         {required && <span className="nw-input__required">*</span>}
@@ -52,6 +65,7 @@ export function Input({
         onChange={onChange}
         disabled={disabled}
         required={required}
+        style={disabledCursor ? { cursor: "inherit" } : undefined}
       />
       {error && <span className="nw-input__error">{error}</span>}
     </label>

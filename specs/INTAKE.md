@@ -16,4 +16,4 @@ When you have emptied the submissions section below, leave behind a single bulle
 
 ## Submissions
 
-- *Add your ideas here*.
+- Make sure Select can scroll if there are a bunch of items.  Maybe a prop to control that limit?

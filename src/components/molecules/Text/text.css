@@ -1,0 +1,27 @@
+.nw-text--truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.nw-text--clamp {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  /* -webkit-line-clamp set via inline style */
+}
+
+.nw-text--align-left    { text-align: left; }
+.nw-text--align-center  { text-align: center; }
+.nw-text--align-right   { text-align: right; }
+.nw-text--align-justify { text-align: justify; }
+
+.nw-text--balance {
+  text-wrap: balance;
+}
+
+/* Tone variants */
+.nw-text--tone-muted   { color: color-mix(in srgb, var(--foreground, #000) 50%, transparent); }
+.nw-text--tone-subtle  { color: color-mix(in srgb, var(--foreground, #000) 70%, transparent); }
+.nw-text--tone-error   { color: var(--danger, #dc2626); }
+.nw-text--tone-success { color: var(--confirm, #16a34a); }

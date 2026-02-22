@@ -13,8 +13,13 @@ This file documents planned and completed changes for the repository.
 
 - **Form primitives:** Added `Input`, `Select`, `Checkbox`, and `RadioGroup` molecule components with integrated labels, error states, custom-styled controls, and full theme token integration.
 - **CardFooter layout helper:** Added `CardFooter` companion component with `align` prop for opinionated footer layouts in Card.
-- **Spec overhaul:** Rewrote all specs to follow the template format (Purpose, Related, Contract, Behavior, Interface, Acceptance). Removed placeholder text, technical details (pixel values, CSS class names, code blocks), and negative language. Added proper `## Interface` sections throughout. Moved inline backlogs to adjacent `.todo.md` files.
-- **AGENTS.md:** Added spec authoring guidelines; converted all negative statements to affirmative language.
+- **Spec overhaul:** Rewrote all specs to follow the template format. Moved inline backlogs to adjacent `.todo.md` files. Added boolean prop naming convention to design system spec.
+- **Quick wins batch:** `Select` placeholder re-selectable bug fixed; `Card` now elevated by default with `flat` opt-out; `Text` gains `truncate`, `align`, `balance`, `maxLines`, and `tone` props.
+- **Link animation:** `Link` gains `isExternal` prop (animated ↗ superscript) and `motion` prop (`none | once | pulsing`). Slingshot brightness on hover; arrow oscillates continuously in pulsing mode.
+- **Button bounce dialed back:** Reduced hover lift and press squash to be less exaggerated.
+- **Random disabled cursor:** Input, Select, Checkbox, and RadioGroup gain `randomDisabledCursor` prop — picks a random "no" emoji (🙅 ❌ ⛔ 🚫) as the cursor when disabled.
+- **Header:** `background` prop for custom CSS background; `shadow` prop (on by default, opt-out); sticky story added.
+- **Footer:** Left/center/right slots mirroring Header; `bottom` strip slot; `hasBottomSeparator` prop; renamed `sticky` → `isSticky`.
 
 
 ## Version history

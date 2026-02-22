@@ -1,0 +1,114 @@
+/* === Base === */
+.nw-link {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+/* === External icon === */
+.nw-link__external {
+  display: inline-block;
+  margin-left: 0.1em;
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 1;
+}
+
+/* === Motion: none === */
+.nw-link--motion-none {
+  transition: none;
+}
+
+/* ============================================================
+   Motion: once
+   Slingshot plays once on hover-in. Arrow nudges once.
+   ============================================================ */
+
+.nw-link--motion-once {
+  transition: filter 500ms var(--ease-in-out);
+}
+
+.nw-link--motion-once:hover {
+  filter: brightness(1.2);
+  animation: nw-link-slingshot-once 600ms var(--ease-in-out) forwards;
+}
+
+.nw-link--motion-once:hover .nw-link__external {
+  animation: nw-link-arrow-once 750ms var(--ease-bounce) forwards;
+}
+
+/* ============================================================
+   Motion: pulsing
+   Text brightness oscillates. Arrow oscillates continuously
+   like a sine wave while hovered.
+   ============================================================ */
+
+.nw-link--motion-pulsing {
+  transition: filter 500ms var(--ease-in-out);
+}
+
+.nw-link--motion-pulsing:hover {
+  animation: nw-link-brightness-pulse 900ms ease-in-out infinite alternate;
+}
+
+.nw-link--motion-pulsing:hover .nw-link__external {
+  animation: nw-link-arrow-pulse 900ms ease-in-out infinite alternate;
+}
+
+/* ============================================================
+   Keyframes
+   ============================================================ */
+
+/* once: text — bright flash → snap back → spring → settle */
+@keyframes nw-link-slingshot-once {
+  0%   { filter: brightness(1); }
+  20%  { filter: brightness(1.6); }  /* overshoot bright */
+  50%  { filter: brightness(1.0); }  /* slingshot back */
+  70%  { filter: brightness(1.28); } /* spring bounce */
+  85%  { filter: brightness(1.15); } /* settle undershoot */
+  100% { filter: brightness(1.2); }  /* settle */
+}
+
+/* once: arrow — nudge upper-right, spring back past, settle */
+@keyframes nw-link-arrow-once {
+  0%   { transform: translate(0, 0); }
+  30%  { transform: translate(5px, -5px); }   /* fly out */
+  55%  { transform: translate(-1.5px, 1.5px); } /* spring back past center */
+  75%  { transform: translate(2.5px, -2.5px); } /* second push */
+  88%  { transform: translate(-0.5px, 0.5px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* pulsing: text — smooth sine-wave brightness oscillation */
+@keyframes nw-link-brightness-pulse {
+  from { filter: brightness(1); }
+  to   { filter: brightness(1.35); }
+}
+
+/* pulsing: arrow — smooth sine-wave travel along ↗ direction */
+@keyframes nw-link-arrow-pulse {
+  from { transform: translate(0, 0); }
+  to   { transform: translate(4px, -4px); }
+}
+
+/* ============================================================
+   Reduced motion — disable animations, keep settled state
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .nw-link--motion-once,
+  .nw-link--motion-pulsing {
+    transition: none;
+  }
+
+  .nw-link--motion-once:hover,
+  .nw-link--motion-pulsing:hover {
+    animation: none;
+    filter: brightness(1.2);
+  }
+
+  .nw-link--motion-once:hover .nw-link__external,
+  .nw-link--motion-pulsing:hover .nw-link__external {
+    animation: none;
+  }
+}

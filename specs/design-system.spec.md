@@ -83,6 +83,14 @@ When creating a new component, determine its level by answering these questions:
 
 **Does it vary through the molecules and atoms it contains?** → It is an organism. It orchestrates and lays out; its props describe what goes inside.
 
+### Boolean Prop Naming
+Boolean props follow a consistent opt-in / opt-out naming convention based on the default state:
+
+- **Off by default → positive name:** Props that enable a non-default behavior use affirmative names: `isSticky`, `isExternal`, `hasBottomSeparator`, `interactive`. No `={true}` is needed — shorthand works.
+- **On by default → negative opt-out name:** Props that disable a default behavior use negation: `noGutters`, `flat`. Again, shorthand works.
+
+This makes it immediately clear at the call site whether a prop is opting into something extra or opting out of a default.
+
 ### Spec Authoring
 All specs in `specs/components/` and `specs/examples/` are the source of truth for tests. Acceptance criteria in each spec map to Playwright tests — intent-based, not pixel-perfect. Future work lives in the adjacent todo file; promote items into the spec before implementing.
 

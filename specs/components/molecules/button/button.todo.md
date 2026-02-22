@@ -3,7 +3,7 @@
 Purpose: Capture future enhancements and exploratory ideas. Items are aspirational until promoted into the main spec.
 
 ## Sooner
-- [ ] Reduce default bounce: Current default bounce animation is too exaggerated. Dial it back to subtle. (Related to Animation presets in Backlog.)
+- [x] Reduce default bounce: Current default bounce animation is too exaggerated. Dial it back to subtle. (Related to Animation presets in Backlog.)
 
 ## Later
 - [ ] TBD

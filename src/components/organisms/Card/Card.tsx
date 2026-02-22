@@ -12,8 +12,10 @@ export interface CardProps {
   subtitle?: React.ReactNode;
   /** Card content. */
   children?: React.ReactNode;
-  /** Apply more shadow/elevation. */
+  /** Apply more shadow/elevation. On by default; use `flat` to opt out. */
   elevated?: boolean;
+  /** Remove elevation; render with the base minimal shadow. */
+  flat?: boolean;
   /** Optional footer content rendered below children. */
   footer?: React.ReactNode;
   /** Enable hover lift and shadow transition. */
@@ -32,7 +34,8 @@ export function Card({
   title,
   subtitle,
   children,
-  elevated = false,
+  elevated = true,
+  flat = false,
   footer,
   interactive = false,
   className = "",
@@ -40,7 +43,7 @@ export function Card({
 }: CardProps) {
   const cls = [
     "nw-card",
-    elevated && "nw-card--elevated",
+    elevated && !flat && "nw-card--elevated",
     interactive && "nw-card--interactive",
     className,
   ]

@@ -8,6 +8,10 @@ export type HeaderProps = {
   leftLabel?: React.ReactNode;
   centerLabel?: React.ReactNode;
   rightLabel?: React.ReactNode;
+  /** Custom background color, gradient, or image (any valid CSS background value). */
+  background?: string;
+  /** Show a bottom shadow/border. On by default. */
+  shadow?: boolean;
   /**
    * Opt-in to a fixed header. By default, the header is sticky
    * to avoid overlapping page content.
@@ -22,10 +26,24 @@ export function Header({
   leftLabel,
   centerLabel,
   rightLabel,
+  background,
+  shadow = true,
   fixed = false,
 }: HeaderProps) {
+  const cls = [
+    "nw-header",
+    fixed ? "nw-header--fixed" : "nw-header--sticky",
+    !shadow && "nw-header--no-shadow",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <header className={`nw-header ${fixed ? "nw-header--fixed" : "nw-header--sticky"}`} role="banner">
+    <header
+      className={cls}
+      role="banner"
+      style={background ? { background } : undefined}
+    >
       <div className="nw-header__slot nw-header__slot--left">
         <div className="nw-header__slot-element">{left}</div>
         {leftLabel && <div className="nw-header__slot-label">{leftLabel}</div>}

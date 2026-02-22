@@ -140,13 +140,13 @@
 }
 
 .button--motion-bouncy:hover:not(:disabled) {
-  transform: translateY(-2px) scale(1.05);
+  transform: translateY(-1px) scale(1.02);
 }
 
 .button--motion-bouncy:active:not(:disabled) {
   transition-duration: var(--motion-bouncy-press-duration), 140ms, 140ms, 140ms;
   transition-timing-function: var(--motion-bouncy-press-easing), ease, ease, ease;
-  transform: translateY(0px) scaleX(1.32) scaleY(0.68);
+  transform: translateY(0px) scaleX(1.12) scaleY(0.88);
   filter: saturate(0.98);
 }
 
