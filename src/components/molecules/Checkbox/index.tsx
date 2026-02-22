@@ -11,6 +11,7 @@ export type CheckboxProps = {
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   error?: string;
   disabled?: boolean;
+  required?: boolean;
   /** Show a randomly selected "no" emoji cursor when disabled. */
   randomDisabledCursor?: boolean;
   style?: React.CSSProperties;
@@ -24,19 +25,35 @@ export function Checkbox({
   onChange,
   error,
   disabled = false,
+  required = false,
   randomDisabledCursor = false,
   style,
 }: CheckboxProps) {
   const rootRef = React.useRef<HTMLLabelElement>(null);
-  useWaggle(error, rootRef);
+
+  const isControlled = checked !== undefined;
+  const [internalChecked, setInternalChecked] = React.useState(defaultChecked ?? false);
+  const [touched, setTouched] = React.useState(false);
+
+  const currentChecked = isControlled ? checked : internalChecked;
+  const requiredError = required && touched && !currentChecked ? "This field is required." : undefined;
+  const effectiveError = error ?? requiredError;
+
+  useWaggle(effectiveError, rootRef);
 
   const [disabledCursor] = React.useState<string>(
     () => (randomDisabledCursor && disabled) ? pickRandomDisabledCursor() : ""
   );
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!isControlled) setInternalChecked(e.target.checked);
+    setTouched(true);
+    onChange?.(e);
+  }
+
   const classNames = [
     "nw-checkbox",
-    error && "nw-checkbox--error",
+    effectiveError && "nw-checkbox--error",
     disabled && "nw-checkbox--disabled",
   ]
     .filter(Boolean)
@@ -55,13 +72,13 @@ export function Checkbox({
         name={name}
         checked={checked}
         defaultChecked={defaultChecked}
-        onChange={onChange}
+        onChange={handleChange}
         disabled={disabled}
         style={disabledCursor ? { cursor: "inherit" } : undefined}
       />
       <span className="nw-checkbox__box" aria-hidden="true" />
       <span className="nw-checkbox__label">{label}</span>
-      {error && <span className="nw-checkbox__error">{error}</span>}
+      {effectiveError && <span className="nw-checkbox__error">{effectiveError}</span>}
     </label>
   );
 }

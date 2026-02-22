@@ -295,16 +295,41 @@ function randomItem<T>(arr: T[], seed?: string): T {
 }
 
 /**
+ * Get a weighted random item from an array.
+ * weights must be the same length as arr; higher values increase probability.
+ */
+function weightedRandomItem<T>(arr: T[], weights: number[], seed?: string): T {
+  const total = weights.reduce((a, b) => a + b, 0);
+  const hash = seed ? simpleHash(seed) : Math.random();
+  let threshold = hash * total;
+  for (let i = 0; i < arr.length; i++) {
+    threshold -= weights[i];
+    if (threshold <= 0) return arr[i];
+  }
+  return arr[arr.length - 1];
+}
+
+/**
  * Get multiple random items from an array
  */
-function randomItems<T>(arr: T[], count: number, seed?: string): T[] {
+function randomItems<T>(arr: T[], count: number, seed?: string, weights?: number[]): T[] {
   const results: T[] = [];
   for (let i = 0; i < count; i++) {
     const itemSeed = seed ? `${seed}-${i}` : undefined;
-    results.push(randomItem(arr, itemSeed));
+    results.push(weights ? weightedRandomItem(arr, weights, itemSeed) : randomItem(arr, itemSeed));
   }
   return results;
 }
+
+const moodEmojis = [
+  "😊", "🤔", "🎯", "🔥", "✨", "💡", "🚀", "🎉",
+  "👀", "💪", "🌟", "🎨", "🤩", "😎", "🧠", "💫",
+];
+
+const skillEmojis = [
+  "⚡", "🛠️", "🔧", "💻", "📊", "🎯", "🔍", "📐",
+  "🧩", "🔬", "📈", "🤝", "🎓", "🏆", "🔑", "📌",
+];
 
 export type NonsenseCategory =
   | 'shortTitle'
@@ -324,12 +349,26 @@ export type NonsenseCategory =
   | 'ctaText'
   | 'socialSiteName'
   | 'abstractImage'
-  | 'date';
+  | 'date'
+  | 'moodEmoji'
+  | 'skillEmoji';
 
 export interface NonsenseOptions {
   count?: number;
   seed?: string;
   months?: number; // For date category only
+  /**
+   * Override the built-in entry pool for this category with your own strings.
+   * Ignored for function-based categories (`abstractImage`, `date`).
+   */
+  customEntries?: string[];
+  /**
+   * Relative weights for each entry in the pool (or `customEntries`).
+   * Must be the same length as the active pool. Higher values make that entry
+   * more likely to be selected. Ignored for function-based categories.
+   * Example: `[1, 3, 1]` makes the second entry 3× more likely.
+   */
+  weights?: number[];
 }
 
 /**
@@ -339,8 +378,8 @@ export function getNonsense(
   category: NonsenseCategory,
   options?: NonsenseOptions
 ): string | string[] {
-  const { count, seed } = options || {};
-  
+  const { count, seed, customEntries, weights } = options || {};
+
   const categoryMap: Record<NonsenseCategory, string[] | (() => string)> = {
     shortTitle: shortTitles,
     longTitle: longTitles,
@@ -354,28 +393,35 @@ export function getNonsense(
     skillName: skillNames,
     serviceName: serviceNames,
     testimonialQuote: testimonialQuotes,
-   accomplishment: accomplishments,
+    accomplishment: accomplishments,
     introText: introTexts,
     ctaText: ctaTexts,
     socialSiteName: socialSiteNames,
+    moodEmoji: moodEmojis,
+    skillEmoji: skillEmojis,
     abstractImage: () => generateAbstractSvg(seed),
     date: () => generateDate({ months: options?.months, seed }),
   };
-  
+
   const source = categoryMap[category];
-  
+
   if (typeof source === 'function') {
+    // Function-based categories (abstractImage, date) don't support customEntries
     if (count) {
-      return Array.from({ length: count }, (_, i) => 
-        source()
-      );
+      return Array.from({ length: count }, () => source());
     }
     return source();
   }
-  
+
+  // Array-based categories: prefer customEntries when provided
+  const pool = customEntries && customEntries.length > 0 ? customEntries : source;
+
+  // Validate weights length if provided
+  const activeWeights = weights && weights.length === pool.length ? weights : undefined;
+
   if (count) {
-    return randomItems(source, count, seed);
+    return randomItems(pool, count, seed, activeWeights);
   }
-  
-  return randomItem(source, seed);
+
+  return activeWeights ? weightedRandomItem(pool, activeWeights, seed) : randomItem(pool, seed);
 }

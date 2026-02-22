@@ -5,6 +5,7 @@ import { Heading } from "../../components/molecules/Heading/index.js";
 import { Text } from "../../components/molecules/Text/index.js";
 import { Button } from "../../components/molecules/Button/index.js";
 import { Link } from "../../components/molecules/Link/index.js";
+import { Input } from "../../components/molecules/Input/index.js";
 import { Modal } from "../../components/organisms/Modal/index.js";
 import { getNonsense } from "../../atoms/nonsense.js";
 import PortfolioHeader from "./PortfolioHeader.js";
@@ -17,12 +18,8 @@ export interface PortfolioContactProps {
 
 export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
   const [showModal, setShowModal] = React.useState(false);
-  const [formData, setFormData] = React.useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
+  const [values, setValues] = React.useState({ name: '', email: '', subject: '', message: '' });
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
 
   const handleNavigate = (page: string) => {
     if (onNavigate) {
@@ -30,16 +27,39 @@ export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
     }
   };
 
+  function clearError(field: string) {
+    setErrors(prev => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }
+
+  function handleField(field: string) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      setValues(v => ({ ...v, [field]: e.target.value }));
+      clearError(field);
+    };
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const next: Record<string, string> = {};
+    if (!values.name)    next.name    = "This field is required.";
+    if (!values.email) {
+      next.email = "This field is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      next.email = "Please enter a valid email address.";
+    }
+    if (!values.subject) next.subject = "This field is required.";
+    if (!values.message) next.message = "This field is required.";
+    if (Object.keys(next).length > 0) {
+      setErrors(next);
+      return;
+    }
+    setErrors({});
     setShowModal(true);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
   };
 
   const [placeholders] = React.useState(() => ({
@@ -63,7 +83,7 @@ export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
   return (
     <div className="portfolio-site">
       <PortfolioHeader onNavigate={handleNavigate} />
-      
+
       <Layout>
         <Container padding="lg">
           <div className="portfolio-section-title">
@@ -74,73 +94,57 @@ export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
             <Text>{getNonsense('shortParagraph')}</Text>
           </div>
 
-          <form className="portfolio-contact__form" onSubmit={handleSubmit}>
-            <div className="portfolio-contact__field">
-              <label htmlFor="name" className="portfolio-contact__label">
-                Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                className="portfolio-contact__input"
-                placeholder={placeholders.name}
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <form className="portfolio-contact__form" onSubmit={handleSubmit} noValidate>
+            <Input
+              label="Name"
+              name="name"
+              type="text"
+              placeholder={placeholders.name}
+              value={values.name}
+              onChange={handleField('name')}
+              error={errors.name}
+              required
+            />
 
-            <div className="portfolio-contact__field">
-              <label htmlFor="email" className="portfolio-contact__label">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                className="portfolio-contact__input"
-                placeholder="your@email.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <Input
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="your@email.com"
+              value={values.email}
+              onChange={handleField('email')}
+              error={errors.email}
+              required
+            />
 
-            <div className="portfolio-contact__field">
-              <label htmlFor="subject" className="portfolio-contact__label">
-                Subject
-              </label>
-              <input
-                id="subject"
-                name="subject"
-                type="text"
-                className="portfolio-contact__input"
-                placeholder={placeholders.subject}
-                value={formData.subject}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <Input
+              label="Subject"
+              name="subject"
+              type="text"
+              placeholder={placeholders.subject}
+              value={values.subject}
+              onChange={handleField('subject')}
+              error={errors.subject}
+              required
+            />
 
-            <div className="portfolio-contact__field">
-              <label htmlFor="message" className="portfolio-contact__label">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                className="portfolio-contact__textarea"
-                placeholder={placeholders.message}
-                value={formData.message}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <Input
+              label="Message"
+              name="message"
+              multiline
+              rows={5}
+              placeholder={placeholders.message}
+              value={values.message}
+              onChange={handleField('message')}
+              error={errors.message}
+              required
+            />
 
-            <Button>
-              {placeholders.ctaText}
-            </Button>
+            <div className="portfolio-contact__submit">
+              <Button>
+                {placeholders.ctaText}
+              </Button>
+            </div>
           </form>
 
           <div className="portfolio-contact__social">

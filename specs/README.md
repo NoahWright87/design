@@ -15,6 +15,21 @@ This directory contains human-readable, plain Markdown specifications that defin
 - Every spec includes a **Related** section that links only to other specs (no todo links).
 - If a spec grows beyond 300 lines, it should be split. If it reaches 500 lines, it must be split.
 
+## Keeping specs current — mandatory rule
+
+**Every time a prop, behavior, or visual state is added or changed in a component, the corresponding spec file must be updated in the same session.** The spec is the source of truth; a spec that lags behind the code is actively misleading.
+
+Minimum updates required when a component changes:
+
+| What changed | What to update in the spec |
+|---|---|
+| New prop added | Add it to **Contract → Inputs** with its type and default |
+| New behavioral state | Add a paragraph to **Behavior** |
+| New visual state | Add a note to **Interface** |
+| Any of the above | Add a numbered criterion to **Acceptance** |
+
+A new prop that is implemented but not documented in the spec is a documentation bug. There are no acceptable shortcuts here — if you implement it, you spec it.
+
 ## Directory Structure
 - `.spec.md` — Root spec describing the entire system and atomic design philosophy.
 - `components/` — Per-component specs (e.g., `button/button.spec.md`).

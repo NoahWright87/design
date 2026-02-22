@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Header, Avatar, Menu, MenuItem, HamburgerMenu } from "../../src";
+import { getNonsense } from "../../src/atoms/nonsense";
 
 const meta: Meta = {
   title: "Examples/Header Integration",
@@ -50,7 +51,7 @@ export const MinimalPortfolio: Story = {
       <Header
         left={<Menu trigger={<HamburgerMenu />} items={navItems} align="left" />}
         center={<span style={{ fontWeight: "bold" }}>Noah Wright</span>}
-        right={<Avatar src="https://i.pravatar.cc/150?img=12" alt="Noah" />}
+        right={<Avatar src={getNonsense("abstractImage") as string} alt="Noah" />}
       />
       <div style={{ paddingTop: "60px", padding: "80px 20px 20px" }}>
         <h1>Portfolio Example</h1>

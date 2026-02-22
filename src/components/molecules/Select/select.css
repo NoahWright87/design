@@ -46,10 +46,17 @@
   position: absolute;
   right: var(--spacing-md);
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) rotate(0deg);
   pointer-events: none;
   color: color-mix(in srgb, var(--foreground) 50%, transparent);
   font-size: var(--text-sm);
+  transition: transform var(--duration-fast, 120ms) var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)),
+              color var(--duration-fast, 120ms) var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.nw-select__wrapper:focus-within .nw-select__arrow {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--primary);
 }
 
 .nw-select--error .nw-select__field {

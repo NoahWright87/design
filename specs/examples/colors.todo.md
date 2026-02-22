@@ -5,7 +5,7 @@
 
 ## Later
 - [ ] Contrast checker overlay for each swatch.
-- [ ] Copy-to-clipboard for token names.
+- [x] Copy-to-clipboard for token names.
 
 ## Backlog
 - [ ] Export color values in various formats.

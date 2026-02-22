@@ -20,6 +20,47 @@
   text-wrap: balance;
 }
 
+/* Copyable wrapper */
+.nw-text--copyable-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.nw-text__copy-btn {
+  position: absolute;
+  top: 50%;
+  right: -1.75rem;
+  transform: translateY(-50%);
+  background: none;
+  border: 1px solid color-mix(in srgb, var(--foreground, #000) 20%, transparent);
+  border-radius: calc(var(--radius, 4px) * 0.5);
+  color: color-mix(in srgb, var(--foreground, #000) 45%, transparent);
+  cursor: pointer;
+  font-size: 0.85em;
+  line-height: 1;
+  padding: 0.15em 0.3em;
+  opacity: 0;
+  transition: opacity 150ms ease, color 150ms ease, border-color 150ms ease;
+  pointer-events: none;
+}
+
+.nw-text--copyable-wrapper:hover .nw-text__copy-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nw-text__copy-btn:hover {
+  color: var(--primary, #3b82f6);
+  border-color: var(--primary, #3b82f6);
+}
+
+.nw-text__copy-btn--copied {
+  color: var(--confirm, #16a34a);
+  border-color: var(--confirm, #16a34a);
+  opacity: 1;
+  pointer-events: none;
+}
+
 /* Tone variants */
 .nw-text--tone-muted   { color: color-mix(in srgb, var(--foreground, #000) 50%, transparent); }
 .nw-text--tone-subtle  { color: color-mix(in srgb, var(--foreground, #000) 70%, transparent); }

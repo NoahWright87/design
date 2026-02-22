@@ -62,6 +62,17 @@ export const Variants: Story = {
   ),
 };
 
+export const IconSlots: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <Link href="#" leadingIcon="←">Back to results</Link>
+      <Link href="#" trailingIcon="↓">Download report</Link>
+      <Link href="#" leadingIcon="★" trailingIcon="→" variant="prominent">Featured article</Link>
+      <Link href="#" leadingIcon="⚙" variant="subtle">Settings</Link>
+    </div>
+  ),
+};
+
 export const AllMotions: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
@@ -72,4 +83,31 @@ export const AllMotions: Story = {
       <Link href="https://example.com" isExternal motion="pulsing">External pulsing — arrow keeps going</Link>
     </div>
   ),
+};
+
+export const CustomComponent: Story = {
+  name: "Router `as` prop",
+  render: () => {
+    // Simulate a router link component (e.g., Next.js Link or React Router Link)
+    const FakeRouterLink = React.forwardRef<
+      HTMLAnchorElement,
+      React.AnchorHTMLAttributes<HTMLAnchorElement>
+    >(({ href, children, ...rest }, ref) => (
+      <a ref={ref} href={href} {...rest} data-router-link="true">
+        {children}
+      </a>
+    ));
+    FakeRouterLink.displayName = "FakeRouterLink";
+
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <p style={{ margin: 0, fontSize: "0.875rem", opacity: 0.6 }}>
+          Using <code>as</code> prop to render via a custom component (e.g., Next.js Link, React Router Link):
+        </p>
+        <Link as={FakeRouterLink} href="/about">Navigate to /about</Link>
+        <Link as={FakeRouterLink} href="/contact" variant="prominent" trailingIcon="→">Contact us</Link>
+        <Link as={FakeRouterLink} href="https://example.com" isExternal>External via custom component</Link>
+      </div>
+    );
+  },
 };

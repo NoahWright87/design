@@ -2,10 +2,10 @@
 
 ## Sooner
 - [x] Gutters: Add side gutters on large screens with subtle shadow/border treatment. On by default; opt out with `noGutters` prop.
-- [ ] Gutter customization: Expose direct props to customize the gutter border and shadow independently.
+- [x] Gutter customization: Expose direct props to customize the gutter border and shadow independently.
 
 ## Later
-- [ ] Background image: Support a `backgroundImage` prop with standard CSS background positioning and sizing.
+- [x] Background image: Support a `backgroundImage` prop with standard CSS background positioning and sizing.
 - [ ] Parallax background: Optional parallax effect so the background image scrolls at a different rate than the container content, giving a cutout/window effect.
 
 ## Backlog

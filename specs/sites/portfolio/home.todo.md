@@ -4,7 +4,7 @@
 - [ ] TBD
 
 ## Later
-- [ ] Animated intro text (fade-in on page load).
+- [x] Animated intro text (fade-in on page load).
 
 ## Backlog
 - [ ] Carousel or rotating testimonials below the navigation cards.

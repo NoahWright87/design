@@ -4,8 +4,8 @@
 - [ ] TBD
 
 ## Later
-- [ ] Animated section reveal on scroll.
-- [ ] Testimonials or quote callouts within sections.
+- [x] Animated section reveal on scroll.
+- [x] Testimonials or quote callouts within sections.
 
 ## Backlog
 - [ ] Collapse/expand sections or accordion-style layout.

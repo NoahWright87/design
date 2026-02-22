@@ -27,6 +27,34 @@ This file provides explicit, agent-focused guidance for working in this reposito
 - When editing files via the helper tools, use the repository's existing style and keep changes focused.
 - Always reference filenames and symbols in backticks, e.g., `src/index.ts`.
 
+## Placeholder images — generated only, no external URLs
+
+All placeholder images in stories, examples, and site pages **must** use `getNonsense("abstractImage")` from `src/atoms/nonsense.ts`. This returns a self-contained SVG data URL — no network request, no external dependency.
+
+**Never** reference external image services such as Unsplash, Lorem Picsum, Pravatar, Placeholder.com, or any other third-party image host. If an external URL appears in a story, it must be replaced.
+
+```tsx
+import { getNonsense } from "../src/atoms/nonsense";
+
+// Correct
+<img src={getNonsense("abstractImage") as string} alt="Abstract placeholder" />
+
+// Wrong — never do this
+<img src="https://images.unsplash.com/..." alt="..." />
+<img src="https://i.pravatar.cc/..." alt="..." />
+```
+
+The same rule applies to `backgroundImage` props on `Container` and any other component that accepts an image URL.
+
+## Design system colors in examples
+
+Stories and examples must use design-system color tokens, not arbitrary CSS color values.
+
+- **Use** CSS custom properties (`var(--primary)`, `var(--background)`, etc.) or named color props defined on components (e.g., `backgroundColor="primary"`).
+- **Do not** hardcode hex values (`#222`, `#ffe0e0`), `rgba(...)` values, or named CSS colors (`red`, `white`) in story or example files.
+
+The full palette of available tokens: `--foreground`, `--background`, `--primary`, `--secondary`, `--confirm`, `--danger`, `--overlay`.
+
 ## Storybook examples and `stories/examples/`
 - Put example and composed Storybook stories under `stories/examples/`.
   - Example pages are composed pages that show several components together (e.g., a landing page, a color swatches page, or a full-page layout demo).
@@ -101,6 +129,16 @@ Fill in every section with real content. Template placeholder text ("Summarize t
 ### Future work
 - Future enhancements belong in the adjacent `.todo.md` file under Sooner, Later, or Backlog sections.
 - Promote items from the todo file into the spec before implementing them.
+
+### Keeping specs current — mandatory
+**Every time you add or change a prop, behavior, or visual state in a component, you must update the corresponding spec file in the same commit/session.** The spec is the source of truth for what a component does; if it falls behind the code, it becomes misleading.
+
+What to update when a component changes:
+- **Contract → Inputs:** Add any new prop with its type and default.
+- **Behavior:** Add a paragraph for any new behavioral state (e.g., "Required: …", "Multiline: …").
+- **Acceptance:** Add a numbered criterion for each new prop or behavior that can be tested.
+
+A new prop with no spec entry is a bug in the documentation, not an acceptable shortcut.
 
 ## Agent behavior templates
 - One-line receipt + plan (always first):

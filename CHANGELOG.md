@@ -11,22 +11,11 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- **Form primitives:** Added `Input`, `Select`, `Checkbox`, and `RadioGroup` molecule components with integrated labels, error states, custom-styled controls, and full theme token integration.
-- **CardFooter layout helper:** Added `CardFooter` companion component with `align` prop for opinionated footer layouts in Card.
-- **Spec overhaul:** Rewrote all specs to follow the template format. Moved inline backlogs to adjacent `.todo.md` files. Added boolean prop naming convention to design system spec.
-- **Quick wins batch:** `Select` placeholder re-selectable bug fixed; `Card` now elevated by default with `flat` opt-out; `Text` gains `truncate`, `align`, `balance`, `maxLines`, and `tone` props.
-- **Link animation + variants:** `isExternal` (animated ↗), `motion` prop (`none | once | pulsing`), `variant` prop (`default | subtle | prominent`).
-- **Button bounce dialed back:** Reduced hover lift and press squash to be less exaggerated.
-- **Random disabled cursor:** Input, Select, Checkbox, RadioGroup gain `randomDisabledCursor` — picks a random "no" emoji (🙅 ❌ ⛔ 🚫).
-- **Error waggle:** All four form fields (Input, Select, Checkbox, RadioGroup) shake side-to-side when an error appears; reactive Storybook stories for each. Added `error` prop to Checkbox and RadioGroup.
-- **Header:** `background`, `shadow` props; stacked icon+label layout when both slot content and label are provided.
-- **Footer:** Left/center/right/bottom slots; `hasBottomSeparator`; `isSticky`.
-- **Text:** `as` prop for semantic element override; `inline` prop for span rendering.
-- **Pill:** `icon` prop renders an icon before the label.
-- **Avatar:** Hover (tilt + float), press (counter-tilt + squish), release (spring) animations on interactive avatars.
-- **Container:** `noGutters` prop; default adds subtle side-shadow treatment on large screens.
-- **Contact form:** Fixed placeholder text re-randomizing on every keystroke (values now stable via useState).
-- **Tooling:** Added `/knock-out-todos` command; updated AGENTS.md with low-friction tool preference guidance.
+- **Form components (overhaul):** Input/Select/Checkbox/RadioGroup gain `required` validation with auto-error on blur, error waggle animation, `randomDisabledCursor`, and spring-bounce animations on Checkbox/RadioGroup. Input adds `multiline`/`rows` (textarea). Select arrow animates on focus. Button gains `type` prop.
+- **Molecules enriched:** Pill — `icon` + `onDismiss` (dismissable × button). Link — `isExternal` (↗), `motion`, `variant`, `leadingIcon`, `trailingIcon`, `as` (router compat). Text — `isCopyable`, `as`, `inline`, `truncate`, `align`, `balance`, `maxLines`, `tone`. Avatar — hover/press/release spring animations. CardFooter with `align` prop added.
+- **Container + organisms:** Container gains `backgroundImage`, named-token `backgroundColor`/`foregroundColor`, `gutterBorder`/`gutterShadow` enums, `noGutters`. Header/Footer get left/center/right/bottom slots, `background`/`shadow` props, sticky support.
+- **Portfolio site (full buildout):** About — scroll-reveal sections + testimonials grid. Projects — skill filter chips, A–Z sort, empty state. Resume — staggered timeline animation, per-entry expand toggle. Contact — multiline Input, simultaneous error display, email validation.
+- **System/tooling:** Theme toggle with smooth 300ms transition; Nonsense weighted random + new categories (`moodEmoji`, `skillEmoji`, `date`); all external image URLs and hardcoded colors removed from stories; AGENTS.md rules codified; spec template overhaul with adjacent `.todo.md` backlogs.
 
 
 ## Version history

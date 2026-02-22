@@ -1,5 +1,7 @@
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Avatar } from "../src";
+import { getNonsense } from "../src/atoms/nonsense";
 
 const meta: Meta<typeof Avatar> = {
   title: "Components/Molecules/Avatar",
@@ -30,7 +32,7 @@ type Story = StoryObj<typeof Avatar>;
 
 export const WithImage: Story = {
   args: {
-    src: "https://i.pravatar.cc/150?img=1",
+    src: getNonsense("abstractImage") as string,
     alt: "User avatar",
     size: 40
   }
@@ -71,7 +73,7 @@ export const InteractiveAnimations: Story = {
     <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
       <Avatar label="NW" size={48} onClick={() => {}} />
       <Avatar label="AB" size={64} onClick={() => {}} />
-      <Avatar src="https://i.pravatar.cc/150?img=3" alt="User" size={48} onClick={() => {}} />
+      <Avatar src={getNonsense("abstractImage") as string} alt="Generated abstract avatar" size={48} onClick={() => {}} />
     </div>
   ),
 };

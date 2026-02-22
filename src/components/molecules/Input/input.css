@@ -60,6 +60,12 @@
   cursor: not-allowed;
 }
 
+.nw-input__field--multiline {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nw-input__field {
     transition: none;

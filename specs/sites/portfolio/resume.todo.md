@@ -4,8 +4,8 @@
 - [ ] TBD
 
 ## Later
-- [ ] Timeline connecting line/visual on larger screens.
-- [ ] Expanded details or modal for each entry.
+- [x] Timeline connecting line/visual on larger screens.
+- [x] Expanded details or modal for each entry.
 
 ## Backlog
-- [ ] Timeline animation on page load.
+- [x] Timeline animation on page load.

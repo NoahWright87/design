@@ -46,6 +46,18 @@ export const DisabledChecked: Story = {
   },
 };
 
+export const RequiredValidation: Story = {
+  name: "Required — inline validation",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <Checkbox label="I agree to the terms and conditions" required />
+      <p style={{ fontSize: "var(--text-sm)", color: "var(--foreground)", margin: 0 }}>
+        Check then uncheck to trigger the required error.
+      </p>
+    </div>
+  ),
+};
+
 export const ErrorWaggle: Story = {
   render: () => {
     const [error, setError] = React.useState<string | undefined>(undefined);

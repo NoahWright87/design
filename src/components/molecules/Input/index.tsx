@@ -14,6 +14,10 @@ export type InputProps = {
   error?: string;
   disabled?: boolean;
   required?: boolean;
+  /** Render as a textarea for multi-line input. */
+  multiline?: boolean;
+  /** Number of visible text rows when `multiline` is true. */
+  rows?: number;
   /** Show a randomly selected "no" emoji cursor when disabled. */
   randomDisabledCursor?: boolean;
   style?: React.CSSProperties;
@@ -30,19 +34,39 @@ export function Input({
   error,
   disabled = false,
   required = false,
+  multiline = false,
+  rows,
   randomDisabledCursor = false,
   style,
 }: InputProps) {
   const rootRef = React.useRef<HTMLLabelElement>(null);
-  useWaggle(error, rootRef);
+
+  const isControlled = value !== undefined;
+  const [internalValue, setInternalValue] = React.useState(defaultValue ?? "");
+  const [touched, setTouched] = React.useState(false);
+
+  const currentValue = isControlled ? value : internalValue;
+  const requiredError = required && touched && !currentValue ? "This field is required." : undefined;
+  const effectiveError = error ?? requiredError;
+
+  useWaggle(effectiveError, rootRef);
 
   const [disabledCursor] = React.useState<string>(
     () => (randomDisabledCursor && disabled) ? pickRandomDisabledCursor() : ""
   );
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!isControlled) setInternalValue(e.target.value);
+    onChange?.(e);
+  }
+
+  function handleBlur() {
+    setTouched(true);
+  }
+
   const classNames = [
     "nw-input",
-    error && "nw-input--error",
+    effectiveError && "nw-input--error",
     disabled && "nw-input--disabled",
   ]
     .filter(Boolean)
@@ -53,12 +77,45 @@ export function Input({
     ...style,
   };
 
+  const labelInner = (
+    <span className="nw-input__label">
+      {label}
+      {required && <span className="nw-input__required">*</span>}
+    </span>
+  );
+
+  const errorEl = effectiveError ? (
+    <span className="nw-input__error">{effectiveError}</span>
+  ) : null;
+
+  if (multiline) {
+    return (
+      <label ref={rootRef} className={classNames} style={rootStyle}>
+        {labelInner}
+        <textarea
+          className="nw-input__field nw-input__field--multiline"
+          name={name}
+          placeholder={placeholder}
+          value={value}
+          defaultValue={defaultValue}
+          onChange={(e) => {
+            if (!isControlled) setInternalValue(e.target.value);
+            onChange?.(e as unknown as React.ChangeEvent<HTMLInputElement>);
+          }}
+          onBlur={handleBlur}
+          disabled={disabled}
+          required={required}
+          rows={rows}
+          style={disabledCursor ? { cursor: "inherit" } : undefined}
+        />
+        {errorEl}
+      </label>
+    );
+  }
+
   return (
     <label ref={rootRef} className={classNames} style={rootStyle}>
-      <span className="nw-input__label">
-        {label}
-        {required && <span className="nw-input__required">*</span>}
-      </span>
+      {labelInner}
       <input
         className="nw-input__field"
         type={type}
@@ -66,12 +123,13 @@ export function Input({
         placeholder={placeholder}
         value={value}
         defaultValue={defaultValue}
-        onChange={onChange}
+        onChange={handleChange}
+        onBlur={handleBlur}
         disabled={disabled}
         required={required}
         style={disabledCursor ? { cursor: "inherit" } : undefined}
       />
-      {error && <span className="nw-input__error">{error}</span>}
+      {errorEl}
     </label>
   );
 }

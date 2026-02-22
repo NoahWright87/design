@@ -22,6 +22,17 @@ export function PortfolioResume({ onNavigate }: PortfolioResumeProps) {
     }
   };
 
+  const [expandedEntries, setExpandedEntries] = React.useState<Set<string>>(new Set());
+
+  function toggleExpanded(key: string) {
+    setExpandedEntries(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
+
   const workExperience = Array.from({ length: 4 }, (_, i) => ({
     id: i,
     title: getNonsense('jobTitle'),
@@ -81,8 +92,9 @@ export function PortfolioResume({ onNavigate }: PortfolioResumeProps) {
           {/* Work Experience Section */}
           <div className="portfolio-resume__section">
             <Heading level={2}>Work Experience</Heading>
-            {workExperience.map((job) => (
-              <div key={job.id} className="portfolio-resume__entry">
+            <div className="portfolio-resume__timeline">
+            {workExperience.map((job, i) => (
+              <div key={job.id} className="portfolio-resume__entry" style={{ '--entry-i': i } as React.CSSProperties}>
                 {job.hasLogo && (
                   <Image
                     src={job.logo}
@@ -106,21 +118,32 @@ export function PortfolioResume({ onNavigate }: PortfolioResumeProps) {
                       </Pill>
                     ))}
                   </div>
-                  <ul className="portfolio-resume__accomplishments">
-                    {job.accomplishments.map((acc, idx) => (
-                      <li key={idx}>{acc}</li>
-                    ))}
-                  </ul>
+                  <button
+                    className="portfolio-resume__expand-btn"
+                    onClick={() => toggleExpanded(`work-${job.id}`)}
+                    aria-expanded={expandedEntries.has(`work-${job.id}`)}
+                  >
+                    {expandedEntries.has(`work-${job.id}`) ? "Hide details ▲" : "Show details ▼"}
+                  </button>
+                  {expandedEntries.has(`work-${job.id}`) && (
+                    <ul className="portfolio-resume__accomplishments portfolio-resume__accomplishments--expanded">
+                      {job.accomplishments.map((acc, idx) => (
+                        <li key={idx}>{acc}</li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             ))}
+            </div>
           </div>
 
           {/* Education Section */}
           <div className="portfolio-resume__section">
             <Heading level={2}>Education</Heading>
-            {education.map((edu) => (
-              <div key={edu.id} className="portfolio-resume__entry">
+            <div className="portfolio-resume__timeline">
+            {education.map((edu, i) => (
+              <div key={edu.id} className="portfolio-resume__entry" style={{ '--entry-i': i } as React.CSSProperties}>
                 {edu.hasLogo && (
                   <Image
                     src={edu.logo}
@@ -145,6 +168,7 @@ export function PortfolioResume({ onNavigate }: PortfolioResumeProps) {
                 </div>
               </div>
             ))}
+            </div>
           </div>
 
           {/* Skills Section */}

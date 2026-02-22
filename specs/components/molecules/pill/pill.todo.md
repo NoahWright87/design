@@ -4,7 +4,7 @@
 - [ ] TBD
 
 ## Later
-- [ ] Dismissable variant (with close button) — requires a separate DismissablePill component.
+- [x] Dismissable variant (with close button) — implemented via `onDismiss` prop on Pill.
 - [x] Icon support (icon before text).
 
 ## Backlog

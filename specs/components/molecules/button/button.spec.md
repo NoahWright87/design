@@ -10,15 +10,16 @@ Button provides the primary clickable control in the design system. It wraps a n
 ## Contract
 
 ### Inputs
-- Visible label text (required).
-- Optional click handler.
-- Visual variant — solid, outline, ghost, or text.
-- Size — small, medium, or large.
-- Semantic color role (primary, secondary, confirm, or danger) or a custom color.
-- Optional icon element and its position relative to the label.
-- Disabled state.
-- Motion animation style — none, subtle, or bouncy.
-- Optional custom style overrides.
+- Visible label text (`children`, required).
+- Optional `onClick` handler.
+- Optional `variant` — `"solid"`, `"outline"`, `"ghost"`, `"text"` (default: `"solid"`).
+- Optional `size` — `"small"`, `"medium"`, `"large"` (default: `"medium"`).
+- Optional `color` — semantic role (`"primary"`, `"secondary"`, `"confirm"`, `"danger"`) or a custom hex color (default: `"primary"`).
+- Optional `icon` element and `iconPosition` — `"left"`, `"right"`, `"top"`, `"bottom"`, `"center"`.
+- Optional `disabled` flag.
+- Optional `motion` — `"none"`, `"subtle"`, `"bouncy"` (default: `"bouncy"`).
+- Optional `type` — native button type: `"button"`, `"submit"`, `"reset"` (default: `"button"`).
+- Optional `style` overrides.
 
 ### Outputs
 A native button element styled according to the selected variant, size, and color. When clicked and not disabled, the click handler is invoked.
@@ -77,3 +78,4 @@ The button's accessible name comes from its visible label. In icon-only mode, th
 10. All animations are disabled when the user prefers reduced motion.
 11. Custom style overrides apply correctly.
 12. Is fully accessible via keyboard and screen reader.
+13. The `type` prop is passed through to the native button element.

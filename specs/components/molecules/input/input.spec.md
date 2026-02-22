@@ -9,12 +9,15 @@ Input provides a styled text field with an integrated label, error state, and re
 ## Contract
 
 ### Inputs
-- Label text (required).
-- Optional name, type, placeholder, controlled value, and default value.
-- Optional change handler.
-- Optional error message.
-- Optional disabled and required flags.
-- Optional style overrides.
+- Label text (`label`, required).
+- Optional `name`, `type` (`"text"`, `"email"`, `"password"`, `"number"`, `"tel"`, `"url"`, `"search"`), `placeholder`, controlled `value`, and `defaultValue`.
+- Optional `onChange` handler.
+- Optional `error` message (external, overrides internal validation).
+- Optional `disabled` and `required` flags.
+- Optional `multiline` — renders a `<textarea>` instead of `<input>` with the same styling and validation.
+- Optional `rows` — visible row count when `multiline` is true.
+- Optional `randomDisabledCursor` — shows a randomly selected "no" emoji cursor (🙅 ❌ ⛔ 🚫) when disabled.
+- Optional `style` overrides.
 
 ### Outputs
 A labeled text field with appropriate visual states: default, focused, error, and disabled. When an error message is provided, it is displayed below the field with error styling applied to the border.
@@ -37,7 +40,11 @@ A labeled text field with appropriate visual states: default, focused, error, an
 
 **Disabled:** The field is dimmed and does not accept input. The cursor indicates the field is unavailable.
 
-**Required:** A visual indicator appears after the label text to signal the field is required.
+**Required:** A visual indicator (`*`) appears after the label text. When the field is `required` and the user interacts with it and then clears it (or blurs without entering a value), an inline error message appears automatically — no external `error` prop needed.
+
+**Multiline:** When `multiline` is true, a `<textarea>` is rendered instead of `<input>`. It is resizable vertically and has a minimum height. All validation, error display, and styling behave identically to the single-line variant.
+
+**Error waggle:** When an error message appears (from either `error` or inline required validation), the field performs a side-to-side waggle animation to draw attention.
 
 ## Interface
 
@@ -52,3 +59,6 @@ The label appears above the field. The field has a bordered, rounded appearance 
 6. Shows a dimmed appearance and prevents input when disabled.
 7. A focus indicator appears on the field border when it receives keyboard focus.
 8. Style overrides apply to the root wrapper.
+9. When `required` is set and the field is blurred while empty, an inline "This field is required." error appears automatically.
+10. When `multiline` is set, renders a resizable `<textarea>` with the same label, error, and validation behavior.
+11. When `randomDisabledCursor` is set and the field is disabled, a random "no" emoji cursor is shown.

@@ -9,14 +9,15 @@ Select provides a styled native dropdown with an integrated label, error state, 
 ## Contract
 
 ### Inputs
-- Label text (required).
-- Option elements as children (required).
-- Optional name, controlled value, and default value.
-- Optional change handler.
-- Optional error message.
-- Optional disabled and required flags.
-- Optional placeholder text.
-- Optional style overrides.
+- Label text (`label`, required).
+- Option elements as `children` (required).
+- Optional `name`, controlled `value`, and `defaultValue`.
+- Optional `onChange` handler.
+- Optional `error` message (external, overrides internal validation).
+- Optional `disabled` and `required` flags.
+- Optional `placeholder` text — renders as the first, non-selectable option.
+- Optional `randomDisabledCursor` — shows a randomly selected "no" emoji cursor when disabled.
+- Optional `style` overrides.
 
 ### Outputs
 A labeled dropdown control with custom styling, reflecting default, focused, error, and disabled states.
@@ -39,7 +40,11 @@ A labeled dropdown control with custom styling, reflecting default, focused, err
 
 **Placeholder:** When provided, a placeholder item appears first in the list but cannot be selected.
 
-**Required:** A visual indicator appears after the label text.
+**Required:** A visual indicator (`*`) appears after the label text. When the field is `required` and the user blurs without selecting an option, an inline "Please select an option." error appears automatically.
+
+**Error waggle:** When an error appears (from `error` or inline validation), the control performs a side-to-side waggle animation.
+
+**Open/close animation:** The custom arrow chevron rotates 180° and tints to the primary color when the select receives focus, signaling the dropdown is open. It transitions smoothly back on blur.
 
 ## Interface
 
@@ -55,3 +60,7 @@ The label appears above the dropdown. The dropdown has a bordered, rounded appea
 7. Shows a dimmed appearance and prevents interaction when disabled.
 8. A focus indicator appears on the select border when it receives keyboard focus.
 9. Style overrides apply to the root wrapper.
+10. When `required` and no option is selected after blur, shows an inline required error.
+11. When an error is present, the control performs a waggle animation.
+12. The arrow chevron rotates 180° on focus and returns on blur.
+13. When `randomDisabledCursor` is set and disabled, a random "no" emoji cursor is shown.

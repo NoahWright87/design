@@ -24,6 +24,21 @@
   font-weight: 600;
 }
 
+/* === Icon slots === */
+.nw-link--has-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.nw-link__icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 0.9em;
+  line-height: 1;
+}
+
 /* === External icon === */
 .nw-link__external {
   display: inline-block;

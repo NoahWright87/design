@@ -9,7 +9,7 @@
 - [x] Tone variants: `muted`, `subtle`, `error`, `success` for contextual text (form hints, captions, status).
 
 ## Later
-- [ ] `isCopyable` prop: Shows a clipboard copy button on hover.
+- [x] `isCopyable` prop: Shows a clipboard copy button on hover.
 - [x] Inline/block control: Explicit prop to render as inline (`<span>`) vs block (`<p>`/`<div>`).
 
 ## Backlog

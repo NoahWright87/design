@@ -89,6 +89,16 @@ export const ErrorWaggle: Story = {
   },
 };
 
+export const RequiredValidation: Story = {
+  name: "Required — inline validation",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: 280 }}>
+      <Input label="Full name" required placeholder="Type something, then clear it" />
+      <Input label="Email" type="email" required placeholder="you@example.com" />
+    </div>
+  ),
+};
+
 export const AllTypes: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>

@@ -4,8 +4,8 @@
 - [ ] TBD
 
 ## Later
-- [ ] Filter or search by skill tag.
-- [ ] Sorting options (newest, oldest, alphabetical).
+- [x] Filter or search by skill tag.
+- [x] Sorting options (newest, oldest, alphabetical).
 
 ## Backlog
 - [ ] Lightbox or modal for project detail view.

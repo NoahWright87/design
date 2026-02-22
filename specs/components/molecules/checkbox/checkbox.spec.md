@@ -9,11 +9,14 @@ Checkbox provides a styled checkbox control with an integrated label. The native
 ## Contract
 
 ### Inputs
-- Label text (required).
-- Optional name, controlled checked state, and default checked state.
-- Optional change handler.
-- Optional disabled state.
-- Optional style overrides.
+- Label text (`label`, required).
+- Optional `name`, controlled `checked` state, and `defaultChecked` state.
+- Optional `onChange` handler.
+- Optional `error` message (external, overrides internal validation).
+- Optional `disabled` flag.
+- Optional `required` flag.
+- Optional `randomDisabledCursor` — shows a randomly selected "no" emoji cursor when disabled.
+- Optional `style` overrides.
 
 ### Outputs
 A labeled checkbox control with custom visual styling, reflecting checked, unchecked, focused, and disabled states.
@@ -35,6 +38,12 @@ Clicking the label or the visual box toggles the checkbox. The Space key toggles
 
 **Focused:** A visible focus ring appears around the visual box.
 
+**Required:** When `required` is set and the user interacts with the checkbox then unchecks it, an inline "This field is required." error appears automatically.
+
+**Error waggle:** When an error appears (from `error` or inline validation), the control performs a side-to-side waggle animation.
+
+**Animation:** Checking plays a spring-bounce animation — the box pops and the checkmark overshoots then springs back. Reduced-motion safe.
+
 ## Interface
 
 The checkbox appears as a small square box followed by label text. In the unchecked state, the box has a light border. When checked, the box fills with the primary color and shows a checkmark. The label text is always visible alongside the box.
@@ -51,3 +60,7 @@ Transitions between states are smooth, but respect the user's motion preferences
 7. Passes name, checked, defaultChecked, and disabled through to the underlying input.
 8. Shows a dimmed appearance and accepts no input when disabled.
 9. Style overrides apply to the root wrapper.
+10. When `required` and the checkbox is unchecked after interaction, shows an inline required error.
+11. When an error is present, the control performs a waggle animation.
+12. Checking and unchecking plays a spring-bounce animation; instantly changes state under reduced-motion.
+13. When `randomDisabledCursor` is set and disabled, a random "no" emoji cursor is shown.

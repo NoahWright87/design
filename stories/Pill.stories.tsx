@@ -51,3 +51,33 @@ export const WithIcon: Story = {
     </div>
   ),
 };
+
+export const Dismissable: Story = {
+  render: () => {
+    const [tags, setTags] = React.useState([
+      { id: 1, label: "Design Systems", variant: "primary" as const },
+      { id: 2, label: "React", variant: "secondary" as const },
+      { id: 3, label: "TypeScript", variant: "secondary" as const },
+      { id: 4, label: "CSS", variant: "default" as const },
+      { id: 5, label: "Accessible", variant: "confirm" as const },
+    ]);
+
+    return (
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+        {tags.length === 0 && (
+          <span style={{ opacity: 0.5 }}>All tags dismissed.</span>
+        )}
+        {tags.map(tag => (
+          <Pill
+            key={tag.id}
+            variant={tag.variant}
+            onDismiss={() => setTags(prev => prev.filter(t => t.id !== tag.id))}
+            dismissLabel={`Remove ${tag.label}`}
+          >
+            {tag.label}
+          </Pill>
+        ))}
+      </div>
+    );
+  },
+};

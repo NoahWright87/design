@@ -34,15 +34,33 @@ export function Select({
   style,
 }: SelectProps) {
   const rootRef = React.useRef<HTMLLabelElement>(null);
-  useWaggle(error, rootRef);
+
+  const isControlled = value !== undefined;
+  const [internalValue, setInternalValue] = React.useState(defaultValue ?? (placeholder ? "" : ""));
+  const [touched, setTouched] = React.useState(false);
+
+  const currentValue = isControlled ? value : internalValue;
+  const requiredError = required && touched && !currentValue ? "Please select an option." : undefined;
+  const effectiveError = error ?? requiredError;
+
+  useWaggle(effectiveError, rootRef);
 
   const [disabledCursor] = React.useState<string>(
     () => (randomDisabledCursor && disabled) ? pickRandomDisabledCursor() : ""
   );
 
+  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    if (!isControlled) setInternalValue(e.target.value);
+    onChange?.(e);
+  }
+
+  function handleBlur() {
+    setTouched(true);
+  }
+
   const classNames = [
     "nw-select",
-    error && "nw-select--error",
+    effectiveError && "nw-select--error",
     disabled && "nw-select--disabled",
   ]
     .filter(Boolean)
@@ -65,7 +83,8 @@ export function Select({
           name={name}
           value={value}
           defaultValue={defaultValue ?? (placeholder ? "" : undefined)}
-          onChange={onChange}
+          onChange={handleChange}
+          onBlur={handleBlur}
           disabled={disabled}
           required={required}
           style={disabledCursor ? { cursor: "inherit" } : undefined}
@@ -81,7 +100,7 @@ export function Select({
           &#9662;
         </span>
       </div>
-      {error && <span className="nw-select__error">{error}</span>}
+      {effectiveError && <span className="nw-select__error">{effectiveError}</span>}
     </label>
   );
 }

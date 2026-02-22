@@ -12,8 +12,10 @@ It is an atom in the atomic design sense: a non-rendering, zero-dependency utili
 
 ### Inputs
 - A category name identifying the type of content to retrieve (for example, a person's name, a job title, or a short paragraph).
-- Optional count — how many items to return as an array instead of one.
-- Optional seed — a string for reproducible random selection across calls.
+- Optional `count` — how many items to return as an array instead of one.
+- Optional `seed` — a string for reproducible random selection across calls.
+- Optional `customEntries` — an array of strings that replaces the built-in pool for array-based categories. Ignored for function-based categories (`abstractImage`, `date`).
+- Optional `weights` — an array of relative weights, same length as the active pool. Higher values increase the likelihood of that entry being selected. Ignored for function-based categories.
 
 ### Outputs
 - A single random string from the requested category, or an array of strings if a count is requested.
@@ -33,6 +35,10 @@ When called with a category name, the atom returns a random entry from that cate
 **With count:** Returns an array of the requested number of entries.
 
 **With seed:** Returns the same result every time the same seed is used, enabling consistent previews across builds.
+
+**With customEntries:** The provided array replaces the built-in pool entirely for that call.
+
+**With weights:** Entries are selected using weighted probability — a weight of `3` for an entry makes it three times as likely as an entry with weight `1`. If the weights array length does not match the pool length, weights are silently ignored and uniform random selection is used.
 
 **Date category:** Accepts optional range constraints and returns a realistic date or date range formatted naturally (for example, "Jan 2024 – Sep 2025").
 
@@ -71,3 +77,6 @@ The atom exposes a single function that accepts a category name and returns a ra
 6. Image entries are valid minimal SVGs suitable for use as image sources.
 7. All copy aligns with the design system's personality: quirky, whimsical, and intentionally meaningless.
 8. The atom works correctly in server-side rendering environments.
+9. Providing `customEntries` replaces the built-in pool for that call.
+10. Providing `weights` of the correct length biases selection toward higher-weighted entries.
+11. Providing `weights` of the wrong length falls back silently to uniform random selection.

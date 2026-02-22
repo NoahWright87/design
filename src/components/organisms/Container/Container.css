@@ -1,10 +1,37 @@
 .nw-container { display: flex; flex-wrap: wrap; box-sizing: border-box; }
 
-/* Gutters: subtle side shadow on large screens to define container edges */
+/* Gutters: subtle side shadow on large screens to define container edges.
+   Internal custom properties --_gb (gutter border color) and --_gs (gutter shadow)
+   are set by modifier classes; they are not part of the public API. */
 @media (min-width: 1024px) {
+  /* Base gutter — sets the default border color and applies the box-shadow */
   .nw-container--gutters {
-    box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.06), inset -1px 0 0 rgba(0, 0, 0, 0.06);
+    --_gb: rgba(0, 0, 0, 0.06);
+    box-shadow:
+      inset 1px 0 0 var(--_gb),
+      inset -1px 0 0 var(--_gb),
+      var(--_gs, none);
   }
+
+  /* Gutter border strength: override the border color */
+  .nw-container--gutter-border-subtle { --_gb: rgba(0, 0, 0, 0.06); }
+  .nw-container--gutter-border-medium { --_gb: rgba(0, 0, 0, 0.15); }
+  .nw-container--gutter-border-strong { --_gb: rgba(0, 0, 0, 0.30); }
+
+  /* Gutter border modifiers also apply the inset lines when used standalone */
+  .nw-container--gutter-border-subtle,
+  .nw-container--gutter-border-medium,
+  .nw-container--gutter-border-strong {
+    box-shadow:
+      inset 1px 0 0 var(--_gb),
+      inset -1px 0 0 var(--_gb),
+      var(--_gs, none);
+  }
+
+  /* Gutter shadow depth: set the drop-shadow using the design-system tokens */
+  .nw-container--gutter-shadow-sm { --_gs: var(--shadow-sm); }
+  .nw-container--gutter-shadow-md { --_gs: var(--shadow-md); }
+  .nw-container--gutter-shadow-lg { --_gs: var(--shadow-lg); }
 }
 .nw-container.vertical { flex-direction: column; }
 .nw-container.horizontal { flex-direction: row; }

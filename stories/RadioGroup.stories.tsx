@@ -51,6 +51,38 @@ export const Disabled: Story = {
   },
 };
 
+export const RequiredValidation: Story = {
+  name: "Required — inline validation",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <RadioGroup
+        label="Shipping speed"
+        name="shipping-required"
+        options={shippingOptions}
+        required
+      />
+      <p style={{ fontSize: "var(--text-sm)", color: "var(--foreground)", margin: 0 }}>
+        Select an option then switch away — or submit without selecting.
+      </p>
+    </div>
+  ),
+};
+
+export const EnhancedAnimation: Story = {
+  name: "Enhanced selection animation",
+  render: () => (
+    <RadioGroup
+      label="Pick one to see the bounce"
+      name="anim-demo"
+      options={[
+        { label: "Option Alpha", value: "alpha" },
+        { label: "Option Beta", value: "beta" },
+        { label: "Option Gamma", value: "gamma" },
+      ]}
+    />
+  ),
+};
+
 export const ErrorWaggle: Story = {
   render: () => {
     const [error, setError] = React.useState<string | undefined>(undefined);

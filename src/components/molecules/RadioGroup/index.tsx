@@ -18,6 +18,7 @@ export type RadioGroupProps = {
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   error?: string;
   disabled?: boolean;
+  required?: boolean;
   /** Show a randomly selected "no" emoji cursor when disabled. */
   randomDisabledCursor?: boolean;
   style?: React.CSSProperties;
@@ -32,19 +33,35 @@ export function RadioGroup({
   onChange,
   error,
   disabled = false,
+  required = false,
   randomDisabledCursor = false,
   style,
 }: RadioGroupProps) {
   const rootRef = React.useRef<HTMLFieldSetElement>(null);
-  useWaggle(error, rootRef);
+
+  const isControlled = value !== undefined;
+  const [internalValue, setInternalValue] = React.useState(defaultValue ?? "");
+  const [touched, setTouched] = React.useState(false);
+
+  const currentValue = isControlled ? value : internalValue;
+  const requiredError = required && touched && !currentValue ? "Please select an option." : undefined;
+  const effectiveError = error ?? requiredError;
+
+  useWaggle(effectiveError, rootRef);
 
   const [disabledCursor] = React.useState<string>(
     () => (randomDisabledCursor && disabled) ? pickRandomDisabledCursor() : ""
   );
 
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!isControlled) setInternalValue(e.target.value);
+    setTouched(true);
+    onChange?.(e);
+  }
+
   const classNames = [
     "nw-radio-group",
-    error && "nw-radio-group--error",
+    effectiveError && "nw-radio-group--error",
     disabled && "nw-radio-group--disabled",
   ]
     .filter(Boolean)
@@ -85,7 +102,7 @@ export function RadioGroup({
                     ? defaultValue === option.value
                     : undefined
                 }
-                onChange={onChange}
+                onChange={handleChange}
                 disabled={optionDisabled}
                 style={disabledCursor && optionDisabled ? { cursor: "inherit" } : undefined}
               />
@@ -95,7 +112,7 @@ export function RadioGroup({
           );
         })}
       </div>
-      {error && <span className="nw-radio-group__error">{error}</span>}
+      {effectiveError && <span className="nw-radio-group__error">{effectiveError}</span>}
     </fieldset>
   );
 }

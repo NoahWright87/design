@@ -58,6 +58,15 @@ export const AsElement: Story = {
   ),
 };
 
+export const Copyable: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", paddingRight: "2rem" }}>
+      <Text isCopyable>Hover to reveal the copy button — click it to copy this text.</Text>
+      <Text isCopyable tone="muted">Muted copyable text with clipboard button.</Text>
+    </div>
+  ),
+};
+
 export const Tones: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>

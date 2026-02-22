@@ -9,6 +9,7 @@ export default {
 
 export const ColorGrid = () => {
   const [colors, setColors] = useState<Record<string, string>>({});
+  const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
     const computed = getComputedStyle(document.documentElement);
@@ -20,19 +21,54 @@ export const ColorGrid = () => {
     setColors(resolved);
   }, []);
 
+  function handleCopy(name: string) {
+    navigator.clipboard.writeText(name).then(() => {
+      setCopied(name);
+      setTimeout(() => setCopied(null), 1500);
+    });
+  }
+
   return (
     <div style={{ padding: 24 }}>
       <h1>Theme colors</h1>
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-        {Object.entries(colors).map(([name, value]) => (
-          <div key={name} style={{ width: 220, border: '1px solid #eee', borderRadius: 8, overflow: 'hidden' }}>
-            <div style={{ height: 120, background: value }} />
-            <div style={{ padding: 12 }}>
-              <div style={{ fontSize: 12, color: '#666' }}>{name}</div>
-              <div style={{ marginTop: 6, fontFamily: 'monospace' }}>{value}</div>
+        {Object.entries(colors).map(([name, value]) => {
+          const isCopied = copied === name;
+          return (
+            <div
+              key={name}
+              role="button"
+              tabIndex={0}
+              title={isCopied ? 'Copied!' : `Click to copy ${name}`}
+              onClick={() => handleCopy(name)}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleCopy(name)}
+              style={{
+                width: 220,
+                border: '1px solid #eee',
+                borderRadius: 8,
+                overflow: 'hidden',
+                cursor: 'pointer',
+                outline: isCopied ? '2px solid var(--primary, #2563eb)' : undefined,
+                transition: 'outline 0.15s',
+              }}
+            >
+              <div style={{ height: 120, background: value }} />
+              <div style={{ padding: 12 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: isCopied ? 'var(--primary, #2563eb)' : '#666',
+                    fontWeight: isCopied ? 600 : undefined,
+                    transition: 'color 0.15s',
+                  }}
+                >
+                  {isCopied ? '✓ Copied!' : name}
+                </div>
+                <div style={{ marginTop: 6, fontFamily: 'monospace' }}>{value}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

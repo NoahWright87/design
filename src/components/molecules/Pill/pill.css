@@ -56,3 +56,35 @@
   line-height: 1;
   flex-shrink: 0;
 }
+
+.nw-pill--dismissable {
+  padding-right: 6px;
+}
+
+.nw-pill__dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.65;
+  padding: 0 2px;
+  margin-left: 2px;
+  line-height: 1;
+  font-size: 1.15em;
+  border-radius: 50%;
+  transition: opacity var(--duration-fast, 120ms) ease,
+              background-color var(--duration-fast, 120ms) ease;
+}
+
+.nw-pill__dismiss:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.nw-pill__dismiss:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}

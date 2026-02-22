@@ -91,6 +91,19 @@ export const Required: Story = {
   },
 };
 
+export const RequiredValidation: Story = {
+  name: "Required — inline validation",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: 280 }}>
+      <Select label="Country" placeholder="Choose one…" required>
+        <option value="us">United States</option>
+        <option value="ca">Canada</option>
+        <option value="uk">United Kingdom</option>
+      </Select>
+    </div>
+  ),
+};
+
 export const ErrorWaggle: Story = {
   render: () => {
     const [error, setError] = React.useState<string | undefined>(undefined);

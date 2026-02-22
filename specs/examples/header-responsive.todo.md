@@ -5,7 +5,7 @@
 
 ## Later
 - [ ] Persistent theme preference across page loads.
-- [ ] Smooth transitions when switching themes.
+- [x] Smooth transitions when switching themes.
 
 ## Backlog
 - [ ] Keyboard shortcut for theme toggle.

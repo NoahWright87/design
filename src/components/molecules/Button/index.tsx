@@ -17,6 +17,7 @@ export type ButtonProps = {
   iconPosition?: IconPosition;
   disabled?: boolean;
   motion?: ButtonMotion;
+  type?: "button" | "submit" | "reset";
   style?: React.CSSProperties;
 };
 
@@ -69,6 +70,7 @@ export function Button({
   iconPosition = "left",
   disabled = false,
   motion = "bouncy",
+  type = "button",
   style,
 }: ButtonProps) {
   const { color: buttonColor, contrast: buttonContrast } = resolveColor(color);
@@ -91,7 +93,7 @@ export function Button({
   
   return (
     <button
-      type="button"
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className={classNames}
