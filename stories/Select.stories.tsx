@@ -91,6 +91,28 @@ export const Required: Story = {
   },
 };
 
+export const ErrorWaggle: Story = {
+  render: () => {
+    const [error, setError] = React.useState<string | undefined>(undefined);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: 280 }}>
+        <Select label="Country" placeholder="Choose one…" error={error}>
+          <option value="us">United States</option>
+          <option value="ca">Canada</option>
+          <option value="uk">United Kingdom</option>
+        </Select>
+        <button
+          type="button"
+          onClick={() => setError(e => e ? undefined : "Please select a country")}
+          style={{ alignSelf: "flex-start" }}
+        >
+          {error ? "Clear error" : "Trigger error"}
+        </button>
+      </div>
+    );
+  },
+};
+
 export const ManyOptions: Story = {
   args: {
     label: "State",

@@ -2,6 +2,7 @@ import * as React from "react";
 import "./link.css";
 
 export type LinkMotion = "none" | "once" | "pulsing";
+export type LinkVariant = "default" | "subtle" | "prominent";
 
 export type LinkProps = {
   children: React.ReactNode;
@@ -13,13 +14,21 @@ export type LinkProps = {
   isExternal?: boolean;
   /** Hover animation style. Default: "pulsing". */
   motion?: LinkMotion;
+  /**
+   * Visual variant.
+   * - "default": primary color, always underlined.
+   * - "subtle": muted color, underline on hover only.
+   * - "prominent": primary color, bold, always underlined.
+   */
+  variant?: LinkVariant;
   /** Additional CSS class name. */
   className?: string;
 };
 
-export function Link({ children, href, isExternal, motion = "pulsing", className = "" }: LinkProps) {
+export function Link({ children, href, isExternal, motion = "pulsing", variant = "default", className = "" }: LinkProps) {
   const cls = [
     "nw-link",
+    variant !== "default" && `nw-link--${variant}`,
     `nw-link--motion-${motion}`,
     className,
   ]

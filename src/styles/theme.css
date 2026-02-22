@@ -76,6 +76,27 @@
   color-scheme: dark;
 }
 
+/* === Shared animation utilities === */
+
+@keyframes nw-waggle {
+  0%   { transform: translateX(0); }
+  12%  { transform: translateX(-7px); }
+  28%  { transform: translateX(7px); }
+  44%  { transform: translateX(-5px); }
+  58%  { transform: translateX(5px); }
+  72%  { transform: translateX(-2px); }
+  86%  { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+.nw-waggling {
+  animation: nw-waggle 480ms var(--ease-in-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-waggling { animation: none; }
+}
+
 * { box-sizing: border-box; }
 
 html, body { min-height: 100%; }

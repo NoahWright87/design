@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./radiogroup.css";
 import { pickRandomDisabledCursor } from "../_shared/randomDisabledCursor";
+import { useWaggle } from "../_shared/useWaggle";
 
 export type RadioOption = {
   label: string;
@@ -15,6 +16,7 @@ export type RadioGroupProps = {
   value?: string;
   defaultValue?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  error?: string;
   disabled?: boolean;
   /** Show a randomly selected "no" emoji cursor when disabled. */
   randomDisabledCursor?: boolean;
@@ -28,16 +30,21 @@ export function RadioGroup({
   value,
   defaultValue,
   onChange,
+  error,
   disabled = false,
   randomDisabledCursor = false,
   style,
 }: RadioGroupProps) {
+  const rootRef = React.useRef<HTMLFieldSetElement>(null);
+  useWaggle(error, rootRef);
+
   const [disabledCursor] = React.useState<string>(
     () => (randomDisabledCursor && disabled) ? pickRandomDisabledCursor() : ""
   );
 
   const classNames = [
     "nw-radio-group",
+    error && "nw-radio-group--error",
     disabled && "nw-radio-group--disabled",
   ]
     .filter(Boolean)
@@ -49,7 +56,7 @@ export function RadioGroup({
   };
 
   return (
-    <fieldset className={classNames} style={rootStyle}>
+    <fieldset ref={rootRef} className={classNames} style={rootStyle}>
       <legend className="nw-radio-group__legend">{label}</legend>
       <div className="nw-radio-group__options">
         {options.map((option) => {
@@ -88,6 +95,7 @@ export function RadioGroup({
           );
         })}
       </div>
+      {error && <span className="nw-radio-group__error">{error}</span>}
     </fieldset>
   );
 }

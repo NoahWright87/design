@@ -52,6 +52,16 @@ export const ExternalPulsing: Story = {
   },
 };
 
+export const Variants: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <Link href="#" variant="default">Default — primary color, always underlined</Link>
+      <Link href="#" variant="subtle">Subtle — muted, underline on hover only</Link>
+      <Link href="#" variant="prominent">Prominent — bold, always full color</Link>
+    </div>
+  ),
+};
+
 export const AllMotions: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>

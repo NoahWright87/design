@@ -1,4 +1,11 @@
 .nw-container { display: flex; flex-wrap: wrap; box-sizing: border-box; }
+
+/* Gutters: subtle side shadow on large screens to define container edges */
+@media (min-width: 1024px) {
+  .nw-container--gutters {
+    box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.06), inset -1px 0 0 rgba(0, 0, 0, 0.06);
+  }
+}
 .nw-container.vertical { flex-direction: column; }
 .nw-container.horizontal { flex-direction: row; }
 

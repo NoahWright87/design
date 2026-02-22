@@ -6,6 +6,10 @@ export type TextTone = "muted" | "subtle" | "error" | "success";
 
 export type TextProps = {
   children: React.ReactNode;
+  /** Override the rendered HTML element while keeping Text styling. Default: "p". */
+  as?: keyof JSX.IntrinsicElements;
+  /** Render as an inline element (span) instead of a block (p). */
+  inline?: boolean;
   /** Truncates text to a single line with an ellipsis. */
   truncate?: boolean;
   /** Clamps text to N lines with an ellipsis. */
@@ -20,7 +24,19 @@ export type TextProps = {
   className?: string;
 };
 
-export function Text({ children, truncate, maxLines, align, balance, tone, className = "" }: TextProps) {
+export function Text({
+  children,
+  as,
+  inline,
+  truncate,
+  maxLines,
+  align,
+  balance,
+  tone,
+  className = "",
+}: TextProps) {
+  const Tag = (as ?? (inline ? "span" : "p")) as React.ElementType;
+
   const cls = [
     truncate && "nw-text--truncate",
     maxLines && "nw-text--clamp",
@@ -34,7 +50,7 @@ export function Text({ children, truncate, maxLines, align, balance, tone, class
 
   const style = maxLines ? ({ WebkitLineClamp: maxLines } as React.CSSProperties) : undefined;
 
-  return <p className={cls} style={style}>{children}</p>;
+  return <Tag className={cls} style={style}>{children}</Tag>;
 }
 
 export default Text;

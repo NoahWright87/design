@@ -76,6 +76,18 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
 }
 
+/* Error state */
+.nw-radio-group--error .nw-radio__circle {
+  border-color: var(--danger);
+}
+
+.nw-radio-group__error {
+  font-size: var(--text-sm);
+  color: var(--danger);
+  display: block;
+  margin-top: var(--spacing-xs);
+}
+
 /* Disabled */
 .nw-radio-group--disabled {
   opacity: 0.5;

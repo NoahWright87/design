@@ -45,3 +45,21 @@ export const DisabledChecked: Story = {
     disabled: true,
   },
 };
+
+export const ErrorWaggle: Story = {
+  render: () => {
+    const [error, setError] = React.useState<string | undefined>(undefined);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <Checkbox label="I agree to the terms" error={error} />
+        <button
+          type="button"
+          onClick={() => setError(e => e ? undefined : "You must agree to continue")}
+          style={{ alignSelf: "flex-start" }}
+        >
+          {error ? "Clear error" : "Trigger error"}
+        </button>
+      </div>
+    );
+  },
+};

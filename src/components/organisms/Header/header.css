@@ -51,6 +51,20 @@
   gap: 6px;
 }
 
+/* Stacked layout: icon above, label below as muted caption */
+.nw-header__slot--stacked {
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.nw-header__slot--stacked .nw-header__slot-label {
+  font-size: 0.65rem;
+  color: color-mix(in srgb, var(--foreground, #000) 55%, transparent);
+  line-height: 1;
+  font-weight: 400;
+}
+
 @media (max-width: 768px){
   .nw-header{ padding: 0 12px; }
   

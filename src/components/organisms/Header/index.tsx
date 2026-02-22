@@ -44,17 +44,17 @@ export function Header({
       role="banner"
       style={background ? { background } : undefined}
     >
-      <div className="nw-header__slot nw-header__slot--left">
+      <div className={`nw-header__slot nw-header__slot--left${leftLabel ? " nw-header__slot--stacked" : ""}`}>
         <div className="nw-header__slot-element">{left}</div>
         {leftLabel && <div className="nw-header__slot-label">{leftLabel}</div>}
       </div>
 
-      <div className="nw-header__slot nw-header__slot--center">
+      <div className={`nw-header__slot nw-header__slot--center${centerLabel ? " nw-header__slot--stacked" : ""}`}>
         <div className="nw-header__slot-element">{center}</div>
         {centerLabel && <div className="nw-header__slot-label">{centerLabel}</div>}
       </div>
 
-      <div className="nw-header__slot nw-header__slot--right">
+      <div className={`nw-header__slot nw-header__slot--right${rightLabel ? " nw-header__slot--stacked" : ""}`}>
         <div className="nw-header__slot-element">{right}</div>
         {rightLabel && <div className="nw-header__slot-label">{rightLabel}</div>}
       </div>

@@ -1,7 +1,7 @@
 # Container — Backlog
 
 ## Sooner
-- [ ] Gutters: Add side gutters on large screens with subtle shadow/border treatment. On by default; opt out with `noGutters` prop.
+- [x] Gutters: Add side gutters on large screens with subtle shadow/border treatment. On by default; opt out with `noGutters` prop.
 - [ ] Gutter customization: Expose direct props to customize the gutter border and shadow independently.
 
 ## Later

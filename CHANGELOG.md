@@ -15,11 +15,17 @@ This file documents planned and completed changes for the repository.
 - **CardFooter layout helper:** Added `CardFooter` companion component with `align` prop for opinionated footer layouts in Card.
 - **Spec overhaul:** Rewrote all specs to follow the template format. Moved inline backlogs to adjacent `.todo.md` files. Added boolean prop naming convention to design system spec.
 - **Quick wins batch:** `Select` placeholder re-selectable bug fixed; `Card` now elevated by default with `flat` opt-out; `Text` gains `truncate`, `align`, `balance`, `maxLines`, and `tone` props.
-- **Link animation:** `Link` gains `isExternal` prop (animated ↗ superscript) and `motion` prop (`none | once | pulsing`). Slingshot brightness on hover; arrow oscillates continuously in pulsing mode.
+- **Link animation + variants:** `isExternal` (animated ↗), `motion` prop (`none | once | pulsing`), `variant` prop (`default | subtle | prominent`).
 - **Button bounce dialed back:** Reduced hover lift and press squash to be less exaggerated.
-- **Random disabled cursor:** Input, Select, Checkbox, and RadioGroup gain `randomDisabledCursor` prop — picks a random "no" emoji (🙅 ❌ ⛔ 🚫) as the cursor when disabled.
-- **Header:** `background` prop for custom CSS background; `shadow` prop (on by default, opt-out); sticky story added.
-- **Footer:** Left/center/right slots mirroring Header; `bottom` strip slot; `hasBottomSeparator` prop; renamed `sticky` → `isSticky`.
+- **Random disabled cursor:** Input, Select, Checkbox, RadioGroup gain `randomDisabledCursor` — picks a random "no" emoji (🙅 ❌ ⛔ 🚫).
+- **Error waggle:** All four form fields (Input, Select, Checkbox, RadioGroup) shake side-to-side when an error appears; reactive Storybook stories for each. Added `error` prop to Checkbox and RadioGroup.
+- **Header:** `background`, `shadow` props; stacked icon+label layout when both slot content and label are provided.
+- **Footer:** Left/center/right/bottom slots; `hasBottomSeparator`; `isSticky`.
+- **Text:** `as` prop for semantic element override; `inline` prop for span rendering.
+- **Pill:** `icon` prop renders an icon before the label.
+- **Avatar:** Hover (tilt + float), press (counter-tilt + squish), release (spring) animations on interactive avatars.
+- **Container:** `noGutters` prop; default adds subtle side-shadow treatment on large screens.
+- **Contact form:** Fixed placeholder text re-randomizing on every keystroke (values now stable via useState).
 
 
 ## Version history

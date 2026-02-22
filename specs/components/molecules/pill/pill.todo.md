@@ -5,7 +5,7 @@
 
 ## Later
 - [ ] Dismissable variant (with close button) — requires a separate DismissablePill component.
-- [ ] Icon support (icon before text).
+- [x] Icon support (icon before text).
 
 ## Backlog
 - [ ] Custom color support beyond the semantic palette.

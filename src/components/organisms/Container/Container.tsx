@@ -13,6 +13,8 @@ export interface ContainerProps {
   width?: string | number;
   height?: string | number;
   wrap?: "always"; // reserved for future flexibility
+  /** Remove side gutter treatment on large screens. Gutters are on by default. */
+  noGutters?: boolean;
   children?: React.ReactNode;
 }
 
@@ -31,7 +33,8 @@ const DEFAULTS: Required<Omit<ContainerProps, "children">> = {
   foregroundColor: "var(--foreground)",
   width: "100%",
   height: "auto",
-  wrap: "always"
+  wrap: "always",
+  noGutters: false,
 };
 
 function normalizeSize(v: string | number | undefined, fallback: string | number): string | undefined {
@@ -50,6 +53,7 @@ export function Container(props: ContainerProps) {
     foregroundColor = DEFAULTS.foregroundColor,
     width = DEFAULTS.width,
     height = DEFAULTS.height,
+    noGutters = DEFAULTS.noGutters,
     // wrap currently only supports "always"; future options can branch behavior
     children
   } = props;
@@ -59,8 +63,9 @@ export function Container(props: ContainerProps) {
     direction === "horizontal" ? "horizontal" : "vertical",
     SPACING_CLASS.padding(padding),
     SPACING_CLASS.margin(margin),
-    SPACING_CLASS.gap(itemSpacing)
-  ].join(" ");
+    SPACING_CLASS.gap(itemSpacing),
+    !noGutters && "nw-container--gutters",
+  ].filter(Boolean).join(" ");
 
   const style: React.CSSProperties = {
     backgroundColor,

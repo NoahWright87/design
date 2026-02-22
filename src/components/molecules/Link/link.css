@@ -6,6 +6,24 @@
   cursor: pointer;
 }
 
+/* === Variants === */
+
+/* subtle: muted color, underline appears only on hover */
+.nw-link--subtle {
+  color: color-mix(in srgb, var(--foreground, #000) 55%, transparent);
+  text-decoration: none;
+}
+
+.nw-link--subtle:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* prominent: bold, always full primary color */
+.nw-link--prominent {
+  font-weight: 600;
+}
+
 /* === External icon === */
 .nw-link__external {
   display: inline-block;

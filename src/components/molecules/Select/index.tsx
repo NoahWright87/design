@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./select.css";
 import { pickRandomDisabledCursor } from "../_shared/randomDisabledCursor";
+import { useWaggle } from "../_shared/useWaggle";
 
 export type SelectProps = {
   label: string;
@@ -32,6 +33,9 @@ export function Select({
   randomDisabledCursor = false,
   style,
 }: SelectProps) {
+  const rootRef = React.useRef<HTMLLabelElement>(null);
+  useWaggle(error, rootRef);
+
   const [disabledCursor] = React.useState<string>(
     () => (randomDisabledCursor && disabled) ? pickRandomDisabledCursor() : ""
   );
@@ -50,7 +54,7 @@ export function Select({
   };
 
   return (
-    <label className={classNames} style={rootStyle}>
+    <label ref={rootRef} className={classNames} style={rootStyle}>
       <span className="nw-select__label">
         {label}
         {required && <span className="nw-select__required">*</span>}

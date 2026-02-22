@@ -42,13 +42,23 @@ export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
     });
   };
 
-  const socialLinks = [
+  const [placeholders] = React.useState(() => ({
+    name: getNonsense('personName') as string,
+    subject: getNonsense('shortTitle') as string,
+    message: getNonsense('longParagraph') as string,
+    ctaText: getNonsense('ctaText') as string,
+    modalTitle: getNonsense('shortTitle') as string,
+    modalBody: getNonsense('shortParagraph') as string,
+  }));
+
+  const socialLinks = React.useMemo(() => [
     { name: getNonsense('socialSiteName'), url: '#' },
     { name: getNonsense('socialSiteName'), url: '#' },
     { name: getNonsense('socialSiteName'), url: '#' },
     { name: getNonsense('socialSiteName'), url: '#' },
     { name: getNonsense('socialSiteName'), url: '#' },
-  ];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ], []);
 
   return (
     <div className="portfolio-site">
@@ -74,7 +84,7 @@ export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
                 name="name"
                 type="text"
                 className="portfolio-contact__input"
-                placeholder={getNonsense('personName') as string}
+                placeholder={placeholders.name}
                 value={formData.name}
                 onChange={handleChange}
                 required
@@ -106,7 +116,7 @@ export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
                 name="subject"
                 type="text"
                 className="portfolio-contact__input"
-                placeholder={getNonsense('shortTitle') as string}
+                placeholder={placeholders.subject}
                 value={formData.subject}
                 onChange={handleChange}
                 required
@@ -121,7 +131,7 @@ export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
                 id="message"
                 name="message"
                 className="portfolio-contact__textarea"
-                placeholder={getNonsense('longParagraph') as string}
+                placeholder={placeholders.message}
                 value={formData.message}
                 onChange={handleChange}
                 required
@@ -129,7 +139,7 @@ export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
             </div>
 
             <Button>
-              {getNonsense('ctaText')}
+              {placeholders.ctaText}
             </Button>
           </form>
 
@@ -151,9 +161,9 @@ export function PortfolioContact({ onNavigate }: PortfolioContactProps) {
       <Modal
         open={showModal}
         onClose={() => setShowModal(false)}
-        title={getNonsense('shortTitle') as string}
+        title={placeholders.modalTitle}
       >
-        <Text>{getNonsense('shortParagraph')}</Text>
+        <Text>{placeholders.modalBody}</Text>
         <div className="portfolio-modal__actions">
           <Button onClick={() => setShowModal(false)}>Close</Button>
         </div>

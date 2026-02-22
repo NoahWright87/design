@@ -1,5 +1,7 @@
 .nw-pill {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
   border-radius: 999px;
   font-weight: 500;
   white-space: nowrap;
@@ -46,4 +48,11 @@
 .nw-pill--danger {
   background-color: var(--danger, #dc3545);
   color: #fff;
+}
+
+.nw-pill__icon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  flex-shrink: 0;
 }

@@ -47,6 +47,17 @@ export const Balanced: Story = {
   decorators: [(Story) => <div style={{ width: 300 }}><Story /></div>],
 };
 
+export const AsElement: Story = {
+  render: () => (
+    <div>
+      <Text as="figcaption" tone="muted">figcaption via as="figcaption"</Text>
+      <Text as="blockquote">Blockquote styled as Text</Text>
+      <Text inline>Inline span — </Text>
+      <Text inline tone="subtle">continues on the same line</Text>
+    </div>
+  ),
+};
+
 export const Tones: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>

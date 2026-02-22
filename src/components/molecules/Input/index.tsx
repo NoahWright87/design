@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./input.css";
 import { pickRandomDisabledCursor } from "../_shared/randomDisabledCursor";
+import { useWaggle } from "../_shared/useWaggle";
 
 export type InputProps = {
   label: string;
@@ -32,6 +33,9 @@ export function Input({
   randomDisabledCursor = false,
   style,
 }: InputProps) {
+  const rootRef = React.useRef<HTMLLabelElement>(null);
+  useWaggle(error, rootRef);
+
   const [disabledCursor] = React.useState<string>(
     () => (randomDisabledCursor && disabled) ? pickRandomDisabledCursor() : ""
   );
@@ -50,7 +54,7 @@ export function Input({
   };
 
   return (
-    <label className={classNames} style={rootStyle}>
+    <label ref={rootRef} className={classNames} style={rootStyle}>
       <span className="nw-input__label">
         {label}
         {required && <span className="nw-input__required">*</span>}

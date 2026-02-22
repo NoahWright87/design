@@ -64,3 +64,14 @@ export const Clickable: Story = {
     onClick: () => alert("Avatar clicked!")
   }
 };
+
+export const InteractiveAnimations: Story = {
+  name: "Interactive — hover & press animations",
+  render: () => (
+    <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+      <Avatar label="NW" size={48} onClick={() => {}} />
+      <Avatar label="AB" size={64} onClick={() => {}} />
+      <Avatar src="https://i.pravatar.cc/150?img=3" alt="User" size={48} onClick={() => {}} />
+    </div>
+  ),
+};

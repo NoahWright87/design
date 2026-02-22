@@ -61,6 +61,18 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
 }
 
+/* Error state */
+.nw-checkbox--error .nw-checkbox__box {
+  border-color: var(--danger);
+}
+
+.nw-checkbox__error {
+  font-size: var(--text-sm);
+  color: var(--danger);
+  display: block;
+  width: 100%;
+}
+
 /* Disabled */
 .nw-checkbox--disabled {
   opacity: 0.5;

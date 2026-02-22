@@ -51,6 +51,29 @@ export const Disabled: Story = {
   },
 };
 
+export const ErrorWaggle: Story = {
+  render: () => {
+    const [error, setError] = React.useState<string | undefined>(undefined);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <RadioGroup
+          label="Shipping speed"
+          name="shipping-waggle"
+          options={shippingOptions}
+          error={error}
+        />
+        <button
+          type="button"
+          onClick={() => setError(e => e ? undefined : "Please select a shipping option")}
+          style={{ alignSelf: "flex-start" }}
+        >
+          {error ? "Clear error" : "Trigger error"}
+        </button>
+      </div>
+    );
+  },
+};
+
 export const WithDisabledOption: Story = {
   args: {
     label: "Shipping speed",
