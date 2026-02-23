@@ -11,11 +11,14 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- **Form components (overhaul):** Input/Select/Checkbox/RadioGroup gain `required` validation with auto-error on blur, error waggle animation, `randomDisabledCursor`, and spring-bounce animations on Checkbox/RadioGroup. Input adds `multiline`/`rows` (textarea). Select arrow animates on focus. Button gains `type` prop.
-- **Molecules enriched:** Pill — `icon` + `onDismiss` (dismissable × button). Link — `isExternal` (↗), `motion`, `variant`, `leadingIcon`, `trailingIcon`, `as` (router compat). Text — `isCopyable`, `as`, `inline`, `truncate`, `align`, `balance`, `maxLines`, `tone`. Avatar — hover/press/release spring animations. CardFooter with `align` prop added.
-- **Container + organisms:** Container gains `backgroundImage`, named-token `backgroundColor`/`foregroundColor`, `gutterBorder`/`gutterShadow` enums, `noGutters`. Header/Footer get left/center/right/bottom slots, `background`/`shadow` props, sticky support.
-- **Portfolio site (full buildout):** About — scroll-reveal sections + testimonials grid. Projects — skill filter chips, A–Z sort, empty state. Resume — staggered timeline animation, per-entry expand toggle. Contact — multiline Input, simultaneous error display, email validation.
-- **System/tooling:** Theme toggle with smooth 300ms transition; Nonsense weighted random + new categories (`moodEmoji`, `skillEmoji`, `date`); all external image URLs and hardcoded colors removed from stories; AGENTS.md rules codified; spec template overhaul with adjacent `.todo.md` backlogs.
+- **Form components (overhaul):** Input/Select/Checkbox/RadioGroup gain `required` validation with auto-error on blur, error waggle animation, `randomDisabledCursor`, and spring-bounce animations on Checkbox/RadioGroup. Input adds `multiline`/`rows` (textarea), email format validation. RadioGroup required-validation story uses a Submit button. Error spans now always rendered (reserved space via `min-height: 1.25em`) to prevent layout shift; `aria-live="polite"` on all error spans.
+- **Molecules enriched:** Pill — `icon` + `onDismiss` + whimsical dismiss animation + neutral default color + `href`/`target` link variant (renders as `<a>` with hover outline). Heading gains `color`, `align`, `truncate`, `gradient`, `underline`, `eyebrow`, `iconStart`/`iconEnd`, `animateIn` (IntersectionObserver fade+slide on viewport entry), `anchorLink` (¶ hover button copies anchor URL to clipboard).
+- **Header + Footer:** Both accept `children` fallback prop for simple/unslotted usage. Header gains `leftTooltip`/`centerTooltip`/`rightTooltip` props — CSS fade-in tooltip appears on slot hover.
+- **Container + organisms:** Container gains `backgroundImage` (bug fixed), `noBorders` prop, stronger default gutter borders. Card gains `scrollable`/`maxHeight` props + `CardGrid` responsive grid wrapper (`minCardWidth`, `gap`, `columns` props). Menu bug fixed: scrollbar no longer causes layout shift. Portfolio Projects page — varied placeholder data via Nonsense atom (bug fixed).
+- **ToggleIcon + HamburgerMenu:** Hamburger preset uses CSS-drawn 3-line → X (pure CSS). `HamburgerMenu` refactored as thin ToggleIcon wrapper (deprecated). Menu panel now uses `@keyframes nw-menu-enter` on mount. Pill gains `hideLabel` tooltip prop.
+- **Badge + Box molecules (new):** Badge — compact notification indicator (`count`, `max`, `dot`, wraps element at top-right). Box — low-level layout primitive with padding/margin/rounded/shadow/background/`as` props.
+- **Breadcrumbs organism (new):** Accessible `<nav aria-label="Breadcrumb">` with `items`, `separator`, themed link + muted current-page label. Select gains `maxVisibleItems` (listbox mode).
+- **Portfolio audit:** Projects use `CardGrid`, project cards show `category` Pill (secondary), headings use `gradient`/`animateIn`. Card `--interactive` gains `:active` scale-down press animation.
 
 
 ## Version history

@@ -1,0 +1,65 @@
+/* Eyebrow label */
+.nw-heading__eyebrow {
+  display: block;
+  font-size: 0.65em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--foreground) 55%, transparent);
+  margin-bottom: 0.15em;
+}
+
+/* animateIn — fade + slide up on viewport entry */
+.nw-heading-wrapper--animate {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.nw-heading-wrapper--hidden {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.nw-heading-wrapper--revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-heading-wrapper--animate {
+    transition: none;
+  }
+  .nw-heading-wrapper--hidden {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* anchorLink — ¶ button revealed on hover */
+.nw-heading-anchor-wrapper {
+  position: relative;
+}
+
+.nw-heading-anchor-link {
+  opacity: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  font-size: 0.75em;
+  padding: 0 0.2em;
+  margin-left: 0.35em;
+  vertical-align: middle;
+  line-height: 1;
+  transition: opacity 120ms ease;
+}
+
+.nw-heading-anchor-wrapper:hover .nw-heading-anchor-link,
+.nw-heading-anchor-link:focus-visible {
+  opacity: 1;
+}
+
+.nw-heading-anchor-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

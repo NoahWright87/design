@@ -8,4 +8,4 @@
 
 ## Backlog
 - [ ] Carousel or rotating testimonials below the navigation cards.
-- [ ] Theme toggle in the header.
+- [x] Theme toggle in the header.

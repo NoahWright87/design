@@ -52,6 +52,44 @@ export const WithIcon: Story = {
   ),
 };
 
+export const CustomColors: Story = {
+  name: "Custom colors (style prop)",
+  render: () => (
+    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+      <Pill style={{ backgroundColor: "#7c3aed", color: "#fff" }}>Purple</Pill>
+      <Pill style={{ backgroundColor: "#f97316", color: "#fff" }}>Orange</Pill>
+      <Pill style={{ backgroundColor: "#0ea5e9", color: "#fff" }}>Sky</Pill>
+      <Pill style={{ backgroundColor: "#d1fae5", color: "#065f46" }}>Mint</Pill>
+      <Pill style={{ backgroundColor: "transparent", color: "var(--foreground)", border: "1.5px solid currentColor" }}>Outlined</Pill>
+    </div>
+  ),
+};
+
+export const LinkVariant: Story = {
+  name: "href (link variant)",
+  render: () => (
+    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+      <Pill href="#" variant="primary">Design Systems</Pill>
+      <Pill href="#" variant="secondary">React</Pill>
+      <Pill href="#" variant="default" icon="→">Read more</Pill>
+      <Pill href="#" variant="confirm">Open source</Pill>
+    </div>
+  ),
+};
+
+export const HideLabel: Story = {
+  name: "hideLabel (icon-only + tooltip)",
+  render: () => (
+    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", paddingTop: "2.5rem" }}>
+      <Pill variant="primary" icon="★" hideLabel>Featured post</Pill>
+      <Pill variant="confirm" icon="✓" hideLabel>Verified</Pill>
+      <Pill variant="danger" icon="!" hideLabel>High priority</Pill>
+      <Pill variant="secondary" icon="⚡" hideLabel>New arrival</Pill>
+      <Pill variant="default" icon="📌" hideLabel>Pinned</Pill>
+    </div>
+  ),
+};
+
 export const Dismissable: Story = {
   render: () => {
     const [tags, setTags] = React.useState([

@@ -78,7 +78,7 @@ export function Checkbox({
       />
       <span className="nw-checkbox__box" aria-hidden="true" />
       <span className="nw-checkbox__label">{label}</span>
-      {effectiveError && <span className="nw-checkbox__error">{effectiveError}</span>}
+      <span className="nw-checkbox__error" aria-live="polite">{effectiveError}</span>
     </label>
   );
 }

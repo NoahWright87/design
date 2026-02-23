@@ -1,6 +1,7 @@
 .nw-checkbox {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--spacing-sm);
   cursor: pointer;
   font-size: var(--text-md);
@@ -87,6 +88,7 @@
   color: var(--danger);
   display: block;
   width: 100%;
+  min-height: 1.25em;
 }
 
 /* Disabled */

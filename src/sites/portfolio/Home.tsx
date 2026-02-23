@@ -39,7 +39,7 @@ export function PortfolioHome({ onNavigate }: PortfolioHomeProps) {
                 aspectRatio="1/1"
               />
               <div className="portfolio-hero__text">
-                <Heading level={1}>
+                <Heading level={1} gradient animateIn>
                   {getNonsense('personName')}
                 </Heading>
                 <Text>{getNonsense('introText')}</Text>
@@ -68,7 +68,7 @@ export function PortfolioHome({ onNavigate }: PortfolioHomeProps) {
         {/* Navigation Cards */}
         <section className="portfolio-cards-section">
           <Container padding="lg">
-            <Heading level={2}>
+            <Heading level={2} animateIn>
               Explore
             </Heading>
             <div className="portfolio-cards">

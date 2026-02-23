@@ -112,6 +112,22 @@ export const GutterCustomization: Story = {
   )
 };
 
+export const NoBorders: Story = {
+  render: () => (
+    <Container direction="vertical" itemSpacing="md">
+      <Container padding="lg">
+        <div>Default — visible side borders + shadow</div>
+      </Container>
+      <Container padding="lg" noBorders>
+        <div>noBorders — all border/shadow treatment removed</div>
+      </Container>
+      <Container padding="lg" noGutters>
+        <div>noGutters — same as noBorders (existing prop)</div>
+      </Container>
+    </Container>
+  ),
+};
+
 export const BackgroundImage: Story = {
   render: () => (
     <Container

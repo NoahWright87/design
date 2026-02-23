@@ -1,7 +1,7 @@
 # Portfolio Site — Projects Page Todo
 
 ## Sooner
-- [ ] BUG — Duplicate project data: All projects on the Projects page display the same description, skills, and details. Update to use the Nonsense utility so each project has varied placeholder data.
+- [x] BUG — Duplicate project data: All projects on the Projects page display the same description, skills, and details. Update to use the Nonsense utility so each project has varied placeholder data.
 
 ## Later
 - [x] Filter or search by skill tag.
@@ -9,5 +9,5 @@
 
 ## Backlog
 - [ ] Lightbox or modal for project detail view.
-- [ ] Project categories or types.
+- [x] Project categories or types.
 - [ ] Pagination if more than six projects.

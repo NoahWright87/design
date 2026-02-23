@@ -53,19 +53,30 @@ export const Disabled: Story = {
 
 export const RequiredValidation: Story = {
   name: "Required — inline validation",
-  render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <RadioGroup
-        label="Shipping speed"
-        name="shipping-required"
-        options={shippingOptions}
-        required
-      />
-      <p style={{ fontSize: "var(--text-sm)", color: "var(--foreground)", margin: 0 }}>
-        Select an option then switch away — or submit without selecting.
-      </p>
-    </div>
-  ),
+  render: () => {
+    const [value, setValue] = React.useState("");
+    const [error, setError] = React.useState<string | undefined>(undefined);
+    return (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!value) setError("Please select a shipping option.");
+          else setError(undefined);
+        }}
+        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+      >
+        <RadioGroup
+          label="Shipping speed"
+          name="shipping-required"
+          options={shippingOptions}
+          value={value}
+          onChange={(e) => { setValue(e.target.value); setError(undefined); }}
+          error={error}
+        />
+        <button type="submit" style={{ alignSelf: "flex-start" }}>Submit</button>
+      </form>
+    );
+  },
 };
 
 export const EnhancedAnimation: Story = {

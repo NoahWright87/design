@@ -1,24 +1,23 @@
 import * as React from "react";
-import "./hamburger.css";
+import { ToggleIcon } from "../ToggleIcon/index.js";
 
+/** @deprecated Use `<ToggleIcon preset="hamburger" />` directly. */
 export interface HamburgerMenuProps {
-  isOpen?: boolean; // controlled by Menu
+  isOpen?: boolean;   // controlled by Menu
   onToggle?: () => void;
 }
 
+/**
+ * Thin wrapper around `<ToggleIcon preset="hamburger">` kept for backwards compatibility.
+ * Prefer using ToggleIcon directly in new code.
+ */
 export function HamburgerMenu({ isOpen = false, onToggle }: HamburgerMenuProps) {
   return (
-    <button
-      type="button"
-      className={"hamburger" + (isOpen ? " open" : "")}
-      aria-label="Menu"
-      aria-expanded={isOpen}
-      onClick={onToggle}
-    >
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <ToggleIcon
+      preset="hamburger"
+      isToggled={isOpen}
+      onChange={() => onToggle?.()}
+    />
   );
 }
 

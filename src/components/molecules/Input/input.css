@@ -49,6 +49,7 @@
 .nw-input__error {
   font-size: var(--text-sm);
   color: var(--danger);
+  min-height: 1.25em;
 }
 
 .nw-input--disabled {

@@ -42,6 +42,8 @@ export interface ContainerProps {
   wrap?: "always"; // reserved for future flexibility
   /** Remove side gutter treatment on large screens. Gutters are on by default. */
   noGutters?: boolean;
+  /** Disable all side border and shadow treatment. Alias for `noGutters`. */
+  noBorders?: boolean;
   /**
    * Strength of the inset edge lines shown in the gutter area on large screens.
    * `"subtle"` (default) | `"medium"` | `"strong"`.
@@ -102,6 +104,7 @@ export function Container(props: ContainerProps) {
     width           = DEFAULTS.width,
     height          = DEFAULTS.height,
     noGutters       = DEFAULTS.noGutters,
+    noBorders       = false,
     gutterBorder,
     gutterShadow,
     backgroundImage,
@@ -115,7 +118,7 @@ export function Container(props: ContainerProps) {
     SPACING_CLASS.padding(padding),
     SPACING_CLASS.margin(margin),
     SPACING_CLASS.gap(itemSpacing),
-    !noGutters && "nw-container--gutters",
+    !(noGutters || noBorders) && "nw-container--gutters",
     gutterBorder  && `nw-container--gutter-border-${gutterBorder}`,
     gutterShadow  && `nw-container--gutter-shadow-${gutterShadow}`,
   ].filter(Boolean).join(" ");

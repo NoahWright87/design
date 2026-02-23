@@ -99,6 +99,18 @@ export const RequiredValidation: Story = {
   ),
 };
 
+export const EmailValidation: Story = {
+  name: "Email — built-in format validation",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: 280 }}>
+      <Input label="Email" type="email" placeholder="you@example.com" />
+      <p style={{ fontSize: "var(--text-sm)", color: "var(--foreground)", margin: 0 }}>
+        Type an invalid email address and tab away to see the format error.
+      </p>
+    </div>
+  ),
+};
+
 export const AllTypes: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>

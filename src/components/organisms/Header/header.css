@@ -25,6 +25,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  position: relative;
 }
 
 .nw-header__slot--left{ flex: 0 0 auto; }
@@ -71,6 +72,29 @@
   .nw-header__slot-label{
     display: none;
   }
+}
+
+/* Icon hover tooltips */
+.nw-header__tooltip {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--foreground, #000);
+  color: var(--background, #fff);
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast, 120ms) ease;
+  z-index: 10;
+}
+
+.nw-header__slot:hover .nw-header__tooltip {
+  opacity: 1;
 }
 
 /* Optional utility: add to a container when using a fixed header */

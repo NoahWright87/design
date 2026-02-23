@@ -8,7 +8,8 @@ import { Button } from "../../components/molecules/Button/index.js";
 import { Modal } from "../../components/organisms/Modal/index.js";
 import { Text } from "../../components/molecules/Text/index.js";
 import { Heading } from "../../components/molecules/Heading/index.js";
-import { toggleThemeMode } from "../../styles/themeToggle.js";
+import { toggleThemeMode, getThemeMode } from "../../styles/themeToggle.js";
+import { ToggleIcon } from "../../components/molecules/ToggleIcon/index.js";
 import { getNonsense } from "../../atoms/nonsense.js";
 
 export type PortfolioHeaderProps = {
@@ -19,6 +20,16 @@ export type PortfolioHeaderProps = {
 export function PortfolioHeader({ onNavigate }: PortfolioHeaderProps) {
   const [showLoginModal, setShowLoginModal] = React.useState(false);
   const [siteTitle] = React.useState(() => getNonsense('shortTitle') as string);
+  const [isDark, setIsDark] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsDark(getThemeMode() === 'dark');
+  }, []);
+
+  function handleThemeToggle(toggled: boolean) {
+    toggleThemeMode();
+    setIsDark(toggled);
+  }
 
   const navItems = [
     { text: 'Home', page: 'home' },
@@ -29,7 +40,6 @@ export function PortfolioHeader({ onNavigate }: PortfolioHeaderProps) {
   ];
 
   const avatarMenuItems = [
-    { text: '🌓 Toggle Theme', onClick: toggleThemeMode },
     { text: '🔐 Login', onClick: () => setShowLoginModal(true) },
   ];
 
@@ -51,11 +61,18 @@ export function PortfolioHeader({ onNavigate }: PortfolioHeaderProps) {
           </div>
         }
         right={
-          <Menu
-            trigger={<Avatar />}
-            items={avatarMenuItems}
-            align="right"
-          />
+          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+            <ToggleIcon
+              preset="moon-sun"
+              isToggled={isDark}
+              onChange={handleThemeToggle}
+            />
+            <Menu
+              trigger={<Avatar />}
+              items={avatarMenuItems}
+              align="right"
+            />
+          </div>
         }
       />
 

@@ -112,7 +112,7 @@ export function RadioGroup({
           );
         })}
       </div>
-      {effectiveError && <span className="nw-radio-group__error">{effectiveError}</span>}
+      <span className="nw-radio-group__error" aria-live="polite">{effectiveError}</span>
     </fieldset>
   );
 }

@@ -3,8 +3,8 @@
 ## Sooner
 - [x] Gutters: Add side gutters on large screens with subtle shadow/border treatment. On by default; opt out with `noGutters` prop.
 - [x] Gutter customization: Expose direct props to customize the gutter border and shadow independently.
-- [ ] BUG — Background image not visible: The `backgroundImage` prop is implemented but the image does not render. Investigate and fix.
-- [ ] Stronger default borders: Current gutter borders are barely perceptible. Make the default side border more solid/visible — consider a subtle gradient or shadow. Add a `noBorders` prop to disable all borders entirely.
+- [x] BUG — Background image not visible: The `backgroundImage` prop is implemented but the image does not render. Investigate and fix.
+- [x] Stronger default borders: Current gutter borders are barely perceptible. Make the default side border more solid/visible — consider a subtle gradient or shadow. Add a `noBorders` prop to disable all borders entirely.
 
 ## Later
 - [x] Background image: Support a `backgroundImage` prop with standard CSS background positioning and sizing.

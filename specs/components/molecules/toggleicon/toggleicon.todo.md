@@ -3,8 +3,8 @@
 Standalone atom that animates between two icon states. Used as the trigger for `Menu` and wherever a two-state icon toggle is needed. Replaces the icon responsibility previously held by `HamburgerMenu`.
 
 ## Sooner
-- [ ] Core two-state toggle: Animate between two icon states on click. Support `isToggled` (controlled) and `defaultToggled` (uncontrolled) props.
-- [ ] Built-in presets:
+- [x] Core two-state toggle: Animate between two icon states on click. Support `isToggled` (controlled) and `defaultToggled` (uncontrolled) props.
+- [x] Built-in presets:
   - Hamburger → X (default; replaces HamburgerMenu icon)
   - Moon → Sun
   - Outlined circle → Filled circle

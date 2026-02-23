@@ -7,8 +7,8 @@
 - [x] `isSticky` prop + story: Add `isSticky` boolean prop for sticky positioning. Add a Storybook example showing sticky behavior with enough scrollable page content to see it in action. (Promoted from Backlog.)
 
 ## Later
-- [ ] Icon hover labels: Show a fade-in tooltip/label on hover for icons in the top header slots.
-- [ ] Children example: Add a Storybook story that passes content through the `children` slot, mirroring the existing Footer children example.
+- [x] Icon hover labels: Show a fade-in tooltip/label on hover for icons in the top header slots.
+- [x] Children example: Add a Storybook story that passes content through the `children` slot, mirroring the existing Footer children example.
 
 ## Backlog
 - Dropdown menus: Built-in navigation menu support (currently composition-based).

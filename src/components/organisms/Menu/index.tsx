@@ -47,6 +47,20 @@ export function Menu({ trigger, items = [], align = "left", icons, label, childr
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Prevent layout shift from scrollbar appearing/disappearing when menu opens
+  useEffect(() => {
+    if (!open) return;
+    const html = document.documentElement;
+    const prevScrollbarGutter = html.style.scrollbarGutter;
+    const prevOverflowX = html.style.overflowX;
+    html.style.scrollbarGutter = "stable";
+    html.style.overflowX = "hidden";
+    return () => {
+      html.style.scrollbarGutter = prevScrollbarGutter;
+      html.style.overflowX = prevOverflowX;
+    };
+  }, [open]);
+
   const commonAria = {
     "aria-expanded": open,
     "aria-haspopup": "menu" as const,

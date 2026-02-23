@@ -20,6 +20,10 @@ export interface CardProps {
   footer?: React.ReactNode;
   /** Enable hover lift and shadow transition. */
   interactive?: boolean;
+  /** Allow card content to scroll vertically. */
+  scrollable?: boolean;
+  /** Constrain card content height. Accepts a CSS string (e.g. `"200px"`) or a pixel number. */
+  maxHeight?: string | number;
   /** Additional CSS class name. */
   className?: string;
   /** Any other standard HTML article attributes. */
@@ -38,6 +42,8 @@ export function Card({
   flat = false,
   footer,
   interactive = false,
+  scrollable = false,
+  maxHeight,
   className = "",
   ...rest
 }: CardProps) {
@@ -54,7 +60,19 @@ export function Card({
     <article className={cls} {...rest}>
       {title ? <div className="nw-card__title">{title}</div> : null}
       {subtitle ? <div className="nw-card__subtitle">{subtitle}</div> : null}
-      {children ? <div className="nw-card__content">{children}</div> : null}
+      {children ? (
+        <div
+          className="nw-card__content"
+          style={(scrollable || maxHeight != null) ? {
+            overflowY: scrollable ? "auto" : undefined,
+            maxHeight: maxHeight != null
+              ? (typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight)
+              : undefined,
+          } : undefined}
+        >
+          {children}
+        </div>
+      ) : null}
       {footer ? <div className="nw-card__footer">{footer}</div> : null}
     </article>
   );

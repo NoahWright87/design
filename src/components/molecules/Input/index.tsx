@@ -47,7 +47,11 @@ export function Input({
 
   const currentValue = isControlled ? value : internalValue;
   const requiredError = required && touched && !currentValue ? "This field is required." : undefined;
-  const effectiveError = error ?? requiredError;
+  const emailFormatError =
+    type === "email" && touched && !!currentValue && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(currentValue)
+      ? "Please enter a valid email address."
+      : undefined;
+  const effectiveError = error ?? requiredError ?? emailFormatError;
 
   useWaggle(effectiveError, rootRef);
 
@@ -84,9 +88,9 @@ export function Input({
     </span>
   );
 
-  const errorEl = effectiveError ? (
-    <span className="nw-input__error">{effectiveError}</span>
-  ) : null;
+  const errorEl = (
+    <span className="nw-input__error" aria-live="polite">{effectiveError}</span>
+  );
 
   if (multiline) {
     return (

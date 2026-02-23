@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Layout } from "../../components/organisms/Layout/index.js";
 import { Container } from "../../components/organisms/Container/Container.js";
-import { Card } from "../../components/organisms/Card/index.js";
+import { Card, CardGrid } from "../../components/organisms/Card/index.js";
 import { Heading } from "../../components/molecules/Heading/index.js";
 import { Text } from "../../components/molecules/Text/index.js";
 import { Button } from "../../components/molecules/Button/index.js";
@@ -18,6 +18,9 @@ export interface PortfolioProjectsProps {
   onNavigate?: (page: string) => void;
 }
 
+const PROJECT_CATEGORIES = ["Design", "Development", "Strategy", "Research", "Branding"] as const;
+type ProjectCategory = typeof PROJECT_CATEGORIES[number];
+
 type Project = {
   id: number;
   name: string;
@@ -25,6 +28,7 @@ type Project = {
   image: string;
   cta: string;
   skills: string[];
+  category: ProjectCategory;
 };
 
 export function PortfolioProjects({ onNavigate }: PortfolioProjectsProps) {
@@ -46,6 +50,7 @@ export function PortfolioProjects({ onNavigate }: PortfolioProjectsProps) {
         getNonsense('skillName', { seed: `proj-skill-${i}-1` }) as string,
         getNonsense('skillName', { seed: `proj-skill-${i}-2` }) as string,
       ],
+      category: PROJECT_CATEGORIES[i % PROJECT_CATEGORIES.length],
     }))
   );
 
@@ -89,7 +94,7 @@ export function PortfolioProjects({ onNavigate }: PortfolioProjectsProps) {
       <Layout>
         <Container padding="lg">
           <div className="portfolio-section-title">
-            <Heading level={1}>Projects</Heading>
+            <Heading level={1} gradient animateIn>Projects</Heading>
           </div>
 
           <div className="portfolio-projects__intro">
@@ -136,7 +141,7 @@ export function PortfolioProjects({ onNavigate }: PortfolioProjectsProps) {
             </div>
           )}
 
-          <div className="portfolio-projects__grid">
+          <CardGrid minCardWidth="300px" gap="md">
             {displayedProjects.map((project) => (
               <Card key={project.id}>
                 <Image
@@ -147,6 +152,9 @@ export function PortfolioProjects({ onNavigate }: PortfolioProjectsProps) {
                   className="portfolio-project-card__image"
                 />
                 <div className="portfolio-project-card__content">
+                  <div className="portfolio-project-card__category">
+                    <Pill variant="secondary" size="small">{project.category}</Pill>
+                  </div>
                   <Heading level={3}>{project.name}</Heading>
                   <Text>{project.description}</Text>
                   {project.skills.length > 0 && (
@@ -164,7 +172,7 @@ export function PortfolioProjects({ onNavigate }: PortfolioProjectsProps) {
                 </div>
               </Card>
             ))}
-          </div>
+          </CardGrid>
         </Container>
       </Layout>
 

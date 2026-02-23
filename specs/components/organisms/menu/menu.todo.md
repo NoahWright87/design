@@ -1,8 +1,8 @@
 # Menu — Backlog
 
 ## Sooner
-- [ ] `ToggleIcon` trigger: Accept a `ToggleIcon` (or any custom component) as a trigger prop, decoupling the toggle visual from menu behavior. Replaces the built-in hamburger icon from `HamburgerMenu`.
-- [ ] BUG — Scrollbar shifts right-aligned menu: When a right-aligned menu opens, a page scrollbar appears and the menu visually shifts. Fix overflow/scroll handling to prevent the layout jump.
+- [x] `ToggleIcon` trigger: Accept a `ToggleIcon` (or any custom component) as a trigger prop, decoupling the toggle visual from menu behavior. Replaces the built-in hamburger icon from `HamburgerMenu`.
+- [x] BUG — Scrollbar shifts right-aligned menu: When a right-aligned menu opens, a page scrollbar appears and the menu visually shifts. Fix overflow/scroll handling to prevent the layout jump.
 
 ## Later
 - [ ] TBD

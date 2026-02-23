@@ -70,6 +70,7 @@
 .nw-select__error {
   font-size: var(--text-sm);
   color: var(--danger);
+  min-height: 1.25em;
 }
 
 .nw-select--disabled {
@@ -79,6 +80,22 @@
 
 .nw-select--disabled .nw-select__field {
   cursor: not-allowed;
+}
+
+/* Listbox mode (size > 1) — scrollable inline list */
+.nw-select--listbox .nw-select__arrow {
+  display: none;
+}
+
+.nw-select--listbox .nw-select__field {
+  padding-right: var(--spacing-md);
+  height: auto;
+  overflow-y: auto;
+  border-radius: var(--radius);
+}
+
+.nw-select--listbox .nw-select__field option {
+  padding: var(--spacing-xs) var(--spacing-sm);
 }
 
 @media (prefers-reduced-motion: reduce) {

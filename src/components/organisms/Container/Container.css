@@ -6,7 +6,8 @@
 @media (min-width: 1024px) {
   /* Base gutter — sets the default border color and applies the box-shadow */
   .nw-container--gutters {
-    --_gb: rgba(0, 0, 0, 0.06);
+    --_gb: rgba(0, 0, 0, 0.15);
+    --_gs: var(--shadow-sm);
     box-shadow:
       inset 1px 0 0 var(--_gb),
       inset -1px 0 0 var(--_gb),

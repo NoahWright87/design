@@ -47,6 +47,32 @@ export const NoShadow: Story = {
   args: { left: "Logo", center: "No shadow", right: "Profile", shadow: false },
 };
 
+export const IconTooltips: Story = {
+  name: "Icon hover tooltips",
+  args: {
+    left: "🏠",
+    center: "📄",
+    right: "👤",
+    leftTooltip: "Home",
+    centerTooltip: "Documents",
+    rightTooltip: "Profile",
+  },
+};
+
+export const Children: Story = {
+  name: "children fallback",
+  render: () => (
+    <Header>
+      <span style={{ fontWeight: 600, fontSize: "1.1rem" }}>My App</span>
+      <nav style={{ display: "flex", gap: "1.25rem", marginLeft: "auto", fontSize: "0.9rem" }}>
+        <a href="#" style={{ color: "var(--foreground)", textDecoration: "none" }}>Home</a>
+        <a href="#" style={{ color: "var(--foreground)", textDecoration: "none" }}>About</a>
+        <a href="#" style={{ color: "var(--foreground)", textDecoration: "none" }}>Contact</a>
+      </nav>
+    </Header>
+  ),
+};
+
 export const Sticky: Story = {
   render: () => (
     <div>

@@ -17,6 +17,11 @@ export type SelectProps = {
   /** Show a randomly selected "no" emoji cursor when disabled. */
   randomDisabledCursor?: boolean;
   style?: React.CSSProperties;
+  /**
+   * When set, renders the select as a scrollable listbox showing this many
+   * options at once. Useful for long option lists. Hides the dropdown arrow.
+   */
+  maxVisibleItems?: number;
 };
 
 export function Select({
@@ -32,6 +37,7 @@ export function Select({
   placeholder,
   randomDisabledCursor = false,
   style,
+  maxVisibleItems,
 }: SelectProps) {
   const rootRef = React.useRef<HTMLLabelElement>(null);
 
@@ -62,6 +68,7 @@ export function Select({
     "nw-select",
     effectiveError && "nw-select--error",
     disabled && "nw-select--disabled",
+    maxVisibleItems && "nw-select--listbox",
   ]
     .filter(Boolean)
     .join(" ");
@@ -78,6 +85,7 @@ export function Select({
         {required && <span className="nw-select__required">*</span>}
       </span>
       <div className="nw-select__wrapper">
+        {/* Arrow hidden in listbox mode via CSS */}
         <select
           className="nw-select__field"
           name={name}
@@ -87,6 +95,7 @@ export function Select({
           onBlur={handleBlur}
           disabled={disabled}
           required={required}
+          size={maxVisibleItems}
           style={disabledCursor ? { cursor: "inherit" } : undefined}
         >
           {placeholder && (
@@ -100,7 +109,7 @@ export function Select({
           &#9662;
         </span>
       </div>
-      {effectiveError && <span className="nw-select__error">{effectiveError}</span>}
+      <span className="nw-select__error" aria-live="polite">{effectiveError}</span>
     </label>
   );
 }

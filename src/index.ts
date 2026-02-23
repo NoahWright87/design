@@ -17,6 +17,9 @@ export * from "./components/molecules/Input/index.js";
 export * from "./components/molecules/Select/index.js";
 export * from "./components/molecules/Checkbox/index.js";
 export * from "./components/molecules/RadioGroup/index.js";
+export * from "./components/molecules/ToggleIcon/index.js";
+export * from "./components/molecules/Badge/index.js";
+export * from "./components/molecules/Box/index.js";
 
 // Organisms
 export * from "./components/organisms/Header/index.js";
@@ -27,6 +30,7 @@ export * from "./components/organisms/MobileNav/index.js";
 export * from "./components/organisms/Container/Container.js";
 export * from "./components/organisms/Card/index.js";
 export * from "./components/organisms/Modal/index.js";
+export * from "./components/organisms/Breadcrumbs/index.js";
 
 // Sites
 export * from "./sites/portfolio/index.js";

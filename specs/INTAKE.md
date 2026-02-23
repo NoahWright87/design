@@ -16,4 +16,9 @@ When you have emptied the submissions section below, leave behind a single bulle
 
 ## Submissions
 
-- *Add your ideas here*.
+- BUG: Modal backdrop doesn't cover the full screen.  There's a bit still visible on the left.
+- Can modals have scrolling content?
+- Modal closing animation?
+- TODOs that are checked off should be removed before committing.
+- Could we make INTAKE work from GH issues as well as the intake form?  That way people don't have to commit and potentially get a PR approved just to have their TODO item added.
+    - Would need some sort of approval step at work so that the bot only picks up items the team has agreed with.  Otherwise people could submit issues to other peoples' projects.

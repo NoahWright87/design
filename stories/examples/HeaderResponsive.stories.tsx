@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Header, Menu, MenuItem, Button, getThemeMode, toggleThemeMode } from "../../src";
+import { Header, Menu, MenuItem, Button, getThemeMode, toggleThemeMode, initThemeMode } from "../../src";
 
 const meta: Meta<typeof Header> = {
   title: "Examples/Header Responsive",
@@ -17,7 +17,19 @@ function ThemeToggle() {
   const [mode, setMode] = React.useState("light");
 
   React.useEffect(() => {
-    setMode(getThemeMode());
+    // Apply persisted preference (localStorage → prefers-color-scheme → light)
+    const resolved = initThemeMode();
+    setMode(resolved);
+
+    // Keyboard shortcut: Alt+D toggles dark mode
+    function handleKey(e: KeyboardEvent) {
+      if (e.altKey && e.key === "d") {
+        const newMode = toggleThemeMode();
+        setMode(newMode);
+      }
+    }
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
   }, []);
 
   return (

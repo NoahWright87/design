@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Card, CardFooter, Button } from "../src";
+import { Card, CardFooter, CardGrid, Button } from "../src";
 
 const meta: Meta<typeof Card> = {
   title: "Components/Organisms/Card",
@@ -135,6 +135,47 @@ export const InteractiveElevated: Story = {
     elevated: true,
     interactive: true,
   },
+};
+
+export const Scrollable: Story = {
+  name: "Scrollable card body",
+  render: () => (
+    <div style={{ width: 300 }}>
+      <Card title="Scrollable Card" scrollable maxHeight={180}>
+        {Array.from({ length: 12 }, (_, i) => (
+          <p key={i} style={{ margin: "4px 0" }}>Content line {i + 1}</p>
+        ))}
+      </Card>
+    </div>
+  ),
+};
+
+export const GridLayout: Story = {
+  name: "CardGrid — responsive grid",
+  render: () => (
+    <CardGrid gap="md">
+      {Array.from({ length: 6 }, (_, i) => (
+        <Card key={i} title={`Card ${i + 1}`} interactive>
+          Cards in a CardGrid auto-fill columns based on the available width.
+        </Card>
+      ))}
+    </CardGrid>
+  ),
+  parameters: { layout: "padded" },
+};
+
+export const GridFixedColumns: Story = {
+  name: "CardGrid — fixed 3 columns",
+  render: () => (
+    <CardGrid columns={3} gap="sm">
+      {Array.from({ length: 6 }, (_, i) => (
+        <Card key={i} title={`Card ${i + 1}`} flat>
+          Fixed 3-column layout regardless of viewport width.
+        </Card>
+      ))}
+    </CardGrid>
+  ),
+  parameters: { layout: "padded" },
 };
 
 export const FullFeatured: Story = {
