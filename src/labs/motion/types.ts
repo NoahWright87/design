@@ -28,6 +28,8 @@ export interface MotionKnob {
  */
 export interface MotionPreset {
   name: string;
+  /** Optional grouping label shown in the preset selector (e.g. "Professional", "Playful", "Extreme"). */
+  category?: string;
   values: Record<string, number | string | boolean>;
 }
 

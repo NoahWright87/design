@@ -145,3 +145,58 @@
   color: var(--foreground);
   opacity: 0.6;
 }
+
+/* Presets row: select + reset button side by side */
+.presetRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.presetRow > :first-child {
+  flex: 1;
+}
+
+.resetBtn {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--foreground) 22%, transparent);
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  color: var(--foreground);
+  border-radius: calc(var(--radius) * 0.75);
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  transition: background 140ms ease;
+  align-self: flex-end;
+}
+
+.resetBtn:hover {
+  background: color-mix(in srgb, var(--foreground) 15%, transparent);
+}
+
+/* Speed multiplier row inside the preview sticky area */
+.speedRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  margin-top: 0.875rem;
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  width: 100%;
+  max-width: 28rem;
+}
+
+.speedLabel {
+  font-size: 0.75rem;
+  color: var(--foreground);
+  opacity: 0.7;
+  white-space: nowrap;
+  min-width: 10rem;
+}
+
+.speedSlider {
+  flex: 1;
+  cursor: pointer;
+  accent-color: var(--primary);
+}

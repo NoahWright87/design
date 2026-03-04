@@ -19,6 +19,10 @@ This file documents planned and completed changes for the repository.
 - **Badge + Box molecules (new):** Badge — compact notification indicator (`count`, `max`, `dot`, wraps element at top-right). Box — low-level layout primitive with padding/margin/rounded/shadow/background/`as` props.
 - **Breadcrumbs organism (new):** Accessible `<nav aria-label="Breadcrumb">` with `items`, `separator`, themed link + muted current-page label. Select gains `maxVisibleItems` (listbox mode).
 - **Portfolio audit:** Projects use `CardGrid`, project cards show `category` Pill (secondary), headings use `gradient`/`animateIn`. Card `--interactive` gains `:active` scale-down press animation.
+- **Motion Lab — UX & export:** Reset button, preview speed slider (0.25×–3×), keyboard shortcuts Ctrl+1–9 for preset jumps, grouped presets with `<optgroup>` ("Professional"/"Playful"/"Extreme"). Generated CSS panel now has four tabs: Class CSS, CSS Vars, SCSS (!default vars), and design token JSON (W3C flat format).
+- **Motion Lab — Accessibility:** EasingGraph SVG now includes a computed `<title>` and `aria-label` describing the curve shape (e.g. "Strongly bouncy easing — overshoots the end value significantly before settling").
+- **Link `isAffiliate` prop:** Clicking an affiliate link shows a fixed disclosure popup ("We may earn a commission…") with Continue/Cancel. Badge `§` marks the link as affiliate. New Storybook story.
+- **Container `parallax` prop:** When true alongside `backgroundImage`, applies `background-attachment: fixed` for a cutout/window parallax effect. New Storybook story with comparison.
 
 
 ## Version history

@@ -2,6 +2,7 @@ import * as React from "react";
 import type { MotionAdapter, MotionValues, MotionKnob } from "./types";
 import { Range } from "./ui/Range";
 import { Select } from "./ui/Select";
+import type { SelectGroup } from "./ui/Select";
 import { Toggle } from "./ui/Toggle";
 import { EasingGraph } from "./ui/EasingGraph";
 import { GeneratedCss } from "./ui/GeneratedCss";
@@ -14,6 +15,7 @@ export interface MotionLabProps {
 export function MotionLab({ adapter }: MotionLabProps) {
   const [presetName, setPresetName] = React.useState(adapter.presets[0]?.name ?? "");
   const [values, setValues] = React.useState<MotionValues>({});
+  const [speedMultiplier, setSpeedMultiplier] = React.useState(1);
 
   // Initialize values from adapter defaults
   React.useEffect(() => {
@@ -35,9 +37,87 @@ export function MotionLab({ adapter }: MotionLabProps) {
     }
   }, [presetName, adapter]);
 
+  // Keyboard shortcuts: Ctrl/Cmd + 1-9 to select a preset by index
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      const idx = parseInt(e.key, 10) - 1;
+      if (isNaN(idx) || idx < 0 || idx >= adapter.presets.length) return;
+      e.preventDefault();
+      setPresetName(adapter.presets[idx].name);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [adapter.presets]);
+
   const handleValueChange = (knobId: string, value: number | string | boolean) => {
     setValues((prev) => ({ ...prev, [knobId]: value }));
   };
+
+  const handleReset = () => {
+    const preset = adapter.presets.find((p) => p.name === presetName);
+    if (preset) setValues({ ...preset.values });
+  };
+
+  // Scale timing values for preview speed (does not affect knob displays)
+  const previewValues = React.useMemo<MotionValues>(() => {
+    if (speedMultiplier === 1) return values;
+    const scaled = { ...values };
+    adapter.knobs.forEach((knob) => {
+      if (knob.id.endsWith("_ms") && typeof scaled[knob.id] === "number") {
+        scaled[knob.id] = (scaled[knob.id] as number) / speedMultiplier;
+      }
+    });
+    return scaled;
+  }, [values, speedMultiplier, adapter.knobs]);
+
+  // Build preset groups for grouped <optgroup> select
+  const presetGroups = React.useMemo<SelectGroup[] | undefined>(() => {
+    const hasCategories = adapter.presets.some((p) => p.category);
+    if (!hasCategories) return undefined;
+
+    const map = new Map<string, string[]>();
+    adapter.presets.forEach((p) => {
+      const cat = p.category ?? "Other";
+      if (!map.has(cat)) map.set(cat, []);
+      map.get(cat)!.push(p.name);
+    });
+    return Array.from(map.entries()).map(([label, opts]) => ({ label, options: opts }));
+  }, [adapter.presets]);
+
+  // Generate CSS vars format
+  const cssVarsText = React.useMemo(() => {
+    const prefix = adapter.id;
+    const lines = Object.entries(values).map(([key, value]) => {
+      const cssKey = `--${prefix}-${key.replace(/_/g, "-")}`;
+      const cssValue = typeof value === "boolean" ? (value ? "1" : "0") : String(value);
+      return `  ${cssKey}: ${cssValue};`;
+    });
+    return `/* Motion Lab — ${adapter.displayName} values as CSS custom properties */\n:root {\n${lines.join("\n")}\n}`;
+  }, [values, adapter.id, adapter.displayName]);
+
+  // Generate SCSS variables format
+  const scssText = React.useMemo(() => {
+    const prefix = adapter.id;
+    const lines = Object.entries(values).map(([key, value]) => {
+      const scssKey = `$${prefix}-${key.replace(/_/g, "-")}`;
+      const scssValue = typeof value === "boolean" ? (value ? "true" : "false") : String(value);
+      return `${scssKey}: ${scssValue} !default;`;
+    });
+    return `// Motion Lab — ${adapter.displayName} values as SCSS variables\n${lines.join("\n")}`;
+  }, [values, adapter.id, adapter.displayName]);
+
+  // Generate design token JSON format (W3C flat format)
+  const jsonText = React.useMemo(() => {
+    const prefix = adapter.id;
+    const tokens: Record<string, { $value: number | string | boolean; $type: string }> = {};
+    Object.entries(values).forEach(([key, value]) => {
+      const tokenKey = `${prefix}-${key.replace(/_/g, "-")}`;
+      const type = typeof value === "boolean" ? "other" : typeof value === "number" ? "number" : "string";
+      tokens[tokenKey] = { $value: value, $type: type };
+    });
+    return JSON.stringify(tokens, null, 2);
+  }, [values, adapter.id]);
 
   const renderKnob = (knob: MotionKnob) => {
     const value = values[knob.id] ?? knob.defaultValue;
@@ -132,7 +212,7 @@ export function MotionLab({ adapter }: MotionLabProps) {
     if (knob.id.includes("_x1") || knob.id.includes("_y1") || knob.id.includes("_x2") || knob.id.includes("_y2")) {
       return;
     }
-    
+
     // Group by category (extract from ID, e.g., "hover_lift" → "hover")
     const category = knob.id.split("_")[0] ?? "general";
     if (!groupedKnobs[category]) {
@@ -147,6 +227,11 @@ export function MotionLab({ adapter }: MotionLabProps) {
 
   const generatedCss = adapter.generateCss(values);
 
+  const maxShortcut = Math.min(adapter.presets.length, 9);
+  const shortcutHint = adapter.presets.length > 0
+    ? `Pick a preset, then tweak knobs. Ctrl+1–${maxShortcut} to jump by keyboard.`
+    : "Pick a preset, then tweak knobs";
+
   return (
     <div className={styles.motionLab}>
       <div className={styles.header}>
@@ -159,18 +244,44 @@ export function MotionLab({ adapter }: MotionLabProps) {
       </div>
 
       <div className={styles.previewSticky}>
-        {adapter.renderPreview(values)}
+        {adapter.renderPreview(previewValues)}
+        <div className={styles.speedRow}>
+          <span className={styles.speedLabel}>
+            Preview speed: {speedMultiplier === 1 ? "1× (real)" : speedMultiplier < 1 ? `${speedMultiplier}× (slow)` : `${speedMultiplier}× (fast)`}
+          </span>
+          <input
+            className={styles.speedSlider}
+            type="range"
+            min={0.25}
+            max={3}
+            step={0.25}
+            value={speedMultiplier}
+            onChange={(e) => setSpeedMultiplier(Number(e.target.value))}
+            aria-label="Preview animation speed multiplier"
+          />
+        </div>
       </div>
 
       <div className={styles.controls}>
         <Section title="Presets">
-          <Select
-            label="Preset"
-            value={presetName}
-            onChange={setPresetName}
-            options={adapter.presets.map((p) => p.name)}
-          />
-          <div className={styles.hint}>Pick a preset, then tweak knobs</div>
+          <div className={styles.presetRow}>
+            <Select
+              label="Preset"
+              value={presetName}
+              onChange={setPresetName}
+              options={adapter.presets.map((p) => p.name)}
+              groups={presetGroups}
+            />
+            <button
+              type="button"
+              className={styles.resetBtn}
+              onClick={handleReset}
+              title="Reset knobs to this preset's default values"
+            >
+              Reset
+            </button>
+          </div>
+          <div className={styles.hint}>{shortcutHint}</div>
         </Section>
 
         {Object.entries(groupedKnobs).map(([category, knobs]) => (
@@ -186,7 +297,12 @@ export function MotionLab({ adapter }: MotionLabProps) {
         {values["exit_x1"] !== undefined && renderEasingSection("Exit Easing", "exit")}
 
         <Section title="Generated CSS">
-          <GeneratedCss cssText={generatedCss} />
+          <GeneratedCss
+            cssText={generatedCss}
+            cssVarsText={cssVarsText}
+            scssText={scssText}
+            jsonText={jsonText}
+          />
         </Section>
       </div>
     </div>

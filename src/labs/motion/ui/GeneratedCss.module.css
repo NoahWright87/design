@@ -3,6 +3,37 @@
   gap: 0.625rem;
 }
 
+.gen__tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  padding-bottom: 0.375rem;
+}
+
+.gen__tab {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--foreground) 16%, transparent);
+  background: transparent;
+  color: var(--foreground);
+  border-radius: calc(var(--radius) * 0.625);
+  padding: 0.3125rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  opacity: 0.65;
+  transition: background 120ms ease, opacity 120ms ease;
+}
+
+.gen__tab:hover {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  opacity: 0.85;
+}
+
+.gen__tab--active {
+  background: color-mix(in srgb, var(--foreground) 12%, transparent);
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--foreground) 26%, transparent);
+}
+
 .gen__top {
   display: flex;
   align-items: center;

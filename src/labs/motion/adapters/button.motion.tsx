@@ -40,6 +40,7 @@ export const buttonMotionAdapter: MotionAdapter = {
   presets: [
     {
       name: "No motion",
+      category: "Professional",
       values: {
         hover_lift: 0,
         hover_scale: 1,
@@ -63,6 +64,7 @@ export const buttonMotionAdapter: MotionAdapter = {
     },
     {
       name: "Smooth press + smooth release",
+      category: "Professional",
       values: {
         hover_lift: -1,
         hover_scale: 1.03,
@@ -86,6 +88,7 @@ export const buttonMotionAdapter: MotionAdapter = {
     },
     {
       name: "Smooth press + snap release (bouncy)",
+      category: "Playful",
       values: {
         hover_lift: -2,
         hover_scale: 1.05,
@@ -109,6 +112,7 @@ export const buttonMotionAdapter: MotionAdapter = {
     },
     {
       name: "Subtle bounce",
+      category: "Playful",
       values: {
         hover_lift: -2,
         hover_scale: 1.05,
@@ -132,6 +136,7 @@ export const buttonMotionAdapter: MotionAdapter = {
     },
     {
       name: "Extreme bounce",
+      category: "Extreme",
       values: {
         hover_lift: -4,
         hover_scale: 1.12,

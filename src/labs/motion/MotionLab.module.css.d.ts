@@ -16,6 +16,11 @@ declare const styles: {
   readonly readout__value: string;
   readonly readout__copy: string;
   readonly empty: string;
+  readonly presetRow: string;
+  readonly resetBtn: string;
+  readonly speedRow: string;
+  readonly speedLabel: string;
+  readonly speedSlider: string;
 };
 
 export default styles;

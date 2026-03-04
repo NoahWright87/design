@@ -56,6 +56,12 @@ export interface ContainerProps {
   gutterShadow?: GutterShadow;
   /** Background image URL (e.g. from `getNonsense('abstractImage')`). */
   backgroundImage?: string;
+  /**
+   * When true, applies a parallax effect to the background image so it scrolls
+   * at a different rate than the container content, creating a cutout/window look.
+   * Requires `backgroundImage` to be set. Uses CSS `background-attachment: fixed`.
+   */
+  parallax?: boolean;
   children?: React.ReactNode;
 }
 
@@ -108,6 +114,7 @@ export function Container(props: ContainerProps) {
     gutterBorder,
     gutterShadow,
     backgroundImage,
+    parallax        = false,
     // wrap currently only supports "always"; future options can branch behavior
     children,
   } = props;
@@ -132,7 +139,12 @@ export function Container(props: ContainerProps) {
     color:           COLOR_MAP[foregroundColor],
     width:  normalizeSize(width,  DEFAULTS.width)  || undefined,
     height: normalizeSize(height, DEFAULTS.height) || undefined,
-    ...(normalizedBgImage ? { backgroundImage: normalizedBgImage, backgroundSize: "cover", backgroundPosition: "center" } : {}),
+    ...(normalizedBgImage ? {
+      backgroundImage: normalizedBgImage,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      ...(parallax ? { backgroundAttachment: "fixed" } : {}),
+    } : {}),
   };
 
   return <div className={classNames} style={style}>{children}</div>;

@@ -38,6 +38,7 @@ export const modalMotionAdapter: MotionAdapter = {
   presets: [
     {
       name: "No motion",
+      category: "Professional",
       values: {
         enter_opacity_start: 1,
         enter_scale_start: 1,
@@ -61,6 +62,7 @@ export const modalMotionAdapter: MotionAdapter = {
     },
     {
       name: "Fade + scale",
+      category: "Professional",
       values: {
         enter_opacity_start: 0,
         enter_scale_start: 0.9,
@@ -84,6 +86,7 @@ export const modalMotionAdapter: MotionAdapter = {
     },
     {
       name: "Slide up",
+      category: "Professional",
       values: {
         enter_opacity_start: 0,
         enter_scale_start: 1,
@@ -107,6 +110,7 @@ export const modalMotionAdapter: MotionAdapter = {
     },
     {
       name: "Bounce in",
+      category: "Playful",
       values: {
         enter_opacity_start: 0,
         enter_scale_start: 0.7,
@@ -130,6 +134,7 @@ export const modalMotionAdapter: MotionAdapter = {
     },
     {
       name: "Dramatic entrance",
+      category: "Extreme",
       values: {
         enter_opacity_start: 0,
         enter_scale_start: 0.5,

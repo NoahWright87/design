@@ -85,6 +85,23 @@ export const AllMotions: Story = {
   ),
 };
 
+export const AffiliateLink: Story = {
+  name: "Affiliate disclosure",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <p style={{ margin: 0, fontSize: "0.875rem", opacity: 0.6 }}>
+        Click either link — a disclosure popup will appear before navigating.
+      </p>
+      <Link href="https://example.com" isAffiliate isExternal>
+        Check out this product (affiliate)
+      </Link>
+      <Link href="https://example.com" isAffiliate variant="prominent" trailingIcon="→">
+        Best deal we found (affiliate)
+      </Link>
+    </div>
+  ),
+};
+
 export const CustomComponent: Story = {
   name: "Router `as` prop",
   render: () => {

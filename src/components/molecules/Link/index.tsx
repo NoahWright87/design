@@ -34,9 +34,16 @@ export type LinkProps = {
    * `href`), wrap it: `as={({ href, ...p }) => <RouterLink to={href} {...p} />}`.
    */
   as?: React.ElementType;
+  /**
+   * When true, intercepts the click and shows an affiliate disclosure popup
+   * before navigating. The user must confirm to continue.
+   */
+  isAffiliate?: boolean;
 };
 
-export function Link({ children, href, isExternal, motion = "pulsing", variant = "default", leadingIcon, trailingIcon, className = "", as: Tag = "a" }: LinkProps) {
+export function Link({ children, href, isExternal, motion = "pulsing", variant = "default", leadingIcon, trailingIcon, className = "", as: Tag = "a", isAffiliate }: LinkProps) {
+  const [disclosureOpen, setDisclosureOpen] = React.useState(false);
+
   const cls = [
     "nw-link",
     variant !== "default" && `nw-link--${variant}`,
@@ -49,19 +56,66 @@ export function Link({ children, href, isExternal, motion = "pulsing", variant =
 
   const externalProps = isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
+  const handleClick = isAffiliate
+    ? (e: React.MouseEvent) => {
+        e.preventDefault();
+        setDisclosureOpen(true);
+      }
+    : undefined;
+
+  const handleContinue = () => {
+    setDisclosureOpen(false);
+    if (isExternal) {
+      window.open(href, "_blank", "noopener,noreferrer");
+    } else {
+      window.location.href = href;
+    }
+  };
+
   return (
-    <Tag href={href} className={cls} {...externalProps}>
-      {leadingIcon && (
-        <span className="nw-link__icon nw-link__icon--leading" aria-hidden="true">{leadingIcon}</span>
+    <>
+      <Tag href={href} className={cls} onClick={handleClick} {...externalProps}>
+        {leadingIcon && (
+          <span className="nw-link__icon nw-link__icon--leading" aria-hidden="true">{leadingIcon}</span>
+        )}
+        {children}
+        {trailingIcon && (
+          <span className="nw-link__icon nw-link__icon--trailing" aria-hidden="true">{trailingIcon}</span>
+        )}
+        {isExternal && (
+          <span className="nw-link__external" aria-hidden="true">↗</span>
+        )}
+        {isAffiliate && (
+          <span className="nw-link__affiliate-badge" aria-label="affiliate link" title="Affiliate link">§</span>
+        )}
+      </Tag>
+
+      {disclosureOpen && (
+        <div className="nw-link__affiliate-overlay" role="dialog" aria-modal="true" aria-label="Affiliate disclosure">
+          <div className="nw-link__affiliate-panel">
+            <p className="nw-link__affiliate-text">
+              This is an affiliate link. We may earn a commission if you make a purchase through it, at no extra cost to you.
+            </p>
+            <div className="nw-link__affiliate-actions">
+              <button
+                type="button"
+                className="nw-link__affiliate-continue"
+                onClick={handleContinue}
+              >
+                Continue to site
+              </button>
+              <button
+                type="button"
+                className="nw-link__affiliate-cancel"
+                onClick={() => setDisclosureOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-      {children}
-      {trailingIcon && (
-        <span className="nw-link__icon nw-link__icon--trailing" aria-hidden="true">{trailingIcon}</span>
-      )}
-      {isExternal && (
-        <span className="nw-link__external" aria-hidden="true">↗</span>
-      )}
-    </Tag>
+    </>
   );
 }
 

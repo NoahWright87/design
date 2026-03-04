@@ -13,6 +13,40 @@ function cubic(a: number, b: number, c: number, d: number, t: number): number {
   return mt * mt * mt * a + 3 * mt * mt * t * b + 3 * mt * t * t * c + t * t * t * d;
 }
 
+/** Generate a human-readable description of the easing curve shape for screen readers. */
+function describeEasing(x1: number, y1: number, x2: number, y2: number): string {
+  const maxY = Math.max(y1, y2);
+  const minY = Math.min(y1, y2);
+
+  if (maxY > 1.8) {
+    return "Strongly bouncy easing — overshoots the end value significantly before settling";
+  }
+  if (maxY > 1.15) {
+    return "Bouncy easing — overshoots the end value slightly, then snaps back";
+  }
+  if (minY < -0.25) {
+    return "Easing with undershoot — dips below the start value before rising";
+  }
+
+  const isEaseOut = y1 > x1 + 0.2;
+  const isEaseIn  = y1 < x1 - 0.2;
+  const isLinear  = Math.abs(x1 - y1) < 0.08 && Math.abs(x2 - y2) < 0.08;
+
+  if (isLinear) {
+    return "Near-linear easing — consistent speed throughout";
+  }
+  if (isEaseOut && y2 <= x2 + 0.1) {
+    return "Ease-out — starts fast and decelerates toward the end";
+  }
+  if (isEaseIn && y2 >= x2 - 0.1) {
+    return "Ease-in — starts slow and accelerates toward the end";
+  }
+  if (isEaseIn) {
+    return "Ease-in-out — starts and ends slowly with faster motion in the middle";
+  }
+  return "Smooth easing curve";
+}
+
 export function EasingGraph({ x1, y1, x2, y2 }: EasingGraphProps) {
   const W = 280;
   const H = 200;
@@ -43,9 +77,14 @@ export function EasingGraph({ x1, y1, x2, y2 }: EasingGraphProps) {
     pts.push({ x: sx(x), y: sy(y) });
   }
 
+  const description = describeEasing(x1, y1, x2, y2);
+  const bezierLabel = `cubic-bezier(${x1}, ${y1}, ${x2}, ${y2})`;
+  const fullLabel = `${bezierLabel} — ${description}`;
+
   return (
-    <div className={styles.easingGraph} aria-label="Easing curve graph">
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" role="img">
+    <div className={styles.easingGraph} aria-label={fullLabel}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" role="img" aria-label={fullLabel}>
+        <title>{fullLabel}</title>
         <rect x="0" y="0" width={W} height={H} rx="14" ry="14" className={styles.eg__bg} />
         <line x1="0" y1={y0} x2={W} y2={y0} className={styles.eg__grid} />
         <line x1="0" y1={y1line} x2={W} y2={y1line} className={styles.eg__grid} />

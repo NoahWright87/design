@@ -125,6 +125,91 @@
   to   { transform: translate(4px, -4px); }
 }
 
+/* === Affiliate badge === */
+.nw-link__affiliate-badge {
+  display: inline-block;
+  margin-left: 0.15em;
+  font-size: 0.65em;
+  vertical-align: super;
+  line-height: 1;
+  opacity: 0.7;
+  font-style: normal;
+}
+
+/* === Affiliate disclosure overlay === */
+.nw-link__affiliate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: color-mix(in srgb, black 48%, transparent);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  animation: nw-link-overlay-in 160ms ease both;
+}
+
+@keyframes nw-link-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.nw-link__affiliate-panel {
+  background: var(--background, #fff);
+  color: var(--foreground, #000);
+  border-radius: var(--radius, 0.5rem);
+  box-shadow: 0 8px 32px color-mix(in srgb, black 24%, transparent);
+  padding: 1.5rem;
+  max-width: 22rem;
+  width: 100%;
+  animation: nw-link-panel-in 200ms var(--ease-out, ease-out) both;
+}
+
+@keyframes nw-link-panel-in {
+  from { transform: translateY(0.5rem) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.nw-link__affiliate-text {
+  margin: 0 0 1.125rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+.nw-link__affiliate-actions {
+  display: flex;
+  gap: 0.625rem;
+  justify-content: flex-end;
+}
+
+.nw-link__affiliate-continue,
+.nw-link__affiliate-cancel {
+  appearance: none;
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: opacity 140ms ease;
+}
+
+.nw-link__affiliate-continue {
+  background: var(--primary, #0066cc);
+  color: var(--background, #fff);
+  border: none;
+}
+
+.nw-link__affiliate-cancel {
+  background: transparent;
+  color: var(--foreground, #000);
+  border: 1px solid color-mix(in srgb, var(--foreground, #000) 22%, transparent);
+}
+
+.nw-link__affiliate-continue:hover,
+.nw-link__affiliate-cancel:hover {
+  opacity: 0.82;
+}
+
 /* ============================================================
    Reduced motion — disable animations, keep settled state
    ============================================================ */

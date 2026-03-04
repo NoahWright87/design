@@ -143,6 +143,41 @@ export const BackgroundImage: Story = {
   )
 };
 
+export const ParallaxBackground: Story = {
+  name: "Parallax background",
+  render: () => (
+    <div style={{ height: "200vh", display: "flex", flexDirection: "column", gap: "4rem", paddingTop: "2rem" }}>
+      <p style={{ margin: 0, fontSize: "0.875rem", opacity: 0.6 }}>
+        Scroll down — the background image stays fixed while the content scrolls past, creating a parallax window effect.
+      </p>
+      <Container
+        padding="xl"
+        height="40vh"
+        backgroundImage={getNonsense("abstractImage") as string}
+        foregroundColor="background"
+        parallax
+      >
+        <div style={{ fontWeight: 600, fontSize: "1.25rem" }}>
+          Parallax container
+        </div>
+        <div style={{ opacity: 0.85 }}>
+          Background image scrolls at a different rate than the content above.
+        </div>
+      </Container>
+      <Container
+        padding="xl"
+        height="40vh"
+        backgroundImage={getNonsense("abstractImage") as string}
+        foregroundColor="background"
+      >
+        <div style={{ fontWeight: 600 }}>
+          Normal background (no parallax)
+        </div>
+      </Container>
+    </div>
+  ),
+};
+
 export const ColorsAndSizes: Story = {
   render: () => (
     <Container direction="horizontal" itemSpacing="md" width="100%">
