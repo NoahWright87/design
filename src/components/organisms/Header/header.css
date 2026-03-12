@@ -1,0 +1,101 @@
+.nw-header{
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--background, #fff);
+  color: var(--foreground, #000);
+  z-index: 1200;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+/* Position variants: default sticky to avoid content overlap */
+.nw-header--sticky{ position: sticky; }
+.nw-header--fixed{ position: fixed; }
+
+/* Shadow opt-out */
+.nw-header--no-shadow{ box-shadow: none; }
+
+.nw-header__slot{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.nw-header__slot--left{ flex: 0 0 auto; }
+
+.nw-header__slot--center{
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.nw-header__slot--right{
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+.nw-header__slot-element{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nw-header__slot-label{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Stacked layout: icon above, label below as muted caption */
+.nw-header__slot--stacked {
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.nw-header__slot--stacked .nw-header__slot-label {
+  font-size: 0.65rem;
+  color: color-mix(in srgb, var(--foreground, #000) 55%, transparent);
+  line-height: 1;
+  font-weight: 400;
+}
+
+@media (max-width: 768px){
+  .nw-header{ padding: 0 12px; }
+  
+  .nw-header__slot-label{
+    display: none;
+  }
+}
+
+/* Icon hover tooltips */
+.nw-header__tooltip {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--foreground, #000);
+  color: var(--background, #fff);
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast, 120ms) ease;
+  z-index: 10;
+}
+
+.nw-header__slot:hover .nw-header__tooltip {
+  opacity: 1;
+}
+
+/* Optional utility: add to a container when using a fixed header */
+.nw-with-fixed-header{ padding-top: 56px; }

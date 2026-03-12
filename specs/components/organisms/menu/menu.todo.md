@@ -1,0 +1,16 @@
+# Menu — Backlog
+
+## Sooner
+- [x] `ToggleIcon` trigger: Accept a `ToggleIcon` (or any custom component) as a trigger prop, decoupling the toggle visual from menu behavior. Replaces the built-in hamburger icon from `HamburgerMenu`.
+- [x] BUG — Scrollbar shifts right-aligned menu: When a right-aligned menu opens, a page scrollbar appears and the menu visually shifts. Fix overflow/scroll handling to prevent the layout jump.
+
+## Later
+- [ ] TBD
+
+## Backlog
+- Nested menus: Support submenu items within menu.
+- Keyboard navigation: Arrow keys to move between items; Enter to select.
+- Grouped items: Item groups with separators or headers.
+- Icons: Icon support in menu items via separate prop.
+- Search/filter: Filterable menu items for long lists.
+- Custom styling: Variant prop for different visual styles.

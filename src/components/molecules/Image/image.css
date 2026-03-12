@@ -1,0 +1,21 @@
+.nw-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.nw-image--rounded-sm {
+  border-radius: calc(var(--radius, 4px) * 0.5);
+}
+
+.nw-image--rounded-md {
+  border-radius: var(--radius, 4px);
+}
+
+.nw-image--rounded-lg {
+  border-radius: calc(var(--radius, 4px) * 2);
+}
+
+.nw-image--rounded-full {
+  border-radius: 50%;
+}

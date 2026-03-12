@@ -1,40 +1,15 @@
-# Dependencies
-node_modules/
-/.pnp
-.pnp.js
-
-# Testing
-/coverage
-/.nyc_output
-
-# Production
-/build
-/dist
-/storybook-static
-
-# Misc
+node_modules
+dist
+storybook-static
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env
+.vscode
+.idea
+*.tgz
 
-# Debug logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Local AI assistant settings
+.claude/**/settings.local.json
+.claude/worktrees/
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-*.swn
-*.bak
-
-# TypeScript
-*.tsbuildinfo
-
-# Storybook
-storybook-static/ 
+# Playwright
+/test-results/
+/playwright-report/

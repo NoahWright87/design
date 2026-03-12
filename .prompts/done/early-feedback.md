@@ -1,0 +1,31 @@
+
+- Can docs be included with the exported code?  Same way as C#'s XML docs or Java's docs
+	- If so, have Copilot write instructions and give examples of uses
+	- If not, can it be part of the npm publish?  Can I include a .md with docs??
+	- tl;dr: Copilot was confused and misused the library repeatedly.  How can we guide it automatically?
+- Header is dumb.  You have to manually left/center/right align the left/center/right properties.  That should be automagic.
+	- Also, we should make it easy for this to be responsive.  eg: split things into full size and mobile size?  Like, should the menu say "Menu" on desktop and just be a hamburger on mobile, or should the page title have text or just the icon, etc.  Anyway, maybe have `left` and `leftLabel`? 🤔
+- Menu should be more opinionated and easier to use, ie:
+	- Accept an open/close icon more easily??
+		- Able to accept `HamburgerMenuIcon` (that we'll export)
+		- Or define your own using the base `OpenCloseIcon` type
+	- Items should be icon(optional), text, and link.  Later we'll add support for sub-menus maybe?
+		- Probably need a type of `MenuItem` that is used by default, but leaves it open for custom items
+	- Items should pop over and not shift other elements
+		- Opening should be animated at least a little by default!
+- COLOR THEME, because it'll be required for modals
+	- `confirm` == green, `danger` == red (I know those aren't the usual terms, but I like that they're functional)
+	- `primary` and `secondary` brand/theme colors?  Or `accent1`, `accent2`?  Hmmm 🤔 Does anybody ever use more than 2?  Not really... right?
+- NEW COMPONENT: Modal
+	- Demo it using a Button
+	- Should close when you click outside of it (with option to override) but have an obvious X, *always*
+	- By default should have a button.  Maybe have some presets like "Okay" with primary color or "Yes"/"No" with the success/danger colors.
+		- Obviously this means the modal needs to return a result or have a callback or something so things can be wired up
+		- Demo this behavior in Storybook with something basic like `alert("You clicked Accept")`, or change something on-screen when the modal is closed (eg: a multiple choice test that then shows if you got it right or wrong!) 
+- NEW COMPONENT: Card
+	- Rounded borders, "elevation" effect via shadowing (that also sets the layer??)
+- NEW COMPONENT: Collapsing section?  What are these things called?
+	- INSTEAD: create resume card component for NoahWright.dev and leave a placeholder comment like "TODO: support narrative via colapsing section"
+- NEW MILESTONE: Light/dark mode toggle
+	- Include an easy way to do it in the `Header` component
+

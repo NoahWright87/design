@@ -1,0 +1,52 @@
+.gen {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.gen__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.625rem;
+}
+
+.gen__hint {
+  color: var(--foreground);
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}
+
+.gen__copy {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent);
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+  color: var(--foreground);
+  border-radius: calc(var(--radius) * 0.75);
+  padding: 0.5rem 0.625rem;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  transition: background 140ms ease;
+}
+
+.gen__copy:hover {
+  background: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.gen__box {
+  width: 100%;
+  border-radius: calc(var(--radius) * 0.875);
+  border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+  background: color-mix(in srgb, var(--foreground) 3%, transparent);
+  color: var(--foreground);
+  padding: 0.75rem;
+  resize: vertical;
+  outline: none;
+  font-family: ui-monospace, "SF Mono", Menlo, Monaco, "Cascadia Code", "Courier New", monospace;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+.gen__box:focus-visible {
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
+}

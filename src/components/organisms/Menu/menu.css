@@ -1,0 +1,77 @@
+.nw-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.nw-menu__trigger {
+  background: var(--background, #fff);
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  padding: 8px 10px;
+  color: var(--foreground, #000);
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+@keyframes nw-menu-enter {
+  from { opacity: 0; transform: translateY(6px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.nw-menu__panel {
+  position: absolute;
+  min-width: 200px;
+  background: var(--background, #fff);
+  color: var(--foreground, #000);
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 12px;
+  box-sizing: border-box;
+  margin-top: 10px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  transform-origin: top;
+  /* Fires on mount (panel is conditionally rendered) so animation always plays */
+  animation: nw-menu-enter 140ms ease forwards;
+}
+
+.nw-menu--right .nw-menu__panel { right: 0; left: auto; }
+.nw-menu:not(.nw-menu--right) .nw-menu__panel { left: 0; right: auto; }
+
+.nw-menu__item + .nw-menu__item { border-top: 1px solid color-mix(in srgb, currentColor 10%, transparent); }
+
+.nw-menu__overlay { display: none; }
+
+@keyframes nw-menu-enter-mobile {
+  from { opacity: 0; transform: translate(-50%, 0) scale(0.99); }
+  to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+@media (max-width: 600px) {
+  .nw-menu--open .nw-menu__overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: var(--overlay, rgba(0,0,0,0.2));
+    z-index: 1090;
+  }
+  .nw-menu__panel {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    top: 64px;
+    margin-top: 0;
+    width: min(360px, 94vw);
+    z-index: 1100;
+    animation: nw-menu-enter-mobile 140ms ease forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-menu__panel { animation: none; }
+}

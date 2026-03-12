@@ -1,0 +1,158 @@
+:root {
+  /* Colors */
+  --foreground: #111111;
+  --background: #ffffff;
+  --primary: #2563eb;
+  --secondary: #9333ea;
+  --confirm: #16a34a;
+  --danger: #dc2626;
+  --overlay: rgba(15, 23, 42, 0.6);
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Typography */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+
+  /* Border radius */
+  --radius: 0.5rem;
+
+  /* Motion - Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+
+  /* Motion - Easing curves */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-bounce-press: cubic-bezier(0.23, 0.33, 0.57, 2.14);
+  --ease-bounce-release: cubic-bezier(0.24, 1.05, 0.38, 2.17);
+
+  /* Motion - Preset bundles for interactive elements */
+  --motion-none-duration: 0ms;
+  --motion-none-easing: linear;
+
+  --motion-subtle-duration: 180ms;
+  --motion-subtle-easing: var(--ease-in-out);
+  --motion-subtle-press-duration: 120ms;
+  --motion-subtle-press-easing: var(--ease-in-out);
+
+  --motion-bouncy-duration: 220ms;
+  --motion-bouncy-easing: var(--ease-bounce-release);
+  --motion-bouncy-press-duration: 150ms;
+  --motion-bouncy-press-easing: var(--ease-bounce-press);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  /* Colors */
+  --foreground: #e5e7eb;
+  --background: #0b1120;
+  --primary: #60a5fa;
+  --secondary: #c084fc;
+  --confirm: #22c55e;
+  --danger: #f87171;
+  --overlay: rgba(0, 0, 0, 0.65);
+
+  /* Shadows - lighter for dark mode */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+
+  color-scheme: dark;
+}
+
+/* === Theme transition — active only during toggleThemeMode() === */
+:root[data-theme-transitioning],
+:root[data-theme-transitioning] *,
+:root[data-theme-transitioning] *::before,
+:root[data-theme-transitioning] *::after {
+  transition:
+    background-color 300ms var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)),
+    color 300ms var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)),
+    border-color 300ms var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)),
+    box-shadow 300ms var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme-transitioning],
+  :root[data-theme-transitioning] *,
+  :root[data-theme-transitioning] *::before,
+  :root[data-theme-transitioning] *::after {
+    transition: none !important;
+  }
+}
+
+/* === Shared animation utilities === */
+
+@keyframes nw-waggle {
+  0%   { transform: translateX(0); }
+  12%  { transform: translateX(-7px); }
+  28%  { transform: translateX(7px); }
+  44%  { transform: translateX(-5px); }
+  58%  { transform: translateX(5px); }
+  72%  { transform: translateX(-2px); }
+  86%  { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+.nw-waggling {
+  animation: nw-waggle 480ms var(--ease-in-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-waggling { animation: none; }
+}
+
+* { box-sizing: border-box; }
+
+html, body { min-height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Scrollbar: modern, always-reserved space using theme colors */
+html {
+  scrollbar-color: var(--primary) var(--background);
+  scrollbar-width: thin;
+  scrollbar-gutter: stable both-edges;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 999px;
+  border: 3px solid var(--background);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  transition: background 150ms var(--ease-in-out), box-shadow 150ms var(--ease-in-out);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}

@@ -1,0 +1,105 @@
+.nw-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-family: inherit;
+}
+
+.nw-select__label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.nw-select__required {
+  color: var(--danger);
+  margin-left: 2px;
+}
+
+.nw-select__wrapper {
+  position: relative;
+}
+
+.nw-select__field {
+  appearance: none;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  padding-right: calc(var(--spacing-md) + 1em);
+  border: 1px solid color-mix(in srgb, var(--foreground) 25%, transparent);
+  border-radius: var(--radius);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: var(--text-md);
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-in-out),
+              box-shadow var(--duration-fast) var(--ease-in-out);
+}
+
+.nw-select__field:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.nw-select__arrow {
+  position: absolute;
+  right: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  pointer-events: none;
+  color: color-mix(in srgb, var(--foreground) 50%, transparent);
+  font-size: var(--text-sm);
+  transition: transform var(--duration-fast, 120ms) var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)),
+              color var(--duration-fast, 120ms) var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.nw-select__wrapper:focus-within .nw-select__arrow {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--primary);
+}
+
+.nw-select--error .nw-select__field {
+  border-color: var(--danger);
+}
+
+.nw-select--error .nw-select__field:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+.nw-select__error {
+  font-size: var(--text-sm);
+  color: var(--danger);
+  min-height: 1.25em;
+}
+
+.nw-select--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nw-select--disabled .nw-select__field {
+  cursor: not-allowed;
+}
+
+/* Listbox mode (size > 1) — scrollable inline list */
+.nw-select--listbox .nw-select__arrow {
+  display: none;
+}
+
+.nw-select--listbox .nw-select__field {
+  padding-right: var(--spacing-md);
+  height: auto;
+  overflow-y: auto;
+  border-radius: var(--radius);
+}
+
+.nw-select--listbox .nw-select__field option {
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-select__field {
+    transition: none;
+  }
+}

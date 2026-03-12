@@ -1,0 +1,62 @@
+.nw-container { display: flex; flex-wrap: wrap; box-sizing: border-box; }
+
+/* Gutters: subtle side shadow on large screens to define container edges.
+   Internal custom properties --_gb (gutter border color) and --_gs (gutter shadow)
+   are set by modifier classes; they are not part of the public API. */
+@media (min-width: 1024px) {
+  /* Base gutter — sets the default border color and applies the box-shadow */
+  .nw-container--gutters {
+    --_gb: rgba(0, 0, 0, 0.15);
+    --_gs: var(--shadow-sm);
+    box-shadow:
+      inset 1px 0 0 var(--_gb),
+      inset -1px 0 0 var(--_gb),
+      var(--_gs, none);
+  }
+
+  /* Gutter border strength: override the border color */
+  .nw-container--gutter-border-subtle { --_gb: rgba(0, 0, 0, 0.06); }
+  .nw-container--gutter-border-medium { --_gb: rgba(0, 0, 0, 0.15); }
+  .nw-container--gutter-border-strong { --_gb: rgba(0, 0, 0, 0.30); }
+
+  /* Gutter border modifiers also apply the inset lines when used standalone */
+  .nw-container--gutter-border-subtle,
+  .nw-container--gutter-border-medium,
+  .nw-container--gutter-border-strong {
+    box-shadow:
+      inset 1px 0 0 var(--_gb),
+      inset -1px 0 0 var(--_gb),
+      var(--_gs, none);
+  }
+
+  /* Gutter shadow depth: set the drop-shadow using the design-system tokens */
+  .nw-container--gutter-shadow-sm { --_gs: var(--shadow-sm); }
+  .nw-container--gutter-shadow-md { --_gs: var(--shadow-md); }
+  .nw-container--gutter-shadow-lg { --_gs: var(--shadow-lg); }
+}
+.nw-container.vertical { flex-direction: column; }
+.nw-container.horizontal { flex-direction: row; }
+
+/* Padding presets */
+.nw-p-none { padding: 0; }
+.nw-p-xs { padding: 0.125rem; }
+.nw-p-sm { padding: 0.25rem; }
+.nw-p-md { padding: 0.5rem; }
+.nw-p-lg { padding: 1rem; }
+.nw-p-xl { padding: 2rem; }
+
+/* Margin presets */
+.nw-m-none { margin: 0; }
+.nw-m-xs { margin: 0.125rem; }
+.nw-m-sm { margin: 0.25rem; }
+.nw-m-md { margin: 0.5rem; }
+.nw-m-lg { margin: 1rem; }
+.nw-m-xl { margin: 2rem; }
+
+/* Item spacing (gap) presets */
+.nw-gap-none { gap: 0; }
+.nw-gap-xs { gap: 0.125rem; }
+.nw-gap-sm { gap: 0.25rem; }
+.nw-gap-md { gap: 0.5rem; }
+.nw-gap-lg { gap: 1rem; }
+.nw-gap-xl { gap: 2rem; }
