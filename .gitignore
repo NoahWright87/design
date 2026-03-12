@@ -6,6 +6,9 @@ storybook-static
 .idea
 *.tgz
 
+# Local AI assistant settings
+.claude/**/settings.local.json
+
 # Playwright
 /test-results/
 /playwright-report/
