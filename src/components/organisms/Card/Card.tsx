@@ -5,7 +5,7 @@ import "./card.css";
  * Card props for a simple elevated, rounded container.
  * Renders as a semantic article with optional title/subtitle and children content.
  */
-export interface CardProps {
+export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
   /** Optional card title. */
   title?: React.ReactNode;
   /** Optional subtitle below title. */
@@ -26,8 +26,6 @@ export interface CardProps {
   maxHeight?: string | number;
   /** Additional CSS class name. */
   className?: string;
-  /** Any other standard HTML article attributes. */
-  [key: string]: any;
 }
 
 /**

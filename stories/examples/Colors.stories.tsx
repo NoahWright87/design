@@ -35,21 +35,27 @@ export const ColorGrid = () => {
         {Object.entries(colors).map(([name, value]) => {
           const isCopied = copied === name;
           return (
-            <div
+            <button
+              type="button"
               key={name}
-              role="button"
-              tabIndex={0}
               title={isCopied ? 'Copied!' : `Click to copy ${name}`}
               onClick={() => handleCopy(name)}
-              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleCopy(name)}
+              onKeyDown={(e) => {
+                if (e.key === ' ') {
+                  e.preventDefault();
+                }
+              }}
               style={{
                 width: 220,
+                display: 'block',
+                textAlign: 'left',
                 border: '1px solid #eee',
                 borderRadius: 8,
                 overflow: 'hidden',
                 cursor: 'pointer',
                 outline: isCopied ? '2px solid var(--primary, #2563eb)' : undefined,
                 transition: 'outline 0.15s',
+                background: 'var(--background)',
               }}
             >
               <div style={{ height: 120, background: value }} />
@@ -66,7 +72,7 @@ export const ColorGrid = () => {
                 </div>
                 <div style={{ marginTop: 6, fontFamily: 'monospace' }}>{value}</div>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>

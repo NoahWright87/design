@@ -11,6 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **PR review follow-ups:** fixed Storybook import order and duplicate preview file, added SSR-safe portfolio navigation guard, tightened Card typing, improved clipboard/keyboard accessibility in Text + Colors stories, made header hover tooltips decorative-only for screen readers, added MIT LICENSE, and stopped tracking local `.claude/settings.local.json`.
 - **Form components (overhaul):** Input/Select/Checkbox/RadioGroup gain `required` validation with auto-error on blur, error waggle animation, `randomDisabledCursor`, and spring-bounce animations on Checkbox/RadioGroup. Input adds `multiline`/`rows` (textarea), email format validation. RadioGroup required-validation story uses a Submit button. Error spans now always rendered (reserved space via `min-height: 1.25em`) to prevent layout shift; `aria-live="polite"` on all error spans.
 - **Molecules enriched:** Pill — `icon` + `onDismiss` + whimsical dismiss animation + neutral default color + `href`/`target` link variant (renders as `<a>` with hover outline). Heading gains `color`, `align`, `truncate`, `gradient`, `underline`, `eyebrow`, `iconStart`/`iconEnd`, `animateIn` (IntersectionObserver fade+slide on viewport entry), `anchorLink` (¶ hover button copies anchor URL to clipboard).
 - **Header + Footer:** Both accept `children` fallback prop for simple/unslotted usage. Header gains `leftTooltip`/`centerTooltip`/`rightTooltip` props — CSS fade-in tooltip appears on slot hover.

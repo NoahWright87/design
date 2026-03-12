@@ -64,19 +64,19 @@ export function Header({
           <div className={`nw-header__slot nw-header__slot--left${leftLabel ? " nw-header__slot--stacked" : ""}`}>
             <div className="nw-header__slot-element">{left}</div>
             {leftLabel && <div className="nw-header__slot-label">{leftLabel}</div>}
-            {leftTooltip && <div className="nw-header__tooltip" role="tooltip">{leftTooltip}</div>}
+            {leftTooltip && <div className="nw-header__tooltip" aria-hidden="true">{leftTooltip}</div>}
           </div>
 
           <div className={`nw-header__slot nw-header__slot--center${centerLabel ? " nw-header__slot--stacked" : ""}`}>
             <div className="nw-header__slot-element">{center}</div>
             {centerLabel && <div className="nw-header__slot-label">{centerLabel}</div>}
-            {centerTooltip && <div className="nw-header__tooltip" role="tooltip">{centerTooltip}</div>}
+            {centerTooltip && <div className="nw-header__tooltip" aria-hidden="true">{centerTooltip}</div>}
           </div>
 
           <div className={`nw-header__slot nw-header__slot--right${rightLabel ? " nw-header__slot--stacked" : ""}`}>
             <div className="nw-header__slot-element">{right}</div>
             {rightLabel && <div className="nw-header__slot-label">{rightLabel}</div>}
-            {rightTooltip && <div className="nw-header__tooltip" role="tooltip">{rightTooltip}</div>}
+            {rightTooltip && <div className="nw-header__tooltip" aria-hidden="true">{rightTooltip}</div>}
           </div>
         </>
       ) : (

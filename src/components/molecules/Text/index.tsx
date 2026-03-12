@@ -57,14 +57,21 @@ export function Text({
   const style = maxLines ? ({ WebkitLineClamp: maxLines } as React.CSSProperties) : undefined;
 
   if (isCopyable) {
-    function handleCopy() {
+    async function handleCopy() {
       const el = wrapperRef.current?.querySelector(".nw-text--copyable");
       const text = el?.textContent ?? "";
       if (!text) return;
-      navigator.clipboard.writeText(text).then(() => {
+      if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
-      });
+      } catch {
+        // Ignore clipboard errors (permission denied, unavailable, etc.)
+      }
     }
 
     return (

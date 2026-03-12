@@ -14,10 +14,20 @@ export interface PortfolioSiteProps {
 export function PortfolioSite({ initialPage = "home" }: PortfolioSiteProps) {
   const [currentPage, setCurrentPage] = React.useState<PortfolioPage>(initialPage);
 
+  const isPortfolioPage = (page: string): page is PortfolioPage => {
+    return page === "home" || page === "about" || page === "projects" || page === "resume" || page === "contact";
+  };
+
   const handleNavigate = (page: string) => {
-    setCurrentPage(page as PortfolioPage);
+    if (!isPortfolioPage(page)) {
+      return;
+    }
+
+    setCurrentPage(page);
     // Scroll to top when navigating
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const pages: Record<PortfolioPage, React.ReactNode> = {

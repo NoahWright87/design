@@ -14,10 +14,12 @@ export interface MobileNavProps {
  * For desktop, render children directly; for mobile, wrap in collapsible menu.
  */
 export function MobileNav({ children, label = "Menu" }: MobileNavProps) {
+  const toggleId = React.useId();
+
   return (
     <nav className="nw-mobile-nav">
-      <input type="checkbox" id="nw-mobile-nav-toggle" className="nw-mobile-nav__checkbox" />
-      <label htmlFor="nw-mobile-nav-toggle" className="nw-mobile-nav__toggle" aria-label={label}>
+      <input type="checkbox" id={toggleId} className="nw-mobile-nav__checkbox" />
+      <label htmlFor={toggleId} className="nw-mobile-nav__toggle" aria-label={label}>
         <span></span>
         <span></span>
         <span></span>
