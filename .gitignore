@@ -5,6 +5,7 @@ storybook-static
 .vscode
 .idea
 *.tgz
+.tmp/
 
 # Local AI assistant settings
 .claude/**/settings.local.json

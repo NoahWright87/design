@@ -1,12 +1,12 @@
 # Ideas intake
 
-Too lazy to search for the right spec to update?  Throw your idea here and let the LLMs put it in the right place(s) later!
+Not sure where your idea belongs? Drop it here and let the LLMs file it in the right place later!
 
 ## AGENTS Instructions
 
-When asked to, take any items listed below and organize put them into the appropriate TODO spec file.  Ideas may be vague, rambling, or half-baked.  If necessary, ask clarifying questions to determine what the user's intent was.  If a single item refers to multiple components or is a particularly large/complex idea, it can be broken into multiple separate TODOs in the relevant `*.todo.spec`.
+When asked to, take any items listed below and put them into the appropriate `.todo.md` file. Ideas may be vague, rambling, or half-baked. If necessary, ask clarifying questions to determine the user's intent. If a single item refers to multiple components or is a particularly large/complex idea, break it into multiple TODOs across the relevant `.todo.md` files.
 
-If a requested item already exists in the TODO spec, that implies a higher priority.  Tell the user and ask if they want to add any details or move it higher in the TODO spec.
+Use your best judgement to determine the priority of each item. If a requested item already exists in the TODO spec, that implies a higher priority. If a high priority item is lacking details, always ask the user for more information. When priority is unclear, ask the user.
 
 When you have emptied the submissions section below, leave behind a single bullet:
 
@@ -14,11 +14,8 @@ When you have emptied the submissions section below, leave behind a single bulle
 - *Add your ideas here*.
 ```
 
+Items waiting for more information stay in this file with a date annotation: `*(waiting for response, asked YYYY-MM-DD)*`. Re-surface stale items after **7 days** with no reply — change this number to adjust the threshold. If the user asks to defer an item, annotate it as `*(snoozed until YYYY-MM-DD)*` and skip it until that date.
+
 ## Submissions
 
-- BUG: Modal backdrop doesn't cover the full screen.  There's a bit still visible on the left.
-- Can modals have scrolling content?
-- Modal closing animation?
-- TODOs that are checked off should be removed before committing.
-- Could we make INTAKE work from GH issues as well as the intake form?  That way people don't have to commit and potentially get a PR approved just to have their TODO item added.
-    - Would need some sort of approval step at work so that the bot only picks up items the team has agreed with.  Otherwise people could submit issues to other peoples' projects.
+- *Add your ideas here*.
