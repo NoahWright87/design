@@ -12,6 +12,7 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 - **Spec-template adoption:** Applied managed spec-template files and metadata (`specs/.meta.json`), added command/workflow scaffolding (`/respec`, `/refine`, `/spec-backfill`, spec coverage check), and aligned intake/todo command docs with upstream behavior.
+- **Spec localization pass:** Rewrote root specs (`specs/spec.md`, `specs/spec.todo.md`) and legacy directory meta specs (`specs/.spec.md`, `specs/.spec.todo.md`) so they describe this design-system repo and use local placeholders instead of spec-template-repo content.
 - **Repo hygiene:** Added `.tmp/` to `.gitignore` and removed the temporary `.tmp` workspace folder used during template fetch.
 
 - **PR review follow-ups:** fixed Storybook import order and duplicate preview file, added SSR-safe portfolio navigation guard, tightened Card typing, improved clipboard/keyboard accessibility in Text + Colors stories, made header hover tooltips decorative-only for screen readers, added MIT LICENSE, and stopped tracking local `.claude/settings.local.json`.

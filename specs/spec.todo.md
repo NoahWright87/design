@@ -1,24 +1,24 @@
-# Spec Template — Roadmap
+# Design System — Roadmap
 
 ## Summary
-This repo provides two products: (1) an installable spec / intake / TODO scaffold for other repos, and (2) a reusable autonomous worker runtime that runs Claude CLI in a container. See `scaffold.todo.md` and `worker.todo.md` for the large feature work. This file tracks improvements to the template system itself (commands, UX, meta-tooling).
+This file tracks future work for the design system itself: component completeness, spec quality, Storybook quality, and release readiness.
 
 ## Sooner
+- Fill missing root-spec details called out in [`spec.md`](spec.md) placeholders.
+- Audit top-priority component specs to ensure inputs/behavior/acceptance stay aligned with current code.
 
 ## Later
-
-### Reduce cognitive load for humans
-- [#4](https://github.com/NoahWright87/spec-template/issues/4) Audit commands and consider combining or routing via a meta `/help` command so humans have less to remember
+- Improve examples under `stories/examples/` to cover full-page integration patterns.
+- Expand test mapping between acceptance criteria and visual/interaction checks.
 
 ## Backlog
+- Add a lightweight release checklist spec for versioning, changelog curation, and publish validation.
+- Add dependency relationship notes in `specs/deps/` where external libraries need explicit routing context.
 
 ## Ideas (Uncommitted)
-
-- When `/respec` runs in Update mode, compare the `dist/specs/spec.todo.md` template against the local TODO files. If the format differs (e.g. checkboxes vs plain bullets), offer to migrate existing TODO items to the current format. Apply only with user approval.
+- Evaluate whether root-level specs should mirror the source tree more strictly for faster navigation.
 
 ## Reminders
-
-- Move completed items to `spec.md` — this file is for future plans, not current state
-- Large or complex ideas belong in their own `{feature}.todo.md`, not buried here
-- Items flow: INTAKE → `spec.todo.md` → `{feature}.todo.md` (if big) → `spec.md` (when done)
-- If a TODO item links to a GH issue (`[#N](...)`), include `closes #N` in your PR description — GitHub closes the issue on merge
+- Move implemented roadmap items into current-state specs.
+- Keep large ideas in focused `{feature}.todo.md` files when they outgrow this list.
+- Keep entries concise and prioritized from top to bottom within each section.
