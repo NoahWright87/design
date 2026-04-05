@@ -11,6 +11,9 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **Netlify config:** Added `netlify.toml` locking build command (`build-storybook`) and publish dir (`storybook-static`) so deploy previews build correctly on every PR.
+- **Playwright screenshot tests:** Corrected all story IDs to match actual Storybook paths (`components-molecules-*` / `components-organisms-*`); fixed Heading IDs (`H1` → `h-1`); scoped all component screenshots to `#storybook-root` so images clip to component height instead of full 1280×720 viewport. All 32 tests passing with tight baselines.
+
 - **Spec-template adoption:** Applied managed spec-template files and metadata (`specs/.meta.json`), added command/workflow scaffolding (`/respec`, `/refine`, `/spec-backfill`, spec coverage check), and aligned intake/todo command docs with upstream behavior.
 - **Spec localization pass:** Rewrote root specs (`specs/spec.md`, `specs/spec.todo.md`) and legacy directory meta specs (`specs/.spec.md`, `specs/.spec.todo.md`) so they describe this design-system repo and use local placeholders instead of spec-template-repo content.
 - **Repo hygiene:** Added `.tmp/` to `.gitignore` and removed the temporary `.tmp` workspace folder used during template fetch.
