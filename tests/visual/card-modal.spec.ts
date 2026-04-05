@@ -4,13 +4,13 @@ test.describe('Card & Modal Components', () => {
   test('Card: default card renders', async ({ page }) => {
     await page.goto('/iframe.html?id=components-organisms-card--default&viewMode=story');
     await page.waitForLoadState('networkidle');
-    await expect(page).toHaveScreenshot('card-default.png');
+    await expect(page.locator('#storybook-root')).toHaveScreenshot('card-default.png');
   });
 
   test('Card: elevated card has shadow', async ({ page }) => {
     await page.goto('/iframe.html?id=components-organisms-card--elevated&viewMode=story');
     await page.waitForLoadState('networkidle');
-    await expect(page).toHaveScreenshot('card-elevated.png');
+    await expect(page.locator('#storybook-root')).toHaveScreenshot('card-elevated.png');
   });
 
   test('Modal: modal opens and closes', async ({ page }) => {

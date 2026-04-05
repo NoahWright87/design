@@ -4,7 +4,7 @@ test.describe("Menu Component", () => {
   test("With hamburger closed snapshot", async ({ page }) => {
     await page.goto("/iframe.html?id=components-organisms-menu--with-hamburger&viewMode=story");
     await page.waitForLoadState("networkidle");
-    await expect(page).toHaveScreenshot("menu-hamburger-closed.png");
+    await expect(page.locator('#storybook-root')).toHaveScreenshot("menu-hamburger-closed.png");
   });
 
   test("With hamburger open snapshot", async ({ page }) => {
@@ -21,6 +21,6 @@ test.describe("Menu Component", () => {
   test("Left aligned snapshot", async ({ page }) => {
     await page.goto("/iframe.html?id=components-organisms-menu--left-aligned&viewMode=story");
     await page.waitForLoadState("networkidle");
-    await expect(page).toHaveScreenshot("menu-left-aligned.png");
+    await expect(page.locator('#storybook-root')).toHaveScreenshot("menu-left-aligned.png");
   });
 });
