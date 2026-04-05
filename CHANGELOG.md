@@ -11,7 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- **Playwright screenshot tests:** Fixed broken story IDs in Button/Header/Footer specs (`--basic` → actual exports), expanded Button coverage to all 6 variants, added screenshot specs for Ocean, Section (8 stories), Hero (5 stories), and ColorPalette. Run `npm run test:visual:update` to generate fresh baselines.
+- **Playwright screenshot tests:** Corrected all story IDs to match actual Storybook paths (`components-molecules-*` / `components-organisms-*`); rewrote Button spec to use real story exports (Basic, Variants, Sizes, Disabled); fixed hamburger open-menu locator (`aria-label="Open menu"`); removed specs for src-only components with no Storybook stories. All 32 tests passing with verified baselines.
 
 - **Spec-template adoption:** Applied managed spec-template files and metadata (`specs/.meta.json`), added command/workflow scaffolding (`/respec`, `/refine`, `/spec-backfill`, spec coverage check), and aligned intake/todo command docs with upstream behavior.
 - **Spec localization pass:** Rewrote root specs (`specs/spec.md`, `specs/spec.todo.md`) and legacy directory meta specs (`specs/.spec.md`, `specs/.spec.todo.md`) so they describe this design-system repo and use local placeholders instead of spec-template-repo content.

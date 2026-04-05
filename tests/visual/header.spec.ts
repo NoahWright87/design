@@ -1,15 +1,15 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Header Component", () => {
-  test("Default header", async ({ page }) => {
-    await page.goto("/iframe.html?id=components-header--default&viewMode=story");
+  test("Basic header", async ({ page }) => {
+    await page.goto("/iframe.html?id=components-organisms-header--basic&viewMode=story");
     await page.waitForLoadState("networkidle");
-    await expect(page).toHaveScreenshot("header-default.png");
+    await expect(page).toHaveScreenshot("header-basic.png");
   });
 
-  test("Custom nav items", async ({ page }) => {
-    await page.goto("/iframe.html?id=components-header--custom-nav-items&viewMode=story");
+  test("With labels", async ({ page }) => {
+    await page.goto("/iframe.html?id=components-organisms-header--with-labels&viewMode=story");
     await page.waitForLoadState("networkidle");
-    await expect(page).toHaveScreenshot("header-custom-nav.png");
+    await expect(page).toHaveScreenshot("header-with-labels.png");
   });
 });
