@@ -18,4 +18,10 @@ test.describe("Avatar Component", () => {
     await page.waitForLoadState("networkidle");
     await expect(page.locator("#storybook-root")).toHaveScreenshot("avatar-large.png");
   });
+
+  test("Full name initials snapshot", async ({ page }) => {
+    await page.goto("/iframe.html?id=components-molecules-avatar--with-full-name-initials&viewMode=story");
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("#storybook-root")).toHaveScreenshot("avatar-full-name-initials.png");
+  });
 });

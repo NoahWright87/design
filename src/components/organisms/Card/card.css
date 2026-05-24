@@ -18,6 +18,17 @@
   line-height: 1.4;
 }
 
+.nw-card__image {
+  margin-bottom: 12px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.nw-card__image > * {
+  display: block;
+  width: 100%;
+}
+
 .nw-card__subtitle {
   font-size: 0.875rem;
   color: color-mix(in srgb, var(--foreground, #000) 70%, transparent);

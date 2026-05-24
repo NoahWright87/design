@@ -6,6 +6,8 @@ import "./card.css";
  * Renders as a semantic article with optional title/subtitle and children content.
  */
 export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Optional media element rendered above the title. */
+  image?: React.ReactNode;
   /** Optional card title. */
   title?: React.ReactNode;
   /** Optional subtitle below title. */
@@ -33,6 +35,7 @@ export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "titl
  * Use for grouping related content with visual hierarchy.
  */
 export function Card({
+  image,
   title,
   subtitle,
   children,
@@ -56,6 +59,7 @@ export function Card({
 
   return (
     <article className={cls} {...rest}>
+      {image ? <div className="nw-card__image">{image}</div> : null}
       {title ? <div className="nw-card__title">{title}</div> : null}
       {subtitle ? <div className="nw-card__subtitle">{subtitle}</div> : null}
       {children ? (

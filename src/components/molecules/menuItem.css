@@ -20,6 +20,18 @@
   background: color-mix(in srgb, var(--foreground, #000) 6%, var(--background, #fff));
 }
 
+.nw-menu-item--disabled,
+.nw-menu-item--disabled:hover,
+.nw-menu-item--disabled:focus-visible {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.nw-menu-item--disabled {
+  pointer-events: none;
+}
+
 .nw-menu-item__icon {
   display: inline-flex;
   align-items: center;

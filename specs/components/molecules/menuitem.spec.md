@@ -14,6 +14,7 @@ MenuItem renders a single item within a Menu. It appears as either a button or a
 - Optional leading icon.
 - Optional destination URL.
 - Optional click handler.
+- Optional disabled flag.
 
 ### Outputs
 A button or link element styled as a menu item. On activation, the click handler is called and the parent menu closes.
@@ -27,9 +28,13 @@ A button or link element styled as a menu item. On activation, the click handler
 
 Clicking or keyboard-activating a menu item calls the provided click handler and signals the parent menu to close. The icon, if provided, appears before the label text.
 
+Disabled items remain visible but inert, with muted styling and no activation behavior.
+
 ## Interface
 
 MenuItem appears as a full-width row within the menu panel. An optional icon appears on the left, followed by the label text. The item highlights on hover using the theme's background. Focus is visible when navigating by keyboard.
+
+Disabled items stay visually present while removing the normal interaction affordances.
 
 ## Acceptance
 1. Renders as a button when no destination URL is provided.
@@ -38,3 +43,5 @@ MenuItem appears as a full-width row within the menu panel. An optional icon app
 4. Displays the label text.
 5. Calls the click handler and closes the parent menu on activation.
 6. Is keyboard-accessible via Tab and Enter/Space.
+7. Renders a disabled visual state when the disabled flag is set.
+8. Disabled items do not trigger click handlers or close the parent menu.

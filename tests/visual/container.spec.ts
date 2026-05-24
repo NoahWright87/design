@@ -18,4 +18,10 @@ test.describe("Container Component", () => {
     await page.waitForLoadState("networkidle");
     await expect(page.locator("#storybook-root")).toHaveScreenshot("container-colors-sizes.png");
   });
+
+  test("Parallax background snapshot", async ({ page }) => {
+    await page.goto("/iframe.html?id=components-organisms-container--parallax-background&viewMode=story");
+    await page.waitForLoadState("networkidle");
+    await expect(page.locator("#storybook-root")).toHaveScreenshot("container-parallax-background.png");
+  });
 });

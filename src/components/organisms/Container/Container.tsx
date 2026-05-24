@@ -44,6 +44,8 @@ export interface ContainerProps {
   noGutters?: boolean;
   /** Disable all side border and shadow treatment. Alias for `noGutters`. */
   noBorders?: boolean;
+  /** Enable a fixed background attachment effect for the background image. */
+  parallax?: boolean;
   /**
    * Strength of the inset edge lines shown in the gutter area on large screens.
    * `"subtle"` (default) | `"medium"` | `"strong"`.
@@ -105,6 +107,7 @@ export function Container(props: ContainerProps) {
     height          = DEFAULTS.height,
     noGutters       = DEFAULTS.noGutters,
     noBorders       = false,
+    parallax        = false,
     gutterBorder,
     gutterShadow,
     backgroundImage,
@@ -132,7 +135,7 @@ export function Container(props: ContainerProps) {
     color:           COLOR_MAP[foregroundColor],
     width:  normalizeSize(width,  DEFAULTS.width)  || undefined,
     height: normalizeSize(height, DEFAULTS.height) || undefined,
-    ...(normalizedBgImage ? { backgroundImage: normalizedBgImage, backgroundSize: "cover", backgroundPosition: "center" } : {}),
+    ...(normalizedBgImage ? { backgroundImage: normalizedBgImage, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: parallax ? "fixed" : undefined } : {}),
   };
 
   return <div className={classNames} style={style}>{children}</div>;

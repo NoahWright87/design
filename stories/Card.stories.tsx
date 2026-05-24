@@ -1,6 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Card, CardFooter, CardGrid, Button } from "../src";
+import { getNonsense } from "../src/atoms/nonsense";
 
 const meta: Meta<typeof Card> = {
   title: "Components/Organisms/Card",
@@ -64,6 +65,15 @@ export const WithSubtitle: Story = {
     title: "Card with Subtitle",
     subtitle: "This is the subtitle",
     children: "Some meaningful content goes here.",
+  },
+};
+
+export const WithImage: Story = {
+  args: {
+    image: <img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />,
+    title: "Card with Image",
+    subtitle: "Top media section",
+    children: "The image sits above the title and content.",
   },
 };
 

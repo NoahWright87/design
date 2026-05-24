@@ -11,6 +11,7 @@ Avatar displays a user's profile picture or initials in a compact, circular cont
 ### Inputs
 - An optional image source URL.
 - An accessible label describing the user (used as fallback text and accessible name).
+- An optional `name` for generating initials from a full name.
 - An optional size for the circular container.
 - An optional click handler.
 
@@ -28,6 +29,8 @@ An interactive or static circular container showing either a profile image or a 
 **With an image:** The image is shown inside the circular container, filling it edge-to-edge.
 
 **Without an image:** The first letter of the label is shown as a large initial on a themed background color.
+
+**Full name initials:** When a name is provided, the avatar uses the first letters of the first and last words to form initials like `NW`.
 
 **Interactive:** When a click handler is provided, the avatar acts as a button — it responds to click and keyboard activation.
 
@@ -48,3 +51,4 @@ The initial variant uses a themed background color to provide visual interest wh
 4. When a click handler is provided, the avatar acts as a button activatable by click or keyboard.
 5. When no click handler is provided, the avatar is non-interactive.
 6. An accessible name is present in all cases.
+7. When a name is provided and no image is given, the avatar derives initials from the full name.

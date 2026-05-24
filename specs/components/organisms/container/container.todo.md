@@ -8,7 +8,6 @@
 
 ## Later
 - [x] Background image: Support a `backgroundImage` prop with standard CSS background positioning and sizing.
-- [ ] Parallax background: Optional parallax effect so the background image scrolls at a different rate than the container content, giving a cutout/window effect.
 
 ## Backlog
 - Alignment props: `alignItems`, `justifyContent` for flex alignment control.

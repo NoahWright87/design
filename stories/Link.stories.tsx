@@ -27,6 +27,14 @@ export const External: Story = {
   },
 };
 
+export const AffiliateDisclosure: Story = {
+  args: {
+    href: "#",
+    children: "Affiliate link with disclosure prompt",
+    isAffiliate: true,
+  },
+};
+
 export const MotionNone: Story = {
   name: "Motion: None",
   args: { href: "#", children: "No animation", motion: "none" },

@@ -9,6 +9,7 @@ Card groups related content into a visually distinct, rounded container. It supp
 ## Contract
 
 ### Inputs
+- Optional image content rendered above the title.
 - Optional title, subtitle, children content, and footer.
 - Optional elevated flag for added visual prominence.
 - Optional interactive flag for hover-lift behavior.
@@ -32,10 +33,12 @@ A rounded, themed container holding the provided content sections. Elevated card
 
 **Elevated and interactive:** The hover lift is proportionally larger than on a non-elevated interactive card.
 
+**Image:** When image content is provided, it appears as a top media section above the title and content, with the card's rounded corners preserved.
+
 ## Interface
 
 ### Layout
-The card has a rounded border and themed background. Internal sections are arranged vertically: title at the top, subtitle below it, main content in the middle, and footer at the bottom with a subtle separator above it.
+The card has a rounded border and themed background. Internal sections are arranged vertically: optional image at the top, title below it, subtitle below that, main content in the middle, and footer at the bottom with a subtle separator above it.
 
 ### CardFooter
 CardFooter is a layout companion for the card's footer area. It arranges its children horizontally with configurable alignment — left, right, centered, or spread. The default alignment places content at the trailing end, suited for action buttons.
@@ -56,3 +59,4 @@ CardFooter is a layout companion for the card's footer area. It arranges its chi
 8. CardFooter renders its children in a horizontal row with the configured alignment.
 9. CardFooter defaults to trailing (end) alignment.
 10. Additional class names and HTML attributes are applied to the card element.
+11. When image content is provided, it renders above the title as a top media section.

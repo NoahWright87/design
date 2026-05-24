@@ -16,6 +16,7 @@ Container is an opinionated flex layout wrapper for building consistent, spaced 
 - Optional `backgroundColor` — named design-system color token: `"background"`, `"foreground"`, `"primary"`, `"secondary"`, `"confirm"`, `"danger"`, `"transparent"`.
 - Optional `foregroundColor` — same token set as `backgroundColor`.
 - Optional `backgroundImage` — URL string for a CSS background image. Bare URLs are auto-wrapped in `url(...)`. Renders with `background-size: cover` and `background-position: center`.
+- Optional `parallax` — fixed-attachment treatment for the background image.
 - Optional `width` and `height` — CSS dimension values; numbers are treated as percentages.
 - Optional `noGutters` — removes the default side gutter styling on large screens.
 - Optional `gutterBorder` — strength of the inset edge line in the gutter area: `"subtle"`, `"medium"`, `"strong"`.
@@ -41,9 +42,13 @@ Container is a static layout component. It applies the requested flex configurat
 
 **Background image:** When `backgroundImage` is set, the image covers the container with `background-size: cover` and `background-position: center`.
 
+**Parallax:** When `parallax` is enabled alongside a background image, the image stays fixed while content scrolls over it.
+
 ## Interface
 
 Container provides a configurable box that arranges its children either vertically (column) or horizontally (row). Color and image backgrounds are fully controllable via named tokens. Gutter variants let callers opt into varying levels of visual depth on large screens.
+
+When parallax is enabled, the background image reads like a fixed backdrop behind the content.
 
 ### Named color tokens
 `"background"`, `"foreground"`, `"primary"`, `"secondary"`, `"confirm"`, `"danger"`, `"transparent"`
@@ -67,3 +72,4 @@ Container provides a configurable box that arranges its children either vertical
 10. `gutterBorder` applies the correct border intensity via a BEM modifier class.
 11. `gutterShadow` applies the correct shadow depth via a BEM modifier class.
 12. Style overrides apply to the root wrapper.
+13. When `parallax` is enabled with a background image, the backdrop remains fixed while content scrolls.

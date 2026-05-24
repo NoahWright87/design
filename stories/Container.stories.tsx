@@ -143,6 +143,22 @@ export const BackgroundImage: Story = {
   )
 };
 
+export const ParallaxBackground: Story = {
+  render: () => (
+    <Container
+      padding="xl"
+      height="200px"
+      backgroundImage={getNonsense("abstractImage") as string}
+      foregroundColor="background"
+      parallax
+    >
+      <div style={{ fontWeight: 600 }}>
+        Container with parallax background attachment
+      </div>
+    </Container>
+  )
+};
+
 export const ColorsAndSizes: Story = {
   render: () => (
     <Container direction="horizontal" itemSpacing="md" width="100%">

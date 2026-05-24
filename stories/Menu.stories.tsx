@@ -29,6 +29,12 @@ const accountItems = [
   <MenuItem key="logout" label="Log out" onClick={() => console.log("Log out")} />
 ];
 
+const disabledItems = [
+  <MenuItem key="active" label="Active item" onClick={() => console.log("Active")} />,
+  <MenuItem key="disabled" label="Disabled item" disabled onClick={() => console.log("Disabled")} />,
+  <MenuItem key="last" label="Last item" onClick={() => console.log("Last")} />
+];
+
 export const WithHamburger: Story = {
   args: {
     trigger: <HamburgerMenu />,
@@ -68,5 +74,13 @@ export const RightAligned: Story = {
     trigger: <button type="button">Account ▼</button>,
     items: accountItems,
     align: "right"
+  }
+};
+
+export const WithDisabledItem: Story = {
+  args: {
+    trigger: <HamburgerMenu />,
+    items: disabledItems,
+    align: "left"
   }
 };

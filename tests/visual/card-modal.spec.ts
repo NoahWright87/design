@@ -13,6 +13,12 @@ test.describe('Card & Modal Components', () => {
     await expect(page.locator('#storybook-root')).toHaveScreenshot('card-elevated.png');
   });
 
+  test('Card: image header renders', async ({ page }) => {
+    await page.goto('/iframe.html?id=components-organisms-card--with-image&viewMode=story');
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('#storybook-root')).toHaveScreenshot('card-with-image.png');
+  });
+
   test('Modal: modal opens and closes', async ({ page }) => {
     await page.goto('/iframe.html?id=components-organisms-modal--basic&viewMode=story');
     await page.waitForLoadState('networkidle');
