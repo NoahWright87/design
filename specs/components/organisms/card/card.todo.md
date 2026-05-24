@@ -10,6 +10,7 @@
 
 ## Backlog
 - Image header: Optional `image` prop for top media section.
+  - Also requested: [#8](https://github.com/NoahWright87/design/issues/8) support a first-class media slot on the left, right, or top.
 - Link card: Make entire card clickable (href prop).
 - Variants: Different card types (feature, testimonial, product listing).
 - Loading state: Skeleton or placeholder while loading.

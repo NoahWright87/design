@@ -11,6 +11,7 @@ Purpose: Capture future enhancements and exploratory ideas. Items are aspiration
 ## Backlog
 - Loading state: Spinner and `aria-busy` while preventing duplicate actions.
   - Rough acceptance: Visual indicator; keyboard/pointer activation paused; announce state.
+- Icon placement: Support `iconLeft` and `iconRight` props with tokenized spacing between icon and label.
 - Animation presets: Predefined motion styles (e.g., bounce, pulse) applied via prop.
   - Rough acceptance: Preset animations respect motion tokens and `prefers-reduced-motion`.
 - Accessibility enhancements: Additional ARIA attributes for specific contexts (if needed).
