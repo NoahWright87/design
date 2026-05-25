@@ -11,6 +11,8 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **Intake routing:** Filed motion feature requests [#12] and [#13] into the Motion Lab backlog under a new Motion Primitives section in `specs/labs/motion.todo.md`.
+
 - **Backlog cleanup:** Card gained a top media section, Avatar now derives initials from a full name, MenuItem supports a disabled state, Link can show an affiliate disclosure prompt, and Container can pin its background image with a parallax-style fixed attachment.
 
 - **Netlify config:** Added `netlify.toml` locking build command (`build-storybook`) and publish dir (`storybook-static`) so deploy previews build correctly on every PR.
