@@ -1,4 +1,4 @@
-.nw-container { display: flex; flex-wrap: wrap; box-sizing: border-box; }
+.nw-container { display: flex; box-sizing: border-box; }
 
 /* Gutters: subtle side shadow on large screens to define container edges.
    Internal custom properties --_gb (gutter border color) and --_gs (gutter shadow)

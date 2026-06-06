@@ -1,6 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Card, CardFooter, CardGrid, Button } from "../src";
+import { getNonsense } from "../src/atoms/nonsense";
 
 const meta: Meta<typeof Card> = {
   title: "Components/Organisms/Card",
@@ -65,6 +66,20 @@ export const WithSubtitle: Story = {
     subtitle: "This is the subtitle",
     children: "Some meaningful content goes here.",
   },
+};
+
+export const WithImage: Story = {
+  render: () => (
+    <div style={{ width: 360 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        title="Card with Image"
+        subtitle="Top media section"
+      >
+        The image sits above the title and content.
+      </Card>
+    </div>
+  ),
 };
 
 export const Elevated: Story = {
@@ -134,6 +149,15 @@ export const InteractiveElevated: Story = {
     children: "Hover to see the elevated shadow step-up.",
     elevated: true,
     interactive: true,
+  },
+};
+
+export const LinkCard: Story = {
+  args: {
+    title: "Linked Card",
+    subtitle: "Entire surface is clickable",
+    children: "Use href to make the whole card act like a link.",
+    href: "#",
   },
 };
 

@@ -13,6 +13,19 @@ test.describe('Card & Modal Components', () => {
     await expect(page.locator('#storybook-root')).toHaveScreenshot('card-elevated.png');
   });
 
+  test('Card: image header renders', async ({ page }) => {
+    await page.goto('/iframe.html?id=components-organisms-card--with-image&viewMode=story');
+    await page.waitForLoadState('networkidle');
+    const media = page.locator('.nw-card__image').first();
+    await expect(media).toBeVisible();
+    const box = await media.boundingBox();
+    expect(box).not.toBeNull();
+    const ratio = (box!.width / box!.height);
+    expect(ratio).toBeGreaterThan(1.6);
+    expect(ratio).toBeLessThan(1.9);
+    await expect(page.locator('#storybook-root')).toHaveScreenshot('card-with-image.png');
+  });
+
   test('Modal: modal opens and closes', async ({ page }) => {
     await page.goto('/iframe.html?id=components-organisms-modal--basic&viewMode=story');
     await page.waitForLoadState('networkidle');

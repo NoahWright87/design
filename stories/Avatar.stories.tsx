@@ -45,6 +45,14 @@ export const WithInitial: Story = {
   }
 };
 
+export const WithFullNameInitials: Story = {
+  name: "With full name initials",
+  args: {
+    name: "Noah Wright",
+    size: 40
+  }
+};
+
 export const Small: Story = {
   args: {
     label: "S",

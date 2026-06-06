@@ -19,3 +19,4 @@ Items waiting for more information stay in this file with a date annotation: `*(
 ## Submissions
 
 - *Add your ideas here*.
+

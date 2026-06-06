@@ -8,14 +8,10 @@
 
 ## Later
 - [x] Background image: Support a `backgroundImage` prop with standard CSS background positioning and sizing.
-- [ ] Parallax background: Optional parallax effect so the background image scrolls at a different rate than the container content, giving a cutout/window effect.
 
 ## Backlog
-- Alignment props: `alignItems`, `justifyContent` for flex alignment control.
 - Responsive breakpoints: Media query helpers or preset responsive layouts.
-- Flexbox options: `grow`, `shrink`, `basis` for flex item control.
 - Grid mode: Alternative to flex (e.g., `mode: "grid"`).
-- Shortcuts: Single prop for common patterns (e.g., `centered`, `spaceBetween`).
 - Container presets: Named preset components extending Container with opinionated defaults:
   - `HeroContainer` — full-width, large min-height, centered content, background-ready.
   - `QuoteContainer` — styled for pull quotes and attributed testimonials in articles.

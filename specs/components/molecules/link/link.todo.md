@@ -6,7 +6,6 @@
 - [x] Icon slots: Leading and trailing icon props for decorated links (e.g., download arrow, back chevron). (Promoted from Backlog.)
 - [x] Variants: Add `subtle` (muted color, underline on hover only) and `prominent` (full color always) variants. (Promoted from Backlog.)
 - [x] Router `as` prop: Support rendering as a Next.js `<Link>` or React Router `<Link>` via an `as`/component prop. (Promoted from Backlog.)
-- [ ] `isAffiliate` prop: Opens a disclosure popup explaining the affiliate relationship before navigating.
 
 ## Later
 - [ ] TBD

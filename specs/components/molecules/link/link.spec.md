@@ -19,10 +19,13 @@ Link renders a styled anchor element for navigation and external links. It appli
 - Optional `className` — additional CSS class name applied to the root element.
 - Optional `as` — custom component to render instead of `<a>` (e.g., Next.js Link, React Router Link).
 
+
+**Affiliate disclosure:** When `isAffiliate` is set, activating the link first shows a confirmation prompt describing the affiliate relationship.
 ### Outputs
 A styled anchor element (or the component provided by `as`) with appropriate hover, focus, and motion behavior.
 
-### Guarantees / Constraints
+10. When `isAffiliate` is set, activation shows a disclosure prompt before navigation continues.
+11. Is fully keyboard-navigable (Tab, Enter).
 - When `as` is omitted, the rendered element is always a native `<a>`.
 - When `as` is provided, `href` and all anchor-compatible props are forwarded to that component.
 - `isExternal` always adds `target="_blank" rel="noopener noreferrer"` regardless of `as`.

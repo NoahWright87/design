@@ -112,6 +112,10 @@
   pointer-events: none;
 }
 
+.button--loading {
+  cursor: progress;
+}
+
 /* Motion presets */
 .button--motion-none {
   transition: none;
@@ -198,6 +202,21 @@
   transition: opacity var(--duration-fast) var(--ease-in-out);
 }
 
+.button__spinner {
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: button-spin 700ms linear infinite;
+}
+
+@keyframes button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .button {
@@ -212,6 +231,10 @@
   .button__icon,
   .button__label {
     transition: none;
+  }
+
+  .button__spinner {
+    animation: none;
   }
 
   .button--motion-subtle,

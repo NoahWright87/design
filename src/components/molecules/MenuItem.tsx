@@ -8,16 +8,23 @@ export interface MenuItemProps {
   icon?: React.ReactNode;
   href?: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 export const MenuContext = React.createContext<{ close: () => void } | null>(
   null
 );
 
-export function MenuItem({ text, label, icon, href, onClick }: MenuItemProps) {
+export function MenuItem({ text, label, icon, href, onClick, disabled = false }: MenuItemProps) {
   const ctx = useContext(MenuContext);
 
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     onClick?.();
     ctx?.close();
   };
@@ -33,14 +40,27 @@ export function MenuItem({ text, label, icon, href, onClick }: MenuItemProps) {
 
   if (href) {
     return (
-      <a className="nw-menu-item" role="menuitem" href={href} onClick={handleClick}>
+      <a
+        className={["nw-menu-item", disabled && "nw-menu-item--disabled"].filter(Boolean).join(" ")}
+        role="menuitem"
+        href={href}
+        aria-disabled={disabled || undefined}
+        tabIndex={disabled ? -1 : undefined}
+        onClick={handleClick}
+      >
         {content}
       </a>
     );
   }
 
   return (
-    <button type="button" className="nw-menu-item" role="menuitem" onClick={handleClick}>
+    <button
+      type="button"
+      className={["nw-menu-item", disabled && "nw-menu-item--disabled"].filter(Boolean).join(" ")}
+      role="menuitem"
+      onClick={handleClick}
+      disabled={disabled}
+    >
       {content}
     </button>
   );

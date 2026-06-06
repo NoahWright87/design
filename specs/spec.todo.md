@@ -13,6 +13,8 @@ This file tracks future work for the design system itself: component completenes
 
 ## Backlog
 - Add a lightweight release checklist spec for versioning, changelog curation, and publish validation.
+- [#4](https://github.com/NoahWright87/design/issues/4) Set up Netlify deployments for preview and production releases.
+- [#6](https://github.com/NoahWright87/design/issues/6) Improve repository documentation so Claude can find the current specs and workflow guidance quickly.
 - Add dependency relationship notes in `specs/deps/` where external libraries need explicit routing context.
 
 ## Ideas (Uncommitted)

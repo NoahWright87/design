@@ -127,6 +127,20 @@ export const Disabled: Story = {
   ),
 };
 
+export const LoadingState: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+      <Button loading>Loading</Button>
+      <Button variant="outline" loading loadingLabel="Saving...">
+        Save
+      </Button>
+      <Button variant="ghost" loading icon={<StarIcon />}>
+        Queued
+      </Button>
+    </div>
+  ),
+};
+
 export const MotionPresets: Story = {
   render: () => (
     <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>

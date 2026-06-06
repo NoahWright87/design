@@ -27,6 +27,8 @@ export interface ContainerProps {
   padding?: ContainerSpacing;
   margin?: ContainerSpacing;
   itemSpacing?: ContainerSpacing;
+  alignItems?: React.CSSProperties["alignItems"];
+  justifyContent?: React.CSSProperties["justifyContent"];
   /**
    * Background color. Use a named design-system token for consistency.
    * Default: `"transparent"`.
@@ -39,11 +41,19 @@ export interface ContainerProps {
   foregroundColor?: ContainerColor;
   width?: string | number;
   height?: string | number;
-  wrap?: "always"; // reserved for future flexibility
+  wrap?: "always" | "never";
+  fullWidth?: boolean;
+  grow?: number;
+  shrink?: number;
+  basis?: string | number;
+  centered?: boolean;
+  spaceBetween?: boolean;
   /** Remove side gutter treatment on large screens. Gutters are on by default. */
   noGutters?: boolean;
   /** Disable all side border and shadow treatment. Alias for `noGutters`. */
   noBorders?: boolean;
+  /** Enable a fixed background attachment effect for the background image. */
+  parallax?: boolean;
   /**
    * Strength of the inset edge lines shown in the gutter area on large screens.
    * `"subtle"` (default) | `"medium"` | `"strong"`.
@@ -99,18 +109,33 @@ export function Container(props: ContainerProps) {
     padding         = DEFAULTS.padding,
     margin          = DEFAULTS.margin,
     itemSpacing     = DEFAULTS.itemSpacing,
+    alignItems,
+    justifyContent,
     backgroundColor = DEFAULTS.backgroundColor,
     foregroundColor = DEFAULTS.foregroundColor,
-    width           = DEFAULTS.width,
+    width,
     height          = DEFAULTS.height,
+    wrap            = "always",
+    fullWidth       = true,
+    grow,
+    shrink,
+    basis,
+    centered        = false,
+    spaceBetween    = false,
     noGutters       = DEFAULTS.noGutters,
     noBorders       = false,
+    parallax        = false,
     gutterBorder,
     gutterShadow,
     backgroundImage,
-    // wrap currently only supports "always"; future options can branch behavior
     children,
   } = props;
+
+  const resolvedJustifyContent = centered
+    ? "center"
+    : (spaceBetween ? "space-between" : justifyContent);
+  const resolvedAlignItems = centered ? "center" : alignItems;
+  const normalizedBasis = basis != null && typeof basis === "number" ? `${basis}%` : basis;
 
   const classNames = [
     "nw-container",
@@ -124,15 +149,21 @@ export function Container(props: ContainerProps) {
   ].filter(Boolean).join(" ");
 
   const normalizedBgImage = backgroundImage && !backgroundImage.startsWith("url(")
-    ? `url(${backgroundImage})`
+    ? `url("${backgroundImage.replace(/"/g, '\\"')}")`
     : backgroundImage;
 
   const style: React.CSSProperties = {
     backgroundColor: COLOR_MAP[backgroundColor],
     color:           COLOR_MAP[foregroundColor],
-    width:  normalizeSize(width,  DEFAULTS.width)  || undefined,
+    width:  fullWidth ? "100%" : (normalizeSize(width, "auto") || undefined),
     height: normalizeSize(height, DEFAULTS.height) || undefined,
-    ...(normalizedBgImage ? { backgroundImage: normalizedBgImage, backgroundSize: "cover", backgroundPosition: "center" } : {}),
+    flexWrap: wrap === "never" ? "nowrap" : "wrap",
+    justifyContent: resolvedJustifyContent,
+    alignItems: resolvedAlignItems,
+    flexGrow: grow,
+    flexShrink: shrink,
+    flexBasis: normalizedBasis,
+    ...(normalizedBgImage ? { backgroundImage: normalizedBgImage, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: parallax ? "fixed" : undefined } : {}),
   };
 
   return <div className={classNames} style={style}>{children}</div>;

@@ -25,6 +25,8 @@ export type LinkProps = {
   leadingIcon?: React.ReactNode;
   /** Icon rendered after the link text (e.g., a download arrow). */
   trailingIcon?: React.ReactNode;
+  /** Shows a disclosure prompt before following the link. */
+  isAffiliate?: boolean;
   /** Additional CSS class name. */
   className?: string;
   /**
@@ -36,7 +38,7 @@ export type LinkProps = {
   as?: React.ElementType;
 };
 
-export function Link({ children, href, isExternal, motion = "pulsing", variant = "default", leadingIcon, trailingIcon, className = "", as: Tag = "a" }: LinkProps) {
+export function Link({ children, href, isExternal, motion = "pulsing", variant = "default", leadingIcon, trailingIcon, isAffiliate = false, className = "", as: Tag = "a" }: LinkProps) {
   const cls = [
     "nw-link",
     variant !== "default" && `nw-link--${variant}`,
@@ -49,8 +51,22 @@ export function Link({ children, href, isExternal, motion = "pulsing", variant =
 
   const externalProps = isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!isAffiliate || typeof window === "undefined") {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "This is an affiliate link and may earn a commission. Continue?"
+    );
+
+    if (!confirmed) {
+      event.preventDefault();
+    }
+  };
+
   return (
-    <Tag href={href} className={cls} {...externalProps}>
+    <Tag href={href} className={cls} onClick={handleClick} {...externalProps}>
       {leadingIcon && (
         <span className="nw-link__icon nw-link__icon--leading" aria-hidden="true">{leadingIcon}</span>
       )}

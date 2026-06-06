@@ -23,4 +23,12 @@ test.describe("Menu Component", () => {
     await page.waitForLoadState("networkidle");
     await expect(page.locator('#storybook-root')).toHaveScreenshot("menu-left-aligned.png");
   });
+
+  test("Disabled item snapshot", async ({ page }) => {
+    await page.goto("/iframe.html?id=components-organisms-menu--with-disabled-item&viewMode=story");
+    await page.waitForLoadState("networkidle");
+    await page.locator('button[aria-label="Open menu"]').click();
+    await page.locator('[role="menu"]').waitFor({ state: "visible" });
+    await expect(page).toHaveScreenshot("menu-disabled-item.png");
+  });
 });

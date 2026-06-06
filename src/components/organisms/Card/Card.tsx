@@ -6,6 +6,10 @@ import "./card.css";
  * Renders as a semantic article with optional title/subtitle and children content.
  */
 export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Optional media element rendered above the title. */
+  image?: React.ReactNode;
+  /** Optional URL that makes the entire card clickable. */
+  href?: string;
   /** Optional card title. */
   title?: React.ReactNode;
   /** Optional subtitle below title. */
@@ -33,6 +37,8 @@ export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "titl
  * Use for grouping related content with visual hierarchy.
  */
 export function Card({
+  image,
+  href,
   title,
   subtitle,
   children,
@@ -54,8 +60,9 @@ export function Card({
     .filter(Boolean)
     .join(" ");
 
-  return (
-    <article className={cls} {...rest}>
+  const content = (
+    <>
+      {image ? <div className="nw-card__image">{image}</div> : null}
       {title ? <div className="nw-card__title">{title}</div> : null}
       {subtitle ? <div className="nw-card__subtitle">{subtitle}</div> : null}
       {children ? (
@@ -72,8 +79,22 @@ export function Card({
         </div>
       ) : null}
       {footer ? <div className="nw-card__footer">{footer}</div> : null}
-    </article>
+    </>
   );
+
+  if (href) {
+    return (
+      <a
+        className={[cls, "nw-card--link"].filter(Boolean).join(" ")}
+        href={href}
+        {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return <article className={cls} {...rest}>{content}</article>;
 }
 
 export default Card;
