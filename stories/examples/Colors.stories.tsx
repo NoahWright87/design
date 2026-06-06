@@ -49,11 +49,11 @@ export const ColorGrid = () => {
                 width: 220,
                 display: 'block',
                 textAlign: 'left',
-                border: '1px solid #eee',
+                border: '1px solid var(--overlay)',
                 borderRadius: 8,
                 overflow: 'hidden',
                 cursor: 'pointer',
-                outline: isCopied ? '2px solid var(--primary, #2563eb)' : undefined,
+                outline: isCopied ? '2px solid var(--primary)' : undefined,
                 transition: 'outline 0.15s',
                 background: 'var(--background)',
               }}
@@ -63,7 +63,7 @@ export const ColorGrid = () => {
                 <div
                   style={{
                     fontSize: 12,
-                    color: isCopied ? 'var(--primary, #2563eb)' : '#666',
+                    color: isCopied ? 'var(--primary)' : 'var(--secondary)',
                     fontWeight: isCopied ? 600 : undefined,
                     transition: 'color 0.15s',
                   }}

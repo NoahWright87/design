@@ -12,7 +12,7 @@ The Colors example displays all theme color tokens as labeled swatches, giving d
 The current theme's color tokens, read from the computed styles of the rendered page.
 
 ### Outputs
-A grid of color swatches, each showing the token's name and resolved color value.
+A grid of color swatches, each showing the token's name and resolved color value. Clicking a swatch copies its token name to the clipboard and briefly confirms the action.
 
 ### Guarantees / Constraints
 - One swatch is rendered per defined color token.
@@ -20,7 +20,9 @@ A grid of color swatches, each showing the token's name and resolved color value
 
 ## Behavior
 
-On load, the page reads the resolved value of each color token from the page's computed styles and builds a swatch for each. The display is static — there are no interactions.
+On load, the page reads the resolved value of each color token from the page's computed styles and builds a swatch for each.
+
+**Copying token names:** Each swatch acts as a button. Clicking a swatch copies the token name to the clipboard and temporarily changes the label to confirm the copy.
 
 ## Interface
 
@@ -34,3 +36,5 @@ This page is a developer and designer reference tool, not a user-facing feature.
 3. Each swatch displays the token name and its resolved color value.
 4. Swatches arrange in a wrapping grid layout.
 5. Missing or unresolved tokens display a graceful fallback.
+6. Clicking a swatch copies the token name to the clipboard.
+7. A copied swatch briefly displays confirmation feedback.
