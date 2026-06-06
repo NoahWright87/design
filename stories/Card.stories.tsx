@@ -69,12 +69,17 @@ export const WithSubtitle: Story = {
 };
 
 export const WithImage: Story = {
-  args: {
-    image: <img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />,
-    title: "Card with Image",
-    subtitle: "Top media section",
-    children: "The image sits above the title and content.",
-  },
+  render: () => (
+    <div style={{ width: 360 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        title="Card with Image"
+        subtitle="Top media section"
+      >
+        The image sits above the title and content.
+      </Card>
+    </div>
+  ),
 };
 
 export const Elevated: Story = {
@@ -144,6 +149,15 @@ export const InteractiveElevated: Story = {
     children: "Hover to see the elevated shadow step-up.",
     elevated: true,
     interactive: true,
+  },
+};
+
+export const LinkCard: Story = {
+  args: {
+    title: "Linked Card",
+    subtitle: "Entire surface is clickable",
+    children: "Use href to make the whole card act like a link.",
+    href: "#",
   },
 };
 

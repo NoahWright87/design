@@ -17,6 +17,7 @@ Button provides the primary clickable control in the design system. It wraps a n
 - Optional `color` — semantic role (`"primary"`, `"secondary"`, `"confirm"`, `"danger"`) or a custom hex color (default: `"primary"`).
 - Optional `icon` element and `iconPosition` — `"left"`, `"right"`, `"top"`, `"bottom"`, `"center"`.
 - Optional `disabled` flag.
+- Optional `loading` flag and `loadingLabel` text while work is in progress.
 - Optional `motion` — `"none"`, `"subtle"`, `"bouncy"` (default: `"bouncy"`).
 - Optional `type` — native button type: `"button"`, `"submit"`, `"reset"` (default: `"button"`).
 - Optional `style` overrides.
@@ -35,6 +36,8 @@ A native button element styled according to the selected variant, size, and colo
 **Standard interaction:** Clicking or pressing Space/Enter activates the button and invokes the click handler (if provided and not disabled).
 
 **Disabled:** The button is inert — no clicks, hover effects, or focus effects. The click handler is never called.
+
+**Loading:** The button shows an inline spinner, sets `aria-busy`, and prevents additional activation until loading completes.
 
 **Icon-only (center position):** When the icon is centered and the label is hidden by default, the label remains accessible and appears on hover without shifting the layout.
 
@@ -79,3 +82,5 @@ The button's accessible name comes from its visible label. In icon-only mode, th
 11. Custom style overrides apply correctly.
 12. Is fully accessible via keyboard and screen reader.
 13. The `type` prop is passed through to the native button element.
+14. When loading is enabled, the button shows a spinner and blocks duplicate activation.
+15. When loading is enabled, `aria-busy` is applied to the button.

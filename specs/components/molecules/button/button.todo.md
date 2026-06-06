@@ -9,8 +9,6 @@ Purpose: Capture future enhancements and exploratory ideas. Items are aspiration
 - [ ] TBD
 
 ## Backlog
-- Loading state: Spinner and `aria-busy` while preventing duplicate actions.
-  - Rough acceptance: Visual indicator; keyboard/pointer activation paused; announce state.
 - Icon placement: Support `iconLeft` and `iconRight` props with tokenized spacing between icon and label.
 - Animation presets: Predefined motion styles (e.g., bounce, pulse) applied via prop.
   - Rough acceptance: Preset animations respect motion tokens and `prefers-reduced-motion`.
@@ -20,6 +18,5 @@ Purpose: Capture future enhancements and exploratory ideas. Items are aspiration
   - Rough acceptance: Icons are React components; consistent sizing and coloring.
 
 ### Open Questions
-- Loading state UX: Should spinner replace icon or label, or overlay the button?
 - Animation preset names and visual styles.
 - Minimum supported browsers and focus styles (currently assumes modern evergreen browsers).

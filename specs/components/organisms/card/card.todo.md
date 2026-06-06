@@ -9,6 +9,5 @@
 - [x] Scrollable card body: Add a `maxHeight` prop (and/or `scrollable` boolean) that constrains the card body height and enables `overflow-y: auto` so long content scrolls within the card.
 
 ## Backlog
-- Link card: Make entire card clickable (href prop).
 - Variants: Different card types (feature, testimonial, product listing).
 - Loading state: Skeleton or placeholder while loading.

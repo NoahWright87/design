@@ -10,6 +10,7 @@ Card groups related content into a visually distinct, rounded container. It supp
 
 ### Inputs
 - Optional image content rendered above the title.
+- Optional `href` for rendering the card as a fully clickable destination.
 - Optional title, subtitle, children content, and footer.
 - Optional elevated flag for added visual prominence.
 - Optional interactive flag for hover-lift behavior.
@@ -34,6 +35,8 @@ A rounded, themed container holding the provided content sections. Elevated card
 **Elevated and interactive:** The hover lift is proportionally larger than on a non-elevated interactive card.
 
 **Image:** When image content is provided, it appears as a top media section above the title and content, with the card's rounded corners preserved.
+
+**Link card:** When `href` is provided, the card renders as a single clickable surface and preserves the same visual styling.
 
 ## Interface
 
@@ -60,3 +63,4 @@ CardFooter is a layout companion for the card's footer area. It arranges its chi
 9. CardFooter defaults to trailing (end) alignment.
 10. Additional class names and HTML attributes are applied to the card element.
 11. When image content is provided, it renders above the title as a top media section.
+12. When `href` is provided, the full card surface is clickable and keyboard-focusable.

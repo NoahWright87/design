@@ -16,6 +16,8 @@ export type ButtonProps = {
   icon?: React.ReactElement;
   iconPosition?: IconPosition;
   disabled?: boolean;
+  loading?: boolean;
+  loadingLabel?: React.ReactNode;
   motion?: ButtonMotion;
   type?: "button" | "submit" | "reset";
   style?: React.CSSProperties;
@@ -69,11 +71,14 @@ export function Button({
   icon,
   iconPosition = "left",
   disabled = false,
+  loading = false,
+  loadingLabel,
   motion = "bouncy",
   type = "button",
   style,
 }: ButtonProps) {
   const { color: buttonColor, contrast: buttonContrast } = resolveColor(color);
+  const isDisabled = disabled || loading;
   
   const classNames = [
     "button",
@@ -81,6 +86,7 @@ export function Button({
     `button--${size}`,
     `button--motion-${motion}`,
     icon && `button--icon-${iconPosition}`,
+    loading && "button--loading",
   ]
     .filter(Boolean)
     .join(" ");
@@ -95,12 +101,13 @@ export function Button({
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled}
+      disabled={isDisabled}
+      aria-busy={loading || undefined}
       className={classNames}
       style={inlineStyles}
     >
-      {icon && <span className="button__icon">{icon}</span>}
-      <span className="button__label">{children}</span>
+      {loading ? <span className="button__spinner" aria-hidden="true" /> : (icon && <span className="button__icon">{icon}</span>)}
+      <span className="button__label">{loading ? (loadingLabel ?? children) : children}</span>
     </button>
   );
 }

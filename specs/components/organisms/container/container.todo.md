@@ -10,12 +10,8 @@
 - [x] Background image: Support a `backgroundImage` prop with standard CSS background positioning and sizing.
 
 ## Backlog
-- Alignment props: `alignItems`, `justifyContent` for flex alignment control.
-  - Also requested: [#10](https://github.com/NoahWright87/design/issues/10) add `wrap` and `fullWidth` layout props.
 - Responsive breakpoints: Media query helpers or preset responsive layouts.
-- Flexbox options: `grow`, `shrink`, `basis` for flex item control.
 - Grid mode: Alternative to flex (e.g., `mode: "grid"`).
-- Shortcuts: Single prop for common patterns (e.g., `centered`, `spaceBetween`).
 - Container presets: Named preset components extending Container with opinionated defaults:
   - `HeroContainer` — full-width, large min-height, centered content, background-ready.
   - `QuoteContainer` — styled for pull quotes and attributed testimonials in articles.

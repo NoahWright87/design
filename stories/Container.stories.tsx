@@ -12,8 +12,11 @@ const meta: Meta<typeof Container> = {
     padding: "md",
     margin: "none",
     itemSpacing: "sm",
+    centered: false,
+    spaceBetween: false,
     backgroundColor: "transparent",
     foregroundColor: "foreground",
+    fullWidth: true,
     width: "100%",
     height: "auto",
     wrap: "always"
@@ -23,13 +26,21 @@ const meta: Meta<typeof Container> = {
     padding:         { control: { type: "select" }, options: ["none", "xs", "sm", "md", "lg", "xl"] },
     margin:          { control: { type: "select" }, options: ["none", "xs", "sm", "md", "lg", "xl"] },
     itemSpacing:     { control: { type: "select" }, options: ["none", "xs", "sm", "md", "lg", "xl"] },
+    alignItems:      { control: { type: "select" }, options: ["stretch", "flex-start", "center", "flex-end", "baseline"] },
+    justifyContent:  { control: { type: "select" }, options: ["flex-start", "center", "flex-end", "space-between", "space-around", "space-evenly"] },
+    centered:        { control: { type: "boolean" } },
+    spaceBetween:    { control: { type: "boolean" } },
     backgroundColor: { control: { type: "select" }, options: ["transparent", "background", "foreground", "primary", "secondary", "confirm", "danger"] },
     foregroundColor: { control: { type: "select" }, options: ["foreground", "background", "primary", "secondary", "confirm", "danger"] },
     gutterBorder:    { control: { type: "select" }, options: ["subtle", "medium", "strong"] },
     gutterShadow:    { control: { type: "select" }, options: ["sm", "md", "lg"] },
+    fullWidth:       { control: { type: "boolean" } },
     width:           { control: { type: "text" } },
     height:          { control: { type: "text" } },
-    wrap:            { control: { type: "select" }, options: ["always"] },
+    wrap:            { control: { type: "select" }, options: ["always", "never"] },
+    grow:            { control: { type: "number" } },
+    shrink:          { control: { type: "number" } },
+    basis:           { control: { type: "text" } },
     children:        { control: { type: "text" } }
   }
 };
@@ -170,6 +181,42 @@ export const ColorsAndSizes: Story = {
       </Container>
       <Container padding="lg" width="20rem" backgroundColor="primary" foregroundColor="background">
         <div>Width 20rem — primary color</div>
+      </Container>
+    </Container>
+  )
+};
+
+export const AlignmentAndShortcuts: Story = {
+  render: () => (
+    <Container direction="vertical" itemSpacing="md">
+      <Container padding="lg" backgroundColor="background" alignItems="center" justifyContent="space-between" direction="horizontal" height="120px">
+        <div>Start</div>
+        <div>Middle</div>
+        <div>End</div>
+      </Container>
+      <Container padding="lg" backgroundColor="background" centered height="120px">
+        <div>Centered shortcut applies both axes</div>
+      </Container>
+      <Container padding="lg" backgroundColor="background" spaceBetween direction="horizontal" height="120px">
+        <div>Left</div>
+        <div>Center</div>
+        <div>Right</div>
+      </Container>
+    </Container>
+  )
+};
+
+export const FlexItemControls: Story = {
+  render: () => (
+    <Container direction="horizontal" itemSpacing="sm" wrap="never" fullWidth>
+      <Container backgroundColor="primary" foregroundColor="background" padding="md" grow={1} basis="20%">
+        grow=1 basis=20%
+      </Container>
+      <Container backgroundColor="secondary" foregroundColor="background" padding="md" grow={2} basis="30%">
+        grow=2 basis=30%
+      </Container>
+      <Container backgroundColor="confirm" foregroundColor="background" padding="md" grow={0} shrink={0} basis="180px" fullWidth={false}>
+        fixed 180px
       </Container>
     </Container>
   )
