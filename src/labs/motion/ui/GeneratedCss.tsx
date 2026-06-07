@@ -5,12 +5,13 @@ export interface GeneratedCssProps {
   cssText: string;
 }
 
-type ExportFormat = "css" | "root" | "scss" | "json";
+type ExportFormat = "css" | "root" | "scss" | "tailwind" | "json";
 
 const formatLabels: Record<ExportFormat, string> = {
   css: "Component CSS",
   root: ":root custom properties",
   scss: "SCSS variables",
+  tailwind: "Tailwind animation config",
   json: "Design token JSON",
 };
 
@@ -39,6 +40,17 @@ function formatExport(cssText: string, format: ExportFormat) {
       tokens.map((token) => [token.name.slice(2), { value: token.value, type: "motion" }]),
     );
     return JSON.stringify(payload, null, 2);
+  }
+
+  if (format === "tailwind") {
+    const payload = Object.fromEntries(
+      tokens.map((token) => [
+        token.name.slice(2),
+        token.value.replace(/^var\((--[\w-]+)\)$/, "var($1)"),
+      ]),
+    );
+
+    return `theme: {\n  extend: {\n    transitionTimingFunction: ${JSON.stringify(payload, null, 6).replace(/\n/g, "\n    ")}\n  }\n}`;
   }
 
   return cssText;

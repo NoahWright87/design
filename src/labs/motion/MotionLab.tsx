@@ -144,7 +144,7 @@ export function MotionLab({ adapter }: MotionLabProps) {
       <Section title={title} key={prefix}>
         <div className={styles.easingGrid}>
           <div className={styles.easingGraphWrap}>
-            <EasingGraph x1={x1Value} y1={y1Value} x2={x2Value} y2={y2Value} />
+            <EasingGraph label={title} x1={x1Value} y1={y1Value} x2={x2Value} y2={y2Value} />
           </div>
           <div className={styles.bezierControls}>
             {adapter?.knobs

@@ -6,6 +6,7 @@ export interface EasingGraphProps {
   y1: number;
   x2: number;
   y2: number;
+  label?: string;
 }
 
 function cubic(a: number, b: number, c: number, d: number, t: number): number {
@@ -13,7 +14,27 @@ function cubic(a: number, b: number, c: number, d: number, t: number): number {
   return mt * mt * mt * a + 3 * mt * mt * t * b + 3 * mt * t * t * c + t * t * t * d;
 }
 
-export function EasingGraph({ x1, y1, x2, y2 }: EasingGraphProps) {
+function describeCurve(y1: number, y2: number) {
+  if (y1 > 1 || y2 > 1) {
+    return "overshoots above the target value";
+  }
+
+  if (y1 < 0 || y2 < 0) {
+    return "dips below the starting value";
+  }
+
+  if (y1 < y2) {
+    return "accelerates into the target value";
+  }
+
+  if (y1 > y2) {
+    return "decelerates into the target value";
+  }
+
+  return "moves evenly toward the target value";
+}
+
+export function EasingGraph({ x1, y1, x2, y2, label = "Easing curve" }: EasingGraphProps) {
   const W = 280;
   const H = 200;
   const xMin = 0;
@@ -30,6 +51,7 @@ export function EasingGraph({ x1, y1, x2, y2 }: EasingGraphProps) {
   const p3 = { x: 1, y: 1 };
 
   const path = `M ${sx(p0.x)} ${sy(p0.y)} C ${sx(p1.x)} ${sy(p1.y)} ${sx(p2.x)} ${sy(p2.y)} ${sx(p3.x)} ${sy(p3.y)}`;
+  const description = `${label}: cubic bezier ${x1}, ${y1}, ${x2}, ${y2}; ${describeCurve(y1, y2)}.`;
 
   const y0 = sy(0);
   const y1line = sy(1);
@@ -44,8 +66,8 @@ export function EasingGraph({ x1, y1, x2, y2 }: EasingGraphProps) {
   }
 
   return (
-    <div className={styles.easingGraph} aria-label="Easing curve graph">
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" role="img">
+    <div className={styles.easingGraph} tabIndex={0} aria-label={description}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" role="img" aria-label={description}>
         <rect x="0" y="0" width={W} height={H} rx="14" ry="14" className={styles.eg__bg} />
         <line x1="0" y1={y0} x2={W} y2={y0} className={styles.eg__grid} />
         <line x1="0" y1={y1line} x2={W} y2={y1line} className={styles.eg__grid} />
@@ -54,6 +76,9 @@ export function EasingGraph({ x1, y1, x2, y2 }: EasingGraphProps) {
         <line x1={sx(p3.x)} y1={sy(p3.y)} x2={sx(p2.x)} y2={sy(p2.y)} className={styles.eg__handle} />
 
         <path d={path} className={styles.eg__curve} />
+        <circle r="5" className={styles.eg__playhead}>
+          <animateMotion dur="1.6s" repeatCount="indefinite" path={path} />
+        </circle>
 
         {pts.map((p, idx) => (
           <circle key={idx} cx={p.x} cy={p.y} r={idx % 4 === 0 ? 2.2 : 1.4} className={styles.eg__dot} />
