@@ -14,6 +14,7 @@ export interface MotionLabProps {
 export function MotionLab({ adapter }: MotionLabProps) {
   const [presetName, setPresetName] = React.useState(adapter.presets[0]?.name ?? "");
   const [values, setValues] = React.useState<MotionValues>({});
+  const [copiedEasing, setCopiedEasing] = React.useState<string | null>(null);
 
   // Initialize values from adapter defaults
   React.useEffect(() => {
@@ -35,8 +36,47 @@ export function MotionLab({ adapter }: MotionLabProps) {
     }
   }, [presetName, adapter]);
 
+  const applyPreset = React.useCallback((name: string) => {
+    const preset = adapter.presets.find((item) => item.name === name);
+
+    if (preset) {
+      setPresetName(name);
+      setValues({ ...preset.values });
+    }
+  }, [adapter]);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!event.ctrlKey || event.metaKey || event.altKey) return;
+
+      const presetIndex = Number(event.key) - 1;
+      const preset = adapter.presets[presetIndex];
+
+      if (!preset) return;
+
+      event.preventDefault();
+      applyPreset(preset.name);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [adapter, applyPreset]);
+
   const handleValueChange = (knobId: string, value: number | string | boolean) => {
     setValues((prev) => ({ ...prev, [knobId]: value }));
+  };
+
+  const handleCopyEasing = (prefix: string, value: string) => {
+    if (typeof navigator === "undefined" || !navigator.clipboard?.writeText) {
+      return;
+    }
+
+    navigator.clipboard.writeText(value).then(() => {
+      setCopiedEasing(prefix);
+      setTimeout(() => setCopiedEasing(null), 1500);
+    });
   };
 
   const renderKnob = (knob: MotionKnob) => {
@@ -104,7 +144,7 @@ export function MotionLab({ adapter }: MotionLabProps) {
       <Section title={title} key={prefix}>
         <div className={styles.easingGrid}>
           <div className={styles.easingGraphWrap}>
-            <EasingGraph x1={x1Value} y1={y1Value} x2={x2Value} y2={y2Value} />
+            <EasingGraph label={title} x1={x1Value} y1={y1Value} x2={x2Value} y2={y2Value} />
           </div>
           <div className={styles.bezierControls}>
             {adapter?.knobs
@@ -117,9 +157,9 @@ export function MotionLab({ adapter }: MotionLabProps) {
           <button
             className={styles.readout__copy}
             type="button"
-            onClick={() => navigator.clipboard?.writeText(bezierString)}
+            onClick={() => handleCopyEasing(prefix, bezierString)}
           >
-            Copy
+            {copiedEasing === prefix ? "Copied!" : "Copy"}
           </button>
         </div>
       </Section>
@@ -170,7 +210,14 @@ export function MotionLab({ adapter }: MotionLabProps) {
             onChange={setPresetName}
             options={adapter.presets.map((p) => p.name)}
           />
-          <div className={styles.hint}>Pick a preset, then tweak knobs</div>
+          <button
+            className={styles.readout__copy}
+            type="button"
+            onClick={() => applyPreset(presetName)}
+          >
+            Reset to preset
+          </button>
+          <div className={styles.hint}>Pick a preset, then tweak knobs. Use Ctrl+1, Ctrl+2, etc. to switch presets.</div>
         </Section>
 
         {Object.entries(groupedKnobs).map(([category, knobs]) => (

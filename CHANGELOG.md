@@ -11,6 +11,12 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **Motion Lab accessibility/export pass:** Added Tailwind animation-config export plus animated, focusable, screen-reader-described easing graphs.
+
+- **Todo pass:** Added Colors contrast/export helpers and Motion Lab preset shortcuts, reset, easing copy feedback, and multi-format export options while promoting those todos into current specs.
+
+- **Todo/spec cleanup:** Promoted completed Colors copy, Contact Form validation, Header Responsive theme persistence/transition/shortcut, and Nonsense customization items into current specs; cleaned completed entries from todo files.
+
 - **Container/Card/Button backlog pass:** Container now supports alignment shortcuts and flex item controls (`alignItems`, `justifyContent`, `centered`, `spaceBetween`, `grow`, `shrink`, `basis`, `wrap`, `fullWidth`), Card supports full-surface `href` links, and Button supports a loading spinner with `aria-busy`.
 
 - **Intake routing:** Filed motion feature requests [#12] and [#13] into the Motion Lab backlog under a new Motion Primitives section in `specs/labs/motion.todo.md`.

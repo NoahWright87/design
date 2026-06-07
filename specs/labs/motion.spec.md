@@ -16,7 +16,7 @@ Motion Lab is an interactive playground for designing and tuning component anima
 
 ### Outputs
 - A live preview of the component with the current motion values applied.
-- A generated CSS snippet reflecting the current settings, ready to copy and paste.
+- A generated export reflecting the current settings, ready to copy and paste as component CSS, CSS custom properties, SCSS variables, Tailwind animation config, or design token JSON.
 
 ### Guarantees / Constraints
 - One adapter per story — multiple adapters in the same story are not supported.
@@ -28,11 +28,13 @@ Motion Lab is an interactive playground for designing and tuning component anima
 
 **Opening the lab:** The lab renders with the default preset applied and all knobs set to the preset's values.
 
-**Selecting a preset:** All knobs update to the preset's values and the preview refreshes immediately.
+**Selecting a preset:** All knobs update to the preset's values and the preview refreshes immediately. Presets can be selected from the dropdown or with Ctrl+number shortcuts in preset order.
 
-**Adjusting a knob:** The preview updates as the knob changes; the generated CSS updates to match.
+**Adjusting a knob:** The preview updates as the knob changes; the generated export updates to match. The reset button reapplies the currently selected preset values after manual knob changes.
 
-**Copying CSS:** The current CSS snippet is copied to the clipboard and a brief confirmation is shown.
+**Copying exports:** The current export is copied to the clipboard and a brief confirmation is shown. Individual easing readouts can also be copied from their easing sections.
+
+**Reading easing graphs:** Easing graphs show an animated progress marker along the curve. The graph can receive keyboard focus and exposes a short screen reader description of the curve's shape.
 
 **Current adapters:**
 - **Button** — controls hover lift, press scale and squish, and timing curves for press and release.
@@ -46,9 +48,9 @@ The lab is organized into three main areas:
 
 **Sticky preview:** The live component, always visible as the user scrolls through controls.
 
-**Controls panel:** Preset selector at the top, then grouped knob sections below. Sliders control numeric values; dropdowns select named options; toggles switch boolean settings. Easing knobs include a visual curve graph alongside the sliders.
+**Controls panel:** Preset selector at the top, then grouped knob sections below. Sliders control numeric values; dropdowns select named options; toggles switch boolean settings. Easing knobs include a visual curve graph with an animated playhead alongside the sliders.
 
-**Generated CSS:** A read-only text area at the bottom showing the exportable CSS, with a copy button.
+**Generated export:** A read-only text area at the bottom showing the selected export format, with a format selector and copy button. Supported formats are component CSS, CSS custom properties, SCSS variables, Tailwind animation config, and design token JSON.
 
 On small screens, the control grid collapses to a single column.
 
@@ -59,7 +61,14 @@ On small screens, the control grid collapses to a single column.
 4. Easing curve graphs update visually as bezier knobs change.
 5. The preview component updates in real time as values change.
 6. The generated CSS updates live and matches the preview.
-7. The copy button copies the CSS to the clipboard and shows brief feedback.
-8. The sticky preview remains visible while scrolling through the controls panel.
-9. The Button adapter renders a button with motion applied; bounce and squish presets work.
-10. The Modal adapter renders a modal with enter and exit animations; the transform type selector works.
+7. The copy button copies the selected export to the clipboard and shows brief feedback.
+8. The export selector switches between component CSS, CSS custom properties, SCSS variables, Tailwind animation config, and design token JSON.
+9. The sticky preview remains visible while scrolling through the controls panel.
+10. The Button adapter renders a button with motion applied; bounce and squish presets work.
+11. The Modal adapter renders a modal with enter and exit animations; the transform type selector works.
+12. Ctrl+number shortcuts select presets in dropdown order.
+13. The reset button restores the currently selected preset's values.
+14. Each easing section copy button copies that easing function and shows brief feedback.
+15. Easing graphs show an animated playhead that follows the curve.
+16. Easing graphs show a visible focus state when focused by keyboard.
+17. Easing graphs expose a screen reader description of the current curve shape.

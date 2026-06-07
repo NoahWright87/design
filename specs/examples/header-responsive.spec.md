@@ -10,7 +10,7 @@ The Header Responsive example demonstrates the header's label-hiding behavior on
 ## Contract
 
 ### Inputs
-User interaction: resizing the viewport, clicking the theme toggle.
+User interaction: resizing the viewport, clicking the theme toggle, and using the theme toggle keyboard shortcut.
 
 ### Outputs
 Two variants showing responsive label hiding and a functional light/dark theme toggle.
@@ -18,12 +18,14 @@ Two variants showing responsive label hiding and a functional light/dark theme t
 ### Guarantees / Constraints
 - Labels are always hidden on small screens regardless of their content.
 - Theme switching takes effect immediately without a page reload.
+- Theme preference persists across page loads.
+- Theme changes animate smoothly when motion preferences allow it.
 
 ## Behavior
 
 **Label hiding:** Labels configured in header slots are visible on larger screens and hidden on smaller screens. Only the slot content (icon or element) remains visible on small screens.
 
-**Theme toggle:** A button in the right slot toggles between light and dark themes. The current theme is reflected by the button's icon and the page's background color.
+**Theme toggle:** A button in the right slot toggles between light and dark themes. The current theme is reflected by the button's icon and the page's background color. The selected theme is saved so subsequent page loads restore the same preference. Switching themes applies a short color transition when motion preferences allow it. The theme can also be toggled with the keyboard shortcut shown by the example.
 
 **Variant 1:** Left slot has an icon and app-name label. Center has a page label. Right has a theme toggle.
 
@@ -39,3 +41,6 @@ On desktop-sized viewports, labels are visible alongside slot content. On mobile
 3. The theme toggle changes the page theme when clicked.
 4. The toggle icon updates to reflect the current theme.
 5. The center menu in variant 2 opens and closes correctly.
+6. Theme preference persists across page loads.
+7. Theme changes use smooth color transitions when motion preferences allow it.
+8. The keyboard shortcut toggles the current theme.

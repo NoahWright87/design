@@ -15,15 +15,18 @@ The Contact Form example composes all four form primitive components — Input, 
 User interaction with form fields — typing, selecting, checking, and submitting.
 
 ### Outputs
-A complete, interactive contact form page. Form submission shows a browser alert for illustration purposes. Canceling does not submit.
+A complete, interactive contact form page. Form submission validates required fields and shows a browser alert for illustration purposes when valid. Canceling does not submit.
 
 ### Guarantees / Constraints
 - All form controls are functional — input, selection, and checkbox state all work.
 - The Cancel button does not trigger form submission.
+- Required fields present validation feedback both during field interaction and form submission.
 
 ## Behavior
 
-The page renders a centered form card with all four form control types. Users can interact with each control independently. Submitting the form triggers an illustrative response. Canceling leaves the form unchanged.
+The page renders a centered form card with all four form control types. Users can interact with each control independently. Submitting the form validates all required fields together. When any required field is invalid, every invalid field enters its error state in the same submit attempt. When required fields are valid, submitting triggers an illustrative response. Canceling leaves the form unchanged.
+
+**Inline required validation:** A required field that receives input and is then cleared shows its error state before the next submit attempt.
 
 ## Interface
 
@@ -47,3 +50,5 @@ Action buttons appear at the bottom of the form, right-aligned. The submit butto
 6. Submitting the form triggers the submit handler.
 7. The cancel button does not trigger submission.
 8. The layout is readable on narrow viewports.
+9. Submitting with multiple invalid required fields shows all required-field errors at once.
+10. Clearing a required field after entering text shows inline validation feedback.
