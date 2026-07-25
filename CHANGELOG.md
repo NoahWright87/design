@@ -11,6 +11,8 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **Card media position:** Card gains a `mediaPosition` prop (`"top" | "left" | "right"`) so the image can sit beside the body instead of only above it; collapses back to top at 480px. Closes #8.
+
 - **Container/Card/Button backlog pass:** Container now supports alignment shortcuts and flex item controls (`alignItems`, `justifyContent`, `centered`, `spaceBetween`, `grow`, `shrink`, `basis`, `wrap`, `fullWidth`), Card supports full-surface `href` links, and Button supports a loading spinner with `aria-busy`.
 
 - **Intake routing:** Filed motion feature requests [#12] and [#13] into the Motion Lab backlog under a new Motion Primitives section in `specs/labs/motion.todo.md`.
