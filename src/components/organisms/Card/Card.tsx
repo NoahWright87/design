@@ -5,9 +5,17 @@ import "./card.css";
  * Card props for a simple elevated, rounded container.
  * Renders as a semantic article with optional title/subtitle and children content.
  */
+export type CardMediaPosition = "left" | "right" | "top";
+
 export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
   /** Optional media element rendered above the title. */
   image?: React.ReactNode;
+  /**
+   * Where the `image` is placed relative to the title/content/footer.
+   * `"left"` and `"right"` collapse to `"top"` on small screens.
+   * Default: `"top"`.
+   */
+  mediaPosition?: CardMediaPosition;
   /** Optional URL that makes the entire card clickable. */
   href?: string;
   /** Optional card title. */
@@ -48,21 +56,25 @@ export function Card({
   interactive = false,
   scrollable = false,
   maxHeight,
+  mediaPosition = "top",
   className = "",
   ...rest
 }: CardProps) {
+  const isSideMedia = Boolean(image) && mediaPosition !== "top";
+
   const cls = [
     "nw-card",
     elevated && !flat && "nw-card--elevated",
     interactive && "nw-card--interactive",
+    isSideMedia && `nw-card--media-${mediaPosition}`,
     className,
   ]
     .filter(Boolean)
     .join(" ");
 
-  const content = (
+  const body = (
     <>
-      {image ? <div className="nw-card__image">{image}</div> : null}
+      {!isSideMedia && image ? <div className="nw-card__image">{image}</div> : null}
       {title ? <div className="nw-card__title">{title}</div> : null}
       {subtitle ? <div className="nw-card__subtitle">{subtitle}</div> : null}
       {children ? (
@@ -81,6 +93,13 @@ export function Card({
       {footer ? <div className="nw-card__footer">{footer}</div> : null}
     </>
   );
+
+  const content = isSideMedia ? (
+    <>
+      <div className="nw-card__image nw-card__media">{image}</div>
+      <div className="nw-card__body">{body}</div>
+    </>
+  ) : body;
 
   if (href) {
     return (

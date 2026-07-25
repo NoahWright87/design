@@ -35,6 +35,11 @@ const meta: Meta<typeof Card> = {
       control: "text",
       description: "Optional footer content",
     },
+    mediaPosition: {
+      control: "radio",
+      options: ["top", "left", "right"],
+      description: "Position of the image relative to the card body. left/right collapse to top on small screens.",
+    },
     interactive: {
       control: "boolean",
       description: "Enable hover lift and shadow transition",
@@ -77,6 +82,38 @@ export const WithImage: Story = {
         subtitle="Top media section"
       >
         The image sits above the title and content.
+      </Card>
+    </div>
+  ),
+};
+
+export const MediaLeft: Story = {
+  name: "Media position — left",
+  render: () => (
+    <div style={{ width: 480 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        mediaPosition="left"
+        title="Card with Left Media"
+        subtitle="Media sits beside the content"
+      >
+        On small screens this collapses back to a top-positioned image.
+      </Card>
+    </div>
+  ),
+};
+
+export const MediaRight: Story = {
+  name: "Media position — right",
+  render: () => (
+    <div style={{ width: 480 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        mediaPosition="right"
+        title="Card with Right Media"
+        subtitle="Media sits beside the content"
+      >
+        On small screens this collapses back to a top-positioned image.
       </Card>
     </div>
   ),
