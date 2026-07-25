@@ -11,7 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- **Tooltip (new molecule):** Floating tooltip that shows on hover, keyboard focus, or touch. `placement` (top/bottom/left/right), `delay`/`hideDelay`, `disabled`, and arbitrary `content`. Fade+scale animation respecting `prefers-reduced-motion`; touch shows immediately and auto-dismisses. Closes #5.
+- **Tooltip (new molecule):** Floating tooltip that shows on hover, keyboard focus, or touch. `placement` (top/bottom/left/right), `delay`/`hideDelay`, `disabled`, and arbitrary `content`. Fade+scale animation respecting `prefers-reduced-motion`; touch shows immediately and auto-dismisses. Basic building block toward #5 — modifier-key reveal behavior from that issue is not yet implemented.
 
 - **Card media position:** Card gains a `mediaPosition` prop (`"top" | "left" | "right"`) so the image can sit beside the body instead of only above it; collapses back to top at 480px. Closes #8.
 
