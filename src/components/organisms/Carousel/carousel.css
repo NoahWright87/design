@@ -1,0 +1,110 @@
+.nw-carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  box-sizing: border-box;
+}
+
+.nw-carousel__viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.nw-carousel__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-normal, 250ms) var(--ease-in-out);
+}
+
+.nw-carousel__slide--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nw-carousel__slide > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nw-carousel__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0;
+  transition: background-color var(--motion-subtle-duration, 180ms) var(--motion-subtle-easing, ease-in-out);
+}
+
+.nw-carousel__arrow:hover {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.nw-carousel__arrow--prev {
+  left: 8px;
+}
+
+.nw-carousel__arrow--next {
+  right: 8px;
+}
+
+.nw-carousel__dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.nw-carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.5);
+  transition: background-color var(--motion-subtle-duration, 180ms) var(--motion-subtle-easing, ease-in-out),
+    transform var(--motion-subtle-duration, 180ms) var(--motion-subtle-easing, ease-in-out);
+}
+
+.nw-carousel__dot--active {
+  background: #fff;
+  transform: scale(1.3);
+}
+
+.nw-carousel__arrow:focus-visible,
+.nw-carousel__dot:focus-visible {
+  outline: 2px solid var(--primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-carousel__slide {
+    transition: none;
+  }
+
+  .nw-carousel__dot {
+    transition: none;
+  }
+}

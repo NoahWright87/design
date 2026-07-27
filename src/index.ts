@@ -30,6 +30,7 @@ export * from "./components/organisms/Menu/index.js";
 export * from "./components/organisms/MobileNav/index.js";
 export * from "./components/organisms/Container/Container.js";
 export * from "./components/organisms/Card/index.js";
+export * from "./components/organisms/Carousel/index.js";
 export * from "./components/organisms/Modal/index.js";
 export * from "./components/organisms/Breadcrumbs/index.js";
 
