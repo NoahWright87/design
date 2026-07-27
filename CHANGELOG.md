@@ -11,24 +11,11 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- **Tooltip (new molecule):** Floating tooltip that shows on hover, keyboard focus, or touch. `placement` (top/bottom/left/right), `delay`/`hideDelay`, `disabled`, and arbitrary `content`. Fade+scale animation respecting `prefers-reduced-motion`; touch shows immediately and auto-dismisses. Basic building block toward #5 — modifier-key reveal behavior from that issue is not yet implemented.
-
-- **Card media position:** Card gains a `mediaPosition` prop (`"top" | "left" | "right"`) so the image can sit beside the body instead of only above it; collapses back to top at 480px. Closes #8.
-
-- **Container/Card/Button backlog pass:** Container now supports alignment shortcuts and flex item controls (`alignItems`, `justifyContent`, `centered`, `spaceBetween`, `grow`, `shrink`, `basis`, `wrap`, `fullWidth`), Card supports full-surface `href` links, and Button supports a loading spinner with `aria-busy`.
-
-- **Intake routing:** Filed motion feature requests [#12] and [#13] into the Motion Lab backlog under a new Motion Primitives section in `specs/labs/motion.todo.md`.
-
-- **Backlog cleanup:** Card gained a top media section, Avatar now derives initials from a full name, MenuItem supports a disabled state, Link can show an affiliate disclosure prompt, and Container can pin its background image with a parallax-style fixed attachment.
-
-- **Netlify config:** Added `netlify.toml` locking build command (`build-storybook`) and publish dir (`storybook-static`) so deploy previews build correctly on every PR.
-- **Playwright screenshot tests:** Corrected all story IDs to match actual Storybook paths (`components-molecules-*` / `components-organisms-*`); fixed Heading IDs (`H1` → `h-1`); scoped all component screenshots to `#storybook-root` so images clip to component height instead of full 1280×720 viewport. All 32 tests passing with tight baselines.
-
-- **Spec-template adoption:** Applied managed spec-template files and metadata (`specs/.meta.json`), added command/workflow scaffolding (`/respec`, `/refine`, `/spec-backfill`, spec coverage check), and aligned intake/todo command docs with upstream behavior.
-- **Spec localization pass:** Rewrote root specs (`specs/spec.md`, `specs/spec.todo.md`) and legacy directory meta specs (`specs/.spec.md`, `specs/.spec.todo.md`) so they describe this design-system repo and use local placeholders instead of spec-template-repo content.
-- **Repo hygiene:** Added `.tmp/` to `.gitignore` and removed the temporary `.tmp` workspace folder used during template fetch.
-
-- **PR review follow-ups:** fixed Storybook import order and duplicate preview file, added SSR-safe portfolio navigation guard, tightened Card typing, improved clipboard/keyboard accessibility in Text + Colors stories, made header hover tooltips decorative-only for screen readers, added MIT LICENSE, and stopped tracking local `.claude/settings.local.json`.
+- **Carousel (new organism):** Rotates through slides with a simple crossfade, arrow + dot navigation that loops at either end, and autoplay (configurable interval) that pauses on hover or focus. Drops straight into Card's `image` slot with no special integration needed. Closes [#13].
+- **Card — expand to modal (new):** `longDescription` prop makes a card grow in place into a larger modal-like view with a darkened, non-interactive backdrop and a bouncy overshoot animation; expanded image position is configurable (`"top" | "between"`). `href` takes precedence over click-to-expand, so linked cards require the dedicated expand button.
+- **Tooltip (new molecule):** Floating tooltip that shows on hover, keyboard focus, or touch. `placement` (top/bottom/left/right), `delay`/`hideDelay`, `disabled`, and arbitrary `content`. Fade+scale animation respecting `prefers-reduced-motion`. Basic building block toward #5 — modifier-key reveal behavior from that issue is not yet implemented.
+- **Component backlog pass:** Card gained `mediaPosition` (top/left/right), full-surface `href` links, a top media section, and scrollable/`maxHeight` bodies; Container gained alignment/flex shortcuts and a parallax-style fixed background attachment; Button gained a loading spinner (`aria-busy`); Avatar derives initials from a full name; MenuItem supports a disabled state; Link can show an affiliate disclosure prompt.
+- **Infra & tooling grooming:** Netlify build/publish config for deploy previews; Playwright story IDs and screenshot scoping fixed across all visual tests; adopted managed spec-template tooling (`/respec`, `/refine`, `/spec-backfill`); assorted PR review follow-ups (SSR-safe portfolio nav guard, tightened Card typing, decorative-only header tooltips, MIT LICENSE).
 - **Form components (overhaul):** Input/Select/Checkbox/RadioGroup gain `required` validation with auto-error on blur, error waggle animation, `randomDisabledCursor`, and spring-bounce animations on Checkbox/RadioGroup. Input adds `multiline`/`rows` (textarea), email format validation. RadioGroup required-validation story uses a Submit button. Error spans now always rendered (reserved space via `min-height: 1.25em`) to prevent layout shift; `aria-live="polite"` on all error spans.
 - **Molecules enriched:** Pill — `icon` + `onDismiss` + whimsical dismiss animation + neutral default color + `href`/`target` link variant (renders as `<a>` with hover outline). Heading gains `color`, `align`, `truncate`, `gradient`, `underline`, `eyebrow`, `iconStart`/`iconEnd`, `animateIn` (IntersectionObserver fade+slide on viewport entry), `anchorLink` (¶ hover button copies anchor URL to clipboard).
 - **Header + Footer:** Both accept `children` fallback prop for simple/unslotted usage. Header gains `leftTooltip`/`centerTooltip`/`rightTooltip` props — CSS fade-in tooltip appears on slot hover.

@@ -44,6 +44,15 @@ const meta: Meta<typeof Card> = {
       control: "boolean",
       description: "Enable hover lift and shadow transition",
     },
+    longDescription: {
+      control: "text",
+      description: "Longer content revealed only when the card expands. Providing this makes the card expandable.",
+    },
+    expandedImagePosition: {
+      control: "radio",
+      options: ["top", "between"],
+      description: "Where the image sits once the card is expanded.",
+    },
   },
 };
 
@@ -237,6 +246,73 @@ export const GridFixedColumns: Story = {
     </CardGrid>
   ),
   parameters: { layout: "padded" },
+};
+
+export const ExpandableLongDescriptionOnly: Story = {
+  name: "Expandable — long description only",
+  render: () => (
+    <div style={{ width: 340 }}>
+      <Card
+        title="Notes on Tidal Erosion"
+        subtitle="Coastal Geology"
+        longDescription="Tidal erosion reshapes coastlines gradually over centuries, as the rhythmic push and pull of the tides wears away at rock, sand, and sediment. This process accelerates during storms, when wave energy is amplified and the usual protective buffers of dune grass and reef are overwhelmed. Studying tidal erosion helps engineers plan more resilient shorelines, from living breakwaters to managed retreats that account for a coastline's long-term drift."
+      >
+        No short content was given here, so the collapsed card previews the long description, cut off with an ellipsis. Expand to read all of it.
+      </Card>
+    </div>
+  ),
+};
+
+export const ExpandableWithShortAndLong: Story = {
+  name: "Expandable — short + long description",
+  render: () => (
+    <div style={{ width: 340 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        title="Field Notes: Alpine Lichen"
+        subtitle="Botany"
+        longDescription="Lichen growing above the treeline survives some of the harshest conditions on land, tolerating freeze-thaw cycles, intense UV exposure, and months without liquid water. Because lichen growth rates are so slow and so consistent, researchers use lichen colonies to date rockfalls and glacial retreat with surprising precision — a technique known as lichenometry."
+        footer={
+          <CardFooter align="start">Updated 3 days ago</CardFooter>
+        }
+      >
+        A short summary shown in the collapsed card. The longer description above stays hidden until you expand.
+      </Card>
+    </div>
+  ),
+};
+
+export const ExpandableImageTop: Story = {
+  name: "Expandable — image stays at top when expanded",
+  render: () => (
+    <div style={{ width: 340 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        title="Trail Report: Ridgeline Loop"
+        subtitle="Hiking"
+        expandedImagePosition="top"
+        longDescription="The ridgeline loop climbs steadily for the first two miles before leveling off into a series of rolling switchbacks with panoramic views on both sides. Snowmelt can make the northern descent slick well into early summer, so trekking poles are recommended for that stretch."
+      >
+        A quick trail summary. By default the image grows and moves between the short and long description when expanded — this card opts into keeping it at the top instead.
+      </Card>
+    </div>
+  ),
+};
+
+export const ExpandableLinkCard: Story = {
+  name: "Expandable — with href (expand button required)",
+  render: () => (
+    <div style={{ width: 340 }}>
+      <Card
+        title="Release Notes v2.4"
+        subtitle="Changelog"
+        href="#"
+        longDescription="Version 2.4 introduces expandable cards, a reworked focus ring for form controls, and a handful of performance improvements to the theming layer. See the full changelog for a breakdown of every change, including a few small breaking changes to the Menu component's keyboard handling."
+      >
+        Clicking the card follows its link, since href takes precedence — use the expand button in the corner to preview the release notes instead.
+      </Card>
+    </div>
+  ),
 };
 
 export const FullFeatured: Story = {
