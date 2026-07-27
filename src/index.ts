@@ -20,6 +20,7 @@ export * from "./components/molecules/RadioGroup/index.js";
 export * from "./components/molecules/ToggleIcon/index.js";
 export * from "./components/molecules/Badge/index.js";
 export * from "./components/molecules/Box/index.js";
+export * from "./components/molecules/Tooltip/index.js";
 
 // Organisms
 export * from "./components/organisms/Header/index.js";
