@@ -1,0 +1,91 @@
+name: Publish PR Preview
+
+# Publishes an ephemeral pre-release build on every push to a pull request,
+# tagged `pr-<number>` on npm instead of `latest`, so changes can be
+# installed and tried before merging:
+#
+#   npm install @noahwright/design@pr-<number>
+#
+# Never touches package.json in the repo -- the pre-release version string
+# only exists in the checked-out workspace for this one publish.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  publish-preview:
+    name: Publish pre-release
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Set pre-release version
+        id: version
+        run: |
+          base_version=$(node -p "require('./package.json').version")
+          short_sha=$(git rev-parse --short HEAD)
+          prerelease_version="${base_version}-pr${{ github.event.pull_request.number }}.${short_sha}"
+          npm version "$prerelease_version" --no-git-tag-version
+          echo "version=$prerelease_version" >> "$GITHUB_OUTPUT"
+          echo "tag=pr-${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish pre-release
+        run: npm publish --access public --tag "${{ steps.version.outputs.tag }}" --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Comment install instructions
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- pr-preview-publish -->';
+            const version = '${{ steps.version.outputs.version }}';
+            const tag = '${{ steps.version.outputs.tag }}';
+            const body = `${marker}\n📦 Published a pre-release build for this PR: \`${version}\`\n\nTry it before merging:\n\n\`\`\`\nnpm install @noahwright/design@${tag}\n\`\`\`\n`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find((c) => c.body?.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
