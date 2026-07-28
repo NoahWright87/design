@@ -13,7 +13,9 @@ This file documents planned and completed changes for the repository.
 
 ## Version history
 
-### v1.0.11
+### v1.1.1
+- **Version-drift fix:** `package.json` had been stuck at `1.0.10` in git while `1.1.0` was already published to npm from outside the repo's normal release flow; this release starts fresh above the actually-published version.
+- **Automated npm publish (new):** `.github/workflows/publish.yml` handles both a push-to-`main` release path (publishes only when `package.json`'s version is ahead of what's live on the registry; fails loudly instead of publishing nothing if it's ever behind) and a pull-request preview path (publishes an ephemeral pre-release `<version>-pr<N>.<sha>` under the `pr-<N>` npm dist-tag and comments the install command, never touching `package.json` in the repo). Both live in one workflow file since npm's Trusted Publisher registration only allows one file per package. Authenticates via npm Trusted Publishing (OIDC) — no `NPM_TOKEN` secret, since npm is deprecating 2FA-bypass tokens for CI publishing. Requires a one-time "Trusted Publisher" registration on the package's npmjs.com settings.
 - **Carousel (new organism):** Rotates through slides with a simple crossfade, arrow + dot navigation that loops at either end, and autoplay (configurable interval) that pauses on hover or focus. Drops straight into Card's `image` slot with no special integration needed. Closes [#13].
 - **Card — expand to modal (new):** `longDescription` prop makes a card grow in place into a larger modal-like view with a darkened, non-interactive backdrop and a bouncy overshoot animation; expanded image position is configurable (`"top" | "between"`). `href` takes precedence over click-to-expand, so linked cards require the dedicated expand button.
 - **Tooltip (new molecule):** Floating tooltip that shows on hover, keyboard focus, or touch. `placement` (top/bottom/left/right), `delay`/`hideDelay`, `disabled`, and arbitrary `content`. Fade+scale animation respecting `prefers-reduced-motion`. Basic building block toward #5 — modifier-key reveal behavior from that issue is not yet implemented.
