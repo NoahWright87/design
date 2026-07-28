@@ -11,6 +11,9 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+## Version history
+
+### v1.0.11
 - **Carousel (new organism):** Rotates through slides with a simple crossfade, arrow + dot navigation that loops at either end, and autoplay (configurable interval) that pauses on hover or focus. Drops straight into Card's `image` slot with no special integration needed. Closes [#13].
 - **Card — expand to modal (new):** `longDescription` prop makes a card grow in place into a larger modal-like view with a darkened, non-interactive backdrop and a bouncy overshoot animation; expanded image position is configurable (`"top" | "between"`). `href` takes precedence over click-to-expand, so linked cards require the dedicated expand button.
 - **Tooltip (new molecule):** Floating tooltip that shows on hover, keyboard focus, or touch. `placement` (top/bottom/left/right), `delay`/`hideDelay`, `disabled`, and arbitrary `content`. Fade+scale animation respecting `prefers-reduced-motion`. Basic building block toward #5 — modifier-key reveal behavior from that issue is not yet implemented.
@@ -24,9 +27,6 @@ This file documents planned and completed changes for the repository.
 - **Badge + Box molecules (new):** Badge — compact notification indicator (`count`, `max`, `dot`, wraps element at top-right). Box — low-level layout primitive with padding/margin/rounded/shadow/background/`as` props.
 - **Breadcrumbs organism (new):** Accessible `<nav aria-label="Breadcrumb">` with `items`, `separator`, themed link + muted current-page label. Select gains `maxVisibleItems` (listbox mode).
 - **Portfolio audit:** Projects use `CardGrid`, project cards show `category` Pill (secondary), headings use `gradient`/`animateIn`. Card `--interactive` gains `:active` scale-down press animation.
-
-
-## Version history
 
 ### v1.0.10
 - **CSS export fix:** Package now properly exports all component and theme styles. Added side-effect CSS import in main entry, exposed `dist/index.css` via package.json exports with `style` field, and converted Button CSS modules to global classes (`nw-button`, `nw-button--*`). Consuming apps automatically get styles when importing components.
