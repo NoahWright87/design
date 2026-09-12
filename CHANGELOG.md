@@ -11,6 +11,8 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **Mobile menu bug fix:** `Menu`'s mobile centering rule (`left: 50%` under `@media (max-width: 600px)`) was losing the cascade to the higher-specificity desktop alignment rules (`.nw-menu:not(.nw-menu--right) .nw-menu__panel` / `.nw-menu--right .nw-menu__panel`), which reset `left` back to `0`/`auto`. Combined with the mobile `translate(-50%, 0)` open animation, the panel ended up shifted half its own width off-screen, hiding the menu items entirely on phones. Fixed by matching selector specificity so the mobile override wins.
+
 ## Version history
 
 ### v1.1.1
