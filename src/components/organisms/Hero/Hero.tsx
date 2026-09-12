@@ -1,6 +1,9 @@
 import * as React from "react";
 import "./hero.css";
 
+export type HeroBackground = "none" | "subtle" | "primary" | "secondary";
+export type HeroBottomBorder = "none" | "solid" | "gradient";
+
 export interface HeroProps {
   /**
    * Main heading content. Rendered as given — pass a `Heading` element for correct
@@ -22,6 +25,19 @@ export interface HeroProps {
   media?: React.ReactNode;
   /** Which side `media` sits on relative to the text content. Default `"end"` (right in LTR). */
   mediaPosition?: "start" | "end";
+  /**
+   * Background treatment distinguishing the hero from the surrounding page.
+   * `"subtle"` tints it a touch relative to the page background; `"primary"`/`"secondary"`
+   * tint it toward those theme colors. Adds matching internal padding so content isn't
+   * flush against the tinted edge. Default `"none"` (transparent, no added padding).
+   */
+  background?: HeroBackground;
+  /**
+   * Decoration along the hero's bottom edge. `"solid"` is a thin neutral divider;
+   * `"gradient"` is a primary→secondary gradient bar, echoing `Heading`'s `gradient`
+   * treatment. Default `"none"`.
+   */
+  bottomBorder?: HeroBottomBorder;
   /** Additional CSS class name. */
   className?: string;
 }
@@ -39,9 +55,17 @@ export function Hero({
   actions,
   media,
   mediaPosition = "end",
+  background = "none",
+  bottomBorder = "none",
   className = "",
 }: HeroProps) {
-  const cls = ["nw-hero", mediaPosition === "start" && "nw-hero--media-start", className]
+  const cls = [
+    "nw-hero",
+    mediaPosition === "start" && "nw-hero--media-start",
+    background !== "none" && `nw-hero--bg-${background}`,
+    bottomBorder !== "none" && `nw-hero--border-${bottomBorder}`,
+    className,
+  ]
     .filter(Boolean)
     .join(" ");
 

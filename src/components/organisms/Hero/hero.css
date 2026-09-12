@@ -40,3 +40,45 @@
     margin: 0 auto;
   }
 }
+
+/* Background treatments tint the whole section; padding keeps content off the tinted edge. */
+.nw-hero--bg-subtle,
+.nw-hero--bg-primary,
+.nw-hero--bg-secondary {
+  padding: var(--spacing-lg, 1.5rem);
+  border-radius: var(--radius, 0.5rem);
+}
+
+.nw-hero--bg-subtle {
+  background: color-mix(in srgb, var(--foreground, #000) 6%, var(--background, #fff));
+}
+
+.nw-hero--bg-primary {
+  background: color-mix(in srgb, var(--primary) 10%, var(--background, #fff));
+}
+
+.nw-hero--bg-secondary {
+  background: color-mix(in srgb, var(--secondary) 10%, var(--background, #fff));
+}
+
+/* Bottom border treatments; the gradient bar uses an ::after so only one edge is a gradient. */
+.nw-hero--border-solid,
+.nw-hero--border-gradient {
+  position: relative;
+  padding-bottom: var(--spacing-lg, 1.5rem);
+}
+
+.nw-hero--border-solid {
+  border-bottom: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.nw-hero--border-gradient::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: var(--radius, 0.5rem);
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
