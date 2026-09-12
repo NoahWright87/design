@@ -1,13 +1,17 @@
 import * as React from "react";
-import { Heading } from "../../molecules/Heading/index.js";
 import "./hero.css";
 
 export interface HeroProps {
-  /** Main heading. Often just a name or greeting; pair with `tagline` for a rotating line. */
+  /**
+   * Main heading content. Rendered as given — pass a `Heading` element for correct
+   * semantics (e.g. `<Heading level={1}>Name</Heading>`), styled however that call
+   * site needs (`gradient`, `animateIn`, etc.).
+   */
   title: React.ReactNode;
   /**
-   * Secondary line rendered one heading level below `title`. A natural place for a
-   * `TextCarousel` when the tagline should rotate through several options.
+   * Secondary line rendered under `title`. Typically a `Heading` one level below
+   * `title`'s — a natural place for a `TextCarousel` when it should rotate through
+   * several options.
    */
   tagline?: React.ReactNode;
   /** Supporting copy under the title/tagline. Typically a `Text` element. */
@@ -18,8 +22,6 @@ export interface HeroProps {
   media?: React.ReactNode;
   /** Which side `media` sits on relative to the text content. Default `"end"` (right in LTR). */
   mediaPosition?: "start" | "end";
-  /** Heading level for `title`. `tagline` renders one level below (clamped to 6). Default `1`. */
-  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   /** Additional CSS class name. */
   className?: string;
 }
@@ -27,7 +29,8 @@ export interface HeroProps {
 /**
  * Hero: an introductory banner pairing a title/tagline/description/actions column
  * with an optional media slot that floats beside it on wide screens and stacks
- * below it on narrow ones.
+ * below it on narrow ones. Every slot renders exactly what it's given — Hero lays
+ * content out, it does not impose heading semantics or styling on it.
  */
 export function Hero({
   title,
@@ -36,10 +39,8 @@ export function Hero({
   actions,
   media,
   mediaPosition = "end",
-  headingLevel = 1,
   className = "",
 }: HeroProps) {
-  const taglineLevel = (Math.min(headingLevel + 1, 6)) as 1 | 2 | 3 | 4 | 5 | 6;
   const cls = ["nw-hero", mediaPosition === "start" && "nw-hero--media-start", className]
     .filter(Boolean)
     .join(" ");
@@ -47,8 +48,8 @@ export function Hero({
   return (
     <section className={cls}>
       <div className="nw-hero__content">
-        <Heading level={headingLevel}>{title}</Heading>
-        {tagline ? <Heading level={taglineLevel}>{tagline}</Heading> : null}
+        {title}
+        {tagline}
         {description}
         {actions ? <div className="nw-hero__actions">{actions}</div> : null}
       </div>
