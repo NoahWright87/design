@@ -58,14 +58,15 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Hero's own DOM structure (.nw-hero__content / .nw-hero__media) already handles the
-   side-by-side-on-wide / stacked-on-narrow layout; these rules only layer this site's
-   own sizing, alignment, and entrance animation on top of it. */
+/* Hero's own DOM structure (.nw-hero__top holds title+media side by side at every
+   width; description/actions render full-width beneath it) already handles that
+   layout; these rules only layer this site's own sizing and entrance animation on
+   top of it. */
 .portfolio-hero .nw-hero__media {
   animation: portfolio-fade-up 560ms var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
 }
 
-.portfolio-hero .nw-hero__content {
+.portfolio-hero .nw-hero__title {
   animation: portfolio-fade-up 560ms var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
   animation-delay: 80ms;
 }
@@ -77,7 +78,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .portfolio-hero .nw-hero__media,
-  .portfolio-hero .nw-hero__content,
+  .portfolio-hero .nw-hero__title,
   .portfolio-intro {
     animation: none;
   }
@@ -88,19 +89,13 @@
   padding-block: var(--spacing-xl, 48px);
 }
 
-.portfolio-hero .nw-hero__content {
-  align-items: center;
-  text-align: center;
-  max-width: 600px;
-}
-
-.portfolio-hero .nw-hero__content h1 {
+.portfolio-hero .nw-hero__title h1 {
   margin-bottom: var(--spacing-sm, 12px);
   margin-top: 0;
 }
 
-.portfolio-hero .nw-hero__actions {
-  justify-content: center;
+.portfolio-hero__description {
+  max-width: 600px;
 }
 
 .portfolio-hero .nw-hero__media {
@@ -113,20 +108,11 @@
   width: 100%;
 }
 
-/* Matches Hero's own row/stack breakpoint (max-width: 720px) so there's no gap
-   between "side by side" and this site's wider sizing/alignment kicking in. */
+/* Matches Hero's own media-shrink breakpoint (max-width: 720px) so there's no gap
+   between this site's smaller and wider media sizing kicking in. */
 @media (min-width: 721px) {
-  .portfolio-hero .nw-hero__content {
-    text-align: left;
-    align-items: flex-start;
-  }
-
   .portfolio-hero .nw-hero__media {
     width: 250px;
-  }
-
-  .portfolio-hero .nw-hero__actions {
-    justify-content: flex-start;
   }
 }
 

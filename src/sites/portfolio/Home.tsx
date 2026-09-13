@@ -38,7 +38,11 @@ export function PortfolioHome({ onNavigate }: PortfolioHomeProps) {
                 {getNonsense('personName')}
               </Heading>
             }
-            description={<Text>{getNonsense('introText')}</Text>}
+            description={
+              <div className="portfolio-hero__description">
+                <Text>{getNonsense('introText')}</Text>
+              </div>
+            }
             actions={
               <>
                 <Button variant="solid" onClick={() => handleNavigate("projects")}>

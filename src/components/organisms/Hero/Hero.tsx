@@ -12,18 +12,22 @@ export interface HeroProps {
    */
   title: React.ReactNode;
   /**
-   * Secondary line rendered under `title`. Typically a `Heading` one level below
-   * `title`'s — a natural place for a `TextCarousel` when it should rotate through
-   * several options.
+   * Secondary line rendered under the title/media row. Typically a `Heading` one
+   * level below `title`'s — a natural place for a `TextCarousel` when it should
+   * rotate through several options.
    */
   tagline?: React.ReactNode;
   /** Supporting copy under the title/tagline. Typically a `Text` element. */
   description?: React.ReactNode;
   /** Buttons or links rendered in a row under the description. */
   actions?: React.ReactNode;
-  /** Visual accompaniment — a photo, illustration, or a `Carousel` rotating through several. */
+  /**
+   * Visual accompaniment — a photo, illustration, or a `Carousel` rotating through
+   * several. Floats beside `title` at a fixed size, considerably smaller on narrow
+   * screens than wide ones, rather than stacking below the rest of the content.
+   */
   media?: React.ReactNode;
-  /** Which side `media` sits on relative to the text content. Default `"end"` (right in LTR). */
+  /** Which side `media` sits on relative to `title`. Default `"end"` (right in LTR). */
   mediaPosition?: "start" | "end";
   /**
    * Background treatment distinguishing the hero from the surrounding page.
@@ -43,9 +47,10 @@ export interface HeroProps {
 }
 
 /**
- * Hero: an introductory banner pairing a title/tagline/description/actions column
- * with an optional media slot that floats beside it on wide screens and stacks
- * below it on narrow ones. Every slot renders exactly what it's given — Hero lays
+ * Hero: an introductory banner with title and media side by side — media floats
+ * beside the title at both wide and narrow screen sizes, shrinking considerably on
+ * narrow ones rather than stacking below — and tagline/description/actions stacked
+ * full-width underneath. Every slot renders exactly what it's given — Hero lays
  * content out, it does not impose heading semantics or styling on it.
  */
 export function Hero({
@@ -71,13 +76,13 @@ export function Hero({
 
   return (
     <section className={cls}>
-      <div className="nw-hero__content">
-        {title}
-        {tagline}
-        {description}
-        {actions ? <div className="nw-hero__actions">{actions}</div> : null}
+      <div className="nw-hero__top">
+        <div className="nw-hero__title">{title}</div>
+        {media ? <div className="nw-hero__media">{media}</div> : null}
       </div>
-      {media ? <div className="nw-hero__media">{media}</div> : null}
+      {tagline}
+      {description}
+      {actions ? <div className="nw-hero__actions">{actions}</div> : null}
     </section>
   );
 }
