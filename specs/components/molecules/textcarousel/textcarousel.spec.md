@@ -16,9 +16,12 @@ TextCarousel rotates a piece of text through a list of alternatives in place —
 - An ordered list of strings to rotate through.
 - Optional animation style: crossfade, sequential fade, or typewriter. Defaults to crossfade.
 - Optional HTML element to render as (so it can stand in for a heading, a span, or any other text-bearing element). Defaults to an inline span.
-- Optional interval — how long each item stays fully visible before transitioning onward.
+- Optional interval — how long each item stays fully visible before transitioning onward (also used as the average dwell time between typing and deleting, for the typewriter style).
 - Optional transition duration, for the crossfade and sequential fade styles.
-- Optional typing and deleting speeds (per character), for the typewriter style.
+- Optional average typing speed and a fraction to randomize each character's typing delay around it, for the typewriter style.
+- Optional deleting speed (per character, always constant), for the typewriter style.
+- Optional fraction to randomize the dwell time around its average, for the typewriter style.
+- Optional pause duration between a word fully erasing and the next word starting to type, for the typewriter style.
 - Optional flag to pause rotation while hovered. On by default.
 - Optional additional CSS class name.
 
@@ -30,7 +33,8 @@ Text that changes from one item to the next automatically and indefinitely, usin
 - Given exactly one item, renders it and does not rotate (there is nothing to rotate to).
 - Crossfade and sequential fade transitions are skipped when the user prefers reduced motion; items swap instantly. The typewriter style shows each item in full immediately under reduced motion rather than typing and deleting character by character.
 - Hovering pauses rotation while `pauseOnHover` is enabled (the default), and rotation resumes from where it left off when the pointer leaves.
-- The crossfade style never collapses its box to zero size between items — the container is always sized to the widest item, regardless of which is currently visible.
+- None of the three styles ever collapse or shift the surrounding layout as the active item changes: crossfade and sequential fade are always sized to the widest/tallest item across the whole list, and typewriter reserves the same tallest/widest space regardless of how many characters are currently typed — even when items wrap to different numbers of lines.
+- Typewriter's typing delay and dwell duration vary per character and per item respectively, averaging the configured values; deleting speed never varies, simulating a constantly-held backspace key.
 
 ## Behavior
 
@@ -38,7 +42,7 @@ Text that changes from one item to the next automatically and indefinitely, usin
 
 **Sequential:** Only one item is ever rendered. On each interval, it fades out fully, its text is swapped for the next item once fully invisible, and the new text fades in. Unlike crossfade, the outgoing and incoming text never overlap.
 
-**Typewriter:** The current item is typed out a character at a time, dwells fully typed with a blinking caret, is deleted a character at a time, and then the next item begins typing. See the `useTypewriter` atom for the full behavior of this engine.
+**Typewriter:** The current item is typed out a character at a time — each character's delay randomized around the average typing speed — dwells fully typed for a randomized duration with a blinking caret, is deleted a character at a time at a constant rate, pauses briefly fully erased, and then the next item begins typing. See the `useTypewriter` atom for the full behavior of this engine.
 
 **Hover pause:** While `pauseOnHover` is enabled and the pointer is over the element, rotation halts exactly where it is (mid-fade or mid-type) and resumes when the pointer leaves.
 
@@ -49,10 +53,10 @@ Text that changes from one item to the next automatically and indefinitely, usin
 ## Interface
 
 ### Layout
-As a crossfade, the element sizes itself to the widest item so nothing reflows the surrounding layout as items change. As a sequential fade or typewriter, the element sizes itself to whatever the current item's rendered width is, since only one item is ever present in the document at a time — surrounding content may shift slightly as item lengths differ, the same as it would for any changing line of text.
+All three styles size themselves to the widest/tallest item across the whole list, not just the one currently showing, so nothing reflows the surrounding layout as items change — including when different items wrap to different numbers of lines. Crossfade does this by stacking every item in the same space and toggling opacity. Sequential fade and typewriter only ever display one item's text at a time, but reserve space using the same stacking technique: an invisible copy of every item occupies the same space as the visible one, so the visible item's box never needs to grow, shrink, or wrap on its own to accommodate a shorter or longer item.
 
 ### Accessibility
-The rendered text is real, present content — not hidden from assistive technology — so it reads normally to a screen reader that visits it. It is not wrapped in a live region, so a screen reader does not announce every rotation; this matches the ambient, decorative nature of a rotating tagline rather than an update the user needs to be alerted to. The typewriter caret is a purely visual affordance and is hidden from assistive technology.
+The visible item's text is real, present content — not hidden from assistive technology — so it reads normally to a screen reader that visits it. It is not wrapped in a live region, so a screen reader does not announce every rotation; this matches the ambient, decorative nature of a rotating tagline rather than an update the user needs to be alerted to. The typewriter caret and the invisible reservation copies used to hold layout steady (sequential fade and typewriter) are purely presentational and hidden from assistive technology.
 
 ### Choosing an animation
 Crossfade suits a tagline or label where a smooth, ambient overlap feels natural. Sequential fade suits a spot where the outgoing and incoming text should read as clearly distinct moments rather than blending together. Typewriter suits a spot that wants to draw the eye, evoking text actively being composed.
@@ -63,10 +67,13 @@ Crossfade suits a tagline or label where a smooth, ambient overlap feels natural
 3. Crossfade shows the outgoing and incoming item's opacity moving in the same transition window, not sequentially.
 4. Crossfade's container width matches the widest item regardless of which item is active.
 5. Sequential fade fully hides the outgoing item before the incoming item's text appears, with no overlap.
-6. Typewriter types the active item character by character, dwells with a blinking caret, deletes it character by character, then types the next item.
-7. Hovering pauses rotation when `pauseOnHover` is enabled (the default), and rotation resumes from the same point when the pointer leaves.
-8. Setting `pauseOnHover` to false continues rotating regardless of hover.
-9. Crossfade and sequential fade transitions swap instantly, with no animation, when the user prefers reduced motion.
-10. Typewriter shows each item in full immediately, with no character-by-character reveal, when the user prefers reduced motion.
-11. Rendered text is present in the accessibility tree (not `aria-hidden`) and is not wrapped in a live region.
-12. The `as` prop changes the rendered HTML element while preserving all rotation behavior.
+6. Sequential fade's container size matches the widest/tallest item across the whole list regardless of which item is active, including when items wrap to different numbers of lines.
+7. Typewriter types the active item character by character — each character's delay randomized around the average typing speed — dwells with a blinking caret for a randomized duration, deletes it character by character at a constant rate, pauses briefly fully erased, then types the next item.
+8. Typewriter's container size matches the tallest/widest item across the whole list at all times, regardless of the currently-typed item or its current length, including when items wrap to different numbers of lines.
+9. Hovering pauses rotation when `pauseOnHover` is enabled (the default), and rotation resumes from the same point when the pointer leaves.
+10. Setting `pauseOnHover` to false continues rotating regardless of hover.
+11. Crossfade and sequential fade transitions swap instantly, with no animation, when the user prefers reduced motion.
+12. Typewriter shows each item in full immediately, with no character-by-character reveal or pause between items, when the user prefers reduced motion.
+13. Rendered text is present in the accessibility tree (not `aria-hidden`) and is not wrapped in a live region; the invisible layout-reservation copies used by sequential fade and typewriter are hidden from assistive technology.
+14. The `as` prop changes the rendered HTML element while preserving all rotation behavior.
+15. Typewriter's deleting speed never varies, regardless of the typing and dwell jitter settings.

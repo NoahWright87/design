@@ -18,10 +18,30 @@ export interface TextCarouselProps {
   interval?: number;
   /** Milliseconds the fade itself takes. Applies to `"crossfade"` and `"sequential"` only. Default `350`. */
   transitionDuration?: number;
-  /** Milliseconds per character while typing. Applies to `"typewriter"` only. Default `45`. */
+  /** Average milliseconds per character while typing. Applies to `"typewriter"` only. Default `45`. */
   typingSpeed?: number;
-  /** Milliseconds per character while deleting. Applies to `"typewriter"` only. Default `30`. */
+  /**
+   * Randomizes each character's typing delay by up to this fraction of `typingSpeed` in
+   * either direction, so typing reads as a human cadence rather than a metronome — the
+   * average stays at `typingSpeed`. Applies to `"typewriter"` only. Default `0.4`.
+   */
+  typingSpeedJitter?: number;
+  /**
+   * Milliseconds per character while deleting — constant, simulating a held backspace
+   * key. Applies to `"typewriter"` only. Default `30`.
+   */
   deletingSpeed?: number;
+  /**
+   * Randomizes `interval` (used as the dwell time between typing and deleting) by up to
+   * this fraction in either direction, so not every word lingers for the same beat.
+   * Applies to `"typewriter"` only. Default `0.5`.
+   */
+  dwellJitter?: number;
+  /**
+   * Milliseconds paused, fully erased, before typing the next word begins. Applies to
+   * `"typewriter"` only. Default `400`.
+   */
+  pauseBeforeTyping?: number;
   /** Pause the rotation while hovered. Default `true`. */
   pauseOnHover?: boolean;
   /** Additional CSS class name. */
@@ -34,10 +54,31 @@ interface AnimationProps {
   interval: number;
   transitionDuration: number;
   typingSpeed: number;
+  typingSpeedJitter: number;
   deletingSpeed: number;
+  dwellJitter: number;
+  pauseBeforeTyping: number;
   isPaused: boolean;
   hoverHandlers: Pick<React.HTMLAttributes<HTMLElement>, "onMouseEnter" | "onMouseLeave">;
   className: string;
+}
+
+/**
+ * Every item sits in the same grid cell (rendered in full, invisibly) purely to reserve
+ * the tallest/widest space any of them could need, so surrounding content never shifts
+ * as `visible` grows, shrinks, or wraps to a different number of lines mid-animation.
+ */
+function SizeReservingStack({ items, visible }: { items: string[]; visible: React.ReactNode }) {
+  return (
+    <span className="nw-text-carousel__stack">
+      {items.map((item, i) => (
+        <span key={i} className="nw-text-carousel__ghost" aria-hidden="true">
+          {item}
+        </span>
+      ))}
+      <span className="nw-text-carousel__visible">{visible}</span>
+    </span>
+  );
 }
 
 function CrossfadeText({ items, Tag, interval, transitionDuration, isPaused, hoverHandlers, className }: AnimationProps) {
@@ -105,16 +146,31 @@ function SequentialText({ items, Tag, interval, transitionDuration, isPaused, ho
 
   return (
     <Tag className={cls} style={style} {...hoverHandlers}>
-      {items[activeIndex % items.length]}
+      <SizeReservingStack items={items} visible={items[activeIndex % items.length]} />
     </Tag>
   );
 }
 
-function TypewriterText({ items, Tag, interval, typingSpeed, deletingSpeed, isPaused, hoverHandlers, className }: AnimationProps) {
+function TypewriterText({
+  items,
+  Tag,
+  interval,
+  typingSpeed,
+  typingSpeedJitter,
+  deletingSpeed,
+  dwellJitter,
+  pauseBeforeTyping,
+  isPaused,
+  hoverHandlers,
+  className,
+}: AnimationProps) {
   const { text, isDwelling } = useTypewriter(items, {
     typingSpeed,
+    typingSpeedJitter,
     deletingSpeed,
     dwellMs: interval,
+    dwellJitter,
+    pauseBeforeTyping,
     isPaused,
   });
 
@@ -122,10 +178,17 @@ function TypewriterText({ items, Tag, interval, typingSpeed, deletingSpeed, isPa
 
   return (
     <Tag className={cls} {...hoverHandlers}>
-      {text}
-      <span
-        className={`nw-text-carousel__cursor${isDwelling || isPaused ? " nw-text-carousel__cursor--blink" : ""}`}
-        aria-hidden="true"
+      <SizeReservingStack
+        items={items}
+        visible={
+          <>
+            {text}
+            <span
+              className={`nw-text-carousel__cursor${isDwelling || isPaused ? " nw-text-carousel__cursor--blink" : ""}`}
+              aria-hidden="true"
+            />
+          </>
+        }
       />
     </Tag>
   );
@@ -144,7 +207,10 @@ export function TextCarousel({
   interval = 2500,
   transitionDuration = 350,
   typingSpeed = 45,
+  typingSpeedJitter = 0.4,
   deletingSpeed = 30,
+  dwellJitter = 0.5,
+  pauseBeforeTyping = 400,
   pauseOnHover = true,
   className = "",
 }: TextCarouselProps) {
@@ -163,7 +229,10 @@ export function TextCarousel({
     interval,
     transitionDuration,
     typingSpeed,
+    typingSpeedJitter,
     deletingSpeed,
+    dwellJitter,
+    pauseBeforeTyping,
     isPaused,
     hoverHandlers,
     className,

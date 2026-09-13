@@ -27,6 +27,22 @@
   opacity: 0;
 }
 
+/* Sequential and typewriter: ghost copies of every item reserve the tallest/widest
+   space any of them could need (wrapped or not), so the one visible item never shifts
+   surrounding layout as it changes, grows, shrinks, or wraps to a different line count. */
+.nw-text-carousel__stack {
+  display: inline-grid;
+}
+
+.nw-text-carousel__ghost,
+.nw-text-carousel__visible {
+  grid-area: 1 / 1;
+}
+
+.nw-text-carousel__ghost {
+  visibility: hidden;
+}
+
 /* Typewriter caret */
 .nw-text-carousel__cursor {
   display: inline-block;

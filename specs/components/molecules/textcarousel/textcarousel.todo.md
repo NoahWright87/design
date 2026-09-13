@@ -9,4 +9,4 @@
 
 ## Backlog
 - [ ] Optional `aria-live` opt-in for cases where a rotation genuinely should be announced.
-- [ ] Per-character jitter for the typewriter style (shared with the `useTypewriter` atom's own backlog).
+- [x] Per-character jitter for the typewriter style (shared with the `useTypewriter` atom's own backlog). Also fixed: sequential fade and typewriter no longer shift surrounding layout when items wrap to different numbers of lines.
