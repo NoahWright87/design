@@ -30,7 +30,7 @@ A fixed-size viewport showing one slide at a time, crossfading to the next. Arro
 - Autoplay pauses while the pointer is over the carousel or focus is inside it, and resumes when it leaves.
 - A carousel with zero slides renders nothing; a carousel with exactly one slide renders that slide with no arrows or dots.
 - Turning off navigation controls still advances slides via autoplay; only the arrows and dots disappear.
-- Marking the carousel decorative hides the whole region from assistive technology instead of announcing it as a carousel with labeled slides — intended for purely ambient rotation (e.g. a rotating background photo) that carries no information a screen reader user needs.
+- Marking the carousel decorative hides the whole region from assistive technology instead of announcing it as a carousel with labeled slides — intended for purely ambient rotation (e.g. a rotating background photo) that carries no information a screen reader user needs. It also forces navigation controls off regardless of the show-controls flag, since a focusable arrow or dot button inside an assistive-technology-hidden region would be reachable by keyboard while invisible to assistive tech.
 - The crossfade transition is skipped when the user prefers reduced motion; slides swap instantly.
 
 ## Behavior
@@ -63,7 +63,7 @@ By default, the carousel is announced as a region with a carousel role, labeled 
 Because Card's image slot accepts any content, a Carousel can be passed directly as a Card's `image` prop to give the card multiple rotating images. No special integration is required in either direction — the Carousel fills the space Card already reserves for its image, at any media position or expanded state.
 
 ### Using Carousel as ambient media (e.g. in a Hero)
-Turning off navigation controls and marking the carousel decorative gives a rotating visual with no interactive chrome and no assistive-technology footprint — the shape needed for a `Hero`'s `media` slot when it rotates through several photos. Pair with `showControls={false}` and `decorative` together for this case.
+Marking the carousel decorative gives a rotating visual with no interactive chrome and no assistive-technology footprint — the shape needed for a `Hero`'s `media` slot when it rotates through several photos. Decorative already forces navigation controls off on its own, so `showControls` needs no separate setting for this case.
 
 ## Acceptance
 1. Renders the first slide (or the given initial/controlled index) by default.
@@ -81,3 +81,4 @@ Turning off navigation controls and marking the carousel decorative gives a rota
 13. Passing a Carousel as a Card's `image` prop renders it filling the card's image area with no further configuration.
 14. Setting the show-controls flag off hides arrows and dots even with multiple slides, while autoplay continues to advance them.
 15. Setting the decorative flag hides the carousel and its slides from assistive technology, overriding the default region/slide labeling.
+16. Setting the decorative flag renders no arrow or dot buttons even with multiple slides and the show-controls flag on, so no focusable control is left inside the assistive-technology-hidden region.

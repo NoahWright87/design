@@ -107,10 +107,10 @@
   width: 150px;
 }
 
+/* Width alone is enough: Image's own aspectRatio prop derives height from it,
+   and height:100% here would fight that against .nw-hero__media's auto height. */
 .portfolio-hero .nw-hero__media .nw-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 /* Matches Hero's own row/stack breakpoint (max-width: 720px) so there's no gap

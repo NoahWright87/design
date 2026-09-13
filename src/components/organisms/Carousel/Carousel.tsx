@@ -30,8 +30,9 @@ export interface CarouselProps {
   /**
    * Marks the whole carousel as decorative, hiding it from assistive technology
    * (`aria-hidden`) instead of announcing it as a carousel region with labeled
-   * slides. Pairs with `showControls={false}` for purely ambient rotation.
-   * Default `false`.
+   * slides. Forces `showControls` off regardless of that prop's value — a
+   * focusable arrow/dot button inside an aria-hidden region would be reachable
+   * by keyboard but invisible to assistive tech. Default `false`.
    */
   decorative?: boolean;
   /** Additional CSS class name. */
@@ -80,7 +81,9 @@ export function Carousel({
 
   if (count === 0) return null;
 
-  const canShowControls = count > 1 && showControls;
+  // Controls must never render when decorative: a focusable button inside an
+  // aria-hidden region is reachable by keyboard but invisible to assistive tech.
+  const canShowControls = count > 1 && showControls && !decorative;
   const cls = ["nw-carousel", className].filter(Boolean).join(" ");
   const regionProps = decorative
     ? { "aria-hidden": true as const }

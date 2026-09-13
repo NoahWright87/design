@@ -2,6 +2,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useTypewriter } from "../../../atoms/useTypewriter.js";
+import { usePrefersReducedMotion } from "../../../atoms/usePrefersReducedMotion.js";
 import "./textCarousel.css";
 
 export type TextCarouselAnimation = "crossfade" | "sequential" | "typewriter";
@@ -69,9 +70,19 @@ function CrossfadeText({ items, Tag, interval, transitionDuration, isPaused, hov
 function SequentialText({ items, Tag, interval, transitionDuration, isPaused, hoverHandlers, className }: AnimationProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [hidden, setHidden] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     if (isPaused || items.length <= 1) return;
+
+    // Reduced motion: swap directly on the interval, skipping the hidden dwell entirely
+    // (holding `hidden` for transitionDuration with no CSS transition reads as a blank gap).
+    if (prefersReducedMotion) {
+      const timeoutId = window.setTimeout(() => {
+        setActiveIndex((i) => (i + 1) % items.length);
+      }, interval);
+      return () => window.clearTimeout(timeoutId);
+    }
 
     if (!hidden) {
       const timeoutId = window.setTimeout(() => setHidden(true), interval);
@@ -82,7 +93,7 @@ function SequentialText({ items, Tag, interval, transitionDuration, isPaused, ho
       setHidden(false);
     }, transitionDuration);
     return () => window.clearTimeout(timeoutId);
-  }, [isPaused, items.length, interval, transitionDuration, hidden]);
+  }, [isPaused, items.length, interval, transitionDuration, hidden, prefersReducedMotion]);
 
   const style = { "--nw-text-carousel-duration": `${transitionDuration}ms` } as React.CSSProperties;
   const cls = [

@@ -52,7 +52,7 @@ export function PortfolioHome({ onNavigate }: PortfolioHomeProps) {
             media={
               <Image
                 src={getNonsense('abstractImage') as string}
-                alt="Portrait"
+                alt=""
                 rounded="full"
                 aspectRatio="1/1"
               />
