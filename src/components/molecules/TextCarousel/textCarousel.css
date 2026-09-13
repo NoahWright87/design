@@ -43,12 +43,13 @@
   visibility: hidden;
 }
 
-/* Typewriter caret */
+/* Typewriter caret. Margin on both sides since a partial-replacement edit can leave
+   it mid-string, with unedited text on either side, not just at the very end. */
 .nw-text-carousel__cursor {
   display: inline-block;
   width: 3px;
   height: 0.9em;
-  margin-left: 3px;
+  margin-inline: 3px;
   vertical-align: -0.1em;
   background: currentColor;
 }

@@ -164,7 +164,7 @@ function TypewriterText({
   hoverHandlers,
   className,
 }: AnimationProps) {
-  const { text, isDwelling } = useTypewriter(items, {
+  const { text, cursor, isDwelling } = useTypewriter(items, {
     typingSpeed,
     typingSpeedJitter,
     deletingSpeed,
@@ -182,11 +182,12 @@ function TypewriterText({
         items={items}
         visible={
           <>
-            {text}
+            {text.slice(0, cursor)}
             <span
               className={`nw-text-carousel__cursor${isDwelling || isPaused ? " nw-text-carousel__cursor--blink" : ""}`}
               aria-hidden="true"
             />
+            {text.slice(cursor)}
           </>
         }
       />

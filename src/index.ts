@@ -3,6 +3,7 @@ import "./styles/theme.css";
 // Atoms
 export * from "./atoms/nonsense.js";
 export * from "./atoms/usePrefersReducedMotion.js";
+export * from "./atoms/typewriterDiff.js";
 export * from "./atoms/useTypewriter.js";
 
 // Molecules

@@ -8,4 +8,4 @@
 
 ## Backlog
 - [x] Configurable per-character jitter for a more human, less metronomic typing cadence. (`typingSpeedJitter` + `dwellJitter`; deleting stays constant by design.)
-- [ ] More varied deletion (whole-word delete, "select all" delete, or only deleting the suffix that differs from the next word) as alternatives to constant per-character backspacing.
+- [x] More varied deletion, editing only the suffix that differs from the next word — generalized further than originally scoped: transitions now diff the two full phrases word-by-word (via the `typewriterDiff` atom) and edit only what actually changed, anywhere in the phrase, not just a differing tail.

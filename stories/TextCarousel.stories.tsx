@@ -81,6 +81,27 @@ export const AsPlainSpan: Story = {
   ),
 };
 
+export const PartialWordEdit: Story = {
+  name: "Typewriter — partial word edits",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Demonstrates the typewriter\'s word-diffing: "Software engineer" -> "Software builder" only edits the second word, and "Software builder" -> "I build cool stuff" keeps "build" in place (editing just "builder" -> "build") while replacing the rest.',
+      },
+    },
+  },
+  render: () => (
+    <Heading level={2}>
+      <TextCarousel
+        items={["Software engineer", "Software builder", "I build cool stuff"]}
+        animation="typewriter"
+        interval={1800}
+      />
+    </Heading>
+  ),
+};
+
 export const SingleItem: Story = {
   name: "Single item (no rotation)",
   render: () => (
