@@ -1,0 +1,74 @@
+/* Crossfade: every item is stacked in the same grid cell so the grid auto-sizes
+   to the widest one, and toggling which item is opaque crossfades in place. */
+.nw-text-carousel--crossfade {
+  display: inline-grid;
+}
+
+.nw-text-carousel__frame {
+  grid-area: 1 / 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--nw-text-carousel-duration, var(--duration-normal, 250ms)) var(--ease-in-out, ease);
+}
+
+.nw-text-carousel__frame--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Sequential: a single node that fades fully out, swaps text, then fades back in. */
+.nw-text-carousel--sequential {
+  display: inline-block;
+  opacity: 1;
+  transition: opacity var(--nw-text-carousel-duration, var(--duration-normal, 250ms)) var(--ease-in-out, ease);
+}
+
+.nw-text-carousel--sequential.nw-text-carousel--hidden {
+  opacity: 0;
+}
+
+/* Sequential and typewriter: ghost copies of every item reserve the tallest/widest
+   space any of them could need (wrapped or not), so the one visible item never shifts
+   surrounding layout as it changes, grows, shrinks, or wraps to a different line count. */
+.nw-text-carousel__stack {
+  display: inline-grid;
+}
+
+.nw-text-carousel__ghost,
+.nw-text-carousel__visible {
+  grid-area: 1 / 1;
+}
+
+.nw-text-carousel__ghost {
+  visibility: hidden;
+}
+
+/* Typewriter caret. Margin on both sides since a partial-replacement edit can leave
+   it mid-string, with unedited text on either side, not just at the very end. */
+.nw-text-carousel__cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  margin-inline: 3px;
+  vertical-align: -0.1em;
+  background: currentColor;
+}
+
+@keyframes nw-text-carousel-blink {
+  50% { opacity: 0; }
+}
+
+.nw-text-carousel__cursor--blink {
+  animation: nw-text-carousel-blink 1s step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-text-carousel__frame,
+  .nw-text-carousel--sequential {
+    transition: none;
+  }
+
+  .nw-text-carousel__cursor--blink {
+    animation: none;
+  }
+}

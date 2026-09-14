@@ -21,6 +21,20 @@ export interface CarouselProps {
   onActiveIndexChange?: (index: number) => void;
   /** Accessible label for the carousel region. Default `"Carousel"`. */
   "aria-label"?: string;
+  /**
+   * Show the arrow and dot navigation controls when there is more than one slide.
+   * Set `false` for an ambient, autoplay-only rotator with no interactive chrome
+   * (e.g. a rotating decorative photo). Default `true`.
+   */
+  showControls?: boolean;
+  /**
+   * Marks the whole carousel as decorative, hiding it from assistive technology
+   * (`aria-hidden`) instead of announcing it as a carousel region with labeled
+   * slides. Forces `showControls` off regardless of that prop's value — a
+   * focusable arrow/dot button inside an aria-hidden region would be reachable
+   * by keyboard but invisible to assistive tech. Default `false`.
+   */
+  decorative?: boolean;
   /** Additional CSS class name. */
   className?: string;
 }
@@ -40,6 +54,8 @@ export function Carousel({
   defaultActiveIndex = 0,
   onActiveIndexChange,
   "aria-label": ariaLabel = "Carousel",
+  showControls = true,
+  decorative = false,
   className = "",
 }: CarouselProps) {
   const count = items.length;
@@ -65,16 +81,22 @@ export function Carousel({
 
   if (count === 0) return null;
 
-  const showControls = count > 1;
+  // Controls must never render when decorative: a focusable button inside an
+  // aria-hidden region is reachable by keyboard but invisible to assistive tech.
+  const canShowControls = count > 1 && showControls && !decorative;
   const cls = ["nw-carousel", className].filter(Boolean).join(" ");
+  const regionProps = decorative
+    ? { "aria-hidden": true as const }
+    : { role: "region" as const, "aria-roledescription": "carousel", "aria-label": ariaLabel };
+  const slideProps = decorative
+    ? {}
+    : { role: "group" as const, "aria-roledescription": "slide" };
 
   return (
     <div
       className={cls}
       style={{ aspectRatio }}
-      role="region"
-      aria-roledescription="carousel"
-      aria-label={ariaLabel}
+      {...regionProps}
       onMouseEnter={pauseOnHover ? () => setPaused(true) : undefined}
       onMouseLeave={pauseOnHover ? () => setPaused(false) : undefined}
       onFocus={pauseOnHover ? () => setPaused(true) : undefined}
@@ -91,9 +113,8 @@ export function Carousel({
           <div
             key={i}
             className={`nw-carousel__slide${i === activeIndex ? " nw-carousel__slide--active" : ""}`}
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`${i + 1} of ${count}`}
+            {...slideProps}
+            aria-label={decorative ? undefined : `${i + 1} of ${count}`}
             aria-hidden={i === activeIndex ? undefined : true}
           >
             {item}
@@ -101,7 +122,7 @@ export function Carousel({
         ))}
       </div>
 
-      {showControls ? (
+      {canShowControls ? (
         <>
           <button
             type="button"

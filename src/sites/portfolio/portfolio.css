@@ -58,11 +58,15 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.portfolio-hero__image {
+/* Hero's own DOM structure (.nw-hero__top holds title+media side by side at every
+   width; description/actions render full-width beneath it) already handles that
+   layout; these rules only layer this site's own sizing and entrance animation on
+   top of it. */
+.portfolio-hero .nw-hero__media {
   animation: portfolio-fade-up 560ms var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
 }
 
-.portfolio-hero__text {
+.portfolio-hero .nw-hero__title {
   animation: portfolio-fade-up 560ms var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) both;
   animation-delay: 80ms;
 }
@@ -73,8 +77,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .portfolio-hero__image,
-  .portfolio-hero__text,
+  .portfolio-hero .nw-hero__media,
+  .portfolio-hero .nw-hero__title,
   .portfolio-intro {
     animation: none;
   }
@@ -85,58 +89,30 @@
   padding-block: var(--spacing-xl, 48px);
 }
 
-.portfolio-hero__content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg, 32px);
-  align-items: center;
-  text-align: center;
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-.portfolio-hero__image {
-  width: 150px;
-  height: 150px;
-  flex-shrink: 0;
-}
-
-.portfolio-hero__text {
-  max-width: 600px;
-  flex: 1;
-  min-width: 0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-.portfolio-hero__text h1 {
+.portfolio-hero .nw-hero__title h1 {
   margin-bottom: var(--spacing-sm, 12px);
   margin-top: 0;
 }
 
-.portfolio-hero__buttons {
-  display: flex;
-  gap: var(--spacing-md, 16px);
-  margin-top: var(--spacing-md, 16px);
-  flex-wrap: wrap;
-  justify-content: center;
+.portfolio-hero__description {
+  max-width: 600px;
 }
 
-@media (min-width: 768px) {
-  .portfolio-hero__content {
-    flex-direction: row;
-    text-align: left;
-    align-items: flex-start;
-  }
+.portfolio-hero .nw-hero__media {
+  width: 150px;
+}
 
-  .portfolio-hero__image {
+/* Width alone is enough: Image's own aspectRatio prop derives height from it,
+   and height:100% here would fight that against .nw-hero__media's auto height. */
+.portfolio-hero .nw-hero__media .nw-image {
+  width: 100%;
+}
+
+/* Matches Hero's own media-shrink breakpoint (max-width: 720px) so there's no gap
+   between this site's smaller and wider media sizing kicking in. */
+@media (min-width: 721px) {
+  .portfolio-hero .nw-hero__media {
     width: 250px;
-    height: 250px;
-  }
-
-  .portfolio-hero__buttons {
-    justify-content: flex-start;
   }
 }
 
