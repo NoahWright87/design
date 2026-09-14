@@ -24,6 +24,7 @@ An ordered array of frames. Each frame carries: the full text visible at that po
 - Two phrases sharing no words at all still produce a valid transition: every word is deleted and every replacement word is typed, in an order consistent with a minimum-edit alignment (never reordering `from`'s words relative to each other, or `to`'s words relative to each other).
 - Two identical inputs produce a single frame equal to both (no edit needed).
 - Reconstructing text from partially-edited words never produces doubled or missing spaces between words, regardless of which words are mid-edit, freshly deleted, or not yet inserted.
+- Prefix matching and per-frame slicing both operate on Unicode code points, not raw UTF-16 code units â€” a surrogate-pair character (most emoji, including ones outside the Basic Multilingual Plane) is always treated as one indivisible unit. Two different emoji can share a UTF-16 high surrogate without sharing a character; comparing at the code-unit level would misread that as a one-unit common prefix and produce a frame with an unpaired surrogate (renders as a broken glyph). Every frame's text is well-formed UTF-16 with no unpaired surrogate.
 
 ## Behavior
 
@@ -62,3 +63,4 @@ Only whole words are compared for equality and for shared-prefix partial edits â
 5. Every frame's `text`, when whitespace-normalized, contains no doubled spaces and no missing space between two adjacent words.
 6. The first frame always has `text === from`; the last frame always has `text === to` with `cursor === to.length`.
 7. Calling the function twice with the same `from`/`to` produces two identical frame arrays (no randomness).
+8. No frame's `text` ever contains an unpaired UTF-16 surrogate, even when `from` and `to` contain surrogate-pair characters (emoji) that happen to share a UTF-16 code unit without being the same character.

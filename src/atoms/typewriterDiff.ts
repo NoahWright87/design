@@ -9,7 +9,22 @@ export interface TypewriterFrame {
   action: TypewriterFrameAction;
 }
 
-function commonPrefixLength(a: string, b: string): number {
+/**
+ * Splits into Unicode code points rather than UTF-16 code units, so a surrogate-pair
+ * character (most emoji, including ones outside the Basic Multilingual Plane) is
+ * always treated as one indivisible unit — never split down its middle.
+ */
+function toCodePoints(text: string): string[] {
+  return Array.from(text);
+}
+
+/**
+ * Common prefix length in code points. Comparing raw UTF-16 code units would risk
+ * finding a "match" on just the shared leading half of two different surrogate pairs
+ * (e.g. two emoji from the same Unicode block can share a high surrogate), which would
+ * then get treated as a real shared prefix and split mid-character.
+ */
+function commonPrefixLength(a: string[], b: string[]): number {
   const max = Math.min(a.length, b.length);
   let i = 0;
   while (i < max && a[i] === b[i]) i++;
@@ -37,15 +52,17 @@ type WordOp =
 function alignWords(a: string[], b: string[]): WordOp[] {
   const n = a.length;
   const m = b.length;
+  const aCp = a.map(toCodePoints);
+  const bCp = b.map(toCodePoints);
   const dp: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
   const choice: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
 
   for (let i = 1; i <= n; i++) {
-    dp[i][0] = dp[i - 1][0] + a[i - 1].length;
+    dp[i][0] = dp[i - 1][0] + aCp[i - 1].length;
     choice[i][0] = 1;
   }
   for (let j = 1; j <= m; j++) {
-    dp[0][j] = dp[0][j - 1] + b[j - 1].length;
+    dp[0][j] = dp[0][j - 1] + bCp[j - 1].length;
     choice[0][j] = 2;
   }
 
@@ -53,11 +70,11 @@ function alignWords(a: string[], b: string[]): WordOp[] {
     for (let j = 1; j <= m; j++) {
       const A = a[i - 1];
       const B = b[j - 1];
-      const prefix = commonPrefixLength(A, B);
-      const subCost = A === B ? 0 : A.length - prefix + (B.length - prefix);
+      const prefix = commonPrefixLength(aCp[i - 1], bCp[j - 1]);
+      const subCost = A === B ? 0 : aCp[i - 1].length - prefix + (bCp[j - 1].length - prefix);
       const diag = dp[i - 1][j - 1] + subCost;
-      const up = dp[i - 1][j] + A.length;
-      const left = dp[i][j - 1] + B.length;
+      const up = dp[i - 1][j] + aCp[i - 1].length;
+      const left = dp[i][j - 1] + bCp[j - 1].length;
 
       let best = diag;
       let ch = 0;
@@ -145,33 +162,37 @@ export function buildTypewriterFrames(from: string, to: string): TypewriterFrame
     if (op.kind === "equal") return;
 
     if (op.kind === "substitute") {
-      const prefix = commonPrefixLength(op.from, op.to);
+      const fromCp = toCodePoints(op.from);
+      const toCp = toCodePoints(op.to);
+      const prefix = commonPrefixLength(fromCp, toCp);
       frames.push({ ...render(index, op.from.length), action: "pause" });
-      for (let len = op.from.length - 1; len >= prefix; len--) {
-        slots[index] = op.from.slice(0, len);
-        frames.push({ ...render(index, len), action: "delete" });
+      for (let n = fromCp.length - 1; n >= prefix; n--) {
+        slots[index] = fromCp.slice(0, n).join("");
+        frames.push({ ...render(index, slots[index].length), action: "delete" });
       }
-      for (let len = prefix + 1; len <= op.to.length; len++) {
-        slots[index] = op.to.slice(0, len);
-        frames.push({ ...render(index, len), action: "insert" });
+      for (let n = prefix + 1; n <= toCp.length; n++) {
+        slots[index] = toCp.slice(0, n).join("");
+        frames.push({ ...render(index, slots[index].length), action: "insert" });
       }
       return;
     }
 
     if (op.kind === "delete") {
+      const wordCp = toCodePoints(op.word);
       frames.push({ ...render(index, op.word.length), action: "pause" });
-      for (let len = op.word.length - 1; len >= 0; len--) {
-        slots[index] = op.word.slice(0, len);
-        frames.push({ ...render(index, len), action: "delete" });
+      for (let n = wordCp.length - 1; n >= 0; n--) {
+        slots[index] = wordCp.slice(0, n).join("");
+        frames.push({ ...render(index, slots[index].length), action: "delete" });
       }
       return;
     }
 
     // insert
+    const wordCp = toCodePoints(op.word);
     frames.push({ ...render(index, 0), action: "pause" });
-    for (let len = 1; len <= op.word.length; len++) {
-      slots[index] = op.word.slice(0, len);
-      frames.push({ ...render(index, len), action: "insert" });
+    for (let n = 1; n <= wordCp.length; n++) {
+      slots[index] = wordCp.slice(0, n).join("");
+      frames.push({ ...render(index, slots[index].length), action: "insert" });
     }
   });
 
