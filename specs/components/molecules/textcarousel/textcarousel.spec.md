@@ -21,8 +21,10 @@ TextCarousel rotates a piece of text through a list of alternatives in place —
 - Optional transition duration, for the crossfade and sequential fade styles.
 - Optional average typing speed and a fraction to randomize each character's typing delay around it, for the typewriter style.
 - Optional deleting speed (per character, always constant), for the typewriter style.
+- Optional edit-tier typing speed, jitter, and deleting speed — for correcting a word in place rather than typing/deleting a wholly new one — and a caret-glide speed for moving through already-correct text; all for the typewriter style, all default to a slower (edits) or faster (glide) multiple of the fresh-tier values.
 - Optional fraction to randomize the dwell time around its average, for the typewriter style.
-- Optional pause duration between a word fully erasing and the next word starting to type, for the typewriter style.
+- Optional pause duration before typing/deleting a wholly new word begins, and a separate (longer, by default) pause before correcting a word in place, for the typewriter style.
+- Optional similarity threshold controlling which differing word pairs are corrected in place versus treated as an unrelated swap, for the typewriter style.
 - Optional flag to pause rotation while hovered. On by default.
 - Optional additional CSS class name.
 
@@ -36,7 +38,8 @@ Text that changes from one item to the next automatically and indefinitely, usin
 - Hovering pauses rotation while `pauseOnHover` is enabled (the default), and rotation resumes from where it left off when the pointer leaves.
 - None of the three styles ever collapse or shift the surrounding layout as the active item changes: crossfade and sequential fade are always sized to the widest/tallest item across the whole list, and typewriter reserves the same tallest/widest space regardless of how many characters are currently typed — even when items wrap to different numbers of lines.
 - Typewriter's typing delay and dwell duration vary per character and per item respectively, averaging the configured values; deleting speed never varies, simulating a constantly-held backspace key.
-- Typewriter transitions between items by editing only the words that differ (see the `useTypewriter`/`typewriterDiff` atoms) — a word shared between the outgoing and incoming item, wherever it falls, is left in place rather than deleted and retyped.
+- Typewriter transitions between items the way a person editing a sentence would (see the `useTypewriter`/`typewriterDiff` atoms): starting from the caret's current position, it resolves each change completely as it's reached — right to left, no deferral — gliding rather than jumping through anything already correct in between. A word shared between the outgoing and incoming item, wherever it falls, is left in place rather than deleted and retyped.
+- Typewriter drives a word correction (an in-place edit of a similar word) at its own, slower pace than typing or deleting a wholly new/unwanted word, and pauses longer before starting one — a correction reads as more effortful than fresh typing.
 
 ## Behavior
 
@@ -44,7 +47,7 @@ Text that changes from one item to the next automatically and indefinitely, usin
 
 **Sequential:** Only one item is ever rendered. On each interval, it fades out fully, its text is swapped for the next item once fully invisible, and the new text fades in. Unlike crossfade, the outgoing and incoming text never overlap.
 
-**Typewriter:** The first item is typed out a character at a time — each character's delay randomized around the average typing speed — and dwells fully typed for a randomized duration with a blinking caret. Transitioning to the next item edits only the words that differ between the two: the caret relocates (with a brief pause) to each part that needs to change, backspaces it at a constant rate — only past a shared prefix with its replacement, when the two words are related (e.g. "build" -> "builder") — and types the replacement, leaving any word the two items share untouched wherever it falls. See the `useTypewriter` atom (and the `typewriterDiff` atom it's built on) for the full behavior of this engine.
+**Typewriter:** The first item is typed out a character at a time — each character's delay randomized around the average typing speed — and dwells fully typed for a randomized duration with a blinking caret. Transitioning to the next item starts from the caret's current position and works backward through the phrase, resolving each change completely as it's reached before gliding on: a run of wholly wrong words is cleared and its replacement written in one continuous motion, and a word similar enough to its replacement (e.g. "build" -> "builder") is backspaced only past their shared prefix and retyped from there — both at a slower, more deliberate pace than fresh typing/deleting. A word the two items share, wherever it falls, is left untouched; the caret only glides past it. See the `useTypewriter` atom (and the `typewriterDiff` atom it's built on) for the full behavior of this engine.
 
 **Hover pause:** While `pauseOnHover` is enabled and the pointer is over the element, rotation halts exactly where it is (mid-fade or mid-type) and resumes when the pointer leaves.
 
@@ -70,7 +73,7 @@ Crossfade suits a tagline or label where a smooth, ambient overlap feels natural
 4. Crossfade's container width matches the widest item regardless of which item is active.
 5. Sequential fade fully hides the outgoing item before the incoming item's text appears, with no overlap.
 6. Sequential fade's container size matches the widest/tallest item across the whole list regardless of which item is active, including when items wrap to different numbers of lines.
-7. Typewriter types the first item character by character — each character's delay randomized around the average typing speed — then dwells with a blinking caret for a randomized duration. Transitioning to the next item edits only the words that differ (per `typewriterDiff`), leaving any word shared between the two items untouched wherever it falls, before dwelling on the new item in turn.
+7. Typewriter types the first item character by character — each character's delay randomized around the average typing speed — then dwells with a blinking caret for a randomized duration. Transitioning to the next item resolves each change right to left from the caret's current position, in a single pass with no deferred content (per `typewriterDiff`), leaving any word shared between the two items untouched wherever it falls, before dwelling on the new item in turn.
 8. Typewriter's container size matches the tallest/widest item across the whole list at all times, regardless of the currently-typed item or its current length, including when items wrap to different numbers of lines.
 9. Hovering pauses rotation when `pauseOnHover` is enabled (the default), and rotation resumes from the same point when the pointer leaves.
 10. Setting `pauseOnHover` to false continues rotating regardless of hover.
@@ -79,3 +82,4 @@ Crossfade suits a tagline or label where a smooth, ambient overlap feels natural
 13. Rendered text is present in the accessibility tree (not `aria-hidden`) and is not wrapped in a live region; the invisible layout-reservation copies used by sequential fade and typewriter are hidden from assistive technology.
 14. The `as` prop changes the rendered HTML element while preserving all rotation behavior.
 15. Typewriter's deleting speed never varies, regardless of the typing and dwell jitter settings.
+16. Typewriter drives characters that correct a word in place at a different (by default slower) speed than characters that type or delete a wholly new/unwanted word, and holds the caret longer before starting a correction than before fresh content.

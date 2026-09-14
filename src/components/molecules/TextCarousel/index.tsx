@@ -27,10 +27,30 @@ export interface TextCarouselProps {
    */
   typingSpeedJitter?: number;
   /**
-   * Milliseconds per character while deleting — constant, simulating a held backspace
-   * key. Applies to `"typewriter"` only. Default `30`.
+   * Milliseconds per character while deleting a wholly new/unwanted word — constant,
+   * simulating a held backspace key. Applies to `"typewriter"` only. Default `30`.
    */
   deletingSpeed?: number;
+  /**
+   * Average milliseconds per character while typing the corrected part of a word being
+   * edited in place (e.g. "build" -> "builder") — slower than `typingSpeed` by default,
+   * since a real correction reads as more effortful than fresh typing. Applies to
+   * `"typewriter"` only. Default `typingSpeed * 1.6`.
+   */
+  editTypingSpeed?: number;
+  /** Jitter fraction for `editTypingSpeed`, analogous to `typingSpeedJitter`. Applies to `"typewriter"` only. Default `0.6`. */
+  editTypingSpeedJitter?: number;
+  /**
+   * Milliseconds per character while deleting the wrong part of a word being edited in
+   * place — constant. Applies to `"typewriter"` only. Default `deletingSpeed * 1.6`.
+   */
+  editDeletingSpeed?: number;
+  /**
+   * Milliseconds per character while the caret glides through already-correct text to
+   * reach the next thing that needs changing, with no letters typed or deleted. Applies
+   * to `"typewriter"` only. Default `15`.
+   */
+  moveSpeed?: number;
   /**
    * Randomizes `interval` (used as the dwell time between typing and deleting) by up to
    * this fraction in either direction, so not every word lingers for the same beat.
@@ -38,10 +58,22 @@ export interface TextCarouselProps {
    */
   dwellJitter?: number;
   /**
-   * Milliseconds paused, fully erased, before typing the next word begins. Applies to
-   * `"typewriter"` only. Default `400`.
+   * Milliseconds the caret holds still before typing/deleting a wholly new word begins.
+   * Applies to `"typewriter"` only. Default `400`.
    */
   pauseBeforeTyping?: number;
+  /**
+   * Milliseconds the caret holds still before it starts correcting a word in place —
+   * longer than `pauseBeforeTyping` by default. Applies to `"typewriter"` only. Default
+   * `pauseBeforeTyping * 1.5`.
+   */
+  editPauseBeforeTyping?: number;
+  /**
+   * How similar two differing words must be, as a fraction of the longer word's length,
+   * to be corrected in place rather than treated as an unrelated word swap. Applies to
+   * `"typewriter"` only. Default `0.5`.
+   */
+  similarityThreshold?: number;
   /** Pause the rotation while hovered. Default `true`. */
   pauseOnHover?: boolean;
   /** Additional CSS class name. */
@@ -56,8 +88,14 @@ interface AnimationProps {
   typingSpeed: number;
   typingSpeedJitter: number;
   deletingSpeed: number;
+  editTypingSpeed: number | undefined;
+  editTypingSpeedJitter: number | undefined;
+  editDeletingSpeed: number | undefined;
+  moveSpeed: number | undefined;
   dwellJitter: number;
   pauseBeforeTyping: number;
+  editPauseBeforeTyping: number | undefined;
+  similarityThreshold: number | undefined;
   isPaused: boolean;
   hoverHandlers: Pick<React.HTMLAttributes<HTMLElement>, "onMouseEnter" | "onMouseLeave">;
   className: string;
@@ -158,8 +196,14 @@ function TypewriterText({
   typingSpeed,
   typingSpeedJitter,
   deletingSpeed,
+  editTypingSpeed,
+  editTypingSpeedJitter,
+  editDeletingSpeed,
+  moveSpeed,
   dwellJitter,
   pauseBeforeTyping,
+  editPauseBeforeTyping,
+  similarityThreshold,
   isPaused,
   hoverHandlers,
   className,
@@ -168,9 +212,15 @@ function TypewriterText({
     typingSpeed,
     typingSpeedJitter,
     deletingSpeed,
+    editTypingSpeed,
+    editTypingSpeedJitter,
+    editDeletingSpeed,
+    moveSpeed,
     dwellMs: interval,
     dwellJitter,
     pauseBeforeTyping,
+    editPauseBeforeTyping,
+    similarityThreshold,
     isPaused,
   });
 
@@ -210,8 +260,14 @@ export function TextCarousel({
   typingSpeed = 45,
   typingSpeedJitter = 0.4,
   deletingSpeed = 30,
+  editTypingSpeed,
+  editTypingSpeedJitter,
+  editDeletingSpeed,
+  moveSpeed,
   dwellJitter = 0.5,
   pauseBeforeTyping = 400,
+  editPauseBeforeTyping,
+  similarityThreshold,
   pauseOnHover = true,
   className = "",
 }: TextCarouselProps) {
@@ -232,8 +288,14 @@ export function TextCarousel({
     typingSpeed,
     typingSpeedJitter,
     deletingSpeed,
+    editTypingSpeed,
+    editTypingSpeedJitter,
+    editDeletingSpeed,
+    moveSpeed,
     dwellJitter,
     pauseBeforeTyping,
+    editPauseBeforeTyping,
+    similarityThreshold,
     isPaused,
     hoverHandlers,
     className,
