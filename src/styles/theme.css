@@ -1,3 +1,14 @@
+/* Wright Sans: the signature heading font. It ships in one weight, so the
+   weight range makes every heading weight use it as drawn instead of a
+   browser faux bold. Characters it lacks (e.g. accents) fall back to --font-family. */
+@font-face {
+  font-family: "Wright Sans";
+  src: url("./fonts/WrightSans-Regular.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Colors */
   --foreground: #111111;
@@ -17,7 +28,7 @@
 
   /* Typography */
   --font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-family-heading: var(--font-family);
+  --font-family-heading: "Wright Sans", var(--font-family);
   --font-family-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
