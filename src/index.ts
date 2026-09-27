@@ -64,6 +64,9 @@ export type Theme = {
   spacingXl?: string;
   
   // Typography
+  fontFamily?: string;
+  fontFamilyHeading?: string;
+  fontFamilyMono?: string;
   textXs?: string;
   textSm?: string;
   textMd?: string;

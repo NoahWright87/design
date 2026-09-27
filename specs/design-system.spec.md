@@ -57,7 +57,7 @@ Atoms are immutable design values with no props and no variation. They define th
 Current atoms:
 - **Color tokens** — semantic roles: foreground, background, primary, secondary, confirm, danger, overlay.
 - **Spacing** — a scale of named size presets used for padding, margin, and gap.
-- **Typography** — font size, weight, and line height presets.
+- **Typography** — font families (body, heading, and monospace, defaulting to the system sans-serif and monospace stacks and overridable per site through the theme), plus font size, weight, and line height presets.
 - **Motion** — timing and easing token presets.
 - **Shadows** — elevation token scale.
 - **Radii** — corner radius presets.

@@ -64,6 +64,9 @@ The card has a rounded border and themed background. Internal sections are arran
 ### CardFooter
 CardFooter is a layout companion for the card's footer area. It arranges its children horizontally with configurable alignment — left, right, centered, or spread. The default alignment places content at the trailing end, suited for action buttons.
 
+### CardGrid
+CardGrid arranges cards in a responsive grid that fills the full width of its container, fitting as many columns as the configured minimum card width allows and stacking to a single column on phones. Cards in a row match each other's height, and each row is only as tall as its tallest card's content — including when the grid sits inside a vertical Container.
+
 ### Expanded view
 The expand button sits in the card's top-right corner as a small square icon button. Once expanded, the card presents the same title, subtitle, and short content as before, followed by the larger image (unless positioned at the top) and then the full longer description, with a matching shrink button in the same top-right corner. The expanded card keeps the collapsed card's rounded corners, background, and elevation styling, just larger and centered on a darkened backdrop.
 
@@ -96,3 +99,4 @@ The expand button sits in the card's top-right corner as a small square icon but
 19. While expanded, the longer description is visible, and the image is enlarged and repositioned according to the configured expanded image position.
 20. Pressing Escape, clicking the backdrop outside the expanded card, or clicking the shrink button collapses the expanded card back to its original position and size with a bouncy overshoot.
 21. The expand and collapse animations are skipped when the user prefers reduced motion; the card jumps directly between collapsed and expanded states.
+22. CardGrid fills its container's width, and inside a vertical Container its rows are as tall as the tallest card's content.

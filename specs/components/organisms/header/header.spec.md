@@ -6,6 +6,7 @@ Header provides a fixed navigation bar with three content regions — left, cent
 ## Related
 - [Design System Base Spec](../../../design-system.spec.md)
 - [Layout component](../layout/layout.spec.md)
+- [MobileNav component](../mobilenav/mobilenav.spec.md)
 
 ## Contract
 
@@ -20,10 +21,13 @@ A fixed header bar with up to three content regions rendered at the top of the v
 - The header maintains its position at the top of the viewport as users scroll.
 - Labels use responsive CSS to hide automatically on small screens without JavaScript.
 - Slot content receives no additional styling from the header itself.
+- Dropdowns placed in a slot (such as MobileNav's phone menu) anchor to the full header width, unless that slot has a tooltip, which anchors to the slot itself.
 
 ## Behavior
 
 Header is a layout container. Its behavior is determined by the content placed in each slot — interactive elements like menus, buttons, and avatars behave according to their own specs. The header positions and sizes its slots but manages no state of its own.
+
+Only slots with a tooltip become an anchor for positioned content, so the tooltip can center beneath its slot. Every other slot lets positioned content anchor to the header itself — a navigation dropdown in an untooltipped slot spans the whole header.
 
 ## Interface
 
@@ -37,3 +41,5 @@ The header uses the theme background color. Slot content and labels use the them
 3. Labels display next to slot content on desktop.
 4. Labels are hidden on mobile-sized viewports.
 5. Header remains visible while page content scrolls beneath it.
+6. A slot tooltip appears centered beneath its slot on hover.
+7. MobileNav in an untooltipped slot opens a dropdown spanning the full header width.

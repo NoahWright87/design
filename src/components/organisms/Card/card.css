@@ -162,6 +162,10 @@
 /* CardGrid — responsive auto-fill grid wrapper */
 .nw-card-grid {
   display: grid;
+  /* WHY: as a flex item in a column Container, the grid's inline size resolves
+     late and Chrome sizes rows against a narrower width, making cards far taller
+     than their content (#21). */
+  width: 100%;
   grid-template-columns: repeat(auto-fill, minmax(var(--nw-card-grid-min, 280px), 1fr));
 }
 
