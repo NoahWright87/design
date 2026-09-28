@@ -12,6 +12,7 @@ Card groups related content into a visually distinct, rounded container. It supp
 - Optional image content rendered above the title.
 - Optional `href` for rendering the card as a fully clickable destination.
 - Optional title, subtitle, children content, and footer.
+- Optional title element: a heading level from two to six, or a plain block for a purely visual title. Defaults to a level-three heading.
 - Optional elevated flag for added visual prominence.
 - Optional interactive flag for hover-lift behavior.
 - Optional additional CSS class name and other HTML attributes to spread onto the card element.
@@ -35,6 +36,8 @@ A rounded, themed container holding the provided content sections. Elevated card
 ## Behavior
 
 **Default:** Content is statically displayed within the rounded container. No hover effects.
+
+**Title:** The title is set in the heading font and is a real heading (level three unless the consumer picks another level), so screen-reader users can jump between cards by heading. Its visual size and weight stay the same at every level, so choosing a level only changes the document outline. The expanded view uses the same element for its title.
 
 **Elevated:** The card appears more visually prominent — a stronger shadow gives the impression of higher elevation.
 
@@ -100,3 +103,4 @@ The expand button sits in the card's top-right corner as a small square icon but
 20. Pressing Escape, clicking the backdrop outside the expanded card, or clicking the shrink button collapses the expanded card back to its original position and size with a bouncy overshoot.
 21. The expand and collapse animations are skipped when the user prefers reduced motion; the card jumps directly between collapsed and expanded states.
 22. CardGrid fills its container's width, and inside a vertical Container its rows are as tall as the tallest card's content.
+23. The title renders in the heading font as a level-three heading by default, as the chosen heading level when one is given, and as a plain block when a plain title is chosen, looking the same in every case.

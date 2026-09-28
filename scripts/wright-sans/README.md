@@ -37,7 +37,7 @@ To review and hand-correct outlines, follow `.claude/commands/wright-sans-cleanu
 | `lint_glyphs.py` | Flags suspects (near-metric, near-axis, kinks, tiny segments…); `--fix` applies the mechanical fixes. |
 | `inspect_glyphs.py` | Renders outlines with nodes, handles and metrics, optionally over the source bitmap. |
 | `construct.py`, `recipes.py` | Rebuild tiny/noisy glyphs as clean strokes along a centerline. |
-| `build.py` | Stage 2: spacing, tabular figures, accented composites, derived glyphs, kerning → fonts. |
+| `build.py` | Stage 2: spacing, proportional + tabular figures, accented composites, derived glyphs, kerning → fonts. |
 | `proof.py` | Specimen render of the built fonts. |
 
 ## Glyph SVG format
@@ -49,8 +49,12 @@ run `trace.py --force --glyph NAME`. Say what you changed in `<desc>`.
 
 ## Design decisions baked into the build
 
-- **Figures are tabular (monospaced):** every digit has the same advance and
-  is centred in it.
+- **Figures are proportional by default:** each digit has its own advance with
+  even side bearings. Tabular copies (`zero.tf` … `nine.tf`, one shared advance,
+  centred) ship behind the OpenType `tnum` feature.
+- **Collision floor in kerning:** after the tightening kerns, any letter/digit
+  pair that comes closer than 60% of the target gap (90% where flat edges face
+  each other over several scanlines) is pushed apart with a positive kern.
 - Corners rounder than ~16 units (one source pixel) are kept round; tighter
   ones are treated as blur and made crisp.
 - The `i`/`j` dot is normalized to a crisp hexagon aligned with the stem, and

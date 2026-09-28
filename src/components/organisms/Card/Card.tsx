@@ -9,6 +9,7 @@ import "./card.css";
  */
 export type CardMediaPosition = "left" | "right" | "top";
 export type CardExpandedImagePosition = "top" | "between";
+export type CardTitleElement = "h2" | "h3" | "h4" | "h5" | "h6" | "div";
 type CardExpandPhase = "closed" | "opening" | "open" | "closing";
 
 export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
@@ -24,6 +25,12 @@ export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "titl
   href?: string;
   /** Optional card title. */
   title?: React.ReactNode;
+  /**
+   * Element the title renders as. Card titles are real headings by default so
+   * screen readers can navigate between cards; pick the level that fits the
+   * surrounding outline, or `"div"` for a purely visual title. Default: `"h3"`.
+   */
+  titleAs?: CardTitleElement;
   /** Optional subtitle below title. */
   subtitle?: React.ReactNode;
   /** Card content. */
@@ -91,6 +98,7 @@ export function Card({
   image,
   href,
   title,
+  titleAs: TitleTag = "h3",
   subtitle,
   children,
   elevated = true,
@@ -241,9 +249,9 @@ export function Card({
       {!isSideMedia && image ? <div className="nw-card__image">{image}</div> : null}
       {expandButton}
       {title ? (
-        <div className="nw-card__title" id={titleId}>
+        <TitleTag className="nw-card__title" id={titleId}>
           {title}
-        </div>
+        </TitleTag>
       ) : null}
       {subtitle ? <div className="nw-card__subtitle">{subtitle}</div> : null}
       {children ? (
@@ -340,9 +348,9 @@ export function Card({
             <div className="nw-card__image nw-card__image--expanded">{image}</div>
           ) : null}
           {title ? (
-            <div className="nw-card__title" id={expandedTitleId}>
+            <TitleTag className="nw-card__title" id={expandedTitleId}>
               {title}
-            </div>
+            </TitleTag>
           ) : null}
           {subtitle ? <div className="nw-card__subtitle">{subtitle}</div> : null}
           {children ? <div className="nw-card__content">{children}</div> : null}

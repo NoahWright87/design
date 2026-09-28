@@ -29,10 +29,10 @@ CAP = 700
 
 WEIGHTS = {
     # file stem: (style name, usWeightClass, straight side bearing, space width)
-    "regular": ("Regular", 400, 34, 230),
-    "semibold": ("SemiBold", 600, 33, 235),
-    "bold": ("Bold", 700, 32, 240),
-    "black": ("Black", 900, 30, 245),
+    "regular": ("Regular", 400, 42, 230),
+    "semibold": ("SemiBold", 600, 41, 235),
+    "bold": ("Bold", 700, 40, 240),
+    "black": ("Black", 900, 38, 245),
 }
 
 
@@ -200,14 +200,21 @@ def build_weight(stem):
     for ch in ".,:;-_'\"–()[]{}/\\":
         add(ch, glyphs[ch], sb=(base_sb * 1.1, base_sb * 1.1))
 
-    # --- tabular (monospaced) figures: one advance for all digits, each centred
+    # --- figures: the default digits keep their own spacing (proportional),
+    # which suits display sizes where equal-width slots leave a "1" looking
+    # gappy. Equal-width (tabular) copies ship as <name>.tf glyphs behind the
+    # OpenType `tnum` feature for tables, timers and counters.
     digits = "0123456789"
     tab = max(ubounds(final[d][0])[2] - ubounds(final[d][0])[0] for d in digits) + 2 * base_sb
     tab = round(tab)
+    extras = {}  # glyph name -> (contours, advance); glyphs reached only via features
     for d in digits:
         c = final[d][0]
         x0, _, x1, _ = ubounds(c)
-        final[d] = (shift(c, (tab - (x1 - x0)) / 2 - x0), tab)
+        extras[glyph_name(d) + ".tf"] = (shift(c, (tab - (x1 - x0)) / 2 - x0), tab)
+        # WHY: profile-based bearings tuck digits in around flags and bowls,
+        # which lets runs like "1111" touch; figures get plain, even bearings.
+        add(d, glyphs[d], sb=(base_sb, base_sb))
     metrics["tabular"] = tab
 
     # --- derived glyphs
@@ -286,19 +293,28 @@ def build_weight(stem):
     final[" "] = ([], space_w)
     final[" "] = ([], space_w)
 
-    return final, metrics, style, wclass
+    return final, extras, metrics, style, wclass
 
 
 # ------------------------------------------------------------- kerning
 KERN_LEFT = "AFKLPRTVWXYkrvwxyfo'\"’”.,"
 KERN_RIGHT = "AJTVWXYacdegoqsuvwxyO'\"’”.,-"
+# Pairs checked for collisions: overhanging arms (f, T, F) and diagonals can
+# otherwise meet their neighbour, e.g. the two f's in "Officer".
+COLLIDE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+# Closest approach between two glyphs, as a share of the target gap. Edges that
+# face each other flat (bar to bar, stem to stem) need nearly the full gap or
+# they read as one shape; diagonals meeting at a point can come closer.
+MIN_GAP_POINT = 0.6
+MIN_GAP_FLAT = 0.9
+FLAT_ROWS = 4  # scanlines (10 units each) within 5 units of the closest approach
 
 
 def kerning(final, base_sb):
     prof = {}
-    for ch in set(KERN_LEFT + KERN_RIGHT):
+    for ch in set(KERN_LEFT + KERN_RIGHT + COLLIDE):
         c, w = final[ch]
-        prof[ch] = ({round(r[0]): r for r in profile(c, -100, 800, step=10)}, w)
+        prof[ch] = ({round(r[0]): r for r in profile(c, -250, 850, step=10)}, w)
     pairs = {}
     target = 2 * base_sb * 0.95
     for a in KERN_LEFT:
@@ -318,6 +334,22 @@ def kerning(final, base_sb):
             k = round(k / 5) * 5
             if k <= -15:
                 pairs[(a, b)] = k
+
+    # collision floor: push apart any pair that comes closer than its minimum gap
+    for a in COLLIDE:
+        pa, wa = prof[a]
+        for b in COLLIDE:
+            pb, _ = prof[b]
+            dists = [wa - ra[2] + pb[y][1] for y, ra in pa.items()
+                     if ra[2] is not None and pb.get(y) is not None and pb[y][1] is not None]
+            if not dists:
+                continue
+            closest = min(dists)
+            flat = sum(1 for d in dists if d <= closest + 5) >= FLAT_ROWS
+            floor = (MIN_GAP_FLAT if flat else MIN_GAP_POINT) * target
+            k = round((floor - closest - pairs.get((a, b), 0)) / 5) * 5
+            if k >= 5:
+                pairs[(a, b)] = pairs.get((a, b), 0) + k
     return pairs
 
 
@@ -327,14 +359,15 @@ def glyph_name(ch):
     return UV2AGL.get(uv, f"uni{uv:04X}")
 
 
-def write_font(final, metrics, style, wclass, out_dir, pairs):
-    order = [".notdef"] + sorted({glyph_name(c) for c in final}, key=lambda n: (n != "space", n))
+def write_font(final, extras, metrics, style, wclass, out_dir, pairs):
+    by_name = {glyph_name(c): v for c, v in final.items()}
+    by_name.update(extras)
+    order = [".notdef"] + sorted(by_name, key=lambda n: (n != "space", n))
     cmap = {ord(c): glyph_name(c) for c in final}
     fb = FontBuilder(UPM, isTTF=False)
     fb.setupGlyphOrder(order)
     fb.setupCharacterMap(cmap)
     charstrings, widths = {}, {}
-    by_name = {glyph_name(c): v for c, v in final.items()}
 
     pen = T2CharStringPen(500, None)
     pen.moveTo((50, 0)); pen.lineTo((450, 0)); pen.lineTo((450, CAP)); pen.lineTo((50, CAP)); pen.closePath()
@@ -390,11 +423,19 @@ def write_font(final, metrics, style, wclass, out_dir, pairs):
         version=4,
     )
     fb.setupPost()
+    fea = "languagesystem DFLT dflt;\nlanguagesystem latn dflt;\n"
+    tabular = sorted(n for n in extras if n.endswith(".tf"))
+    if tabular:
+        fea += "feature tnum {\n"
+        for n in tabular:
+            fea += f"  sub {n[:-3]} by {n};\n"
+        fea += "} tnum;\n"
     if pairs:
-        fea = "languagesystem DFLT dflt;\nlanguagesystem latn dflt;\nfeature kern {\n"
+        fea += "feature kern {\n"
         for (a, b), k in sorted(pairs.items()):
             fea += f"  pos {glyph_name(a)} {glyph_name(b)} {k};\n"
         fea += "} kern;\n"
+    if tabular or pairs:
         addOpenTypeFeaturesFromString(fb.font, fea)
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -412,10 +453,10 @@ def main():
     out = HERE.parent.parent / "src" / "styles" / "fonts"
     only = sys.argv[1:] or list(WEIGHTS)
     for stem in only:
-        final, metrics, style, wclass = build_weight(stem)
+        final, extras, metrics, style, wclass = build_weight(stem)
         pairs = kerning(final, WEIGHTS[stem][2])
-        path = write_font(final, metrics, style, wclass, out, pairs)
-        print(f"{path.name}: {len(final)} glyphs, {len(pairs)} kern pairs, metrics {metrics}")
+        path = write_font(final, extras, metrics, style, wclass, out, pairs)
+        print(f"{path.name}: {len(final) + len(extras)} glyphs, {len(pairs)} kern pairs, metrics {metrics}")
 
 
 if __name__ == "__main__":

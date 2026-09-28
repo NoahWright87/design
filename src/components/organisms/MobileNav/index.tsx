@@ -26,8 +26,9 @@ export function MobileNav({ children, label = "Menu", closeOnNavigate = true }: 
 
   const handleContentClick = closeOnNavigate
     ? (event: React.MouseEvent<HTMLDivElement>) => {
-        const target = event.target as Element | null;
-        if (checkboxRef.current && target?.closest("a, button")) {
+        // WHY: the target can be a text node, which has no closest().
+        const target = event.target;
+        if (checkboxRef.current && target instanceof Element && target.closest("a, button")) {
           checkboxRef.current.checked = false;
         }
       }

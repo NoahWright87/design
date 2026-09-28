@@ -34,9 +34,10 @@
 }
 
 .nw-card__title {
+  font-family: var(--font-family-heading);
   font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin: 0 0 8px;
   line-height: 1.4;
 }
 

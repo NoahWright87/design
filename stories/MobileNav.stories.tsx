@@ -24,8 +24,16 @@ const links = (
   </>
 );
 
-/** Links sit inline on wide screens and collapse into a hamburger dropdown on phones. "Home" is marked as the current page. */
+/**
+ * Links sit inline on wide screens and collapse into a hamburger dropdown on phones. "Home" is marked as the
+ * current page. The dropdown anchors to the nearest positioned ancestor, so the nav sits in a positioned bar.
+ */
 export const Basic: Story = {
+  render: (args) => (
+    <div style={{ position: "relative", display: "flex", justifyContent: "flex-end", padding: 12 }}>
+      <MobileNav {...args} />
+    </div>
+  ),
   args: { label: "Menu", children: links },
 };
 

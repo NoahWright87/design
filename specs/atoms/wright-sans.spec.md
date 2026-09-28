@@ -22,18 +22,18 @@ Wright Sans is the design system's display typeface for headings. It is a wide, 
 ### Guarantees / Constraints
 - Character coverage includes the full basic Latin keyboard set, curly quotes, en and em dashes, ellipsis, middle dot, inverted exclamation and question marks, and accented vowels with grave, acute, tilde, and dieresis, plus ç and ñ in both cases.
 - Text stays readable while the font downloads: the browser shows the fallback font immediately and swaps in Wright Sans when it arrives.
-- Figures are tabular: every digit takes the same width, so numbers line up in columns and counters do not jitter as they change.
+- Figures are proportional by default, so years and numbers in headings set evenly with no gaps around narrow digits like "1". Equal-width (tabular) figures are available through the standard tabular-figures switch, for tables, timers, and counters that must line up or hold still as they change.
 - Each weight is a small download, suitable for loading all four without a noticeable cost.
 - Each glyph's outline lives in its own editable SVG file. Tracing from the specimen sheets produces the first draft; hand corrections are marked as edited and survive re-tracing. The glyph files, not the sheets, are the source of truth for the shipped shapes.
 
 ## Behavior
 Every heading, and any other element that uses the heading token, renders in Wright Sans. The browser picks the closest of the four weights for the requested font weight, so a bold heading gets the Bold drawing and a black-weight heading gets the Black drawing rather than a synthesized bold.
 
-Spacing is set tightly for display use: letters sit close together, the way they do on the specimen sheets. Common awkward pairs such as "AV", "To", and "L’" are kerned so that diagonal and overhanging letters tuck together.
+Spacing is set snugly for display use, close to the specimen sheets while leaving every pair a visible gap. Common awkward pairs such as "AV", "To", and "L’" are kerned so that diagonal and overhanging letters tuck together. Pairs that would otherwise meet, such as two f's whose crossbars face each other or a T beside another T, are pushed apart: flat edges facing each other keep nearly a full gap, while diagonals touching at a single point may sit a little closer.
 
 Characters outside the supported set fall back to the system sans-serif.
 
-Digits all share one width per weight and sit centred in it, so a "1" has generous space on both sides.
+Each digit takes its own width with even space on both sides. With tabular figures switched on, digits share one width per weight and sit centred in it.
 
 The pipeline cuts each specimen sheet into individual letters and traces them. It then rebuilds each outline from true straight lines and as few curves as possible. Corners become either crisp or cleanly round, depending on what the source shows. Edges are aligned to the shared baseline, x-height, cap-height, ascender and descender lines, and everything is written out as one editable file per glyph. A reviewer, human or agent, then compares every glyph against the source drawing, fixes what the tracer got wrong, and marks those glyphs as edited. Accent marks too small to trace cleanly are rebuilt as even strokes that match the traced shape. The build spaces letters from their side profiles, builds accented letters from the marks, and compiles the fonts.
 
@@ -48,7 +48,8 @@ The pipeline cuts each specimen sheet into individual letters and traces them. I
 3. `npm run build` emits the four web font files alongside the package stylesheet and the stylesheet references them.
 4. Every character listed under Guarantees renders from Wright Sans in each weight.
 5. Kerned pairs such as "AV" and "To" set visibly tighter than unkerned text.
-6. Every digit in a weight has the same advance width.
+6. By default digits have their own widths, so "2011–2026" sets without wide gaps around each "1"; with tabular figures switched on, every digit in a weight has the same advance width.
 7. Re-running the trace step leaves glyphs marked as edited untouched.
 8. Running the build from the glyph files reproduces the font files.
 9. Straight edges are single lines and round corners are single curves; the glyph lint reports no tiny segments or stray nodes.
+10. At display sizes, no two letters or digits touch with kerning on, including "ff", "TT", "ss", and "1111".

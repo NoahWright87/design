@@ -81,7 +81,7 @@ const characterRows = [
   '° ± × ÷ – — ‘ ’ “ ” • … −',
   'ÀÁÃÄÇÈÉËÌÍÏÑÒÓÕÖÙÚÜÝŸ',
   'àáãäçèéëìíïñòóõöùúüýÿ ¡¿',
-  '$1,024.50 · 12:45 · 1111 · 8080',
+  '$1,024.50 · 12:45 · 1111 · 8080 · 2011–2026',
 ];
 const sizeRamp = ['--text-xs', '--text-sm', '--text-md', '--text-lg', '--text-xl'];
 const displaySizes = ['2rem', '3rem', '4.5rem'];
@@ -174,6 +174,11 @@ export const Typefaces = () => (
             {characterRows.map((row) => (
               <div key={row}>{row}</div>
             ))}
+          </div>
+
+          <div style={{ ...labelStyle, marginTop: 24 }}>Tabular figures (font-variant-numeric: tabular-nums)</div>
+          <div style={{ fontFamily: family, fontSize: '2rem', lineHeight: 1.5, fontVariantNumeric: 'tabular-nums', overflowWrap: 'anywhere' }}>
+            $1,024.50 · 12:45 · 1111 · 8080 · 2011–2026
           </div>
 
           <div style={{ ...labelStyle, marginTop: 24 }}>Display sizes</div>
