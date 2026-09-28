@@ -54,6 +54,11 @@
   background: currentColor;
 }
 
+.nw-text-carousel__selection {
+  background: var(--primary);
+  color: var(--background);
+}
+
 @keyframes nw-text-carousel-blink {
   50% { opacity: 0; }
 }

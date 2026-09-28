@@ -11,6 +11,8 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **TextCarousel editing playground:** Added an editable Storybook preview with restart and typo frequency controls. Typewriter transitions cut and paste reordered words, repair rare typos, preserve shared casing/punctuation letters, and adjust dwell to phrase length and edit size.
+
 ## Version history
 
 ### v1.3.0

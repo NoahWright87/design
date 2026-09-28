@@ -15,20 +15,24 @@
 - Optional `similarityThreshold`: how similar two differing words must be, as a fraction of the longer word's length (Levenshtein distance ÷ longer word's length), to be corrected in place rather than treated as an unrelated word swap. Default `0.5`.
 
 ### Outputs
-An ordered array of frames. Each frame carries: the full text visible at that point in the transition, the character index into that text where the caret sits, and which kind of change produced it from the previous frame — see Interface for the full set. The first frame always equals `from` (caret at its end); the last frame always equals `to` (caret at its end).
+An ordered array of frames. Each frame carries the visible text, caret index, and action. Selection frames also carry the highlighted text range. The first frame equals `from` and the last frame equals `to`, each with the caret at its end.
 
 ### Guarantees / Constraints
 - Deterministic and pure: no timing, randomness, or side effects. Calling it twice with the same inputs returns identical output. Bakes in no delays — a caller drives the actual animation by stepping through the frames on its own clock, choosing a delay per frame from its action.
 - Words are compared at the whole-word level (whitespace-delimited), not character-by-character across the whole phrase — so "word" is the unit that either matches, partially matches, or doesn't.
-- A word present in both `from` and `to` is left untouched wherever it falls in the phrase — it does not need to be adjacent to other unchanged words, first, or last.
-- A word that differs from its counterpart but is similar enough to it (see `similarityThreshold`) is corrected in place: backspaced only down to their shared prefix, then retyped only past it — never fully cleared when part of it is already correct. Two words tying on alignment cost but not actually similar (e.g. sharing one incidental leading letter) are never paired this way — they're treated as an unrelated delete and insert instead.
+- A word kept in the same relative order is left untouched. A substantial word moved to a new position may be cut and pasted as one unit.
+- A word that differs from its counterpart but is similar enough to it is corrected in place. Shared prefix and suffix letters remain visible while the differing portion is edited.
 - Two phrases sharing no similar words at all still produce a valid transition: every word is deleted and every replacement word is typed, in an order consistent with a minimum-edit alignment (never reordering `from`'s words relative to each other, or `to`'s words relative to each other).
 - Two identical inputs produce a single frame equal to both (no edit needed).
-- The caret only ever moves one character at a time — by editing (typing or deleting) or by gliding with no text change — never jumping straight from one position to a distant one. Starting from the end of `from` (where a caret dwelling on a fully-typed phrase already sits), it works backward through the phrase, resolving each change completely as it reaches it, before gliding on to the next; it finishes with one more glide to the true end of `to`.
+- Caret glides and character edits advance by one Unicode code point. A cut or paste changes a whole selected word in one frame. The caret returns to the end of `to` after all edits.
 - Reconstructing text from partially-edited words never produces doubled or missing spaces between words, regardless of which words are mid-edit, freshly deleted, or not yet inserted — including while a multi-word run of wrong text is only partway deleted or a multi-word run of new text is only partway typed.
 - Prefix matching, per-frame slicing, and single-step caret movement all operate on Unicode code points, not raw UTF-16 code units — a surrogate-pair character (most emoji, including ones outside the Basic Multilingual Plane) is always treated as one indivisible unit, whether being typed, deleted, or glided past. Two different emoji can share a UTF-16 high surrogate without sharing a character; comparing at the code-unit level would misread that as a one-unit common prefix and produce a frame with an unpaired surrogate (renders as a broken glyph). Every frame's text is well-formed UTF-16 with no unpaired surrogate.
 
 ## Behavior
+
+**Moved word:** When a substantial word occurs once in each phrase but changes order, the caret selects it, cuts it in one beat, moves to its new position, and pastes it in one beat. A transition uses at most two such moves; remaining differences use the usual character edits. The selection grows over the word and stays visible until the cut.
+
+**Small surface changes:** Casing and trailing punctuation differences keep their shared letters in place. The caret edits the differing part of the word, including at its beginning when capitalization changes.
 
 **Matching words, anywhere:** Both phrases are split into words and aligned with a minimum-edit alignment: words that appear in both, in the same relative order, are kept as anchors and never touched, no matter where in the phrase they sit.
 
@@ -36,7 +40,7 @@ An ordered array of frames. Each frame carries: the full text visible at that po
 
 **Full word replacement:** A word with no similar counterpart in the other phrase is deleted in full or inserted in full, depending on which side it belongs to. A run of several consecutive such words (nothing anchoring them in between) is treated as one continuous stretch to clear and one continuous stretch to write, not as separate per-word actions.
 
-**Right-to-left resolution, no deferral:** The transition proceeds as a single trip starting from the caret's position at the end of `from`, working backward. Each change — an in-place word correction, or a run of wrong words to clear followed immediately by a run of new words to write in their place — is resolved completely as soon as it's reached, including typing anything new that belongs there, before the caret moves on. Nothing is held back for a later pass, even content that will end up at the very end of `to`.
+**Remaining edits:** After a word move, the caret returns to the end of the intermediate phrase. Character edits then work backward from there, resolving each change when reached. Transitions without a move retain their existing right-to-left sequence.
 
 **Gliding, not jumping:** Between one resolved change and the next, the caret moves through whatever's already correct one character at a time, without altering it — quick relative to actual typing, since nothing is being composed. This includes crossing a word already fixed by an earlier step in the same transition.
 
@@ -51,6 +55,9 @@ An ordered array of frames. Each frame carries: the full text visible at that po
 - `"delete"` / `"insert"` — a character removed from or added to a wholly new/unwanted word (a gap with nothing to preserve at that position).
 - `"editDelete"` / `"editInsert"` — the same, but on a word being corrected in place (it's similar enough to its replacement). Kept distinct from `"delete"`/`"insert"` because a real correction reads as more effortful than fresh typing — callers typically drive these at a different pace (see `useTypewriter`'s `editTypingSpeed`/`editDeletingSpeed`).
 - `"move"` — the caret gliding one character to relocate, with no text change.
+- `"select"` — a highlighted range grows over a word, one Unicode code point at a time.
+- `"cut"` / `"paste"` — the selected word leaves or appears in one frame.
+- `"typoInsert"` / `"typoDelete"` — optional temporary wrong-key frames inserted by `addTypingMistakes`, followed by the intended letter.
 - `"pause"` / `"editPause"` — the caret holding still immediately before a fresh (`"pause"`) or in-place-correction (`"editPause"`) action begins.
 
 ### Usage
@@ -63,18 +70,24 @@ const frames = buildTypewriterFrames("Software engineer", "Software builder");
 ```
 A caller (see `useTypewriter`) steps through the array on its own timer, picking a per-frame delay from `action`.
 
+`addTypingMistakes` can add at most one wrong-key insertion and repair to a frame sequence. Its caller supplies the chance and may supply a random source for repeatable tests. `buildTypewriterFrames` itself remains deterministic.
+
 ### Word matching, not fuzzy text matching
-Only whole words are compared for equality and for in-place-correction eligibility — the function does not attempt character-level diffing across word boundaries or reorder words to find a better alignment; alignment always preserves each phrase's own word order.
+Whole words are compared for alignment. A substantial shared word left unmatched by that alignment can move when cutting and pasting it reduces the remaining character edits. Casing and outer punctuation can differ while the shared letters remain candidates for a localized correction.
 
 ## Acceptance
 1. `buildTypewriterFrames(x, x)` returns exactly one frame: `{ text: x, cursor: x.length, action: "start" }`.
-2. A word identical in `from` and `to`, regardless of position, never appears as the subject of a `"delete"`/`"insert"`/`"editDelete"`/`"editInsert"` frame — it is present unchanged in every frame's `text`.
-3. Two differing words within `similarityThreshold` of each other produce `"editDelete"` frames only down to their shared prefix (never fewer characters remain of the old word than the prefix), followed by `"editInsert"` frames only for the remainder of the new word.
+2. A shared word kept in order remains present unchanged through the transition; a qualifying moved word is cut and pasted as one unit.
+3. Similar words edit only the portion between their shared prefix and suffix.
 4. Two differing words further apart than `similarityThreshold` never produce `"editDelete"`/`"editInsert"` frames for that pair, even if aligning them as an edit would tie on raw character-count cost with treating them separately.
 5. Two phrases with no similar words still produce a complete, correct transition: the final frame's text equals `to` exactly.
 6. Every frame's `text`, when whitespace-normalized, contains no doubled spaces and no missing space between two adjacent words — including mid-transition, while a multi-word gap is only partway cleared or written.
 7. The first frame always has `text === from`; the last frame always has `text === to` with `cursor === to.length`.
-8. Every consecutive pair of frames has `cursor` values exactly one code point apart in `text` — never equal (a no-op frame) and never differing by more than one character's worth of UTF-16 units.
+8. Character edit, glide, and selection frames move the caret by one Unicode code point. Cut and paste frames change a whole word at once.
 9. Calling the function twice with the same `from`/`to` (and the same `similarityThreshold`) produces two identical frame arrays (no randomness).
 10. No frame's `text` ever contains an unpaired UTF-16 surrogate, even when `from` and `to` contain surrogate-pair characters (emoji) that happen to share a UTF-16 code unit without being the same character, and even while the caret glides across one.
 11. Given a phrase with a change near the end and another near the front and nothing salvageable at either end (e.g. "I type words for a living" -> "Probably typing a word right now"), the run of new words belonging at the very end of `to` appears in the frame sequence before the front-of-phrase change is resolved — confirming changes are resolved in the order the caret reaches them (right to left from its starting position), not deferred to a final pass.
+12. A qualifying reordered word produces selection, cut, and paste frames, with no character-by-character retyping of that word.
+13. Casing and trailing punctuation differences produce localized edits that preserve the shared letters.
+14. Given a forced mistake, the extra frames type a wrong letter, delete it, and continue to the exact original target.
+15. A three-word reversal can move two substantial words and settle on the exact target phrase.

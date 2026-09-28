@@ -14,7 +14,7 @@ export interface TextCarouselProps {
   animation?: TextCarouselAnimation;
   /** HTML element to render as. Default `"span"`. */
   as?: keyof JSX.IntrinsicElements;
-  /** Milliseconds each item stays fully visible before transitioning onward. Default `2500`. */
+  /** Visible interval for fades, and baseline dwell adjusted by phrase length and edit size for typewriter. Default `2500`. */
   interval?: number;
   /** Milliseconds the fade itself takes. Applies to `"crossfade"` and `"sequential"` only. Default `350`. */
   transitionDuration?: number;
@@ -52,8 +52,8 @@ export interface TextCarouselProps {
    */
   moveSpeed?: number;
   /**
-   * Randomizes `interval` (used as the dwell time between typing and deleting) by up to
-   * this fraction in either direction, so not every word lingers for the same beat.
+   * Randomizes the phrase-adjusted typewriter dwell by up to this fraction in either
+   * direction, so not every phrase lingers for the same beat.
    * Applies to `"typewriter"` only. Default `0.5`.
    */
   dwellJitter?: number;
@@ -74,6 +74,8 @@ export interface TextCarouselProps {
    * `"typewriter"` only. Default `0.5`.
    */
   similarityThreshold?: number;
+  /** Chance per typed letter of a temporary typo in typewriter mode. Default `0.008`. */
+  typoChance?: number;
   /** Pause the rotation while hovered. Default `true`. */
   pauseOnHover?: boolean;
   /** Additional CSS class name. */
@@ -96,6 +98,7 @@ interface AnimationProps {
   pauseBeforeTyping: number;
   editPauseBeforeTyping: number | undefined;
   similarityThreshold: number | undefined;
+  typoChance: number | undefined;
   isPaused: boolean;
   hoverHandlers: Pick<React.HTMLAttributes<HTMLElement>, "onMouseEnter" | "onMouseLeave">;
   className: string;
@@ -204,11 +207,12 @@ function TypewriterText({
   pauseBeforeTyping,
   editPauseBeforeTyping,
   similarityThreshold,
+  typoChance,
   isPaused,
   hoverHandlers,
   className,
 }: AnimationProps) {
-  const { text, cursor, isDwelling } = useTypewriter(items, {
+  const { text, cursor, selection, isDwelling } = useTypewriter(items, {
     typingSpeed,
     typingSpeedJitter,
     deletingSpeed,
@@ -221,6 +225,7 @@ function TypewriterText({
     pauseBeforeTyping,
     editPauseBeforeTyping,
     similarityThreshold,
+    typoChance,
     isPaused,
   });
 
@@ -237,7 +242,12 @@ function TypewriterText({
               className={`nw-text-carousel__cursor${isDwelling || isPaused ? " nw-text-carousel__cursor--blink" : ""}`}
               aria-hidden="true"
             />
-            {text.slice(cursor)}
+            {selection ? (
+              <>
+                <span className="nw-text-carousel__selection">{text.slice(selection[0], selection[1])}</span>
+                {text.slice(selection[1])}
+              </>
+            ) : text.slice(cursor)}
           </>
         }
       />
@@ -268,6 +278,7 @@ export function TextCarousel({
   pauseBeforeTyping = 400,
   editPauseBeforeTyping,
   similarityThreshold,
+  typoChance,
   pauseOnHover = true,
   className = "",
 }: TextCarouselProps) {
@@ -296,6 +307,7 @@ export function TextCarousel({
     pauseBeforeTyping,
     editPauseBeforeTyping,
     similarityThreshold,
+    typoChance,
     isPaused,
     hoverHandlers,
     className,

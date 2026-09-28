@@ -6,21 +6,27 @@ export type TypewriterFrameAction =
   | "insert"
   | "delete"
   | "editInsert"
-  | "editDelete";
+  | "editDelete"
+  | "select"
+  | "cut"
+  | "paste"
+  | "typoInsert"
+  | "typoDelete";
 
 export interface TypewriterFrame {
   /** The full text visible at this point in the transition. */
   text: string;
   /** Index into `text` where the caret sits. */
   cursor: number;
+  /** Highlighted UTF-16 range while a word is being selected for a move. */
+  selection?: [start: number, end: number];
   /**
    * What kind of change produced this frame from the one before it. `"insert"`/`"delete"`
    * are wholly new/removed words (no counterpart in the other phrase); `"editInsert"`/
    * `"editDelete"` are the same actions but on a word being edited in place (it shares a
    * prefix with its replacement) — real typing corrections read as more effortful than
-   * fresh typing, so a caller typically drives these at a different pace. `"move"` is the
-   * caret relocating with no text change; `"pause"`/`"editPause"` are it holding still
-   * immediately before a fresh/edit action begins.
+   * fresh typing, so a caller typically drives these at a different pace. `"move"` relocates
+   * the caret; selection and cut/paste reuse a word; typo actions briefly show a wrong key.
    */
   action: TypewriterFrameAction;
 }
@@ -58,6 +64,17 @@ function commonPrefixLength(a: string[], b: string[]): number {
   let i = 0;
   while (i < max && a[i] === b[i]) i++;
   return i;
+}
+
+function commonSuffixLength(a: string[], b: string[], prefix: number): number {
+  const max = Math.min(a.length, b.length) - prefix;
+  let i = 0;
+  while (i < max && a[a.length - 1 - i] === b[b.length - 1 - i]) i++;
+  return i;
+}
+
+function wordKey(word: string): string {
+  return word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "").toLowerCase();
 }
 
 /** Levenshtein edit distance between two code-point arrays. */
@@ -131,8 +148,9 @@ function alignWords(a: string[], b: string[], similarityThreshold: number): Word
       const A = a[i - 1];
       const B = b[j - 1];
       const prefix = commonPrefixLength(aCp[i - 1], bCp[j - 1]);
-      const canPair = A === B || areSimilarEnough(aCp[i - 1], bCp[j - 1], similarityThreshold);
-      const subCost = A === B ? 0 : aCp[i - 1].length - prefix + (bCp[j - 1].length - prefix);
+      const canPair = A === B || (wordKey(A) === wordKey(B) && wordKey(A).length > 0) || areSimilarEnough(aCp[i - 1], bCp[j - 1], similarityThreshold);
+      const suffix = commonSuffixLength(aCp[i - 1], bCp[j - 1], prefix);
+      const subCost = A === B ? 0 : aCp[i - 1].length - prefix - suffix + (bCp[j - 1].length - prefix - suffix);
       const diag = canPair ? dp[i - 1][j - 1] + subCost : Infinity;
       const up = dp[i - 1][j] + aCp[i - 1].length;
       const left = dp[i][j - 1] + bCp[j - 1].length;
@@ -209,10 +227,8 @@ function buildSegments(ops: WordOp[]): Segment[] {
 /**
  * Builds the frame-by-frame transition from `from` to `to`, editing only the words that
  * actually differ, wherever in the phrase they fall — rather than clearing the whole
- * thing and retyping it. A word present in both stays put untouched; a changed word
- * similar enough to its replacement (e.g. "build" -> "builder") is backspaced and
- * retyped only past their shared prefix. Falls back to a plain clear-and-retype when
- * nothing in `from` and `to` has anything in common.
+ * thing and retyping it. A shared word stays in place or moves as a unit; similar words
+ * preserve their common prefix and suffix during a localized correction.
  *
  * Mimics how a person actually edits text rather than clearing and retyping everything:
  * starting from the caret's current position (the end of `from`), it resolves each
@@ -227,7 +243,7 @@ function buildSegments(ops: WordOp[]): Segment[] {
  * through the returned frames on its own clock, picking a delay per frame from its
  * `action`.
  */
-export function buildTypewriterFrames(
+function buildBaseFrames(
   from: string,
   to: string,
   options: TypewriterDiffOptions = {}
@@ -313,22 +329,25 @@ export function buildTypewriterFrames(
       const fromCp = toCodePoints(wFrom);
       const toCp = toCodePoints(wTo);
       const prefix = commonPrefixLength(fromCp, toCp);
+      const suffix = commonSuffixLength(fromCp, toCp, prefix);
+      const keptEnd = suffix > 0 ? fromCp.slice(-suffix).join("") : "";
 
       const start = render(idx);
-      glideTo(start);
-      frames.push({ ...start, action: "editPause" });
+      const editStart = { text: start.text, cursor: start.cursor - keptEnd.length };
+      glideTo(editStart);
+      frames.push({ ...editStart, action: "editPause" });
 
-      for (let n = fromCp.length - 1; n >= prefix; n--) {
-        slots[idx] = fromCp.slice(0, n).join("");
+      for (let n = fromCp.length - suffix - 1; n >= prefix; n--) {
+        slots[idx] = fromCp.slice(0, n).join("") + keptEnd;
         const frame = render(idx);
-        frames.push({ ...frame, action: "editDelete" });
-        cursor = frame.cursor;
+        cursor = frame.cursor - keptEnd.length;
+        frames.push({ text: frame.text, cursor, action: "editDelete" });
       }
-      for (let n = prefix + 1; n <= toCp.length; n++) {
-        slots[idx] = toCp.slice(0, n).join("");
+      for (let n = prefix + 1; n <= toCp.length - suffix; n++) {
+        slots[idx] = toCp.slice(0, n).join("") + keptEnd;
         const frame = render(idx);
-        frames.push({ ...frame, action: "editInsert" });
-        cursor = frame.cursor;
+        cursor = frame.cursor - keptEnd.length;
+        frames.push({ text: frame.text, cursor, action: "editInsert" });
       }
       continue;
     }
@@ -370,6 +389,131 @@ export function buildTypewriterFrames(
   glideTo({ text: to, cursor: to.length });
   frames.push({ text: to, cursor: to.length, action: "pause" });
   return frames;
+}
+
+function editCost(frames: TypewriterFrame[]): number {
+  return frames.filter((frame) => ["insert", "delete", "editInsert", "editDelete"].includes(frame.action)).length;
+}
+
+type Move = { sourceIndex: number; destinationIndex: number; word: string; result: string; cost: number };
+
+function findMove(from: string, to: string, similarityThreshold: number): Move | null {
+  if (splitWords(from).join(" ") !== from || splitWords(to).join(" ") !== to) return null;
+  const source = splitWords(from);
+  const target = splitWords(to);
+  const baseline = editCost(buildBaseFrames(from, to, { similarityThreshold }));
+  let best: Move | null = null;
+  for (let sourceIndex = 0; sourceIndex < source.length; sourceIndex++) {
+    const word = source[sourceIndex];
+    const key = wordKey(word);
+    if (toCodePoints(key).length <= 3) continue;
+    if (source.filter((word) => wordKey(word) === key).length !== 1 || target.filter((word) => wordKey(word) === key).length !== 1) continue;
+    if (target.findIndex((candidate) => wordKey(candidate) === key) === sourceIndex) continue;
+    const remaining = source.filter((_, index) => index !== sourceIndex);
+    for (let destinationIndex = 0; destinationIndex <= remaining.length; destinationIndex++) {
+      const reordered = [...remaining];
+      reordered.splice(destinationIndex, 0, word);
+      const result = reordered.join(" ");
+      if (result === from) continue;
+      const aligned = alignWords(reordered, target, similarityThreshold);
+      if (!aligned.some((op) => (op.kind === "equal" && op.word === word) || (op.kind === "substitute" && op.from === word && wordKey(op.to) === key))) continue;
+      const cost = editCost(buildBaseFrames(result, to, { similarityThreshold }));
+      if (baseline - cost < 3 || (best && cost >= best.cost)) continue;
+      best = { sourceIndex, destinationIndex, word, result, cost };
+    }
+  }
+  return best;
+}
+
+/** Build a selection, cut, caret move, and paste before the remaining character edits. */
+function buildMoveFrames(from: string, to: string, options: TypewriterDiffOptions, movesLeft: number): TypewriterFrame[] {
+  const similarityThreshold = options.similarityThreshold ?? DEFAULT_SIMILARITY_THRESHOLD;
+  const move = movesLeft > 0 ? findMove(from, to, similarityThreshold) : null;
+  if (!move) return buildBaseFrames(from, to, options);
+
+  const words = splitWords(from);
+  const start = words.slice(0, move.sourceIndex).join(" ").length + (move.sourceIndex > 0 ? 1 : 0);
+  const end = start + move.word.length;
+  const frames: TypewriterFrame[] = [{ text: from, cursor: from.length, action: "start" }];
+  let cursor = from.length;
+  function glide(text: string, destination: number) {
+    while (cursor !== destination) {
+      if (cursor > destination) {
+        const code = text.charCodeAt(cursor - 1);
+        cursor -= code >= 0xdc00 && code <= 0xdfff ? 2 : 1;
+      } else {
+        const code = text.charCodeAt(cursor);
+        cursor += code >= 0xd800 && code <= 0xdbff ? 2 : 1;
+      }
+      frames.push({ text, cursor, action: "move" });
+    }
+  }
+  glide(from, end);
+  const codePoints = toCodePoints(move.word);
+  for (let count = 1; count <= codePoints.length; count++) {
+    cursor = end - codePoints.slice(-count).join("").length;
+    frames.push({ text: from, cursor, selection: [cursor, end], action: "select" });
+  }
+  const remaining = words.filter((_, index) => index !== move.sourceIndex);
+  const cutText = remaining.join(" ");
+  cursor = Math.min(start, cutText.length);
+  frames.push({ text: cutText, cursor, action: "cut" });
+  const insertion = move.destinationIndex === remaining.length
+    ? cutText.length
+    : remaining.slice(0, move.destinationIndex).join(" ").length + (move.destinationIndex > 0 ? 1 : 0);
+  glide(cutText, insertion);
+  cursor = insertion + move.word.length;
+  frames.push({ text: move.result, cursor, action: "paste" });
+  glide(move.result, move.result.length);
+  const remainder = buildMoveFrames(move.result, to, options, movesLeft - 1);
+  frames.push(...remainder.slice(1));
+  if (remainder.length === 1) frames.push({ text: to, cursor: to.length, action: "pause" });
+  return frames;
+}
+
+export function buildTypewriterFrames(from: string, to: string, options: TypewriterDiffOptions = {}): TypewriterFrame[] {
+  return buildMoveFrames(from, to, options, 2);
+}
+
+const KEY_NEIGHBORS: Record<string, string> = {
+  a: "sq", b: "vn", c: "xv", d: "sf", e: "wr", f: "dg", g: "fh", h: "gj", i: "uo",
+  j: "hk", k: "jl", l: "k", m: "n", n: "bm", o: "ip", p: "o", q: "w", r: "et",
+  s: "ad", t: "ry", u: "yi", v: "cb", w: "qe", x: "zc", y: "tu", z: "x",
+};
+
+/** Add at most one temporary wrong letter and its repair to a transition. */
+export function addTypingMistakes(
+  frames: TypewriterFrame[],
+  chance: number,
+  random: () => number = Math.random
+): TypewriterFrame[] {
+  if (chance <= 0) return frames;
+  const result: TypewriterFrame[] = [];
+  let madeMistake = false;
+  for (const frame of frames) {
+    if (!madeMistake && (frame.action === "insert" || frame.action === "editInsert")) {
+      const index = frame.cursor - 1;
+      const intended = frame.text[index];
+      const neighbors = KEY_NEIGHBORS[intended?.toLowerCase()];
+      if (neighbors && random() < chance) {
+        const wrong = neighbors[Math.floor(random() * neighbors.length)];
+        const letter = intended === intended.toUpperCase() ? wrong.toUpperCase() : wrong;
+        result.push({
+          text: frame.text.slice(0, index) + letter + frame.text.slice(index + 1),
+          cursor: frame.cursor,
+          action: "typoInsert",
+        });
+        result.push({
+          text: frame.text.slice(0, index) + frame.text.slice(index + 1),
+          cursor: index,
+          action: "typoDelete",
+        });
+        madeMistake = true;
+      }
+    }
+    result.push(frame);
+  }
+  return result;
 }
 
 export default buildTypewriterFrames;
