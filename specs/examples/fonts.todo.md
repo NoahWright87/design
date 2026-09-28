@@ -5,7 +5,7 @@
 
 ## Later
 - [ ] Editable sample text so reviewers can preview their own words in each typeface.
-- [ ] Weight ramp in each specimen once a typeface ships more than one weight.
+- [x] Weight ramp in each specimen once a typeface ships more than one weight.
 
 ## Backlog
-- [ ] Side-by-side comparison of two typefaces.
+- [x] Side-by-side comparison of typefaces (Comparison page).
