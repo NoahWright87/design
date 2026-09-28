@@ -1,3 +1,38 @@
+/* === Fonts === */
+/* Wright Sans: display face for headings, traced from the specimen sheets in
+   scripts/wright-sans/ (rebuild with scripts/wright-sans/build.py). */
+@font-face {
+  font-family: "Wright Sans";
+  src: url("./fonts/WrightSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Wright Sans";
+  src: url("./fonts/WrightSans-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Wright Sans";
+  src: url("./fonts/WrightSans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Wright Sans";
+  src: url("./fonts/WrightSans-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Colors */
   --foreground: #111111;
@@ -21,6 +56,7 @@
   --text-md: 1rem;
   --text-lg: 1.125rem;
   --text-xl: 1.25rem;
+  --font-heading: "Wright Sans", system-ui, sans-serif;
 
   /* Border radius */
   --radius: 0.5rem;

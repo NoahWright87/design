@@ -29,6 +29,11 @@ export const typographyTokens = [
   '--text-xl',
 ] as const;
 
+// Font family tokens
+export const fontTokens = [
+  '--font-heading',
+] as const;
+
 // Border radius token
 export const radiusToken = '--radius' as const;
 

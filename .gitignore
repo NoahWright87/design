@@ -6,6 +6,7 @@ storybook-static
 .idea
 *.tgz
 .tmp/
+__pycache__/
 
 # Local AI assistant settings
 .claude/**/settings.local.json

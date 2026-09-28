@@ -1,0 +1,6 @@
+fonttools[woff]==4.66.0
+numpy==2.4.6
+pillow==12.3.0
+potracer==0.0.4
+scipy==1.17.1
+shapely==2.1.2
