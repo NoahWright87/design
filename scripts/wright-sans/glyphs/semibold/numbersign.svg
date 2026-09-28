@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 602 1325" data-status="traced" data-unicode="0023">
+  <title>semibold numbersign (#)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="552" y1="223" y2="223"/>
+    <line x1="-50" x2="552" y1="0" y2="0"/>
+    <line x1="-50" x2="552" y1="-526" y2="-526"/>
+    <line x1="-50" x2="552" y1="-700" y2="-700"/>
+    <line x1="-50" x2="552" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M53 25 L77 166 L3 166 L3 259 C3 268 10 276 20 276 L100 276 L120 394 L58 394 C50 394 44 400 44 408 L44 509 L140 509 L172 661 L256 661 C267 661 275 656 274 650 L252 517 L257 512 C266 506 319 503 323 519 L353 661 L442 661 C452 661 459 652 457 643 L427 509 L490 509 C496 509 502 501 502 492 L502 394 L409 394 L387 276 L468 276 L468 166 L368 166 L338 20 L329 15 L324 0 L249 0 L235 31 L257 157 L251 162 C241 168 192 172 188 156 L161 21 C159 9 153 0 149 0 L62 0 C55 0 51 12 53 25 Z
+    M278 284 L298 382 C300 396 229 403 226 383 L210 285 C208 274 276 273 278 284 Z"/>
+</svg>

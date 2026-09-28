@@ -44,11 +44,10 @@ This page is a developer and designer reference tool, not a user-facing feature.
 ## Acceptance
 1. The Roles page shows one sample per font role: body, headings, and code.
 2. Each role sample displays the role name, token name, text set in that role's font, and the resolved font stack.
-3. The Typefaces page shows a specimen for Wright Sans.
+3. The Typefaces page shows a specimen for Wright Sans, marked as in use, with a weight ramp of its four weights.
 4. Each specimen shows the typeface name, role, weights, notes, character set, display sizes, type scale, and an in-context sample.
 5. Adding an entry to the typeface list adds a new specimen and a new line in every comparison sample.
 6. Missing or unresolved role tokens display a graceful fallback.
 7. All three pages follow the active light or dark theme.
-8. The Typefaces page shows a specimen for the Claude-traced Wright Sans candidate, marked as a candidate, with a weight ramp of its four weights.
-9. The Comparison page sets every sample in both the ChatGPT draft and the Claude trace at the same size and weight.
-10. Candidate fonts render on these pages while the published stylesheet contains only the fonts in use.
+8. The Comparison page sets every sample in every typeface on the list, fonts in use and candidates alike, at the same size and weight.
+9. Candidate fonts render on these pages while the published stylesheet contains only the fonts in use.

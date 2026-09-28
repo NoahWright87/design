@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1050 705 1358" data-status="traced" data-unicode="0038">
+  <title>bold eight (8)</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="655" y1="228" y2="228"/>
+    <line x1="-50" x2="655" y1="0" y2="0"/>
+    <line x1="-50" x2="655" y1="-547" y2="-547"/>
+    <line x1="-50" x2="655" y1="-700" y2="-700"/>
+    <line x1="-50" x2="655" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M2 112 L2 286 C2 323 59 355 54 362 L25 404 C19 413 15 422 15 429 L15 594 C15 638 93 700 135 700 L485 700 C526 700 594 638 595 597 L595 525 L595 435 C595 427 590 416 581 404 L549 365 L554 354 C571 338 605 309 605 284 L605 119 C605 78 555 0 509 0 L105 0 Z
+    M422 173 L422 266 C422 280 414 292 405 292 L210 292 C198 292 188 282 188 269 L188 146 L406 146 C415 146 422 158 422 173 Z
+    M416 437 L416 528 C416 540 406 549 394 549 L212 549 C203 549 195 542 195 533 L195 440 C195 428 205 419 216 419 L397 419 C407 419 416 427 416 437 Z"/>
+</svg>

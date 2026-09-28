@@ -1,10 +1,35 @@
-/* Wright Sans: the signature heading font. It ships in one weight, so the
-   weight range makes every heading weight use it as drawn instead of a
-   browser faux bold. Characters it lacks (e.g. accents) fall back to --font-family. */
+/* === Fonts === */
+/* Wright Sans: the heading typeface, traced from the specimen sheets in
+   scripts/wright-sans/ (rebuild with scripts/wright-sans/build.py). Browsers
+   download only the weights a page uses. */
 @font-face {
   font-family: "Wright Sans";
   src: url("./fonts/WrightSans-Regular.woff2") format("woff2");
-  font-weight: 100 900;
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Wright Sans";
+  src: url("./fonts/WrightSans-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Wright Sans";
+  src: url("./fonts/WrightSans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Wright Sans";
+  src: url("./fonts/WrightSans-Black.woff2") format("woff2");
+  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }

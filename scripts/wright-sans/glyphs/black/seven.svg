@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 693 1345" data-status="traced" data-unicode="0037">
+  <title>black seven (7)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="643" y1="207" y2="207"/>
+    <line x1="-50" x2="643" y1="0" y2="0"/>
+    <line x1="-50" x2="643" y1="-550" y2="-550"/>
+    <line x1="-50" x2="643" y1="-700" y2="-700"/>
+    <line x1="-50" x2="643" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M80 0 L213 248 L16 248 L16 395 C16 404 24 411 33 411 L301 411 L366 520 L32 520 C24 520 16 532 16 547 L16 700 L566 700 C581 700 593 688 593 673 L593 546 L518 410 L593 403 L593 279 C593 262 579 248 562 248 L430 248 L295 0 Z"/>
+</svg>

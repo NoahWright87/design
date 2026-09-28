@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 759 1325" data-status="traced" data-unicode="0044">
+  <title>semibold D_ (D)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="709" y1="223" y2="223"/>
+    <line x1="-50" x2="709" y1="0" y2="0"/>
+    <line x1="-50" x2="709" y1="-526" y2="-526"/>
+    <line x1="-50" x2="709" y1="-700" y2="-700"/>
+    <line x1="-50" x2="709" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 21 L1 638 C1 654 35 700 51 700 L528 700 C583 700 659 610 659 557 L659 153 C659 94 571 21 516 21 Z
+    M466 212 L466 510 C466 527 452 541 435 541 L194 541 L194 183 L437 183 C453 183 466 196 466 212 Z"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-166 -1030 333 1334" data-status="edited">
+  <title>regular cedilla.cap</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected. Constructed by recipes.py (cedilla, stroke 300).</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-166" x2="167" y1="224" y2="224"/>
+    <line x1="-166" x2="167" y1="0" y2="0"/>
+    <line x1="-166" x2="167" y1="-535" y2="-535"/>
+    <line x1="-166" x2="167" y1="-700" y2="-700"/>
+    <line x1="-166" x2="167" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M117 -74 L117 -134 C117 -178 81 -214 37 -214 L-116 -214 L-116 -136 L32 -136 C42 -136 45 -76 30 -76 L-53 -76 L-53 2 L47 2 C74 2 117 -48 117 -74 Z"/>
+</svg>

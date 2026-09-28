@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 501 1345" data-status="traced" data-unicode="007B">
+  <title>black braceleft ({)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="451" y1="207" y2="207"/>
+    <line x1="-50" x2="451" y1="0" y2="0"/>
+    <line x1="-50" x2="451" y1="-550" y2="-550"/>
+    <line x1="-50" x2="451" y1="-700" y2="-700"/>
+    <line x1="-50" x2="451" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M104 -13 L104 224 C104 240 92 252 77 252 L1 252 L1 408 L83 408 C95 408 104 422 104 433 L104 654 C104 681 184 756 210 756 L369 756 C387 756 401 748 401 739 L401 650 C401 640 394 633 385 632 L305 623 C293 621 284 611 284 599 L284 404 C284 384 245 354 228 345 L216 330 L257 295 C274 280 284 265 284 252 L284 33 C284 23 296 16 312 13 L401 0 L401 -119 L223 -119 C180 -119 104 -56 104 -13 Z"/>
+</svg>

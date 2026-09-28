@@ -14,7 +14,7 @@
   "files": [
     "dist",
     "src/styles/theme.css",
-    "src/styles/fonts",
+    "src/styles/fonts/*.woff2",
     "README.md"
   ],
   "exports": {

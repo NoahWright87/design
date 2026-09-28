@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 663 1334" data-status="traced" data-unicode="0038">
+  <title>regular eight (8)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="613" y1="224" y2="224"/>
+    <line x1="-50" x2="613" y1="0" y2="0"/>
+    <line x1="-50" x2="613" y1="-535" y2="-535"/>
+    <line x1="-50" x2="613" y1="-700" y2="-700"/>
+    <line x1="-50" x2="613" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 79 L1 271 C1 294 6 311 15 320 L50 356 L49 363 L10 424 L10 597 C10 634 61 673 92 683 L98 700 L446 700 L452 700 C488 695 553 645 553 602 L553 425 C553 402 502 374 506 357 C513 333 563 318 563 284 L563 93 C563 66 501 0 479 0 L86 0 C64 0 1 55 1 79 Z
+    M427 141 L427 273 C427 289 414 301 399 301 L159 301 C144 301 133 290 133 275 L133 146 C133 131 145 119 161 119 L404 119 C417 119 427 128 427 141 Z
+    M421 437 L421 548 C421 560 411 571 398 571 L169 571 C156 571 145 560 145 547 L145 439 C145 422 159 409 176 409 L372 409 C399 409 421 421 421 437 Z"/>
+</svg>

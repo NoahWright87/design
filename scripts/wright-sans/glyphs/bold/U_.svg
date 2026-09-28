@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1050 794 1358" data-status="traced" data-unicode="0055">
+  <title>bold U_ (U)</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="744" y1="228" y2="228"/>
+    <line x1="-50" x2="744" y1="0" y2="0"/>
+    <line x1="-50" x2="744" y1="-547" y2="-547"/>
+    <line x1="-50" x2="744" y1="-700" y2="-700"/>
+    <line x1="-50" x2="744" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M21 75 L3 123 L0 126 L0 662 C0 683 17 700 38 700 L212 700 L212 206 C212 194 222 184 234 184 L463 184 C475 184 484 193 484 205 L484 700 L680 700 C687 700 694 690 694 679 L694 127 C694 72 637 0 587 0 L582 0 L114 0 L108 0 C77 10 32 42 21 75 Z"/>
+</svg>

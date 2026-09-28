@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 644 1345" data-status="traced" data-unicode="004A">
+  <title>black J_ (J)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="594" y1="207" y2="207"/>
+    <line x1="-50" x2="594" y1="0" y2="0"/>
+    <line x1="-50" x2="594" y1="-550" y2="-550"/>
+    <line x1="-50" x2="594" y1="-700" y2="-700"/>
+    <line x1="-50" x2="594" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M2 0 L2 100 C2 116 32 174 51 174 L274 174 C285 174 295 184 295 195 L295 700 L488 700 C498 700 544 651 544 642 L544 124 C544 82 492 0 451 0 L393 0 Z"/>
+</svg>

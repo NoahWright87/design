@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 708 1325" data-status="traced" data-unicode="0039">
+  <title>semibold nine (9)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="658" y1="223" y2="223"/>
+    <line x1="-50" x2="658" y1="0" y2="0"/>
+    <line x1="-50" x2="658" y1="-526" y2="-526"/>
+    <line x1="-50" x2="658" y1="-700" y2="-700"/>
+    <line x1="-50" x2="658" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M24 27 L24 79 C24 116 42 146 66 146 L398 146 C414 146 426 159 426 175 L426 272 L113 272 C51 272 1 323 1 385 L1 579 C1 611 65 700 96 700 L501 700 C540 700 608 625 608 587 L608 131 C608 58 549 0 477 0 L50 0 C36 0 24 12 24 27 Z
+    M427 424 L427 530 C427 542 418 552 406 552 L200 552 C189 552 180 543 180 531 L180 437 C180 422 192 409 207 409 L413 409 C421 409 427 416 427 424 Z"/>
+</svg>

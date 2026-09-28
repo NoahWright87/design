@@ -10,7 +10,7 @@ export default defineConfig({
   minify: false,
   target: "es2020",
   external: ["react", "react-dom"],
-  // WHY: inline fonts into dist/index.css so consumers need no asset handling
-  // for files referenced from inside node_modules.
-  loader: { ".woff2": "dataurl" }
+  // WHY: emit fonts as files next to dist/index.css rather than inlining them,
+  // so browsers download only the Wright Sans weights a page actually uses.
+  loader: { ".woff2": "file" }
 });
