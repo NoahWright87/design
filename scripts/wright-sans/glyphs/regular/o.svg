@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 699 1334" data-status="traced" data-unicode="006F">
+  <title>regular o (o)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="649" y1="224" y2="224"/>
+    <line x1="-50" x2="649" y1="0" y2="0"/>
+    <line x1="-50" x2="649" y1="-535" y2="-535"/>
+    <line x1="-50" x2="649" y1="-700" y2="-700"/>
+    <line x1="-50" x2="649" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M0 101 L0 419 C0 466 53 535 96 535 L102 535 L484 535 C504 535 566 501 576 478 L599 423 L599 101 C599 66 535 0 501 0 L101 0 C63 0 0 62 0 101 Z
+    M441 153 L441 375 C441 390 428 403 413 403 L185 403 C172 403 161 392 161 379 L161 155 C161 139 174 126 190 126 L414 126 C429 126 441 138 441 153 Z"/>
+</svg>

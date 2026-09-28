@@ -61,19 +61,19 @@ export function Header({
     >
       {left != null || center != null || right != null ? (
         <>
-          <div className={`nw-header__slot nw-header__slot--left${leftLabel ? " nw-header__slot--stacked" : ""}`}>
+          <div className={`nw-header__slot nw-header__slot--left${leftLabel ? " nw-header__slot--stacked" : ""}${leftTooltip ? " nw-header__slot--has-tooltip" : ""}`}>
             <div className="nw-header__slot-element">{left}</div>
             {leftLabel && <div className="nw-header__slot-label">{leftLabel}</div>}
             {leftTooltip && <div className="nw-header__tooltip" aria-hidden="true">{leftTooltip}</div>}
           </div>
 
-          <div className={`nw-header__slot nw-header__slot--center${centerLabel ? " nw-header__slot--stacked" : ""}`}>
+          <div className={`nw-header__slot nw-header__slot--center${centerLabel ? " nw-header__slot--stacked" : ""}${centerTooltip ? " nw-header__slot--has-tooltip" : ""}`}>
             <div className="nw-header__slot-element">{center}</div>
             {centerLabel && <div className="nw-header__slot-label">{centerLabel}</div>}
             {centerTooltip && <div className="nw-header__tooltip" aria-hidden="true">{centerTooltip}</div>}
           </div>
 
-          <div className={`nw-header__slot nw-header__slot--right${rightLabel ? " nw-header__slot--stacked" : ""}`}>
+          <div className={`nw-header__slot nw-header__slot--right${rightLabel ? " nw-header__slot--stacked" : ""}${rightTooltip ? " nw-header__slot--has-tooltip" : ""}`}>
             <div className="nw-header__slot-element">{right}</div>
             {rightLabel && <div className="nw-header__slot-label">{rightLabel}</div>}
             {rightTooltip && <div className="nw-header__tooltip" aria-hidden="true">{rightTooltip}</div>}

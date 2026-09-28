@@ -25,8 +25,11 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  position: relative;
 }
+
+/* WHY: only tooltip slots become a containing block, so dropdowns like
+   MobileNav's in an untooltipped slot anchor to the full header width (#23). */
+.nw-header__slot--has-tooltip{ position: relative; }
 
 .nw-header__slot--left{ flex: 0 0 auto; }
 

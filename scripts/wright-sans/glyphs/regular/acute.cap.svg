@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-173 -1030 399 1334" data-status="traced">
+  <title>regular acute.cap</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-173" x2="226" y1="224" y2="224"/>
+    <line x1="-173" x2="226" y1="0" y2="0"/>
+    <line x1="-173" x2="226" y1="-535" y2="-535"/>
+    <line x1="-173" x2="226" y1="-700" y2="-700"/>
+    <line x1="-173" x2="226" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M-123 744 L16 939 L176 939 L-7 744 Z"/>
+</svg>

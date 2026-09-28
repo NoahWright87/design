@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-280 -1030 548 1334" data-status="edited">
+  <title>regular tilde.cap</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected. Constructed by recipes.py (tilde, stroke 80).</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-280" x2="268" y1="224" y2="224"/>
+    <line x1="-280" x2="268" y1="0" y2="0"/>
+    <line x1="-280" x2="268" y1="-535" y2="-535"/>
+    <line x1="-280" x2="268" y1="-700" y2="-700"/>
+    <line x1="-280" x2="268" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M-153 931 L-62 931 C-47 931 -32 924 -22 913 L62 819 L139 819 L139 931 L218 931 L218 809 C218 782 166 739 139 739 L51 739 C35 739 20 746 10 757 L-74 851 L-150 851 L-150 739 L-230 739 L-230 859 C-230 886 -179 931 -153 931 Z"/>
+</svg>

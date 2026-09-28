@@ -15,6 +15,11 @@ const meta: Meta<typeof Card> = {
       control: "text",
       description: "Optional card title",
     },
+    titleAs: {
+      control: "select",
+      options: ["h2", "h3", "h4", "h5", "h6", "div"],
+      description: "Element the title renders as. Heading levels look identical; they only change the document outline. Default h3.",
+    },
     subtitle: {
       control: "text",
       description: "Optional subtitle below title",
@@ -64,6 +69,17 @@ export const Default: Story = {
     title: "Card Title",
     children: "This is a card with title and content.",
   },
+};
+
+/** Card titles are h3 headings by default. Pick the level that fits the page outline; the look stays the same. */
+export const TitleLevels: Story = {
+  render: () => (
+    <CardGrid minCardWidth="200px">
+      <Card title="h2 title" titleAs="h2">Under a page-level h1.</Card>
+      <Card title="h3 title (default)">Under a section h2.</Card>
+      <Card title="div title" titleAs="div">Purely visual, not in the outline.</Card>
+    </CardGrid>
+  ),
 };
 
 export const Flat: Story = {

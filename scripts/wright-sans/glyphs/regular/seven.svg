@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 632 1334" data-status="traced" data-unicode="0037">
+  <title>regular seven (7)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="582" y1="224" y2="224"/>
+    <line x1="-50" x2="582" y1="0" y2="0"/>
+    <line x1="-50" x2="582" y1="-535" y2="-535"/>
+    <line x1="-50" x2="582" y1="-700" y2="-700"/>
+    <line x1="-50" x2="582" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M78 0 L239 293 L2 293 L2 377 C2 390 7 400 15 400 L296 400 L394 570 L2 570 L2 676 C2 689 7 700 12 700 L519 700 L525 685 L532 676 L532 572 L446 417 C442 409 448 400 456 400 L532 400 L532 293 L383 293 L225 0 Z"/>
+</svg>

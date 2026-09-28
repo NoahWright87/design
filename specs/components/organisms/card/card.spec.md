@@ -12,6 +12,7 @@ Card groups related content into a visually distinct, rounded container. It supp
 - Optional image content rendered above the title.
 - Optional `href` for rendering the card as a fully clickable destination.
 - Optional title, subtitle, children content, and footer.
+- Optional title element: a heading level from two to six, or a plain block for a purely visual title. Defaults to a level-three heading.
 - Optional elevated flag for added visual prominence.
 - Optional interactive flag for hover-lift behavior.
 - Optional additional CSS class name and other HTML attributes to spread onto the card element.
@@ -35,6 +36,8 @@ A rounded, themed container holding the provided content sections. Elevated card
 ## Behavior
 
 **Default:** Content is statically displayed within the rounded container. No hover effects.
+
+**Title:** The title is set in the heading font and is a real heading (level three unless the consumer picks another level), so screen-reader users can jump between cards by heading. Its visual size and weight stay the same at every level, so choosing a level only changes the document outline. The expanded view uses the same element for its title.
 
 **Elevated:** The card appears more visually prominent — a stronger shadow gives the impression of higher elevation.
 
@@ -63,6 +66,9 @@ The card has a rounded border and themed background. Internal sections are arran
 
 ### CardFooter
 CardFooter is a layout companion for the card's footer area. It arranges its children horizontally with configurable alignment — left, right, centered, or spread. The default alignment places content at the trailing end, suited for action buttons.
+
+### CardGrid
+CardGrid arranges cards in a responsive grid that fills the full width of its container, fitting as many columns as the configured minimum card width allows and stacking to a single column on phones. Cards in a row match each other's height, and each row is only as tall as its tallest card's content — including when the grid sits inside a vertical Container.
 
 ### Expanded view
 The expand button sits in the card's top-right corner as a small square icon button. Once expanded, the card presents the same title, subtitle, and short content as before, followed by the larger image (unless positioned at the top) and then the full longer description, with a matching shrink button in the same top-right corner. The expanded card keeps the collapsed card's rounded corners, background, and elevation styling, just larger and centered on a darkened backdrop.
@@ -96,3 +102,5 @@ The expand button sits in the card's top-right corner as a small square icon but
 19. While expanded, the longer description is visible, and the image is enlarged and repositioned according to the configured expanded image position.
 20. Pressing Escape, clicking the backdrop outside the expanded card, or clicking the shrink button collapses the expanded card back to its original position and size with a bouncy overshoot.
 21. The expand and collapse animations are skipped when the user prefers reduced motion; the card jumps directly between collapsed and expanded states.
+22. CardGrid fills its container's width, and inside a vertical Container its rows are as tall as the tallest card's content.
+23. The title renders in the heading font as a level-three heading by default, as the chosen heading level when one is given, and as a plain block when a plain title is chosen, looking the same in every case.

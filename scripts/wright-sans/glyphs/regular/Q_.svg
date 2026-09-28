@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 794 1334" data-status="traced" data-unicode="0051">
+  <title>regular Q_ (Q)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="744" y1="224" y2="224"/>
+    <line x1="-50" x2="744" y1="0" y2="0"/>
+    <line x1="-50" x2="744" y1="-535" y2="-535"/>
+    <line x1="-50" x2="744" y1="-700" y2="-700"/>
+    <line x1="-50" x2="744" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M436 -125 L367 0 L103 0 C70 0 1 81 1 114 L1 575 C1 614 23 650 58 669 L119 700 L574 700 C618 700 694 630 694 585 L694 102 C694 73 643 0 612 0 L549 0 L611 -125 Z
+    M206 144 L503 144 C504 144 530 172 530 174 L530 517 C530 536 515 551 496 551 L206 551 C184 551 166 533 166 511 L166 184 C166 162 184 144 206 144 Z"/>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 445 1325" data-status="edited" data-unicode="006A">
+  <title>semibold j (j)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected. Hand-normalized: dot is a crisp hexagon aligned to the stem, slants parallel to the stem top.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="395" y1="223" y2="223"/>
+    <line x1="-50" x2="395" y1="0" y2="0"/>
+    <line x1="-50" x2="395" y1="-526" y2="-526"/>
+    <line x1="-50" x2="395" y1="-700" y2="-700"/>
+    <line x1="-50" x2="395" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 -223 L1 -138 C1 -124 32 -76 47 -76 L118 -76 C140 -76 157 -53 157 -31 L157 454 L258 526 L345 526 L345 -120 C345 -177 299 -223 242 -223 Z
+    M157 552 L157 689 L251 756 L345 756 L345 619 L251 552 Z"/>
+</svg>

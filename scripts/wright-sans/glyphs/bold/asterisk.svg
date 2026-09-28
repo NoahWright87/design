@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-53 -1050 544 1358" data-status="traced" data-unicode="002A">
+  <title>bold asterisk (*)</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-53" x2="491" y1="228" y2="228"/>
+    <line x1="-53" x2="491" y1="0" y2="0"/>
+    <line x1="-53" x2="491" y1="-547" y2="-547"/>
+    <line x1="-53" x2="491" y1="-700" y2="-700"/>
+    <line x1="-53" x2="491" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M157 237 L157 322 L103 260 L23 339 L109 426 L-3 486 L61 597 L129 560 C141 553 157 551 157 556 L157 666 L281 666 L281 546 L388 600 L441 490 L328 430 L417 346 L340 267 L272 329 L272 237 Z"/>
+</svg>

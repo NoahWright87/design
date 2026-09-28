@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1050 739 1358" data-status="traced" data-unicode="0026">
+  <title>bold ampersand (&)</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="689" y1="228" y2="228"/>
+    <line x1="-50" x2="689" y1="0" y2="0"/>
+    <line x1="-50" x2="689" y1="-547" y2="-547"/>
+    <line x1="-50" x2="689" y1="-700" y2="-700"/>
+    <line x1="-50" x2="689" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M105 -14 C70 -14 1 50 1 86 L1 236 C1 270 19 301 48 318 L102 350 C110 355 95 367 92 370 C73 387 49 421 49 448 L49 570 C49 605 73 637 107 647 L158 662 L323 662 C359 662 425 602 425 565 L425 463 C425 421 413 387 392 369 L339 324 L420 243 L479 337 L588 337 C607 337 618 317 609 301 L517 140 L639 0 L467 0 L432 32 L382 0 C370 -8 355 -14 339 -14 Z
+    M322 141 L211 259 C204 267 164 234 164 225 L164 136 C164 124 174 114 187 114 L269 114 C299 114 332 131 322 141 Z
+    M281 455 L281 521 C281 553 194 556 194 525 L194 462 C194 419 281 405 281 455 Z"/>
+</svg>

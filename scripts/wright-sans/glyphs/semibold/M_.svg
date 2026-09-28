@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 856 1325" data-status="traced" data-unicode="004D">
+  <title>semibold M_ (M)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="806" y1="223" y2="223"/>
+    <line x1="-50" x2="806" y1="0" y2="0"/>
+    <line x1="-50" x2="806" y1="-526" y2="-526"/>
+    <line x1="-50" x2="806" y1="-700" y2="-700"/>
+    <line x1="-50" x2="806" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M568 22 L568 336 C568 344 558 346 554 340 L438 150 L316 150 L193 361 L193 22 L1 22 L1 654 C1 680 15 700 33 700 L176 700 C190 700 206 689 217 670 L381 397 L555 678 C564 692 579 700 596 700 L725 700 C742 700 756 686 756 669 L756 37 C756 29 750 22 742 22 Z"/>
+</svg>

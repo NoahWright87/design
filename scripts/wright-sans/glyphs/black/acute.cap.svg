@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-206 -1058 441 1345" data-status="traced">
+  <title>black acute.cap</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-206" x2="235" y1="207" y2="207"/>
+    <line x1="-206" x2="235" y1="0" y2="0"/>
+    <line x1="-206" x2="235" y1="-550" y2="-550"/>
+    <line x1="-206" x2="235" y1="-700" y2="-700"/>
+    <line x1="-206" x2="235" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M-156 737 L-26 934 C-20 943 -9 949 2 949 L185 949 L18 737 Z"/>
+</svg>

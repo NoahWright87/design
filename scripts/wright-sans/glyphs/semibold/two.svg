@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 701 1325" data-status="traced" data-unicode="0032">
+  <title>semibold two (2)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="651" y1="223" y2="223"/>
+    <line x1="-50" x2="651" y1="0" y2="0"/>
+    <line x1="-50" x2="651" y1="-526" y2="-526"/>
+    <line x1="-50" x2="651" y1="-700" y2="-700"/>
+    <line x1="-50" x2="651" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 0 L1 238 C1 296 39 347 94 364 L146 380 L395 430 C411 433 422 447 422 463 L422 524 C422 541 408 555 391 555 L154 555 C149 555 139 536 132 536 L46 536 C36 536 28 544 28 554 L28 644 C28 657 73 700 85 700 L484 700 C530 700 601 635 601 589 L601 449 C601 397 582 335 527 316 L479 299 L211 248 C176 241 172 147 190 147 L562 147 C572 147 580 139 580 129 L580 0 L59 0 C27 0 1 -6 1 0 Z"/>
+</svg>

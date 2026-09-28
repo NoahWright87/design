@@ -75,6 +75,12 @@
   background: color-mix(in srgb, currentColor 8%, transparent);
 }
 
+/* Current page: consumers set aria-current="page" on the matching link */
+.nw-mobile-nav__content [aria-current="page"] {
+  color: var(--primary, #2563eb);
+  font-weight: 600;
+}
+
 /* Desktop: show content inline, hide toggle */
 @media (min-width: 769px) {
   .nw-mobile-nav__toggle {

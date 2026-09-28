@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1050 453 1358" data-status="edited" data-unicode="006A">
+  <title>bold j (j)</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected. Hand-normalized: dot is a crisp hexagon aligned to the stem, slants parallel to the stem top.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="403" y1="228" y2="228"/>
+    <line x1="-50" x2="403" y1="0" y2="0"/>
+    <line x1="-50" x2="403" y1="-547" y2="-547"/>
+    <line x1="-50" x2="403" y1="-700" y2="-700"/>
+    <line x1="-50" x2="403" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M0 -228 L0 -150 L24 -98 C33 -78 45 -61 56 -61 L125 -61 C139 -61 149 -47 149 -32 L149 440 L287 547 L353 547 L353 -124 C353 -181 307 -228 250 -228 Z
+    M149 575 L149 703 L252 783 L353 783 L353 655 L251 575 Z"/>
+</svg>
