@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-74 -1030 678 1334" data-status="traced" data-unicode="0033">
+  <title>regular three (3)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-74" x2="604" y1="224" y2="224"/>
+    <line x1="-74" x2="604" y1="0" y2="0"/>
+    <line x1="-74" x2="604" y1="-535" y2="-535"/>
+    <line x1="-74" x2="604" y1="-700" y2="-700"/>
+    <line x1="-74" x2="604" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M98 119 L395 119 C408 119 418 129 418 142 L418 269 C418 285 405 298 389 298 L130 298 L130 410 L390 410 C405 410 418 423 418 439 L418 542 C418 559 405 573 388 573 L95 573 C83 573 8 529 8 573 L8 633 C8 654 33 677 50 685 L56 700 L470 700 L475 684 C505 674 554 635 554 601 L554 424 C554 396 511 375 512 353 L554 293 L554 116 C554 68 528 0 478 0 L470 0 L65 0 C9 0 -24 115 17 130 C52 143 70 119 98 119 Z"/>
+</svg>

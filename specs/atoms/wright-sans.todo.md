@@ -3,13 +3,13 @@
 ## Sooner
 - [ ] Decide whether the Heading molecule uses the heading font token by default.
 - [ ] Hand-tune spacing and kerning after seeing real headings in Storybook.
+- [ ] Offer proportional figures as an optional OpenType feature alongside the default tabular ones.
 
 ## Later
 - [ ] Add a circumflex, caron, and ring accent so French, Portuguese, Czech, and Nordic text is fully covered.
-- [ ] Redraw the outlines at higher resolution (or clean them up in a font editor) to remove small tracing irregularities visible at very large sizes.
-- [ ] Align stem thicknesses across letters within each weight.
+- [ ] Continue the glyph review: harmonize stem thicknesses and corner radii across related letters in each weight.
+- [ ] Review the constructed tilde and cedilla against the letters they sit on at display sizes.
 
 ## Backlog
 - [ ] Build a variable font that interpolates between Regular and Black.
 - [ ] Add italic styles.
-- [ ] Add tabular figures for numeric tables.

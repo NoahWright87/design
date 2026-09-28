@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 694 1334" data-status="traced" data-unicode="0065">
+  <title>regular e (e)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="644" y1="224" y2="224"/>
+    <line x1="-50" x2="644" y1="0" y2="0"/>
+    <line x1="-50" x2="644" y1="-535" y2="-535"/>
+    <line x1="-50" x2="644" y1="-700" y2="-700"/>
+    <line x1="-50" x2="644" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M21 59 L2 110 L2 419 C2 463 45 509 85 521 L90 535 L504 535 L510 535 C543 526 594 475 594 437 L594 283 C594 239 559 203 515 203 L174 203 C151 203 170 123 195 123 L564 123 C571 123 575 108 572 92 L555 0 L101 0 C80 0 28 38 21 59 Z
+    M417 407 L192 407 C161 407 157 312 175 312 L428 312 C458 312 451 407 417 407 Z"/>
+</svg>

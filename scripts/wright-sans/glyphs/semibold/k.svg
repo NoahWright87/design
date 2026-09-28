@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 721 1325" data-status="traced" data-unicode="006B">
+  <title>semibold k (k)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="671" y1="223" y2="223"/>
+    <line x1="-50" x2="671" y1="0" y2="0"/>
+    <line x1="-50" x2="671" y1="-526" y2="-526"/>
+    <line x1="-50" x2="671" y1="-700" y2="-700"/>
+    <line x1="-50" x2="671" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M0 0 L0 672 L190 772 L190 343 L376 526 L612 526 L366 278 L614 20 C621 12 616 0 606 0 L392 0 L217 179 C207 189 190 195 190 189 L190 0 Z"/>
+</svg>

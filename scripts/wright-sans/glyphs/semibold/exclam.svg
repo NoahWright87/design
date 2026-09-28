@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-51 -1022 281 1325" data-status="traced" data-unicode="0021">
+  <title>semibold exclam (!)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-51" x2="230" y1="223" y2="223"/>
+    <line x1="-51" x2="230" y1="0" y2="0"/>
+    <line x1="-51" x2="230" y1="-526" y2="-526"/>
+    <line x1="-51" x2="230" y1="-700" y2="-700"/>
+    <line x1="-51" x2="230" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 18 L1 153 C1 165 11 175 23 175 L152 175 C163 175 172 166 172 156 L172 18 C172 8 164 0 154 0 L19 0 C9 0 1 8 1 18 Z
+    M27 243 L-1 514 L-1 700 L180 700 L180 499 L155 244 C154 233 145 225 134 225 L46 225 C36 225 28 233 27 243 Z"/>
+</svg>

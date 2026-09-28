@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 687 1345" data-status="traced" data-unicode="0024">
+  <title>black dollar ($)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="637" y1="207" y2="207"/>
+    <line x1="-50" x2="637" y1="0" y2="0"/>
+    <line x1="-50" x2="637" y1="-550" y2="-550"/>
+    <line x1="-50" x2="637" y1="-700" y2="-700"/>
+    <line x1="-50" x2="637" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M216 -113 L216 0 L2 0 L2 93 C2 111 35 171 54 171 L381 171 L381 262 L94 262 C72 262 19 305 13 329 L1 379 L1 574 C1 616 73 684 114 684 L177 684 C198 684 216 693 216 700 L216 791 L369 791 L369 684 L577 684 L577 553 C577 545 545 514 537 514 L222 514 C216 514 211 506 211 496 L211 445 C211 435 216 426 222 426 L495 426 C526 426 587 365 587 334 L587 112 C587 73 505 0 470 0 L369 0 L369 -113 Z"/>
+</svg>

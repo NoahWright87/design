@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 695 1334" data-status="traced" data-unicode="0062">
+  <title>regular b (b)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="645" y1="224" y2="224"/>
+    <line x1="-50" x2="645" y1="0" y2="0"/>
+    <line x1="-50" x2="645" y1="-535" y2="-535"/>
+    <line x1="-50" x2="645" y1="-700" y2="-700"/>
+    <line x1="-50" x2="645" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M483 0 L57 0 C48 0 2 54 2 68 L2 686 C2 701 7 713 15 717 L137 780 C148 785 161 778 161 766 L161 535 L494 535 L499 535 C532 526 595 462 595 428 L595 105 C595 62 524 0 483 0 Z
+    M435 159 L435 372 C435 388 422 402 405 402 L160 402 L160 129 L406 129 C422 129 435 142 435 159 Z"/>
+</svg>

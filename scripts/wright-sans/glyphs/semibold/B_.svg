@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 756 1325" data-status="traced" data-unicode="0042">
+  <title>semibold B_ (B)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="706" y1="223" y2="223"/>
+    <line x1="-50" x2="706" y1="0" y2="0"/>
+    <line x1="-50" x2="706" y1="-526" y2="-526"/>
+    <line x1="-50" x2="706" y1="-700" y2="-700"/>
+    <line x1="-50" x2="706" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M0 22 L0 656 C0 662 36 700 39 700 L540 700 C580 700 649 641 649 597 L649 435 L601 369 C605 348 656 332 656 305 L656 142 C656 75 602 22 536 22 Z
+    M469 206 L469 266 C469 285 454 300 435 300 L186 300 L186 178 L441 178 C456 178 469 191 469 206 Z
+    M462 459 L462 525 C462 538 451 549 438 549 L186 549 L186 433 L435 433 C450 433 462 445 462 459 Z"/>
+</svg>

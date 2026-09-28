@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 812 1345" data-status="traced" data-unicode="0051">
+  <title>black Q_ (Q)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="762" y1="207" y2="207"/>
+    <line x1="-50" x2="762" y1="0" y2="0"/>
+    <line x1="-50" x2="762" y1="-550" y2="-550"/>
+    <line x1="-50" x2="762" y1="-700" y2="-700"/>
+    <line x1="-50" x2="762" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M415 -143 L328 -25 C323 -17 325 0 315 0 L121 0 C55 0 1 54 1 120 L1 578 C1 645 56 700 124 700 L589 700 C635 700 676 672 692 629 L712 579 L712 114 L699 79 C659 -24 560 11 585 -22 L675 -143 Z
+    M460 188 L460 497 C460 506 453 513 444 513 L250 513 L250 188 Z"/>
+</svg>

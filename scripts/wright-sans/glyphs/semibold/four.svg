@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 729 1325" data-status="traced" data-unicode="0034">
+  <title>semibold four (4)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="679" y1="223" y2="223"/>
+    <line x1="-50" x2="679" y1="0" y2="0"/>
+    <line x1="-50" x2="679" y1="-526" y2="-526"/>
+    <line x1="-50" x2="679" y1="-700" y2="-700"/>
+    <line x1="-50" x2="679" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M526 0 L356 0 L356 155 L1 155 L1 284 L338 687 C344 695 357 700 372 700 L526 700 L526 289 L615 289 C623 289 629 283 629 275 L629 172 C629 163 622 155 613 155 L526 155 Z
+    M357 289 L357 504 L182 289 Z"/>
+</svg>

@@ -1,10 +1,12 @@
 """Build Wright Sans font files from the traced specimen sheets.
 
+Stage 2 of the pipeline (run trace.py first).
+
 Usage (from the repo root):
     python3 scripts/wright-sans/build.py [weight ...]
 
-Reads scripts/wright-sans/specimens/<weight>.png and writes .otf + .woff2
-files to src/styles/fonts/.
+Reads the glyph SVGs in scripts/wright-sans/glyphs/<weight>/ and writes
+.otf + .woff2 files to src/styles/fonts/.
 """
 import math
 import sys
@@ -15,10 +17,10 @@ from fontTools.agl import UV2AGL
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.t2CharStringPen import T2CharStringPen
-from shapely.geometry import LineString, Polygon, box
+from shapely.geometry import LineString
 
-from extract import load_sheet
-from trace import bounds, clean, signed_area, snap, trace_bitmap, transform
+from glyphsvg import GLYPH_DIR, load_glyph, read_metrics
+from trace import bounds, transform
 
 FAMILY = "Wright Sans"
 VERSION = "1.000"
@@ -104,19 +106,16 @@ def fix_direction(contours):
     return out
 
 
+def signed_area(contour):
+    """Shoelace area over on-curve + control points (good enough for sign)."""
+    pts = [p for s in contour for p in s[1:]]
+    return sum(x0 * y1 - x1 * y0 for (x0, y0), (x1, y1) in zip(pts, pts[1:] + pts[:1])) / 2
+
+
 def rotate180(contours):
     x0, y0, x1, y1 = ubounds(contours)
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     return transform(contours, lambda p: (2 * cx - p[0], 2 * cy - p[1]))
-
-
-def contours_to_shape(contours):
-    """Contours -> shapely geometry using even-odd nesting."""
-    shape = None
-    for c in contours:
-        p = Polygon(sample(c, 16)).buffer(0)
-        shape = p if shape is None else shape.symmetric_difference(p)
-    return shape
 
 
 def polygon_contours(geom):
@@ -163,117 +162,20 @@ def side_bearings(contours, zone, base):
 
 
 # ------------------------------------------------------------- tracing
-def trace_row(sheet, row, chars):
-    return {ch: trace_bitmap(sheet[(row, ch)]["img"]) for ch in chars}
-
-
-def to_units(contours, baseline, scale, x_origin=0):
-    return clean(transform(contours, lambda p: ((p[0] - x_origin) * scale, (baseline - p[1]) * scale)))
-
-
-def split_letter(contours):
-    """Split an accented letter's contours into (letter, above, below)."""
-    big = max(contours, key=lambda c: (lambda b: (b[2] - b[0]) * (b[3] - b[1]))(ubounds([c])))
-    lx0, ltop, lx1, lbot = ubounds([big])
-    letter, above, below = [], [], []
-    for c in contours:
-        b = ubounds([c])
-        if b[3] < ltop + 1:
-            above.append(c)
-        elif b[1] > lbot - 1.5 and c is not big:
-            below.append(c)
-        else:
-            letter.append(c)
-    return letter, above, below
-
-
-def build_weight(src_dir, stem):
+def build_weight(stem):
     style, wclass, base_sb, space_w = WEIGHTS[stem]
-    sheet = load_sheet(Path(src_dir) / f"{stem}.png")
-    ROWS = dict([
-        ("caps", "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-        ("lower", "abcdefghijklmnopqrstuvwxyz"),
-        ("digits", "0123456789"),
-        ("punct", ".,:;!?@#&%+-/\\()[]{}'\"_=*$"),
-        ("acccaps", "ÈÉÑÖÇ"),
-        ("acclower", "èéñöçì"),
-    ])
-    traced = {row: trace_row(sheet, row, chars) for row, chars in ROWS.items()}
+    metrics = read_metrics(stem)
+    xh, asc, desc = metrics["xh"], metrics["asc"], metrics["desc"]
 
-    # --- vertical calibration
-    _, top, _, bot = ubounds(traced["caps"]["H"])
-    scale = CAP / (bot - top)
-    caps_base = bot
-    _, _, _, lower_base = ubounds(traced["lower"]["x"])
-    _, xt, _, _ = ubounds(traced["lower"]["x"])
-    xh = round((lower_base - xt) * scale)
-    _, at, _, _ = ubounds(traced["lower"]["l"])
-    asc = round((lower_base - at) * scale)
-    _, d1t, _, d1b = ubounds(traced["digits"]["1"])
-    _, _, _, pbase = ubounds(traced["punct"]["."])
-    _, et, _, eb = ubounds(traced["punct"]["!"])
-    pscale = CAP / (eb - et)
-
-    metrics = {"xh": xh, "asc": asc}
-    glyphs = {}  # char -> contours in units (x from 0 at ink left)
-
-    def place(contours, snaps, tol=12):
-        x0 = ubounds(contours)[0]
-        c = shift(contours, -x0, 0)
-        return snap(c, snaps, tol)
-
-    for ch, c in traced["caps"].items():
-        glyphs[ch] = place(to_units(c, caps_base, scale), [0, CAP])
-    desc = None
-    for ch, c in traced["lower"].items():
-        glyphs[ch] = place(to_units(c, lower_base, scale), [0, xh, asc])
-    desc = round(min(ubounds(glyphs[ch])[1] for ch in "gpqy"))
-    metrics["desc"] = desc
-    for ch in "gjpqy":
-        glyphs[ch] = snap(glyphs[ch], [desc], 12)
-    dscale = CAP / (d1b - d1t)
-    for ch, c in traced["digits"].items():
-        glyphs[ch] = place(to_units(c, d1b, dscale), [0, CAP])
-    for ch, c in traced["punct"].items():
-        glyphs[ch] = place(to_units(c, pbase, pscale), [0, CAP])
-
-    # --- accent marks, centred on x = 0
-    marks = {}
-    for row, target, refs in (("acccaps", CAP, "ÈÉÑÖÇ"), ("acclower", xh, "èéñöçì")):
-        letter, _, _ = split_letter(traced[row][refs[0]])
-        _, lt, _, lb = ubounds(letter)
-        s = target / (lb - lt)
-        case = "cap" if row == "acccaps" else "lc"
-        for ch, name in zip(refs, ["grave", "acute", "tilde", "dieresis", "cedilla", "dotless"]):
-            letter, above, below = split_letter(traced[row][ch])
-            lx0, _, lx1, lbot = ubounds(letter)
-            cx = (lx0 + lx1) / 2
-            if name == "dotless":
-                glyphs["ı"] = place(to_units(letter, lbot, s), [0, xh])
-                continue
-            if name == "cedilla":
-                # the cedilla is usually joined to the letter: cut away
-                # everything above the row's baseline (lb), keeping a sliver
-                # of overlap so the composite reads as one shape
-                shape = contours_to_shape(traced[row][ch])
-                cut = box(-1000, lb - 0.15, 1000, 1000)
-                part = polygon_contours(shape.intersection(cut).simplify(0.03))
-                marks[(name, case)] = to_units(part, lb, s, cx)
-            else:
-                marks[(name, case)] = to_units(above, lb, s, cx)
-
-    # --- en dash from the title line
-    title = sheet["title"]
-    tt = [trace_bitmap(g["img"]) for g in title]
-    tb = [ubounds(c) for c in tt]
-    tall = max(b[3] - b[1] for b in tb)
-    dash_i = min(range(len(tt)), key=lambda i: (tb[i][3] - tb[i][1]) / max(tb[i][2] - tb[i][0], 1))
-    tbase = float(np.median([b[3] for b in tb]))
-    # W is the tallest cap-height letter without a descender
-    capb = [b for b in tb if abs(b[3] - tbase) < 1.5]
-    tcap = max(b[3] - b[1] for b in capb)
-    tscale = CAP / tcap
-    glyphs["–"] = place(to_units(tt[dash_i], tbase, tscale), [])
+    # every traced outline comes from its (possibly hand-edited) SVG
+    glyphs, marks = {}, {}
+    for path in sorted((GLYPH_DIR / stem).glob("*.svg")):
+        g = load_glyph(stem, path.stem)
+        if g["char"]:
+            glyphs[g["char"]] = g["contours"]
+        else:
+            name, case = path.stem.split(".")
+            marks[(name, case)] = g["contours"]
 
     # --- side bearings for traced glyphs
     def zone_for(ch):
@@ -298,6 +200,16 @@ def build_weight(src_dir, stem):
     for ch in ".,:;-_'\"–()[]{}/\\":
         add(ch, glyphs[ch], sb=(base_sb * 1.1, base_sb * 1.1))
 
+    # --- tabular (monospaced) figures: one advance for all digits, each centred
+    digits = "0123456789"
+    tab = max(ubounds(final[d][0])[2] - ubounds(final[d][0])[0] for d in digits) + 2 * base_sb
+    tab = round(tab)
+    for d in digits:
+        c = final[d][0]
+        x0, _, x1, _ = ubounds(c)
+        final[d] = (shift(c, (tab - (x1 - x0)) / 2 - x0), tab)
+    metrics["tabular"] = tab
+
     # --- derived glyphs
     def copy(dst, src):
         final[dst] = final[src]
@@ -305,7 +217,6 @@ def build_weight(src_dir, stem):
     copy("’", "'")
     copy("”", '"')
     period = final["."][0]
-    pw = final["."][1]
     qr_c, qr_w = final["'"]
     final["‘"] = (rotate180(qr_c), qr_w)
     final["“"] = (rotate180(final['"'][0]), final['"'][1])
@@ -498,11 +409,10 @@ HERE = Path(__file__).resolve().parent
 
 
 def main():
-    src = HERE / "specimens"
     out = HERE.parent.parent / "src" / "styles" / "fonts"
     only = sys.argv[1:] or list(WEIGHTS)
     for stem in only:
-        final, metrics, style, wclass = build_weight(src, stem)
+        final, metrics, style, wclass = build_weight(stem)
         pairs = kerning(final, WEIGHTS[stem][2])
         path = write_font(final, metrics, style, wclass, out, pairs)
         print(f"{path.name}: {len(final)} glyphs, {len(pairs)} kern pairs, metrics {metrics}")

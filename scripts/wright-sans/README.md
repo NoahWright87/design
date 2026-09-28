@@ -1,31 +1,57 @@
 # Wright Sans build pipeline
 
-Turns the four specimen sheets in `specimens/` into real font files in
+Turns the four specimen sheets in `specimens/` into font files in
 `src/styles/fonts/` (`.woff2` for the web, `.otf` for design tools).
+
+The per-glyph SVGs in `glyphs/<weight>/` are the **source of truth**: tracing
+writes them, people and agents correct them, and the build compiles them.
+
+```
+specimens/*.png ──trace.py──▶ glyphs/<weight>/*.svg ──build.py──▶ src/styles/fonts/
+                                   ▲        │
+                   hand edits,     │        ├─ inspect_glyphs.py  (visual review)
+                   recipes.py ─────┘        └─ lint_glyphs.py     (suspect finder)
+```
 
 ## Rebuild
 
 ```bash
 pip install -r scripts/wright-sans/requirements.txt
-python3 scripts/wright-sans/build.py            # all weights
-python3 scripts/wright-sans/build.py black      # just one
+python3 scripts/wright-sans/trace.py      # specimens -> glyph SVGs (keeps hand-edited ones)
+python3 scripts/wright-sans/recipes.py    # constructed redraws for tiny marks (keeps edited ones)
+python3 scripts/wright-sans/build.py      # glyph SVGs -> .otf + .woff2
+python3 scripts/wright-sans/proof.py      # specimen image from the built fonts
 ```
 
-## How it works
+To review and hand-correct outlines, follow `.claude/commands/wright-sans-cleanup.md`
+(also runnable as the `/wright-sans-cleanup` command in Claude Code).
 
-1. **`extract.py`**: finds the seven rows on each sheet and splits them into
-   glyphs by connected component, so tightly packed letters (e.g. `WXY` on the
-   Black sheet) come apart cleanly. Anti-aliased edge pixels go to the nearest
-   glyph.
-2. **`trace.py`**: upsamples each glyph 8×, traces it with potrace, then
-   straightens near-straight curves, merges collinear segments, snaps long
-   edges to true vertical and horizontal, and snaps points to baseline,
-   x-height, cap height, ascender, and descender.
-3. **`build.py`**: normalizes each specimen row to a 1000-unit em (cap height
-   700), spaces glyphs from their side profiles, builds accented letters from
-   the traced accent marks, derives extra glyphs (dashes, curly quotes,
-   `¡¿…·<>^|~`), auto-kerns diagonal and overhanging pairs, and writes CFF
-   OpenType + WOFF2 with fontTools.
+## Files
 
-Tuning knobs live at the top of `build.py` (`WEIGHTS`: base side bearing and
-space width per weight).
+| File | Role |
+| --- | --- |
+| `extract.py` | Finds the rows on each sheet and cuts them into glyphs by connected component. |
+| `fit.py` | Turns a noisy trace into straight lines + fitted cubic beziers, with crisp or true-round corners and axis/metric snapping. |
+| `trace.py` | Stage 1: potrace + `fit.py` + mechanical autofix → glyph SVGs, `metrics.json`, `_source/` bitmaps. |
+| `glyphsvg.py` | Reads and writes the glyph SVG format (font units, y-up, `data-status`). |
+| `lint_glyphs.py` | Flags suspects (near-metric, near-axis, kinks, tiny segments…); `--fix` applies the mechanical fixes. |
+| `inspect_glyphs.py` | Renders outlines with nodes, handles and metrics, optionally over the source bitmap. |
+| `construct.py`, `recipes.py` | Rebuild tiny/noisy glyphs as clean strokes along a centerline. |
+| `build.py` | Stage 2: spacing, tabular figures, accented composites, derived glyphs, kerning → fonts. |
+| `proof.py` | Specimen render of the built fonts. |
+
+## Glyph SVG format
+
+Path data is in font units with y pointing up (baseline 0, cap height 700);
+the file flips it for previewing. `data-status="traced"` files may be
+regenerated; `data-status="edited"` files are never overwritten unless you
+run `trace.py --force --glyph NAME`. Say what you changed in `<desc>`.
+
+## Design decisions baked into the build
+
+- **Figures are tabular (monospaced):** every digit has the same advance and
+  is centred in it.
+- Corners rounder than ~16 units (one source pixel) are kept round; tighter
+  ones are treated as blur and made crisp.
+- The `i`/`j` dot is normalized to a crisp hexagon aligned with the stem, and
+  `ı` reuses the `i` stem, so accented i's match.

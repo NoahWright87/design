@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 800 1345" data-status="traced" data-unicode="0044">
+  <title>black D_ (D)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="750" y1="207" y2="207"/>
+    <line x1="-50" x2="750" y1="0" y2="0"/>
+    <line x1="-50" x2="750" y1="-550" y2="-550"/>
+    <line x1="-50" x2="750" y1="-700" y2="-700"/>
+    <line x1="-50" x2="750" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 0 L1 683 C1 692 12 700 27 700 L574 700 C622 700 664 671 681 626 L700 574 L700 121 C700 74 619 0 574 0 Z
+    M460 210 L460 491 C460 502 451 511 440 511 L246 511 L246 189 L440 189 C451 189 460 198 460 210 Z"/>
+</svg>

@@ -70,7 +70,6 @@ def segment_strip(gray, count=None):
 
     spans = _spans(ink)
     groups = []
-    h = ink.shape[0]
     for x0, x1 in spans:
         labels = [l for l in np.unique(lab[:, x0:x1]) if l]
         info = []

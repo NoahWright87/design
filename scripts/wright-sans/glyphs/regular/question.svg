@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 578 1334" data-status="traced" data-unicode="003F">
+  <title>regular question (?)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="528" y1="224" y2="224"/>
+    <line x1="-50" x2="528" y1="0" y2="0"/>
+    <line x1="-50" x2="528" y1="-535" y2="-535"/>
+    <line x1="-50" x2="528" y1="-700" y2="-700"/>
+    <line x1="-50" x2="528" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M84 0 L84 137 L213 137 L213 0 Z
+    M91 233 L91 290 C91 329 114 364 150 379 L325 451 C335 455 342 466 342 477 L342 545 C342 561 330 574 314 574 L1 574 L1 700 L389 700 C423 700 478 636 478 602 L478 462 C478 420 461 385 434 374 L230 289 C209 280 217 216 195 216 L108 216 C98 216 91 224 91 233 Z"/>
+</svg>

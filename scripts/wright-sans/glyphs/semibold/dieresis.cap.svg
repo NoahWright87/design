@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-253 -1022 507 1325" data-status="traced">
+  <title>semibold dieresis.cap</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-253" x2="253" y1="223" y2="223"/>
+    <line x1="-253" x2="253" y1="0" y2="0"/>
+    <line x1="-253" x2="253" y1="-526" y2="-526"/>
+    <line x1="-253" x2="253" y1="-700" y2="-700"/>
+    <line x1="-253" x2="253" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M34 767 L34 900 C34 911 42 919 53 919 L186 919 C196 919 203 912 203 902 L203 765 C203 755 195 747 185 747 L53 747 C42 747 34 756 34 767 Z
+    M-203 767 L-203 900 C-203 911 -194 920 -183 920 L-47 920 C-38 920 -30 912 -30 903 L-30 768 C-30 757 -39 748 -50 748 L-185 748 C-195 748 -203 756 -203 767 Z"/>
+</svg>

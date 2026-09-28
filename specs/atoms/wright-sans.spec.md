@@ -22,8 +22,9 @@ Wright Sans is the design system's display typeface for headings. It is a wide, 
 ### Guarantees / Constraints
 - Character coverage includes the full basic Latin keyboard set, curly quotes, en and em dashes, ellipsis, middle dot, inverted exclamation and question marks, and accented vowels with grave, acute, tilde, and dieresis, plus ç and ñ in both cases.
 - Text stays readable while the font downloads: the browser shows the fallback font immediately and swaps in Wright Sans when it arrives.
+- Figures are tabular: every digit takes the same width, so numbers line up in columns and counters do not jitter as they change.
 - Each weight is a small download, suitable for loading all four without a noticeable cost.
-- The fonts are regenerated from the specimen sheets by the build pipeline; the sheets are the source of truth for letter shapes.
+- Each glyph's outline lives in its own editable SVG file. Tracing from the specimen sheets produces the first draft; hand corrections are marked as edited and survive re-tracing. The glyph files, not the sheets, are the source of truth for the shipped shapes.
 
 ## Behavior
 Any element that uses the heading token renders in Wright Sans. The browser picks the closest of the four weights for the requested font weight, so a bold heading gets the Bold drawing and a black-weight heading gets the Black drawing rather than a synthesized bold.
@@ -32,7 +33,9 @@ Spacing is set tightly for display use: letters sit close together, the way they
 
 Characters outside the supported set fall back to the system sans-serif.
 
-The pipeline cuts each specimen sheet into individual letters, traces them into smooth outlines, straightens nearly-straight edges, aligns letters to shared baseline, x-height, and cap-height lines, spaces them from their side profiles, and builds accented letters from the traced accent marks.
+Digits all share one width per weight and sit centred in it, so a "1" has generous space on both sides.
+
+The pipeline cuts each specimen sheet into individual letters and traces them. It then rebuilds each outline from true straight lines and as few curves as possible. Corners become either crisp or cleanly round, depending on what the source shows. Edges are aligned to the shared baseline, x-height, cap-height, ascender and descender lines, and everything is written out as one editable file per glyph. A reviewer, human or agent, then compares every glyph against the source drawing, fixes what the tracer got wrong, and marks those glyphs as edited. Accent marks too small to trace cleanly are rebuilt as even strokes that match the traced shape. The build spaces letters from their side profiles, builds accented letters from the marks, and compiles the fonts.
 
 ## Interface
 - Consumers opt in by using the heading font token on their headings; the font is registered by the theme stylesheet and costs nothing until a page actually uses it.
@@ -45,4 +48,7 @@ The pipeline cuts each specimen sheet into individual letters, traces them into 
 3. `npm run build` emits the four web font files alongside the package stylesheet and the stylesheet references them.
 4. Every character listed under Guarantees renders from Wright Sans in each weight.
 5. Kerned pairs such as "AV" and "To" set visibly tighter than unkerned text.
-6. Running the build pipeline from the specimen sheets reproduces the font files.
+6. Every digit in a weight has the same advance width.
+7. Re-running the trace step leaves glyphs marked as edited untouched.
+8. Running the build from the glyph files reproduces the font files.
+9. Straight edges are single lines and round corners are single curves; the glyph lint reports no tiny segments or stray nodes.
