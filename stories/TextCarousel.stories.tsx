@@ -102,6 +102,20 @@ export const PartialWordEdit: Story = {
   ),
 };
 
+export const ReorderedWords: Story = {
+  name: "Typewriter — reordered words",
+  render: () => (
+    <Heading level={2}>
+      <TextCarousel
+        items={["creative software builder", "software builder creative"]}
+        animation="typewriter"
+        interval={1800}
+        pauseOnHover={false}
+      />
+    </Heading>
+  ),
+};
+
 export const SingleItem: Story = {
   name: "Single item (no rotation)",
   render: () => (

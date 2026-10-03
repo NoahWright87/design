@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion.js";
-import { buildTypewriterFrames, type TypewriterFrame } from "./typewriterDiff.js";
+import { addTypingMistakes, buildTypewriterFrames, type TypewriterFrame } from "./typewriterDiff.js";
 
 export interface UseTypewriterOptions {
   /** Average milliseconds per character while typing a wholly new word. Default `45`. */
@@ -35,13 +35,9 @@ export interface UseTypewriterOptions {
    * is quick relative to actual typing. Default `15`.
    */
   moveSpeed?: number;
-  /** Average milliseconds a fully-typed word stays on screen before it starts changing. Default `2200`. */
+  /** Baseline dwell before the next edit, adjusted for reading length and the amount of change. Default `2200`. */
   dwellMs?: number;
-  /**
-   * Randomizes each dwell by up to this fraction of `dwellMs` in either direction, so
-   * not every word lingers for exactly the same beat. Set `0` for a constant dwell.
-   * Default `0.5`.
-   */
+  /** Randomizes each adjusted dwell by this fraction. Set `0` to use the adjusted duration exactly. Default `0.5`. */
   dwellJitter?: number;
   /**
    * Milliseconds the caret holds still before typing/deleting a wholly new word begins —
@@ -61,6 +57,8 @@ export interface UseTypewriterOptions {
    * `buildTypewriterFrames`'s `similarityThreshold`. Default `0.5`.
    */
   similarityThreshold?: number;
+  /** Chance per eligible typed letter of one temporary typo per transition. Default `0.008`. */
+  typoChance?: number;
   /** Freezes the animation wherever it currently is — e.g. while hovered. Default `false`. */
   isPaused?: boolean;
 }
@@ -70,6 +68,8 @@ export interface UseTypewriterResult {
   text: string;
   /** Index into `text` where the caret currently sits. */
   cursor: number;
+  /** UTF-16 range highlighted while a word is selected for a cut. */
+  selection?: [start: number, end: number];
   /**
    * `true` while there's no per-character animation in progress — dwelling on a
    * fully-typed word, or the caret is holding still before/between edits. A natural
@@ -95,16 +95,16 @@ function jitter(base: number, amount: number): number {
  * word just typed), it resolves each change completely as it's reached (a run of wrong
  * words to clear and correct words to write, or a single word to correct in place) and
  * glides — not jumps — through everything already correct in between. A word present in
- * both phrases (wherever it falls) is never touched; a changed word similar enough to its
- * replacement (e.g. "build" -> "builder") is corrected in place rather than cleared and
- * retyped whole. Falls back to a full clear-and-retype when two phrases share nothing.
+ * both phrases may stay in place or move with a cut and paste; a changed word similar
+ * enough to its replacement is corrected in place. A full rewrite still clears and types.
  *
  * Corrections read as more effortful than fresh typing: characters typed/deleted as part
  * of an in-place correction move slower than wholly new/removed words by default (see
  * `editTypingSpeed`/`editDeletingSpeed`), and the caret pauses longer before starting one
  * (see `editPauseBeforeTyping`). Typing speed and dwell time are randomized within a range
  * around their averages so the rhythm reads as human rather than mechanical; deleting
- * always stays constant, simulating a held backspace key. Honors `prefers-reduced-motion`
+ * stays constant, simulating a held backspace key. Occasional wrong keys are repaired,
+ * and dwell adjusts to reading length and the size of the next edit. Honors `prefers-reduced-motion`
  * by skipping the per-character animation and simply dwelling on each full word in turn.
  *
  * This hook only computes the text and caret position to display — pairing it with a
@@ -128,13 +128,14 @@ export function useTypewriter(
     pauseBeforeTyping = 400,
     editPauseBeforeTyping = Math.round(pauseBeforeTyping * 1.5),
     similarityThreshold = 0.5,
+    typoChance = 0.008,
     isPaused = false,
   } = options;
 
   const prefersReducedMotion = usePrefersReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
   const [frames, setFrames] = useState<TypewriterFrame[]>(() =>
-    words.length > 0 ? buildTypewriterFrames("", words[0], { similarityThreshold }) : []
+    words.length > 0 ? addTypingMistakes(buildTypewriterFrames("", words[0], { similarityThreshold }), typoChance) : []
   );
   const [frameIndex, setFrameIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>("editing");
@@ -170,6 +171,21 @@ export function useTypewriter(
           case "move":
             delay = moveSpeed;
             break;
+          case "select":
+            delay = moveSpeed * 2;
+            break;
+          case "cut":
+            delay = 180;
+            break;
+          case "paste":
+            delay = 220;
+            break;
+          case "typoInsert":
+            delay = jitter(typingSpeed, typingSpeedJitter);
+            break;
+          case "typoDelete":
+            delay = 260;
+            break;
           case "editPause":
             delay = editPauseBeforeTyping;
             break;
@@ -184,13 +200,21 @@ export function useTypewriter(
     }
 
     // phase === "dwelling"
+    const nextIndex = (activeIndex + 1) % words.length;
+    const nextFrames = buildTypewriterFrames(word, words[nextIndex], { similarityThreshold });
+    const changedCharacters = nextFrames.filter((frame) =>
+      ["insert", "delete", "editInsert", "editDelete"].includes(frame.action)
+    ).length;
+    const movedCharacters = nextFrames.filter((frame) => frame.action === "cut").length * 4;
+    const changeRatio = Math.min(1, (changedCharacters + movedCharacters) / Math.max(1, word.length, words[nextIndex].length));
+    const readingTime = Math.min(900, Array.from(word).length * 12);
+    const dwell = jitter(dwellMs * (0.65 + 0.7 * changeRatio) + readingTime, dwellJitter);
     const timeoutId = window.setTimeout(() => {
-      const nextIndex = (activeIndex + 1) % words.length;
-      setFrames(buildTypewriterFrames(word, words[nextIndex], { similarityThreshold }));
+      setFrames(addTypingMistakes(nextFrames, typoChance));
       setFrameIndex(0);
       setActiveIndex(nextIndex);
       setPhase("editing");
-    }, jitter(dwellMs, dwellJitter));
+    }, dwell);
     return () => window.clearTimeout(timeoutId);
   }, [
     phase,
@@ -212,6 +236,7 @@ export function useTypewriter(
     pauseBeforeTyping,
     editPauseBeforeTyping,
     similarityThreshold,
+    typoChance,
   ]);
 
   if (words.length === 0) {
@@ -232,7 +257,7 @@ export function useTypewriter(
     frame.action === "editPause" ||
     frame.action === "start";
 
-  return { text: frame.text, cursor: frame.cursor, isDwelling, activeIndex: resolvedActiveIndex };
+  return { text: frame.text, cursor: frame.cursor, selection: frame.selection, isDwelling, activeIndex: resolvedActiveIndex };
 }
 
 export default useTypewriter;
