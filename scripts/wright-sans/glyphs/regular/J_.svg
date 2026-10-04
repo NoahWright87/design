@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 591 1334" data-status="traced" data-unicode="004A">
+  <title>regular J_ (J)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="541" y1="224" y2="224"/>
+    <line x1="-50" x2="541" y1="0" y2="0"/>
+    <line x1="-50" x2="541" y1="-535" y2="-535"/>
+    <line x1="-50" x2="541" y1="-700" y2="-700"/>
+    <line x1="-50" x2="541" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M386 0 L11 0 C6 0 1 8 1 18 L1 99 C1 108 29 144 39 144 L298 144 C312 144 323 156 323 169 L323 700 L426 700 C445 700 491 653 491 633 L491 120 L471 66 C464 48 450 33 433 24 Z"/>
+</svg>

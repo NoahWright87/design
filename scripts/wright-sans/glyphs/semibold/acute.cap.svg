@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-196 -1022 443 1325" data-status="traced">
+  <title>semibold acute.cap</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-196" x2="247" y1="223" y2="223"/>
+    <line x1="-196" x2="247" y1="0" y2="0"/>
+    <line x1="-196" x2="247" y1="-526" y2="-526"/>
+    <line x1="-196" x2="247" y1="-700" y2="-700"/>
+    <line x1="-196" x2="247" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M-146 747 L-1 951 L197 951 L11 747 Z"/>
+</svg>

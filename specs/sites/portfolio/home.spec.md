@@ -5,6 +5,7 @@ The Home page is the landing page of the Personal Portfolio site. It introduces 
 
 ## Related
 - [Portfolio Site Overview](../portfolio.spec.md)
+- [Hero component](../../components/organisms/hero/hero.spec.md)
 
 ## Contract
 
@@ -29,7 +30,7 @@ The page is primarily static. Buttons in the hero and on the cards link to other
 Standard site header with navigation links to all five pages.
 
 ### Hero Section
-A prominent section with a large circular portrait on the left (on desktop) and the person's name as the main heading, introductory text, and two action buttons alongside it. On small screens, the portrait stacks above the text and buttons.
+Built on the shared Hero component. A prominent section with a large circular portrait on the left (on desktop) and the person's name as the main heading, introductory text, and two action buttons alongside it. On small screens, the text and buttons stack above the portrait, centered — text reads first regardless of the portrait's desktop-side position.
 
 The primary button links to the Projects page. The secondary (outline) button links to the Contact page. Both use the default bouncy motion.
 

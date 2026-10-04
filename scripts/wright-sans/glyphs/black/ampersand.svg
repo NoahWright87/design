@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 799 1345" data-status="traced" data-unicode="0026">
+  <title>black ampersand (&)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="749" y1="207" y2="207"/>
+    <line x1="-50" x2="749" y1="0" y2="0"/>
+    <line x1="-50" x2="749" y1="-550" y2="-550"/>
+    <line x1="-50" x2="749" y1="-700" y2="-700"/>
+    <line x1="-50" x2="749" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M304 0 L122 0 C56 0 2 54 2 120 L2 253 C2 291 22 326 55 346 L110 379 L69 430 L50 488 L50 594 C50 645 87 700 139 700 L200 700 L341 700 C394 700 484 661 484 591 L484 451 C484 432 471 411 449 393 L394 348 L465 283 L523 363 L653 363 C674 363 686 340 675 322 L580 167 L699 40 L698 33 L681 13 L675 0 L524 0 L472 48 L413 13 L364 0 Z
+    M334 174 L243 261 C235 269 198 240 198 231 L198 178 C198 162 211 149 227 149 L279 149 C309 149 344 165 334 174 Z
+    M309 487 L309 539 C309 565 228 579 228 526 C228 464 309 432 309 487 Z"/>
+</svg>

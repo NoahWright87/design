@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 280 1325" data-status="traced" data-unicode="003B">
+  <title>semibold semicolon (;)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="230" y1="223" y2="223"/>
+    <line x1="-50" x2="230" y1="0" y2="0"/>
+    <line x1="-50" x2="230" y1="-526" y2="-526"/>
+    <line x1="-50" x2="230" y1="-700" y2="-700"/>
+    <line x1="-50" x2="230" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M6 -82 L42 0 C46 9 9 8 9 18 L9 158 C9 168 17 176 27 176 L159 176 C170 176 179 167 179 156 L179 23 L97 -107 L22 -107 C9 -107 1 -94 6 -82 Z
+    M7 322 L7 462 C7 471 15 479 24 479 L162 479 C172 479 180 471 180 461 L180 324 C180 312 170 302 158 302 L28 302 C16 302 7 311 7 322 Z"/>
+</svg>

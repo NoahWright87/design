@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 892 1334" data-status="traced" data-unicode="004D">
+  <title>regular M_ (M)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="842" y1="224" y2="224"/>
+    <line x1="-50" x2="842" y1="0" y2="0"/>
+    <line x1="-50" x2="842" y1="-535" y2="-535"/>
+    <line x1="-50" x2="842" y1="-700" y2="-700"/>
+    <line x1="-50" x2="842" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M629 0 L629 415 C629 424 617 427 613 419 L473 163 C467 153 457 147 446 147 L347 147 C337 147 327 153 322 162 L167 444 L167 0 L2 0 L2 602 C2 637 13 684 48 700 L53 700 L191 700 L196 700 L224 666 L389 358 C393 350 405 350 409 358 L582 678 C590 691 601 700 611 700 L743 700 C749 700 792 642 792 630 L792 0 Z"/>
+</svg>

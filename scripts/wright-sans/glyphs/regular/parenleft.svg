@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 363 1334" data-status="traced" data-unicode="0028">
+  <title>regular parenleft (()</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="313" y1="224" y2="224"/>
+    <line x1="-50" x2="313" y1="0" y2="0"/>
+    <line x1="-50" x2="313" y1="-535" y2="-535"/>
+    <line x1="-50" x2="313" y1="-700" y2="-700"/>
+    <line x1="-50" x2="313" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M144 -130 L105 -78 L53 23 L14 169 L5 276 L5 429 L35 559 L77 659 L124 729 C132 741 141 748 148 748 L263 748 L209 668 L168 572 L140 461 L136 460 L136 158 L142 158 L172 44 L223 -68 L262 -130 Z"/>
+</svg>

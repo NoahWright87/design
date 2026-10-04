@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-54 -1030 733 1334" data-status="traced" data-unicode="0076">
+  <title>regular v (v)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-54" x2="679" y1="224" y2="224"/>
+    <line x1="-54" x2="679" y1="0" y2="0"/>
+    <line x1="-54" x2="679" y1="-535" y2="-535"/>
+    <line x1="-54" x2="679" y1="-700" y2="-700"/>
+    <line x1="-54" x2="679" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M213 19 L0 518 C-4 526 2 535 11 535 L164 535 L313 167 L466 535 L619 535 C627 535 629 522 624 510 L409 19 C404 8 393 0 380 0 L241 0 C229 0 217 7 213 19 Z"/>
+</svg>

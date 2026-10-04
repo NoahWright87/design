@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 674 1334" data-status="traced" data-unicode="0036">
+  <title>regular six (6)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="624" y1="224" y2="224"/>
+    <line x1="-50" x2="624" y1="0" y2="0"/>
+    <line x1="-50" x2="624" y1="-535" y2="-535"/>
+    <line x1="-50" x2="624" y1="-700" y2="-700"/>
+    <line x1="-50" x2="624" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M2 90 L2 570 C2 620 41 670 88 683 L94 700 L516 700 L522 684 C565 666 574 558 514 564 L433 572 L163 572 C152 572 142 557 142 539 L142 422 L482 422 C509 422 568 366 568 339 L568 144 C568 64 529 0 480 0 L90 0 C62 0 2 62 2 90 Z
+    M432 144 L432 285 C432 298 422 309 409 309 L168 309 C153 309 141 297 141 282 L141 145 C141 131 152 120 166 120 L408 120 C421 120 432 131 432 144 Z"/>
+</svg>

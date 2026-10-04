@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 470 1345" data-status="traced" data-unicode="002D">
+  <title>black hyphen (-)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="420" y1="207" y2="207"/>
+    <line x1="-50" x2="420" y1="0" y2="0"/>
+    <line x1="-50" x2="420" y1="-550" y2="-550"/>
+    <line x1="-50" x2="420" y1="-700" y2="-700"/>
+    <line x1="-50" x2="420" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M370 216 L1 216 L1 351 C1 366 13 378 28 378 L340 378 C357 378 370 365 370 348 Z"/>
+</svg>

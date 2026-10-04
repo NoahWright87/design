@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-267 -1058 536 1345" data-status="traced">
+  <title>black dieresis.cap</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-267" x2="269" y1="207" y2="207"/>
+    <line x1="-267" x2="269" y1="0" y2="0"/>
+    <line x1="-267" x2="269" y1="-550" y2="-550"/>
+    <line x1="-267" x2="269" y1="-700" y2="-700"/>
+    <line x1="-267" x2="269" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M-217 766 L-217 893 C-217 906 -207 916 -194 916 L-46 916 C-33 916 -23 906 -23 893 L-23 766 C-23 753 -34 743 -46 743 L-193 743 C-206 743 -217 753 -217 766 Z
+    M28 764 L28 897 C28 907 37 916 47 916 L196 916 C209 916 219 906 219 893 L219 768 C219 754 208 743 194 743 L50 743 C38 743 28 752 28 764 Z"/>
+</svg>

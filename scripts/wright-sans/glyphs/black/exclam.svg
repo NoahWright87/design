@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-51 -1058 303 1345" data-status="traced" data-unicode="0021">
+  <title>black exclam (!)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-51" x2="252" y1="207" y2="207"/>
+    <line x1="-51" x2="252" y1="0" y2="0"/>
+    <line x1="-51" x2="252" y1="-550" y2="-550"/>
+    <line x1="-51" x2="252" y1="-700" y2="-700"/>
+    <line x1="-51" x2="252" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M8 23 L8 141 C8 160 23 175 42 175 L161 175 C177 175 190 162 190 146 L190 27 L173 13 L167 0 L23 0 L18 14 Z
+    M29 249 L-1 523 L-1 700 L202 700 L202 493 L173 249 C171 235 159 224 145 224 L57 224 C42 224 30 235 29 249 Z"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-60 -1030 664 1334" data-status="traced" data-unicode="0032">
+  <title>regular two (2)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-60" x2="604" y1="224" y2="224"/>
+    <line x1="-60" x2="604" y1="0" y2="0"/>
+    <line x1="-60" x2="604" y1="-535" y2="-535"/>
+    <line x1="-60" x2="604" y1="-700" y2="-700"/>
+    <line x1="-60" x2="604" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M2 0 L2 242 C2 270 49 341 77 346 L402 409 C413 412 422 422 422 434 L422 539 C422 558 407 573 388 573 L144 573 C119 573 101 546 82 546 L31 546 C-10 546 18 662 67 683 L72 700 L432 700 L438 688 C486 686 554 645 554 591 L554 405 C554 363 527 325 486 312 L435 295 L168 248 C148 245 133 227 133 207 L133 118 L554 118 L554 0 Z"/>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 825 1345" data-status="traced" data-unicode="0052">
+  <title>black R_ (R)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="775" y1="207" y2="207"/>
+    <line x1="-50" x2="775" y1="0" y2="0"/>
+    <line x1="-50" x2="775" y1="-550" y2="-550"/>
+    <line x1="-50" x2="775" y1="-700" y2="-700"/>
+    <line x1="-50" x2="775" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M452 0 L309 189 C289 216 246 223 246 200 L246 26 C246 24 211 0 208 0 L2 0 L2 668 C2 686 16 700 33 700 L585 700 C631 700 671 671 686 627 L705 572 L705 335 C705 284 670 239 620 227 L557 212 L725 0 Z
+    M459 397 L459 495 C459 507 449 516 438 516 L245 516 L245 397 Z"/>
+</svg>

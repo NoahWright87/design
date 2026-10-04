@@ -9,13 +9,15 @@ export interface MenuItemProps {
   href?: string;
   onClick?: () => void;
   disabled?: boolean;
+  /** Marks this item as the current page (sets aria-current="page"). */
+  current?: boolean;
 }
 
 export const MenuContext = React.createContext<{ close: () => void } | null>(
   null
 );
 
-export function MenuItem({ text, label, icon, href, onClick, disabled = false }: MenuItemProps) {
+export function MenuItem({ text, label, icon, href, onClick, disabled = false, current = false }: MenuItemProps) {
   const ctx = useContext(MenuContext);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -44,6 +46,7 @@ export function MenuItem({ text, label, icon, href, onClick, disabled = false }:
         className={["nw-menu-item", disabled && "nw-menu-item--disabled"].filter(Boolean).join(" ")}
         role="menuitem"
         href={href}
+        aria-current={current ? "page" : undefined}
         aria-disabled={disabled || undefined}
         tabIndex={disabled ? -1 : undefined}
         onClick={handleClick}
@@ -58,6 +61,7 @@ export function MenuItem({ text, label, icon, href, onClick, disabled = false }:
       type="button"
       className={["nw-menu-item", disabled && "nw-menu-item--disabled"].filter(Boolean).join(" ")}
       role="menuitem"
+      aria-current={current ? "page" : undefined}
       onClick={handleClick}
       disabled={disabled}
     >

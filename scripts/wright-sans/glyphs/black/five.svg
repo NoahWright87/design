@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 708 1345" data-status="traced" data-unicode="0035">
+  <title>black five (5)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="658" y1="207" y2="207"/>
+    <line x1="-50" x2="658" y1="0" y2="0"/>
+    <line x1="-50" x2="658" y1="-550" y2="-550"/>
+    <line x1="-50" x2="658" y1="-700" y2="-700"/>
+    <line x1="-50" x2="658" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M4 0 L4 117 C4 146 27 169 55 169 L362 169 C372 169 380 174 380 179 L380 263 C380 273 372 281 362 281 L185 281 L126 259 L74 259 C35 259 4 279 4 303 L4 700 L555 700 C569 700 580 693 580 685 L580 565 C580 559 546 520 540 520 L229 520 C219 520 217 448 230 448 L487 448 C519 448 586 405 595 370 L608 318 L608 99 C608 54 537 0 498 0 L69 0 Z"/>
+</svg>

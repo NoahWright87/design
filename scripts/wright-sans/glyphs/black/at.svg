@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 815 1345" data-status="traced" data-unicode="0040">
+  <title>black at (@)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="765" y1="207" y2="207"/>
+    <line x1="-50" x2="765" y1="0" y2="0"/>
+    <line x1="-50" x2="765" y1="-550" y2="-550"/>
+    <line x1="-50" x2="765" y1="-700" y2="-700"/>
+    <line x1="-50" x2="765" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 126 L1 593 C1 637 71 700 114 700 L608 700 C667 700 715 652 715 592 L715 256 C715 220 658 161 621 161 L472 161 C445 161 433 192 413 193 L366 161 L243 161 C202 161 169 195 169 236 L169 452 C169 478 214 541 242 541 L370 541 L396 526 L418 541 L493 541 C516 541 534 523 534 501 L534 277 C534 269 587 269 587 283 L587 556 C587 571 575 583 560 583 L166 583 C147 583 132 568 132 549 L132 158 C132 153 162 124 167 124 L608 124 C616 124 623 117 623 109 L623 0 L127 0 C58 0 1 56 1 126 Z
+    M402 284 L402 424 L332 424 C316 424 303 419 303 411 L303 289 C303 280 310 273 319 273 L377 273 C391 273 402 278 402 284 Z"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-259 -1050 422 1358" data-status="traced">
+  <title>bold grave.lc</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-259" x2="163" y1="228" y2="228"/>
+    <line x1="-259" x2="163" y1="0" y2="0"/>
+    <line x1="-259" x2="163" y1="-547" y2="-547"/>
+    <line x1="-259" x2="163" y1="-700" y2="-700"/>
+    <line x1="-259" x2="163" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M-38 583 L-202 775 C-209 783 -203 795 -193 795 L-24 795 C-17 795 -9 789 -3 779 L107 605 C113 596 107 583 95 583 Z"/>
+</svg>

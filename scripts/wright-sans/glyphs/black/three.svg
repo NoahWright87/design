@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 718 1345" data-status="traced" data-unicode="0033">
+  <title>black three (3)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="668" y1="207" y2="207"/>
+    <line x1="-50" x2="668" y1="0" y2="0"/>
+    <line x1="-50" x2="668" y1="-550" y2="-550"/>
+    <line x1="-50" x2="668" y1="-700" y2="-700"/>
+    <line x1="-50" x2="668" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 18 L1 141 C1 160 17 176 36 176 L377 176 C397 176 397 269 375 269 L146 269 C131 269 119 280 119 295 L119 400 C119 420 135 435 155 435 L371 435 C397 435 398 522 371 522 L40 522 C22 522 7 536 7 554 L7 687 C7 694 17 700 30 700 L501 700 C538 700 613 634 613 594 L613 420 L569 361 L610 310 L618 246 L618 105 C618 60 537 0 494 0 L19 0 C9 0 1 8 1 18 Z"/>
+</svg>

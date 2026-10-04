@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 773 1334" data-status="traced" data-unicode="0040">
+  <title>regular at (@)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="723" y1="224" y2="224"/>
+    <line x1="-50" x2="723" y1="0" y2="0"/>
+    <line x1="-50" x2="723" y1="-535" y2="-535"/>
+    <line x1="-50" x2="723" y1="-700" y2="-700"/>
+    <line x1="-50" x2="723" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 94 L1 583 C1 627 39 672 80 683 L86 700 L545 700 L551 700 C599 700 673 660 673 599 L673 241 C673 196 636 159 591 159 L467 159 C440 159 410 197 402 196 L364 159 L211 159 C194 159 151 202 151 219 L151 467 C151 477 199 524 211 524 L358 524 L386 515 C422 515 452 551 485 501 L497 483 L497 258 C497 247 581 241 581 272 L581 568 C581 585 567 598 550 598 L128 598 C110 598 96 584 96 566 L96 122 C96 106 109 92 126 92 L588 92 L588 0 L82 0 C48 0 1 61 1 94 Z
+    M399 248 L399 434 L264 434 C255 434 247 427 247 418 L247 267 C247 256 255 248 266 248 Z"/>
+</svg>

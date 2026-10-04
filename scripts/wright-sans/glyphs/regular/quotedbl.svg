@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 403 1334" data-status="traced" data-unicode="0022">
+  <title>regular quotedbl (")</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="353" y1="224" y2="224"/>
+    <line x1="-50" x2="353" y1="0" y2="0"/>
+    <line x1="-50" x2="353" y1="-535" y2="-535"/>
+    <line x1="-50" x2="353" y1="-700" y2="-700"/>
+    <line x1="-50" x2="353" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M7 462 L7 700 L133 700 L133 553 L87 457 C80 443 7 453 7 462 Z
+    M176 462 L176 700 L303 700 L303 562 L247 459 C240 446 176 445 176 462 Z"/>
+</svg>

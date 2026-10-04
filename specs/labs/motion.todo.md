@@ -10,7 +10,7 @@
 
 ### Motion Primitives
 - [ ] [#12](https://github.com/NoahWright87/design/issues/12) Add Reveal + Stagger primitives for section and content entrance choreography.
-- [ ] [#13](https://github.com/NoahWright87/design/issues/13) Add a reusable ContentRotator with crossfade transitions and pause controls.
+- [x] [#13](https://github.com/NoahWright87/design/issues/13) Add a reusable ContentRotator with crossfade transitions and pause controls. Delivered as the `Carousel` organism (`specs/components/organisms/carousel/carousel.spec.md`).
 
 ### UI & Interaction
 - [ ] Groupable preset categories (e.g., "Professional", "Playful", "Extreme").

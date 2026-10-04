@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 712 1325" data-status="traced" data-unicode="0024">
+  <title>semibold dollar ($)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="662" y1="223" y2="223"/>
+    <line x1="-50" x2="662" y1="0" y2="0"/>
+    <line x1="-50" x2="662" y1="-526" y2="-526"/>
+    <line x1="-50" x2="662" y1="-700" y2="-700"/>
+    <line x1="-50" x2="662" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M238 -130 L238 0 L18 0 L18 83 C18 100 57 141 74 141 L410 141 C425 141 437 153 437 167 L437 221 C437 240 427 256 415 256 L104 256 C67 256 2 317 3 354 L5 495 L5 561 C5 601 64 666 106 666 L227 666 L227 744 C227 753 235 760 244 760 L351 760 C359 760 365 754 365 746 L365 666 L592 666 L592 578 C592 545 565 518 532 518 L211 518 C171 518 168 401 207 401 L513 401 C545 401 612 325 612 292 L612 136 C612 83 577 0 513 0 L379 0 C375 0 372 -9 372 -21 L372 -130 Z"/>
+</svg>

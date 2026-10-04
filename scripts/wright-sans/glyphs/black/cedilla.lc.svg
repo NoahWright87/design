@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-199 -1058 396 1345" data-status="edited">
+  <title>black cedilla.lc</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected. Constructed by recipes.py (cedilla, stroke 300).</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-199" x2="197" y1="207" y2="207"/>
+    <line x1="-199" x2="197" y1="0" y2="0"/>
+    <line x1="-199" x2="197" y1="-550" y2="-550"/>
+    <line x1="-199" x2="197" y1="-700" y2="-700"/>
+    <line x1="-199" x2="197" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M147 -89 L147 -160 C147 -209 107 -249 58 -249 L-149 -249 L-149 -159 L48 -159 C61 -159 65 -90 45 -90 L-69 -90 L-69 0 L66 0 C98 0 147 -58 147 -89 Z"/>
+</svg>

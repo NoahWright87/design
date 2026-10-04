@@ -2,6 +2,9 @@ import "./styles/theme.css";
 
 // Atoms
 export * from "./atoms/nonsense.js";
+export * from "./atoms/usePrefersReducedMotion.js";
+export * from "./atoms/typewriterDiff.js";
+export * from "./atoms/useTypewriter.js";
 
 // Molecules
 export * from "./components/molecules/Button/index.js";
@@ -20,8 +23,11 @@ export * from "./components/molecules/RadioGroup/index.js";
 export * from "./components/molecules/ToggleIcon/index.js";
 export * from "./components/molecules/Badge/index.js";
 export * from "./components/molecules/Box/index.js";
+export * from "./components/molecules/Tooltip/index.js";
+export * from "./components/molecules/TextCarousel/index.js";
 
 // Organisms
+export * from "./components/organisms/Hero/index.js";
 export * from "./components/organisms/Header/index.js";
 export * from "./components/organisms/Footer/index.js";
 export * from "./components/organisms/Layout/index.js";
@@ -29,6 +35,7 @@ export * from "./components/organisms/Menu/index.js";
 export * from "./components/organisms/MobileNav/index.js";
 export * from "./components/organisms/Container/Container.js";
 export * from "./components/organisms/Card/index.js";
+export * from "./components/organisms/Carousel/index.js";
 export * from "./components/organisms/Modal/index.js";
 export * from "./components/organisms/Breadcrumbs/index.js";
 
@@ -57,6 +64,9 @@ export type Theme = {
   spacingXl?: string;
   
   // Typography
+  fontFamily?: string;
+  fontFamilyHeading?: string;
+  fontFamilyMono?: string;
   textXs?: string;
   textSm?: string;
   textMd?: string;

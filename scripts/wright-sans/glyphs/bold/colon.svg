@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1050 286 1358" data-status="traced" data-unicode="003A">
+  <title>bold colon (:)</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="236" y1="228" y2="228"/>
+    <line x1="-50" x2="236" y1="0" y2="0"/>
+    <line x1="-50" x2="236" y1="-547" y2="-547"/>
+    <line x1="-50" x2="236" y1="-700" y2="-700"/>
+    <line x1="-50" x2="236" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M7 0 L7 155 C7 165 16 173 26 173 L166 173 C176 173 184 165 184 156 L184 15 C184 7 177 0 169 0 Z
+    M11 281 L11 450 L186 450 L186 298 C186 289 179 281 169 281 Z"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1050 661 1358" data-status="traced" data-unicode="0024">
+  <title>bold dollar ($)</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="611" y1="228" y2="228"/>
+    <line x1="-50" x2="611" y1="0" y2="0"/>
+    <line x1="-50" x2="611" y1="-547" y2="-547"/>
+    <line x1="-50" x2="611" y1="-700" y2="-700"/>
+    <line x1="-50" x2="611" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M205 -121 L205 -15 L1 -15 L1 110 C1 134 21 154 46 154 L361 154 C367 154 373 162 373 172 L373 233 C373 242 366 249 357 249 L103 249 C78 249 25 291 17 318 L0 375 L0 537 C0 583 74 665 121 665 L205 665 L205 750 L359 750 L359 665 L561 665 L561 535 C561 528 524 491 516 491 L205 491 C186 491 185 404 206 404 L440 404 L494 385 C533 371 561 337 561 296 L561 106 C561 60 499 -15 451 -15 L389 -15 C372 -15 359 -19 359 -24 L359 -121 Z"/>
+</svg>

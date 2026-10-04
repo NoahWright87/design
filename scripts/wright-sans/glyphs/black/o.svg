@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 716 1345" data-status="traced" data-unicode="006F">
+  <title>black o (o)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="665" y1="207" y2="207"/>
+    <line x1="-50" x2="665" y1="0" y2="0"/>
+    <line x1="-50" x2="665" y1="-550" y2="-550"/>
+    <line x1="-50" x2="665" y1="-700" y2="-700"/>
+    <line x1="-50" x2="665" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M18 72 L0 128 L0 419 C0 471 73 550 126 550 L465 550 C529 550 574 509 604 451 L615 428 L614 170 L614 109 C614 63 578 0 532 0 L482 0 L118 0 C73 0 33 29 18 72 Z
+    M393 174 L393 356 C393 365 386 372 377 372 L243 372 C230 372 219 362 219 349 L219 193 C219 183 227 174 238 174 Z"/>
+</svg>

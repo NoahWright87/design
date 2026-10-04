@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 745 1345" data-status="edited" data-unicode="0038">
+  <title>black eight (8)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected. Hand-fixed: lower-left corner was a chamfer; all four outer corners now share one radius, waist notches mirrored.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="695" y1="207" y2="207"/>
+    <line x1="-50" x2="695" y1="0" y2="0"/>
+    <line x1="-50" x2="695" y1="-550" y2="-550"/>
+    <line x1="-50" x2="695" y1="-700" y2="-700"/>
+    <line x1="-50" x2="695" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 104 L1 273 C1 305 30 335 54 355 L23 401 C14 412 9 422 9 430 L9 584 C9 648 61 700 125 700 L524 700 C588 700 640 648 640 584 L640 430 C640 422 635 412 626 401 L594 355 C618 335 645 305 645 273 L645 104 C645 47 594 0 532 0 L114 0 C52 0 1 47 1 104 Z
+    M419 183 L419 254 C419 266 412 276 405 276 L248 276 C237 276 228 267 228 257 L228 184 C228 175 235 168 244 168 L404 168 C412 168 419 175 419 183 Z
+    M415 445 L415 516 C415 524 408 530 400 530 L251 530 C243 530 236 524 236 516 L236 452 C236 439 241 429 248 429 L399 429 C408 429 415 437 415 445 Z"/>
+</svg>

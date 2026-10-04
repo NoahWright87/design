@@ -20,6 +20,13 @@ export const spacingTokens = [
   '--spacing-xl',
 ] as const;
 
+// Font family tokens
+export const fontFamilyTokens = [
+  '--font-family',
+  '--font-family-heading',
+  '--font-family-mono',
+] as const;
+
 // Typography tokens
 export const typographyTokens = [
   '--text-xs',

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 729 1345" data-status="traced" data-unicode="0046">
+  <title>black F_ (F)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="679" y1="207" y2="207"/>
+    <line x1="-50" x2="679" y1="0" y2="0"/>
+    <line x1="-50" x2="679" y1="-550" y2="-550"/>
+    <line x1="-50" x2="679" y1="-700" y2="-700"/>
+    <line x1="-50" x2="679" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 0 L1 625 C1 650 42 700 68 700 L629 700 L629 546 C629 540 594 514 590 514 L250 514 L250 427 L561 427 L592 395 L592 306 C592 291 556 248 540 248 L250 248 L250 0 C250 -5 241 0 230 0 Z"/>
+</svg>

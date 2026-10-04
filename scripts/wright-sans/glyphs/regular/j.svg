@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-61 -1030 435 1334" data-status="edited" data-unicode="006A">
+  <title>regular j (j)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected. Hand-normalized: dot is a crisp hexagon aligned to the stem, slants parallel to the stem top.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-61" x2="374" y1="224" y2="224"/>
+    <line x1="-61" x2="374" y1="0" y2="0"/>
+    <line x1="-61" x2="374" y1="-535" y2="-535"/>
+    <line x1="-61" x2="374" y1="-700" y2="-700"/>
+    <line x1="-61" x2="374" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 -176 L36 -111 C42 -100 47 -93 50 -93 L144 -93 C156 -93 166 -84 166 -72 L166 466 L256 535 L324 535 L324 -121 C324 -178 279 -224 221 -224 L30 -224 C5 -224 -11 -198 1 -176 Z
+    M166 592 L166 720 L245 780 L324 780 L324 652 L245 592 Z"/>
+</svg>

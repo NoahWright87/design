@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 745 1345" data-status="traced" data-unicode="0036">
+  <title>black six (6)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="695" y1="207" y2="207"/>
+    <line x1="-50" x2="695" y1="0" y2="0"/>
+    <line x1="-50" x2="695" y1="-550" y2="-550"/>
+    <line x1="-50" x2="695" y1="-700" y2="-700"/>
+    <line x1="-50" x2="695" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M2 96 L2 582 C2 625 71 700 117 700 L590 700 C607 700 621 686 621 668 L621 574 C621 564 586 525 576 525 L243 525 C227 525 228 442 239 442 L542 442 C572 442 645 378 645 346 L645 101 C645 58 565 0 525 0 L123 0 C86 0 2 58 2 96 Z
+    M417 171 L417 273 L234 273 L234 187 C234 178 241 171 250 171 Z"/>
+</svg>

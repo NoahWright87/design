@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-251 -1022 481 1325" data-status="traced">
+  <title>semibold dieresis.lc</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-251" x2="230" y1="223" y2="223"/>
+    <line x1="-251" x2="230" y1="0" y2="0"/>
+    <line x1="-251" x2="230" y1="-526" y2="-526"/>
+    <line x1="-251" x2="230" y1="-700" y2="-700"/>
+    <line x1="-251" x2="230" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M-201 582 L-201 712 C-201 721 -194 728 -185 728 L-56 728 C-45 728 -37 720 -37 709 L-37 565 L-184 565 C-194 565 -201 573 -201 582 Z
+    M18 583 L18 711 C18 720 25 728 35 728 L163 728 C172 728 180 720 180 710 L180 588 C180 575 170 565 157 565 L36 565 C26 565 18 573 18 583 Z"/>
+</svg>

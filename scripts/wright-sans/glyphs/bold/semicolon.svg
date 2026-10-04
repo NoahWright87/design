@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-55 -1050 288 1358" data-status="traced" data-unicode="003B">
+  <title>bold semicolon (;)</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-55" x2="233" y1="228" y2="228"/>
+    <line x1="-55" x2="233" y1="0" y2="0"/>
+    <line x1="-55" x2="233" y1="-547" y2="-547"/>
+    <line x1="-55" x2="233" y1="-700" y2="-700"/>
+    <line x1="-55" x2="233" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M-1 -93 L40 0 C45 11 5 5 5 18 L5 164 C5 177 15 187 28 187 L163 187 C173 187 182 178 182 167 L182 20 L96 -113 L11 -113 C1 -113 -5 -102 -1 -93 Z
+    M9 285 L9 450 L183 450 L183 285 Z"/>
+</svg>

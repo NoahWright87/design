@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 477 1345" data-status="edited" data-unicode="006A">
+  <title>black j (j)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected. Hand-normalized: dot is a crisp hexagon aligned to the stem, slants parallel to the stem top.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="427" y1="207" y2="207"/>
+    <line x1="-50" x2="427" y1="0" y2="0"/>
+    <line x1="-50" x2="427" y1="-550" y2="-550"/>
+    <line x1="-50" x2="427" y1="-700" y2="-700"/>
+    <line x1="-50" x2="427" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 -207 L1 -128 L50 -38 L145 -38 L145 461 L290 550 L377 550 L377 -82 C377 -151 321 -207 252 -207 Z
+    M145 566 L145 700 L261 769 L377 769 L377 635 L261 566 Z"/>
+</svg>

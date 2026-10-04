@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 300 1345" data-status="traced" data-unicode="003A">
+  <title>black colon (:)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="250" y1="207" y2="207"/>
+    <line x1="-50" x2="250" y1="0" y2="0"/>
+    <line x1="-50" x2="250" y1="-550" y2="-550"/>
+    <line x1="-50" x2="250" y1="-700" y2="-700"/>
+    <line x1="-50" x2="250" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 24 L1 173 C1 186 16 196 36 196 L181 196 C191 196 200 187 200 177 L200 22 C200 10 190 0 178 0 L15 0 C7 0 1 11 1 24 Z
+    M179 318 L16 318 C8 318 1 324 1 333 L1 511 L182 511 C191 511 199 503 199 493 L199 338 C199 327 190 318 179 318 Z"/>
+</svg>

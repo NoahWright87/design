@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 654 1334" data-status="traced" data-unicode="0024">
+  <title>regular dollar ($)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="604" y1="224" y2="224"/>
+    <line x1="-50" x2="604" y1="0" y2="0"/>
+    <line x1="-50" x2="604" y1="-535" y2="-535"/>
+    <line x1="-50" x2="604" y1="-700" y2="-700"/>
+    <line x1="-50" x2="604" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M216 -117 L216 0 L1 0 L1 81 C1 107 16 129 35 129 L393 129 C405 129 415 139 415 151 L415 240 C415 257 402 271 385 271 L95 271 C49 271 11 305 6 350 L1 406 L1 559 C1 612 40 656 92 662 L139 669 L202 669 C210 669 216 675 216 683 L216 772 L335 772 L335 669 L543 669 L543 571 C543 567 517 537 512 537 L165 537 C154 537 146 529 146 518 L146 431 C146 411 156 395 169 395 L471 395 C501 395 546 338 549 309 L554 256 L554 91 C554 64 494 0 466 0 L335 0 L335 -117 Z"/>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 802 1345" data-status="traced" data-unicode="006B">
+  <title>black k (k)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="752" y1="207" y2="207"/>
+    <line x1="-50" x2="752" y1="0" y2="0"/>
+    <line x1="-50" x2="752" y1="-550" y2="-550"/>
+    <line x1="-50" x2="752" y1="-700" y2="-700"/>
+    <line x1="-50" x2="752" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M2 0 L2 698 L193 808 C210 818 232 805 232 792 L232 346 L411 550 L696 550 L447 276 L695 19 C702 12 696 0 686 0 L426 0 L232 204 L232 0 Z"/>
+</svg>

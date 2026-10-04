@@ -15,6 +15,7 @@ MenuItem renders a single item within a Menu. It appears as either a button or a
 - Optional destination URL.
 - Optional click handler.
 - Optional disabled flag.
+- Optional current flag, marking the item as the page the user is on.
 
 ### Outputs
 A button or link element styled as a menu item. On activation, the click handler is called and the parent menu closes.
@@ -27,6 +28,8 @@ A button or link element styled as a menu item. On activation, the click handler
 ## Behavior
 
 Clicking or keyboard-activating a menu item calls the provided click handler and signals the parent menu to close. The icon, if provided, appears before the label text.
+
+Current items are announced as the current page to screen readers and shown in the primary color with a heavier weight, so users can see where they are.
 
 Disabled items remain visible but inert, with muted styling and no activation behavior.
 
@@ -45,3 +48,4 @@ Disabled items stay visually present while removing the normal interaction affor
 6. Is keyboard-accessible via Tab and Enter/Space.
 7. Renders a disabled visual state when the disabled flag is set.
 8. Disabled items do not trigger click handlers or close the parent menu.
+9. When the current flag is set, the item carries `aria-current="page"` and renders in the primary color with a heavier weight.

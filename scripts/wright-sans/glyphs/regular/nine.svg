@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-59 -1030 677 1334" data-status="traced" data-unicode="0039">
+  <title>regular nine (9)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-59" x2="618" y1="224" y2="224"/>
+    <line x1="-59" x2="618" y1="0" y2="0"/>
+    <line x1="-59" x2="618" y1="-535" y2="-535"/>
+    <line x1="-59" x2="618" y1="-700" y2="-700"/>
+    <line x1="-59" x2="618" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M45 123 L101 123 L101 118 L371 118 C404 118 430 131 430 147 L430 274 L106 274 C70 274 4 327 4 365 L4 596 C4 625 51 671 80 682 L86 700 L475 700 L481 685 C507 679 544 657 552 629 L568 581 L568 98 C568 67 511 0 481 0 L52 0 C15 0 -9 123 45 123 Z
+    M432 414 L432 546 C432 560 421 571 407 571 L163 571 C150 571 140 561 140 548 L140 414 C140 398 153 385 169 385 L403 385 C419 385 432 398 432 414 Z"/>
+</svg>

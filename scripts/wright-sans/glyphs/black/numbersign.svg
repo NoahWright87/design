@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 707 1345" data-status="traced" data-unicode="0023">
+  <title>black numbersign (#)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="657" y1="207" y2="207"/>
+    <line x1="-50" x2="657" y1="0" y2="0"/>
+    <line x1="-50" x2="657" y1="-550" y2="-550"/>
+    <line x1="-50" x2="657" y1="-700" y2="-700"/>
+    <line x1="-50" x2="657" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M60 0 L86 145 L2 145 L2 276 C2 284 8 291 16 291 L114 291 L134 391 L39 391 L39 541 L159 541 L188 684 L197 700 L203 700 L328 700 C332 700 334 690 332 679 L311 549 C310 541 376 533 379 551 L405 700 L541 700 C546 700 550 690 548 680 L523 541 L607 541 L607 391 L494 391 L475 291 L574 291 L574 145 L452 145 L419 0 L285 0 C281 0 279 9 281 20 L303 137 C305 146 241 154 237 137 L208 0 Z
+    M334 300 L348 374 C353 399 283 399 280 380 L266 303 C264 286 331 282 334 300 Z"/>
+</svg>

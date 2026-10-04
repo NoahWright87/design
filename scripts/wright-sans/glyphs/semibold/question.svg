@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 598 1325" data-status="traced" data-unicode="003F">
+  <title>semibold question (?)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="548" y1="223" y2="223"/>
+    <line x1="-50" x2="548" y1="0" y2="0"/>
+    <line x1="-50" x2="548" y1="-526" y2="-526"/>
+    <line x1="-50" x2="548" y1="-700" y2="-700"/>
+    <line x1="-50" x2="548" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M87 16 L87 150 C87 162 96 171 108 171 L233 171 C244 171 252 163 252 152 L252 16 C252 7 245 0 237 0 L103 0 C94 0 87 7 87 16 Z
+    M90 230 L90 306 C90 340 110 371 140 386 L193 410 L313 449 C336 456 338 543 310 543 L18 543 C9 543 1 550 1 559 L1 677 L9 685 L14 700 L390 700 L396 685 C434 679 498 635 498 591 L498 433 C498 395 475 359 440 343 L396 322 L267 282 C245 275 242 214 223 214 L106 214 C97 214 90 222 90 230 Z"/>
+</svg>

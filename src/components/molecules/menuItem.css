@@ -20,6 +20,11 @@
   background: color-mix(in srgb, var(--foreground, #000) 6%, var(--background, #fff));
 }
 
+.nw-menu-item[aria-current="page"] {
+  color: var(--primary, #2563eb);
+  font-weight: 600;
+}
+
 .nw-menu-item--disabled,
 .nw-menu-item--disabled:hover,
 .nw-menu-item--disabled:focus-visible {

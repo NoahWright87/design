@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 735 1334" data-status="traced" data-unicode="0045">
+  <title>regular E_ (E)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="685" y1="224" y2="224"/>
+    <line x1="-50" x2="685" y1="0" y2="0"/>
+    <line x1="-50" x2="685" y1="-535" y2="-535"/>
+    <line x1="-50" x2="685" y1="-700" y2="-700"/>
+    <line x1="-50" x2="685" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M2 106 L2 582 C2 626 28 700 74 700 L80 700 L635 700 L635 557 L177 557 C171 557 166 547 166 535 L166 432 L542 432 C562 432 579 416 579 396 L579 339 C579 321 569 306 557 306 L177 306 C171 306 166 298 166 288 L166 163 C166 151 175 142 187 142 L635 142 L635 0 L108 0 C49 0 2 48 2 106 Z"/>
+</svg>

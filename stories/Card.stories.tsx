@@ -15,6 +15,11 @@ const meta: Meta<typeof Card> = {
       control: "text",
       description: "Optional card title",
     },
+    titleAs: {
+      control: "select",
+      options: ["h2", "h3", "h4", "h5", "h6", "div"],
+      description: "Element the title renders as. Heading levels look identical; they only change the document outline. Default h3.",
+    },
     subtitle: {
       control: "text",
       description: "Optional subtitle below title",
@@ -35,9 +40,23 @@ const meta: Meta<typeof Card> = {
       control: "text",
       description: "Optional footer content",
     },
+    mediaPosition: {
+      control: "radio",
+      options: ["top", "left", "right"],
+      description: "Position of the image relative to the card body. left/right collapse to top on small screens.",
+    },
     interactive: {
       control: "boolean",
       description: "Enable hover lift and shadow transition",
+    },
+    longDescription: {
+      control: "text",
+      description: "Longer content revealed only when the card expands. Providing this makes the card expandable.",
+    },
+    expandedImagePosition: {
+      control: "radio",
+      options: ["top", "between"],
+      description: "Where the image sits once the card is expanded.",
     },
   },
 };
@@ -50,6 +69,17 @@ export const Default: Story = {
     title: "Card Title",
     children: "This is a card with title and content.",
   },
+};
+
+/** Card titles are h3 headings by default. Pick the level that fits the page outline; the look stays the same. */
+export const TitleLevels: Story = {
+  render: () => (
+    <CardGrid minCardWidth="200px">
+      <Card title="h2 title" titleAs="h2">Under a page-level h1.</Card>
+      <Card title="h3 title (default)">Under a section h2.</Card>
+      <Card title="div title" titleAs="div">Purely visual, not in the outline.</Card>
+    </CardGrid>
+  ),
 };
 
 export const Flat: Story = {
@@ -77,6 +107,38 @@ export const WithImage: Story = {
         subtitle="Top media section"
       >
         The image sits above the title and content.
+      </Card>
+    </div>
+  ),
+};
+
+export const MediaLeft: Story = {
+  name: "Media position — left",
+  render: () => (
+    <div style={{ width: 480 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        mediaPosition="left"
+        title="Card with Left Media"
+        subtitle="Media sits beside the content"
+      >
+        On small screens this collapses back to a top-positioned image.
+      </Card>
+    </div>
+  ),
+};
+
+export const MediaRight: Story = {
+  name: "Media position — right",
+  render: () => (
+    <div style={{ width: 480 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        mediaPosition="right"
+        title="Card with Right Media"
+        subtitle="Media sits beside the content"
+      >
+        On small screens this collapses back to a top-positioned image.
       </Card>
     </div>
   ),
@@ -200,6 +262,73 @@ export const GridFixedColumns: Story = {
     </CardGrid>
   ),
   parameters: { layout: "padded" },
+};
+
+export const ExpandableLongDescriptionOnly: Story = {
+  name: "Expandable — long description only",
+  render: () => (
+    <div style={{ width: 340 }}>
+      <Card
+        title="Notes on Tidal Erosion"
+        subtitle="Coastal Geology"
+        longDescription="Tidal erosion reshapes coastlines gradually over centuries, as the rhythmic push and pull of the tides wears away at rock, sand, and sediment. This process accelerates during storms, when wave energy is amplified and the usual protective buffers of dune grass and reef are overwhelmed. Studying tidal erosion helps engineers plan more resilient shorelines, from living breakwaters to managed retreats that account for a coastline's long-term drift."
+      >
+        No short content was given here, so the collapsed card previews the long description, cut off with an ellipsis. Expand to read all of it.
+      </Card>
+    </div>
+  ),
+};
+
+export const ExpandableWithShortAndLong: Story = {
+  name: "Expandable — short + long description",
+  render: () => (
+    <div style={{ width: 340 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        title="Field Notes: Alpine Lichen"
+        subtitle="Botany"
+        longDescription="Lichen growing above the treeline survives some of the harshest conditions on land, tolerating freeze-thaw cycles, intense UV exposure, and months without liquid water. Because lichen growth rates are so slow and so consistent, researchers use lichen colonies to date rockfalls and glacial retreat with surprising precision — a technique known as lichenometry."
+        footer={
+          <CardFooter align="start">Updated 3 days ago</CardFooter>
+        }
+      >
+        A short summary shown in the collapsed card. The longer description above stays hidden until you expand.
+      </Card>
+    </div>
+  ),
+};
+
+export const ExpandableImageTop: Story = {
+  name: "Expandable — image stays at top when expanded",
+  render: () => (
+    <div style={{ width: 340 }}>
+      <Card
+        image={<img src={getNonsense("abstractImage") as string} alt="Abstract card visual" />}
+        title="Trail Report: Ridgeline Loop"
+        subtitle="Hiking"
+        expandedImagePosition="top"
+        longDescription="The ridgeline loop climbs steadily for the first two miles before leveling off into a series of rolling switchbacks with panoramic views on both sides. Snowmelt can make the northern descent slick well into early summer, so trekking poles are recommended for that stretch."
+      >
+        A quick trail summary. By default the image grows and moves between the short and long description when expanded — this card opts into keeping it at the top instead.
+      </Card>
+    </div>
+  ),
+};
+
+export const ExpandableLinkCard: Story = {
+  name: "Expandable — with href (expand button required)",
+  render: () => (
+    <div style={{ width: 340 }}>
+      <Card
+        title="Release Notes v2.4"
+        subtitle="Changelog"
+        href="#"
+        longDescription="Version 2.4 introduces expandable cards, a reworked focus ring for form controls, and a handful of performance improvements to the theming layer. See the full changelog for a breakdown of every change, including a few small breaking changes to the Menu component's keyboard handling."
+      >
+        Clicking the card follows its link, since href takes precedence — use the expand button in the corner to preview the release notes instead.
+      </Card>
+    </div>
+  ),
 };
 
 export const FullFeatured: Story = {

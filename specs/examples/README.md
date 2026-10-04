@@ -8,9 +8,10 @@ This directory contains specifications for example pages that demonstrate how co
 
 ## Example Specs (Current)
 1. **colors.spec.md** — Theme token color grid display.
-2. **header-integration.spec.md** — Header composition variants with menus and avatars.
-3. **header-responsive.spec.md** — Responsive header with theme toggle.
-4. **showcase.spec.md** — Full-page component showcase with layout, cards, modal.
+2. **fonts.spec.md** — Font role samples and bundled typeface specimens.
+3. **header-integration.spec.md** — Header composition variants with menus and avatars.
+4. **header-responsive.spec.md** — Responsive header with theme toggle.
+5. **showcase.spec.md** — Full-page component showcase with layout, cards, modal.
 
 ## Example Backlog (Placeholders)
 - **address-form.todo.md** — Future form-based example (address input, validation, submission).

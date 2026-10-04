@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1050 613 1358" data-status="traced" data-unicode="004A">
+  <title>bold J_ (J)</title>
+  <desc>Font units, y-up (baseline 0, x-height 547, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="563" y1="228" y2="228"/>
+    <line x1="-50" x2="563" y1="0" y2="0"/>
+    <line x1="-50" x2="563" y1="-547" y2="-547"/>
+    <line x1="-50" x2="563" y1="-700" y2="-700"/>
+    <line x1="-50" x2="563" y1="-800" y2="-800"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M374 0 L25 0 C15 0 7 8 7 18 L7 123 C7 137 41 184 57 184 L280 184 C294 184 305 196 305 210 L305 678 C305 690 315 700 328 700 L476 700 C497 700 513 683 513 663 L513 119 C513 71 482 27 436 16 Z"/>
+</svg>

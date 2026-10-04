@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 599 1345" data-status="traced" data-unicode="0031">
+  <title>black one (1)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="549" y1="207" y2="207"/>
+    <line x1="-50" x2="549" y1="0" y2="0"/>
+    <line x1="-50" x2="549" y1="-550" y2="-550"/>
+    <line x1="-50" x2="549" y1="-700" y2="-700"/>
+    <line x1="-50" x2="549" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 16 L1 141 C1 157 14 171 31 171 L150 171 L150 516 L47 516 C37 516 29 519 29 529 L29 620 C29 646 92 700 115 700 L171 700 L358 700 L358 171 L480 171 C490 171 499 156 499 139 L499 34 C499 27 464 0 460 0 L43 0 C20 0 1 7 1 16 Z"/>
+</svg>

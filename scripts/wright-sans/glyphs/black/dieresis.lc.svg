@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-254 -1058 504 1345" data-status="traced">
+  <title>black dieresis.lc</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-254" x2="250" y1="207" y2="207"/>
+    <line x1="-254" x2="250" y1="0" y2="0"/>
+    <line x1="-254" x2="250" y1="-550" y2="-550"/>
+    <line x1="-254" x2="250" y1="-700" y2="-700"/>
+    <line x1="-254" x2="250" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M-43 602 L-204 602 L-204 747 C-204 758 -195 767 -184 767 L-50 767 C-38 767 -28 757 -28 745 L-28 617 C-28 609 -35 602 -43 602 Z
+    M24 616 L24 747 C24 758 33 766 43 766 L179 766 C190 766 200 757 200 745 L200 602 L39 602 C31 602 24 608 24 616 Z"/>
+</svg>

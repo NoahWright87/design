@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 552 1345" data-status="traced" data-unicode="0074">
+  <title>black t (t)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="502" y1="207" y2="207"/>
+    <line x1="-50" x2="502" y1="0" y2="0"/>
+    <line x1="-50" x2="502" y1="-550" y2="-550"/>
+    <line x1="-50" x2="502" y1="-700" y2="-700"/>
+    <line x1="-50" x2="502" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M65 109 L65 361 C65 371 26 369 22 378 L1 427 L1 538 C1 560 65 537 65 565 L65 653 L235 744 C260 757 289 750 289 731 L289 550 L438 550 C446 550 452 544 452 536 L452 369 L289 369 L289 193 C289 182 298 173 309 173 L452 173 L452 0 L183 0 C142 0 65 68 65 109 Z"/>
+</svg>

@@ -1,0 +1,252 @@
+import React, { useEffect, useState } from 'react';
+import type { Meta } from '@storybook/react';
+import { fontFamilyTokens } from '../../src/styles/tokens';
+
+export default {
+  title: 'Examples/Fonts',
+  parameters: {
+    docs: { description: { component: 'Font roles from theme.css and specimens of each typeface bundled with the design system.' } },
+  },
+} as Meta;
+
+type Typeface = {
+  /** CSS font-family name. */
+  family: string;
+  /** Display name, when it differs from the family. */
+  label?: string;
+  /** "In use" for fonts the theme applies; "Candidate" for fonts under review. */
+  status: 'In use' | 'Candidate';
+  role: string;
+  token?: string;
+  weights: string;
+  description: string;
+  /** Weights to show in the weight ramp; omit for single-weight fonts. */
+  weightRamp?: { name: string; value: number }[];
+  /** Font files registered by this page only, for candidates not yet in theme.css. */
+  faces?: { src: string; weight: number }[];
+};
+
+/**
+ * Typefaces shown on these pages. Fonts in use ship in `src/styles/fonts/` and are
+ * declared with `@font-face` in `theme.css`. Candidates keep their files in
+ * `stories/assets/fonts/` and list them under `faces`, so they never reach the package.
+ */
+const typefaces: Typeface[] = [
+  {
+    family: 'Wright Sans',
+    status: 'In use',
+    role: 'Headings',
+    token: '--font-family-heading',
+    weights: 'Regular 400, SemiBold 600, Bold 700, Black 900',
+    description:
+      'Wide, squared-off geometric sans traced from the Wright Sans specimen sheets. Covers accented Western European letters, kerns awkward pairs, and uses equal-width figures. Built for display sizes; body text stays in the system font.',
+    weightRamp: [
+      { name: 'Regular', value: 400 },
+      { name: 'SemiBold', value: 600 },
+      { name: 'Bold', value: 700 },
+      { name: 'Black', value: 900 },
+    ],
+  },
+];
+
+const nameOf = (face: Typeface) => face.label ?? face.family;
+const stackOf = (face: Typeface) => `"${face.family}", var(--font-family)`;
+
+/** Registers the page-only font files of candidate typefaces. */
+const CandidateFontFaces = () => (
+  <style>
+    {typefaces
+      .flatMap((face) =>
+        (face.faces ?? []).map(
+          (f) =>
+            `@font-face{font-family:"${face.family}";src:url("${f.src}") format("woff2");font-weight:${f.weight};font-style:normal;font-display:swap;}`,
+        ),
+      )
+      .join('\n')}
+  </style>
+);
+
+const roleLabels: Record<(typeof fontFamilyTokens)[number], string> = {
+  '--font-family': 'Body',
+  '--font-family-heading': 'Headings',
+  '--font-family-mono': 'Code',
+};
+
+const pangram = 'The quick brown fox jumps over the lazy dog.';
+const characterRows = [
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  'abcdefghijklmnopqrstuvwxyz',
+  '0123456789',
+  '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~',
+  '° ± × ÷ – — ‘ ’ “ ” • … −',
+  'ÀÁÃÄÇÈÉËÌÍÏÑÒÓÕÖÙÚÜÝŸ',
+  'àáãäçèéëìíïñòóõöùúüýÿ ¡¿',
+  '$1,024.50 · 12:45 · 1111 · 8080 · 2011–2026',
+];
+const sizeRamp = ['--text-xs', '--text-sm', '--text-md', '--text-lg', '--text-xl'];
+const displaySizes = ['2rem', '3rem', '4.5rem'];
+
+const muted = 'color-mix(in srgb, var(--foreground) 60%, transparent)';
+const border = '1px solid color-mix(in srgb, var(--foreground) 12%, transparent)';
+const labelStyle: React.CSSProperties = {
+  fontSize: 'var(--text-xs)',
+  color: muted,
+  textTransform: 'uppercase',
+  letterSpacing: '0.06em',
+};
+const codeStyle: React.CSSProperties = { fontFamily: 'var(--font-family-mono)', fontSize: 'var(--text-sm)' };
+
+export const Roles = () => {
+  const [values, setValues] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const computed = getComputedStyle(document.documentElement);
+    const resolved: Record<string, string> = {};
+    fontFamilyTokens.forEach((name) => {
+      resolved[name] = computed.getPropertyValue(name).trim() || '(not set)';
+    });
+    setValues(resolved);
+  }, []);
+
+  return (
+    <div style={{ padding: 24, maxWidth: 960 }}>
+      <h1>Font roles</h1>
+      <p style={{ color: muted }}>
+        Each role is a theme token. Sites override a role by setting the token (or the matching <code>Theme</code> field).
+      </p>
+      <div style={{ display: 'grid', gap: 16, marginTop: 24 }}>
+        {fontFamilyTokens.map((name) => (
+          <section key={name} style={{ border, borderRadius: 'var(--radius)', padding: 20 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+              <span style={labelStyle}>{roleLabels[name]}</span>
+              <code style={codeStyle}>{name}</code>
+            </div>
+            <div style={{ fontFamily: `var(${name})`, fontSize: '1.75rem', margin: '12px 0 4px' }}>{pangram}</div>
+            <div style={{ fontFamily: `var(${name})`, fontSize: 'var(--text-md)' }}>{characterRows[2]} {characterRows[1]}</div>
+            <div style={{ ...codeStyle, color: muted, marginTop: 12, overflowWrap: 'anywhere' }}>{values[name] ?? ''}</div>
+          </section>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export const Typefaces = () => (
+  <div style={{ padding: 24, maxWidth: 960 }}>
+    <CandidateFontFaces />
+    <h1>Typefaces</h1>
+    <p style={{ color: muted }}>Fonts in the design system and candidates under review, shown in full.</p>
+    {typefaces.map((face) => {
+      const family = stackOf(face);
+      return (
+        <section key={face.family} style={{ borderTop: border, marginTop: 32, paddingTop: 24 }}>
+          <div style={{ fontFamily: family, fontSize: 'clamp(2.5rem, 12vw, 4rem)', lineHeight: 1.1, overflowWrap: 'anywhere' }}>{nameOf(face)}</div>
+          <dl style={{ display: 'grid', gridTemplateColumns: 'max-content 1fr', gap: '6px 16px', margin: '16px 0' }}>
+            <dt style={labelStyle}>Status</dt>
+            <dd style={{ margin: 0 }}>{face.status}</dd>
+            <dt style={labelStyle}>Role</dt>
+            <dd style={{ margin: 0 }}>
+              {face.role}
+              {face.token && <> (<code style={codeStyle}>{face.token}</code>)</>}
+            </dd>
+            <dt style={labelStyle}>Weights</dt>
+            <dd style={{ margin: 0 }}>{face.weights}</dd>
+            <dt style={labelStyle}>Notes</dt>
+            <dd style={{ margin: 0 }}>{face.description}</dd>
+          </dl>
+
+          {face.weightRamp && (
+            <>
+              <div style={{ ...labelStyle, marginTop: 24 }}>Weights</div>
+              {face.weightRamp.map((w) => (
+                <div key={w.value} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 16 }}>
+                  <code style={{ ...codeStyle, color: muted, minWidth: 64 }}>{w.value}</code>
+                  <span style={{ fontFamily: family, fontWeight: w.value, fontSize: '2.25rem', lineHeight: 1.3, minWidth: 0, overflowWrap: 'anywhere' }}>
+                    {w.name} · Software builder
+                  </span>
+                </div>
+              ))}
+            </>
+          )}
+
+          <div style={{ ...labelStyle, marginTop: 24 }}>Characters</div>
+          <div style={{ fontFamily: family, fontSize: '2rem', lineHeight: 1.5, overflowWrap: 'anywhere' }}>
+            {characterRows.map((row) => (
+              <div key={row}>{row}</div>
+            ))}
+          </div>
+
+          <div style={{ ...labelStyle, marginTop: 24 }}>Tabular figures (font-variant-numeric: tabular-nums)</div>
+          <div style={{ fontFamily: family, fontSize: '2rem', lineHeight: 1.5, fontVariantNumeric: 'tabular-nums', overflowWrap: 'anywhere' }}>
+            $1,024.50 · 12:45 · 1111 · 8080 · 2011–2026
+          </div>
+
+          <div style={{ ...labelStyle, marginTop: 24 }}>Display sizes</div>
+          {displaySizes.map((size) => (
+            <div key={size} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 16 }}>
+              <code style={{ ...codeStyle, color: muted, minWidth: 64 }}>{size}</code>
+              <span style={{ fontFamily: family, fontSize: size, lineHeight: 1.2, minWidth: 0, overflowWrap: 'anywhere' }}>Software builder</span>
+            </div>
+          ))}
+
+          <div style={{ ...labelStyle, marginTop: 24 }}>Type scale</div>
+          {sizeRamp.map((token) => (
+            <div key={token} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 16 }}>
+              <code style={{ ...codeStyle, color: muted, minWidth: 96 }}>{token}</code>
+              <span style={{ fontFamily: family, fontSize: `var(${token})` }}>{pangram}</span>
+            </div>
+          ))}
+
+          <div style={{ ...labelStyle, marginTop: 24 }}>In context</div>
+          <h2 style={{ fontFamily: family, marginBottom: 4 }}>Projects &amp; writing, 2026</h2>
+          <p style={{ marginTop: 0 }}>
+            Body copy stays in the body font so long passages remain easy to read, while headings carry the personality.
+          </p>
+        </section>
+      );
+    })}
+  </div>
+);
+
+const comparisonSamples = [
+  { label: 'Heading', text: 'Noah Wright — Software builder', size: '2.5rem', weight: 700 },
+  { label: 'Subheading', text: 'Projects & writing, 2026', size: '1.75rem', weight: 600 },
+  { label: 'Tricky letters', text: 'Software · Projects · résumé · AV To L’', size: '1.75rem', weight: 400 },
+  { label: 'Figures', text: '0123456789 · $1,024.50 · 12:45', size: '1.75rem', weight: 400 },
+  { label: 'Pangram', text: pangram, size: 'var(--text-xl)', weight: 400 },
+];
+
+/** The same text in every typeface, one sample at a time, for judging candidates against each other. */
+export const Comparison = () => (
+  <div style={{ padding: 24, maxWidth: 960 }}>
+    <CandidateFontFaces />
+    <h1>Comparison</h1>
+    <p style={{ color: muted }}>
+      Each sample is set in every typeface at the same size and weight. To trial a new font, add it to the typeface
+      list as a candidate and it appears here beside the fonts in use.
+    </p>
+    {comparisonSamples.map((sample) => (
+      <section key={sample.label} style={{ borderTop: border, marginTop: 24, paddingTop: 16 }}>
+        <div style={labelStyle}>
+          {sample.label} · weight {sample.weight}
+        </div>
+        {typefaces.map((face) => (
+          <div key={face.family} style={{ marginTop: 12 }}>
+            <div style={{ ...codeStyle, color: muted }}>{nameOf(face)}</div>
+            <div
+              style={{
+                fontFamily: stackOf(face),
+                fontSize: sample.size,
+                fontWeight: sample.weight,
+                lineHeight: 1.25,
+                overflowWrap: 'anywhere',
+              }}
+            >
+              {sample.text}
+            </div>
+          </div>
+        ))}
+      </section>
+    ))}
+  </div>
+);

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1058 828 1345" data-status="traced" data-unicode="0025">
+  <title>black percent (%)</title>
+  <desc>Font units, y-up (baseline 0, x-height 550, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="778" y1="207" y2="207"/>
+    <line x1="-50" x2="778" y1="0" y2="0"/>
+    <line x1="-50" x2="778" y1="-550" y2="-550"/>
+    <line x1="-50" x2="778" y1="-700" y2="-700"/>
+    <line x1="-50" x2="778" y1="-808" y2="-808"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M246 0 L83 0 L280 355 L69 355 C32 355 2 385 2 422 L2 630 C2 672 60 700 93 700 L260 700 C300 700 333 667 333 627 L333 451 L474 700 L641 700 L444 351 C444 350 460 349 474 349 L651 349 C694 349 728 314 728 271 L728 76 C728 34 694 0 652 0 L466 0 C426 0 394 32 394 72 L394 261 Z
+    M599 124 L599 236 L521 236 L521 123 C521 109 599 108 599 124 Z
+    M206 476 L206 587 C206 598 132 600 132 586 L132 475 C132 462 206 457 206 476 Z"/>
+</svg>

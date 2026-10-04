@@ -2,6 +2,7 @@ import * as React from "react";
 import { Layout } from "../../components/organisms/Layout/index.js";
 import { Container } from "../../components/organisms/Container/Container.js";
 import { Card } from "../../components/organisms/Card/index.js";
+import { Hero } from "../../components/organisms/Hero/index.js";
 import { Heading } from "../../components/molecules/Heading/index.js";
 import { Text } from "../../components/molecules/Text/index.js";
 import { Button } from "../../components/molecules/Button/index.js";
@@ -28,33 +29,40 @@ export function PortfolioHome({ onNavigate }: PortfolioHomeProps) {
       
       <Layout>
         {/* Hero Section */}
-        <section className="portfolio-hero">
-          <Container padding="lg">
-            <div className="portfolio-hero__content">
+        <Container padding="lg">
+          <Hero
+            className="portfolio-hero"
+            mediaPosition="start"
+            title={
+              <Heading level={1} gradient animateIn>
+                {getNonsense('personName')}
+              </Heading>
+            }
+            description={
+              <div className="portfolio-hero__description">
+                <Text>{getNonsense('introText')}</Text>
+              </div>
+            }
+            actions={
+              <>
+                <Button variant="solid" onClick={() => handleNavigate("projects")}>
+                  View My Work
+                </Button>
+                <Button variant="outline" onClick={() => handleNavigate("contact")}>
+                  Get in Touch
+                </Button>
+              </>
+            }
+            media={
               <Image
                 src={getNonsense('abstractImage') as string}
-                alt="Portrait"
+                alt=""
                 rounded="full"
-                className="portfolio-hero__image"
                 aspectRatio="1/1"
               />
-              <div className="portfolio-hero__text">
-                <Heading level={1} gradient animateIn>
-                  {getNonsense('personName')}
-                </Heading>
-                <Text>{getNonsense('introText')}</Text>
-                <div className="portfolio-hero__buttons">
-                  <Button variant="solid" onClick={() => handleNavigate("projects")}>
-                    View My Work
-                  </Button>
-                  <Button variant="outline" onClick={() => handleNavigate("contact")}>
-                    Get in Touch
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Container>
-        </section>
+            }
+          />
+        </Container>
 
         {/* Intro Paragraph */}
         <section className="portfolio-intro">

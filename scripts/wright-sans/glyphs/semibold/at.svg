@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1022 786 1325" data-status="traced" data-unicode="0040">
+  <title>semibold at (@)</title>
+  <desc>Font units, y-up (baseline 0, x-height 526, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="736" y1="223" y2="223"/>
+    <line x1="-50" x2="736" y1="0" y2="0"/>
+    <line x1="-50" x2="736" y1="-526" y2="-526"/>
+    <line x1="-50" x2="736" y1="-700" y2="-700"/>
+    <line x1="-50" x2="736" y1="-772" y2="-772"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M1 103 L1 582 C1 618 67 684 103 684 L572 684 C635 684 686 633 686 570 L686 245 C686 196 646 155 596 155 L429 155 L393 181 L346 155 L235 155 C192 155 158 190 158 233 L158 440 C158 466 206 523 233 523 L377 523 L396 513 L417 523 L474 523 C497 523 515 505 515 483 L515 261 C515 254 572 255 572 272 L572 546 C572 561 560 573 546 573 L151 573 C134 573 119 559 119 541 L119 145 C119 140 146 112 150 112 L615 112 L615 18 C615 8 610 0 603 0 L105 0 C47 0 1 46 1 103 Z
+    M396 256 L396 418 L295 418 C285 418 277 410 277 400 L277 276 C277 265 286 256 297 256 Z"/>
+</svg>

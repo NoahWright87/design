@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -1030 766 1334" data-status="traced" data-unicode="0025">
+  <title>regular percent (%)</title>
+  <desc>Font units, y-up (baseline 0, x-height 535, cap 700). Edit the outline path; set data-status="edited" when hand-corrected.</desc>
+  <g id="guides" stroke="#3a3" stroke-width="2" opacity="0.5">
+    <line x1="-50" x2="716" y1="224" y2="224"/>
+    <line x1="-50" x2="716" y1="0" y2="0"/>
+    <line x1="-50" x2="716" y1="-535" y2="-535"/>
+    <line x1="-50" x2="716" y1="-700" y2="-700"/>
+    <line x1="-50" x2="716" y1="-780" y2="-780"/>
+  </g>
+  <path id="outline" transform="scale(1 -1)" fill="#111" fill-rule="nonzero" d="
+    M87 -15 L478 700 L570 700 C579 700 584 690 580 683 L198 -15 Z
+    M368 52 L368 256 C368 275 406 319 427 319 L604 319 C623 319 666 281 666 263 L666 73 C666 26 640 -12 607 -12 L430 -12 C409 -12 368 31 368 52 Z
+    M582 89 L582 222 C582 233 573 241 563 241 L474 241 C462 241 453 232 453 220 L453 87 C453 76 462 66 474 66 L559 66 C571 66 582 76 582 89 Z
+    M7 415 L3 471 L3 628 C3 659 28 682 58 688 L123 700 L243 700 L248 685 C272 678 302 650 302 624 L302 428 C302 390 271 360 233 360 L68 360 C36 360 10 384 7 415 Z
+    M215 455 L215 596 C215 605 208 612 199 612 L93 612 L93 458 C93 447 102 438 113 438 L197 438 C207 438 215 446 215 455 Z"/>
+</svg>
