@@ -92,14 +92,25 @@ const labelStyle: React.CSSProperties = {
   fontSize: 'var(--text-xs)',
   color: muted,
   textTransform: 'uppercase',
-  letterSpacing: '0.06em',
+  letterSpacing: 0,
 };
 const codeStyle: React.CSSProperties = { fontFamily: 'var(--font-family-mono)', fontSize: 'var(--text-sm)' };
 
+function SampleInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <label style={{ display: 'grid', gap: 8, margin: '20px 0' }}>
+      Sample text
+      <input value={value} onChange={(event) => onChange(event.target.value)} style={{ width: '100%', padding: 10, border, background: 'var(--background)', color: 'var(--foreground)' }} />
+    </label>
+  );
+}
+
 export const Roles = () => {
   const [values, setValues] = useState<Record<string, string>>({});
+  const [sample, setSample] = useState(pangram);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const computed = getComputedStyle(document.documentElement);
     const resolved: Record<string, string> = {};
     fontFamilyTokens.forEach((name) => {
@@ -111,6 +122,7 @@ export const Roles = () => {
   return (
     <div style={{ padding: 24, maxWidth: 960 }}>
       <h1>Font roles</h1>
+      <SampleInput value={sample} onChange={setSample} />
       <p style={{ color: muted }}>
         Each role is a theme token. Sites override a role by setting the token (or the matching <code>Theme</code> field).
       </p>
@@ -121,7 +133,7 @@ export const Roles = () => {
               <span style={labelStyle}>{roleLabels[name]}</span>
               <code style={codeStyle}>{name}</code>
             </div>
-            <div style={{ fontFamily: `var(${name})`, fontSize: '1.75rem', margin: '12px 0 4px' }}>{pangram}</div>
+            <div style={{ fontFamily: `var(${name})`, fontSize: '1.75rem', margin: '12px 0 4px', overflowWrap: 'anywhere' }}>{sample}</div>
             <div style={{ fontFamily: `var(${name})`, fontSize: 'var(--text-md)' }}>{characterRows[2]} {characterRows[1]}</div>
             <div style={{ ...codeStyle, color: muted, marginTop: 12, overflowWrap: 'anywhere' }}>{values[name] ?? ''}</div>
           </section>
@@ -131,16 +143,19 @@ export const Roles = () => {
   );
 };
 
-export const Typefaces = () => (
+export const Typefaces = () => {
+  const [sample, setSample] = useState('Software builder');
+  return (
   <div style={{ padding: 24, maxWidth: 960 }}>
     <CandidateFontFaces />
     <h1>Typefaces</h1>
+    <SampleInput value={sample} onChange={setSample} />
     <p style={{ color: muted }}>Fonts in the design system and candidates under review, shown in full.</p>
     {typefaces.map((face) => {
       const family = stackOf(face);
       return (
         <section key={face.family} style={{ borderTop: border, marginTop: 32, paddingTop: 24 }}>
-          <div style={{ fontFamily: family, fontSize: 'clamp(2.5rem, 12vw, 4rem)', lineHeight: 1.1, overflowWrap: 'anywhere' }}>{nameOf(face)}</div>
+          <div style={{ fontFamily: family, fontSize: '2.5rem', lineHeight: 1.1, overflowWrap: 'anywhere' }}>{nameOf(face)}</div>
           <dl style={{ display: 'grid', gridTemplateColumns: 'max-content 1fr', gap: '6px 16px', margin: '16px 0' }}>
             <dt style={labelStyle}>Status</dt>
             <dd style={{ margin: 0 }}>{face.status}</dd>
@@ -162,7 +177,7 @@ export const Typefaces = () => (
                 <div key={w.value} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 16 }}>
                   <code style={{ ...codeStyle, color: muted, minWidth: 64 }}>{w.value}</code>
                   <span style={{ fontFamily: family, fontWeight: w.value, fontSize: '2.25rem', lineHeight: 1.3, minWidth: 0, overflowWrap: 'anywhere' }}>
-                    {w.name} · Software builder
+                    {w.name} · {sample}
                   </span>
                 </div>
               ))}
@@ -185,7 +200,7 @@ export const Typefaces = () => (
           {displaySizes.map((size) => (
             <div key={size} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 16 }}>
               <code style={{ ...codeStyle, color: muted, minWidth: 64 }}>{size}</code>
-              <span style={{ fontFamily: family, fontSize: size, lineHeight: 1.2, minWidth: 0, overflowWrap: 'anywhere' }}>Software builder</span>
+              <span style={{ fontFamily: family, fontSize: size, lineHeight: 1.2, minWidth: 0, overflowWrap: 'anywhere' }}>{sample}</span>
             </div>
           ))}
 
@@ -193,7 +208,7 @@ export const Typefaces = () => (
           {sizeRamp.map((token) => (
             <div key={token} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 16 }}>
               <code style={{ ...codeStyle, color: muted, minWidth: 96 }}>{token}</code>
-              <span style={{ fontFamily: family, fontSize: `var(${token})` }}>{pangram}</span>
+              <span style={{ fontFamily: family, fontSize: `var(${token})`, overflowWrap: 'anywhere' }}>{sample}</span>
             </div>
           ))}
 
@@ -206,7 +221,8 @@ export const Typefaces = () => (
       );
     })}
   </div>
-);
+  );
+};
 
 const comparisonSamples = [
   { label: 'Heading', text: 'Noah Wright — Software builder', size: '2.5rem', weight: 700 },
@@ -217,10 +233,13 @@ const comparisonSamples = [
 ];
 
 /** The same text in every typeface, one sample at a time, for judging candidates against each other. */
-export const Comparison = () => (
+export const Comparison = () => {
+  const [sampleText, setSampleText] = useState('');
+  return (
   <div style={{ padding: 24, maxWidth: 960 }}>
     <CandidateFontFaces />
     <h1>Comparison</h1>
+    <SampleInput value={sampleText} onChange={setSampleText} />
     <p style={{ color: muted }}>
       Each sample is set in every typeface at the same size and weight. To trial a new font, add it to the typeface
       list as a candidate and it appears here beside the fonts in use.
@@ -242,11 +261,12 @@ export const Comparison = () => (
                 overflowWrap: 'anywhere',
               }}
             >
-              {sample.text}
+              {sampleText || sample.text}
             </div>
           </div>
         ))}
       </section>
     ))}
   </div>
-);
+  );
+};

@@ -13,7 +13,7 @@ The Header Responsive example demonstrates the header's label-hiding behavior on
 User interaction: resizing the viewport, clicking the theme toggle, and using the theme toggle keyboard shortcut.
 
 ### Outputs
-Two variants showing responsive label hiding and a functional light/dark theme toggle.
+Three variants showing responsive label hiding, a functional light/dark theme toggle, and a navigation drawer.
 
 ### Guarantees / Constraints
 - Labels are always hidden on small screens regardless of their content.
@@ -33,6 +33,8 @@ Two variants showing responsive label hiding and a functional light/dark theme t
 
 ## Interface
 
+**Navigation drawer:** The menu button opens a modal panel at the left edge. Focus stays in the drawer while open. Selecting Home, About, or Contact updates the visible page and closes the drawer. Close, Escape, and clicking outside the drawer dismiss it and return focus to the menu button.
+
 On desktop-sized viewports, labels are visible alongside slot content. On mobile-sized viewports, labels disappear and only the icons or elements remain. The theme toggle shows a sun icon in light mode and a moon icon in dark mode.
 
 ## Acceptance
@@ -44,3 +46,5 @@ On desktop-sized viewports, labels are visible alongside slot content. On mobile
 6. Theme preference persists across page loads.
 7. Theme changes use smooth color transitions when motion preferences allow it.
 8. The keyboard shortcut toggles the current theme.
+9. The drawer opens on desktop and mobile, contains keyboard focus, and closes through its Close button, Escape, or outside click.
+10. Selecting a drawer destination updates the page and returns focus to the menu button.

@@ -13,6 +13,8 @@ This file documents planned and completed changes for the repository.
 
 - **TextCarousel editing playground:** Added an editable Storybook preview with restart and typo frequency controls. Typewriter transitions cut and paste reordered words, repair rare typos, preserve shared casing/punctuation letters, and adjust dwell to phrase length and edit size.
 
+- **Headers and Fonts examples:** Added hash-routed header navigation with keyboard focus handling, a modal navigation drawer, and editable font specimens; added desktop/mobile screenshot coverage. Menu exit animation remains backlog work.
+
 - **Motion Lab:** Added preset shortcuts, reset, easing copy feedback, multi-format exports, and animated, focusable, screen-reader-described easing graphs.
 
 - **Colors and spec cleanup:** Added Colors contrast/export helpers and promoted completed Colors, Contact Form, Header Responsive, and Nonsense items into current specs.
