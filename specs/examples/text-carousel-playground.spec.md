@@ -16,6 +16,9 @@ The playground lets a designer try custom phrases against the live typewriter ca
 - A multiline phrase list, with one phrase on each line.
 - A typo chance percentage for observing occasional typing repairs.
 - An Apply phrases and restart button.
+- Playback pause/resume and a Live/Inspect transition mode selector.
+- Typing delay, deleting delay, dwell interval, and pre-typing pause controls, applied on submission.
+- Transition selection and a frame slider in inspection mode.
 
 ### Outputs
 
@@ -32,6 +35,8 @@ The playground lets a designer try custom phrases against the live typewriter ca
 
 The page opens with example phrases that exercise word reordering, partial edits, and broad rewrites. A designer edits the list and submits it to replace the preview's phrase sequence and restart playback. Applying an empty list displays guidance until another list is submitted.
 
+Pause freezes live playback and Resume continues from that state. Inspection mode shows individual text/caret frames from the selected transition using the shared typewriter frame builder; previous/next buttons and the slider select a frame. Changing the transition starts at its first frame. Timing changes take effect when applying the form. Reduced-motion preferences remain honored during live playback.
+
 ## Interface
 
 The preview is prominent above a labeled multiline field, a typo chance control, and a submit button. The fields accept keyboard editing, and the button supports keyboard submission. The preview uses design-system colors and displays the same `TextCarousel` component that consumers use.
@@ -43,3 +48,7 @@ The preview is prominent above a labeled multiline field, a typo chance control,
 3. An empty submitted list shows the empty-state message.
 4. The preview continues animating while hovered.
 5. Changing the typo chance and submitting restarts the preview with the new frequency.
+6. Pause freezes live text and Resume continues playback.
+7. Inspection mode allows selecting transitions and stepping through their text/caret frames.
+8. Submitted timing controls change live typing, deletion, dwell, and pre-typing pause delays.
+9. Desktop/mobile screenshots cover paused, inspection, applied, and empty states.

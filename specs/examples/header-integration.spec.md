@@ -38,6 +38,8 @@ Each variant renders a header fixed at the top with content scrollable beneath. 
 
 ## Interface
 
+**Nested resources:** The routed navigation includes Resources with About the studio and Contact the studio destinations. Clicking or ArrowRight opens the submenu and focuses its first destination. ArrowLeft or Escape closes that submenu and returns focus to Resources; selecting a destination closes both menus and updates the route.
+
 Each header variant spans the full viewport width and is fixed at the top. The left, center, and right slots hold different content in each variant. Menus open as dropdowns below their triggers. Page content below the header is scrollable.
 
 ## Acceptance
@@ -52,3 +54,5 @@ Each header variant spans the full viewport width and is fixed at the top. The l
 9. Open menus display the Menu component's entrance transition when motion preferences allow it.
 10. URL fragments, reloads, and browser history restore the selected route; unknown fragments display Home.
 11. Shortcut activation focuses the first item, Escape returns focus to its trigger, and text fields retain their keyboard input.
+12. Resources opens a nested menu with keyboard focus handling; choosing a destination updates the route and closes both panels.
+13. Panel closing transitions respect reduced-motion preferences and remain noninteractive during exit.

@@ -11,9 +11,11 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **Remaining examples:** Added Showcase forms/navigation/metadata/focus handling, carousel playback/frame inspection/timing controls, and Header Integration nested navigation with Menu exit transitions. Added matching desktop/mobile screenshots and linked form error descriptions.
+
 - **TextCarousel editing playground:** Added an editable Storybook preview with restart and typo frequency controls. Typewriter transitions cut and paste reordered words, repair rare typos, preserve shared casing/punctuation letters, and adjust dwell to phrase length and edit size.
 
-- **Headers and Fonts examples:** Added hash-routed header navigation with keyboard focus handling, a modal navigation drawer, and editable font specimens; added desktop/mobile screenshot coverage. Menu exit animation remains backlog work.
+- **Headers and Fonts examples:** Added hash-routed header navigation with keyboard focus handling, a modal navigation drawer, and editable font specimens; added desktop/mobile screenshot coverage.
 
 - **Motion Lab:** Added preset shortcuts, reset, easing copy feedback, multi-format exports, and animated, focusable, screen-reader-described easing graphs.
 

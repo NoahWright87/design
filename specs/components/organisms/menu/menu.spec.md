@@ -29,9 +29,11 @@ An interactive dropdown panel that appears below the trigger when opened and dis
 
 ## Behavior
 
-**Closed:** The trigger is visible; the panel is not rendered.
+**Closed:** The trigger is visible. A closing panel remains briefly for its exit animation and is removed when the transition ends.
 
 **Opening:** Clicking the trigger opens the panel and renders menu items.
+
+**Closing:** Dismissal immediately removes the panel from keyboard and assistive-technology interaction while its exit transition completes. Reduced-motion preferences remove the panel immediately. Reopening during the transition restores the open panel and cancels removal.
 
 **Item activation:** Clicking a menu item calls the item's handler and closes the menu.
 
@@ -57,3 +59,5 @@ The trigger element appears in its normal position. When the menu is open, a pan
 7. Pressing Escape closes the menu.
 8. Panel aligns correctly based on the alignment setting.
 9. On small screens, the wider overlay format activates.
+10. Closing panels animate out while inert and hidden from assistive technology; reduced-motion preferences remove them immediately.
+11. Reopening during exit cancels removal and restores interaction.

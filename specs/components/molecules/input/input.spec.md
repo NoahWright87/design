@@ -30,6 +30,8 @@ A labeled text field with appropriate visual states: default, focused, error, an
 
 ## Behavior
 
+**Accessible errors:** The field, including multiline fields, exposes its invalid state and associates the current error message with the control. Clearing the error clears that association. The accessible name remains the label text as required indicators and error messages change.
+
 **Default:** Label and field are visible; the field accepts text input.
 
 **Focused:** The field border changes to the primary color with a subtle glow, indicating it is active.
@@ -62,3 +64,4 @@ The label appears above the field. The field has a bordered, rounded appearance 
 9. When `required` is set and the field is blurred while empty, an inline "This field is required." error appears automatically.
 10. When `multiline` is set, renders a resizable `<textarea>` with the same label, error, and validation behavior.
 11. When `randomDisabledCursor` is set and the field is disabled, a random "no" emoji cursor is shown.
+12. Error states set aria-invalid and associate the error text with the field; cleared errors remove that association.

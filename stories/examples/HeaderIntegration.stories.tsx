@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Header, Avatar, Menu, MenuItem, HamburgerMenu } from "../../src";
+import { Header, Avatar, Menu, MenuItem, MenuContext, HamburgerMenu } from "../../src";
 import { getNonsense } from "../../src/atoms/nonsense";
 
 const meta: Meta = {
@@ -27,6 +27,38 @@ const accountItems = [
 ];
 
 type RouteKey = "home" | "about" | "services" | "contact";
+
+function ResourcesSubmenu() {
+  const parent = React.useContext(MenuContext);
+  const root = React.useRef<HTMLDivElement>(null);
+  const [focusRequested, setFocusRequested] = React.useState(false);
+  React.useEffect(() => {
+    if (focusRequested) {
+      root.current?.querySelector('[role="menu"]')?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
+      setFocusRequested(false);
+    }
+  }, [focusRequested]);
+  return <div data-resources ref={root} onKeyDown={event => {
+    if (event.key === 'ArrowRight') {
+      event.preventDefault(); event.stopPropagation();
+      const trigger = root.current?.querySelector<HTMLButtonElement>('button');
+      if (trigger?.getAttribute('aria-expanded') !== 'true') trigger?.click();
+      setFocusRequested(true);
+    }
+    if (event.key === 'ArrowLeft' || event.key === 'Escape') {
+      const trigger = root.current?.querySelector<HTMLButtonElement>('button');
+      if (trigger?.getAttribute('aria-expanded') === 'true') {
+        event.preventDefault(); event.stopPropagation(); trigger.click(); trigger.focus();
+      }
+    }
+  }}>
+    <style>{'[data-resources] .nw-menu .nw-menu__panel { position: static; width: auto; min-width: 0; margin-top: 6px; animation-name: nw-menu-enter; } [data-resources] .nw-menu .nw-menu__panel--closing { animation-name: nw-menu-exit; } [data-resources] .nw-menu__overlay { display: none; }'}</style>
+    <Menu trigger={<button type="button" role="menuitem" style={{ border: 0, padding: '10px 12px', background: 'var(--background)', color: 'var(--foreground)', font: 'inherit', cursor: 'pointer' }}>Resources</button>} items={[
+      <MenuItem key="about" text="About the studio" href="#about" onClick={() => parent?.close()} />,
+      <MenuItem key="contact" text="Contact the studio" href="#contact" onClick={() => parent?.close()} />,
+    ]} />
+  </div>;
+}
 
 const routeContent: Record<RouteKey, { title: string; body: string }> = {
   home: {
@@ -94,6 +126,7 @@ function RoutedHeaderDemo() {
   const routedNavItems = (Object.keys(routeContent) as RouteKey[]).map((key) => (
     <MenuItem key={key} label={routeContent[key].title} href={`#${key}`} current={route === key} />
   ));
+  routedNavItems.push(<ResourcesSubmenu key="resources" />);
 
   const routedAccountItems = [
     <MenuItem key="profile" label="Profile" href="#about" />,

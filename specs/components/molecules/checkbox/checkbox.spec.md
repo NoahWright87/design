@@ -28,6 +28,8 @@ A labeled checkbox control with custom visual styling, reflecting checked, unche
 
 ## Behavior
 
+**Accessible errors:** The checkbox exposes its invalid state and associates the current error message with the control. Clearing the error clears that association. The accessible name remains the label text as error messages change.
+
 Clicking the label or the visual box toggles the checkbox. The Space key toggles when the control is focused. Tab navigates to and from the checkbox.
 
 **Checked:** The box shows a primary-colored background with a checkmark.
@@ -64,3 +66,4 @@ Transitions between states are smooth, but respect the user's motion preferences
 11. When an error is present, the control performs a waggle animation.
 12. Checking and unchecking plays a spring-bounce animation; instantly changes state under reduced-motion.
 13. When `randomDisabledCursor` is set and disabled, a random "no" emoji cursor is shown.
+14. Error states set aria-invalid and associate the error text with the checkbox; cleared errors remove that association.

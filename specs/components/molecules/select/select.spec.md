@@ -30,6 +30,8 @@ A labeled dropdown control with custom styling, reflecting default, focused, err
 
 ## Behavior
 
+**Accessible errors:** The dropdown exposes its invalid state and associates the current error message with the control. Clearing the error clears that association. The accessible name remains the label text as required indicators and error messages change.
+
 **Default:** Label and dropdown are visible; the user can open and choose an option.
 
 **Focused:** The dropdown border changes to the primary color with a glow.
@@ -64,3 +66,4 @@ The label appears above the dropdown. The dropdown has a bordered, rounded appea
 11. When an error is present, the control performs a waggle animation.
 12. The arrow chevron rotates 180° on focus and returns on blur.
 13. When `randomDisabledCursor` is set and disabled, a random "no" emoji cursor is shown.
+14. Error states set aria-invalid and associate the error text with the dropdown; cleared errors remove that association.
