@@ -142,4 +142,35 @@ test.describe("SceneFooter water renderer", () => {
     expect(glRequests).toHaveLength(0); // the WebGL code is never downloaded when there is no WebGL
     await context.close();
   });
+
+  test("a software-rendered WebGL context counts as no WebGL for auto, but can still be forced", async ({ browser }) => {
+    const context = await browser.newContext();
+    await context.addInitScript(() => {
+      const original = WebGLRenderingContext.prototype.getParameter;
+      WebGLRenderingContext.prototype.getParameter = function (this: WebGLRenderingContext, parameter: number) {
+        if (parameter === 0x9246) return "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device), SwiftShader driver)";
+        return original.call(this, parameter);
+      };
+    });
+    const hasWebgl = await (await context.newPage()).evaluate(() => !!document.createElement("canvas").getContext("webgl"));
+    test.skip(!hasWebgl, "this browser has no WebGL to disguise");
+
+    const auto = await context.newPage();
+    const glRequests: string[] = [];
+    auto.on("request", (r) => isGlRequest(r.url()) && glRequests.push(r.url()));
+    await auto.goto(STORY("horizon"));
+    await auto.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(auto);
+    await expect.poll(() => sceneState(auto), { timeout: 10000 }).toBe("live");
+    await auto.waitForTimeout(1500);
+    expect(await rendererOf(auto)).toBe("2d");
+    expect(glRequests).toHaveLength(0);
+
+    const forced = await context.newPage();
+    await forced.goto(STORY("horizon-webgl"));
+    await forced.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(forced);
+    await expect.poll(() => rendererOf(forced), { timeout: 15000 }).toBe("webgl");
+    await context.close();
+  });
 });

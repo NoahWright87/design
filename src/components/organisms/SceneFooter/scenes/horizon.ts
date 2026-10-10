@@ -59,8 +59,16 @@ function canUseWebgl(allowSoftware: boolean): boolean {
       failIfMajorPerformanceCaveat: !allowSoftware,
     }) as WebGLRenderingContext | null;
     if (!gl) return false;
+    // Some browsers accept a software renderer even with the performance-caveat flag; a rippled
+    // reflection drawn by the CPU is slower than the flat mirror, so treat those as "no WebGL".
+    let software = false;
+    if (!allowSoftware) {
+      const info = gl.getExtension("WEBGL_debug_renderer_info");
+      const renderer = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
+      software = /swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer);
+    }
     gl.getExtension("WEBGL_lose_context")?.loseContext();
-    return true;
+    return !software;
   } catch {
     return false;
   }
