@@ -14,7 +14,7 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 ### Inputs
 - The same slots as `Footer`: left, center, right, an optional bottom strip with an optional separator, and plain children for unslotted use.
 - A scene: the name of a built-in scene (`"horizon"` today), a loader function that fetches a custom scene on demand, a scene object, or nothing at all for a plain footer panel. Defaults to the horizon scene.
-- Scene options, passed through to the scene. The horizon scene accepts the positions of its sun and moon across the footer, a star density, a cloud density, and a seed for placement.
+- Scene options, passed through to the scene. The horizon scene accepts the positions of its sun and moon across the footer, a star density, a cloud density, a seed for placement, and a renderer choice (automatic, WebGL, or the flat 2D mirror) for its water.
 - An animate switch. Turning it off shows only the CSS version of the scene and never loads scene code.
 - Optional heights for the sky band and the sea panel, and an optional additional CSS class name.
 - The page theme (light or dark), read from the same theme setting the rest of the design system uses, and design tokens for color. Optional scene-specific color tokens (sun, moon, sea, text) override the defaults derived from the primary and secondary colors.
@@ -32,12 +32,16 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 - If the scene fails to load, takes too long, or throws, the CSS version stays in place and the page keeps working.
 - The scene runs only while the footer is on screen and the tab is visible.
 - If frames run slow, the footer lowers its own rendering effort in steps, and stops on its last frame when it can go no lower.
+- A scene's reflection is a mirror of the whole finished sky, so every element in the sky (sun, moon, stars, clouds, anything added later) is reflected exactly once, and a theme change never shows a body reflected twice.
+- A reader's device never receives a rippling reflection that costs more than the flat one: WebGL is used only when the browser reports a hardware-accelerated context, and any loss of that context returns the footer to the flat mirror.
 - The scene is decorative: it is hidden from assistive technology, never receives pointer or keyboard input, and never changes what the footer content says or how it can be reached.
 - Footer content stays readable over every state of the scene.
 
 ## Behavior
 
 **Default:** The reader sees the CSS version immediately. Scrolling toward the bottom, the scene loads in the background and fades in over the CSS version. By day the sun rises as the footer scrolls into view, clouds drift across the sky band, and the sea shimmers with a reflection of the sun. By night the moon rises, stars come out, and the reflection follows the moon.
+
+**Water renderers (horizon):** The scene paints the entire sky onto a single surface and mirrors that surface into the sea. On a capable device the mirror is rippled by a WebGL shader: waves vary across the width, bright bodies glitter downward, and clouds and stars shimmer faintly. Everywhere else, and for the lowest quality setting, the sky is mirrored flat: a calm, softly fading copy with no ripple. The WebGL code is a separate download, fetched only after a hardware-accelerated context is confirmed. Choosing the flat mirror explicitly never downloads it.
 
 **Theme change:** When the page theme changes while the scene is live, the sun sets and the moon rises (or the reverse) with a smooth handoff. The scene follows any change to the page theme, however it was made.
 
@@ -47,7 +51,7 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 
 **Load failure or timeout:** The CSS version remains and the state reads failed.
 
-**Slow frames:** The footer lowers its rendering resolution and frame rate first. If frames are still slow at the lowest setting, the scene stops on its last frame and the state reads frozen.
+**Slow frames:** The footer lowers its rendering resolution and frame rate first, and at the lowest setting the rippling reflection gives way to the flat mirror. If frames are still slow, the scene stops on its last frame and the state reads frozen. Resizing a frozen footer repaints that last frame, so the footer is never left blank.
 
 **Reduced motion switched on while the page is open:** The scene is removed and the CSS version remains.
 
@@ -80,3 +84,8 @@ Use `SceneFooter` where `Footer` would go. Choose `animate={false}` on pages tha
 8. Away from the footer, the page's main thread cost with a scene footer matches a page with a plain footer.
 9. At the footer, on a CPU slowed fourfold, frames stay smooth or the footer lowers its own effort until they do.
 10. Printing the page shows the footer content as plain text.
+11. With the sun and moon close together, a theme change shows one reflection per visible body and never a second copy of either.
+12. With the flat mirror chosen, no WebGL code is requested and the water renders as a calm mirror of the sky.
+13. With WebGL unavailable or refused by the browser, the footer renders with the flat mirror and raises no error.
+14. Clouds and stars appear in the reflection.
+15. Resizing a frozen footer leaves the sky and water painted.

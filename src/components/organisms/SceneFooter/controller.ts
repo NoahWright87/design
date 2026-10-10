@@ -111,9 +111,9 @@ export function startScene({ root, stage, scene, options = {} }: StartSceneOptio
 
   const govern = (now: number) => {
     if (lastTick) {
-      const gap = now - lastTick;
-      if (gap < 250) gaps.push(gap);
-      else resetGovernor(); // a stall or a hidden tab, not the scene's doing
+      // A hidden tab stops the loop and `kick` resets the window, so a long gap here is real
+      // slowness. Cap it rather than discard it, or a page too slow to hit 4 fps never degrades.
+      gaps.push(Math.min(now - lastTick, 250));
     }
     lastTick = now;
     if (gaps.length < GOVERNOR_WARMUP + GOVERNOR_WINDOW) return;
@@ -153,7 +153,10 @@ export function startScene({ root, stage, scene, options = {} }: StartSceneOptio
       resizePending = 0;
       if (!instance) return;
       instance.resize(measure(), quality);
-      kick();
+      // Resizing clears the canvases. A running loop repaints them; a frozen one needs a single
+      // repaint so the last frame stays on screen.
+      if (frozen) instance.render(performance.now() / 1000, progress());
+      else kick();
     });
   };
 
@@ -250,6 +253,14 @@ export function startScene({ root, stage, scene, options = {} }: StartSceneOptio
   const reduce = typeof matchMedia === "function" ? matchMedia("(prefers-reduced-motion: reduce)") : undefined;
   const onReduce = (event: MediaQueryListEvent) => {
     if (!event.matches) return;
+    // Stop everything, including a load that has not started yet: the footer may still be far
+    // from the viewport, and scrolling to it later must not fetch or mount a scene.
+    disposed = true;
+    near.disconnect();
+    visible.disconnect();
+    cancelIdle?.();
+    clearTimeout(loadTimer);
+    reduce?.removeEventListener("change", onReduce);
     teardownInstance();
     setState("static");
   };

@@ -2,17 +2,22 @@ import type { FooterScene, SceneContext, SceneInstance, SceneLayout, SceneQualit
 import { clamp, mix, rgba, type RGB } from "../color.js";
 import { mulberry32 } from "../random.js";
 import { onIdle } from "../idle.js";
+import { canvasStyle, makeMirror2d, type FrameState, type Water } from "./horizonWater.js";
 
 /**
- * Horizon: the footer is the sea and its top edge is the horizon. By day the sun rises as the
+ * Horizon: the footer is a sea and its top edge is the horizon. By day the sun rises as the
  * footer scrolls into view and clouds drift across the sky band; by night the moon rises and
- * stars come out. The sea itself is painted by CSS (so the CSS-only footer matches exactly);
- * the canvases add the sun, moon, sky, clouds and the shimmering reflection.
+ * stars come out. The sea itself is painted by CSS (so the CSS-only footer matches exactly).
  *
- * Performance shape (see the benchmark notes in the CHANGELOG):
- *  - the sun/moon/sky canvas is redrawn only when something moved (scroll, theme, resize),
- *  - only the reflection, clouds and stars animate, at a reduced render scale and a capped frame rate,
- *  - nothing here runs unless the footer is on screen (the shell stops calling `render`).
+ * How it draws:
+ *  - Everything in the sky (stars, sun, moon, glow, clouds, anything added later) is painted onto
+ *    ONE surface, the sky canvas, which is also what the reader sees in the sky band.
+ *  - A water renderer mirrors that finished surface into the sea, so everything in the sky is
+ *    reflected, exactly once. With WebGL available it ripples the mirror in a shader; otherwise a
+ *    flat 2D mirror does the job. A device that cannot do WebGL well never loads the WebGL code.
+ *  - The expensive sun/moon/glow layer is repainted only when something moves (scroll, theme,
+ *    resize); stars and clouds are drawn on top each frame, at a capped frame rate.
+ *  - Nothing here runs unless the footer is on screen (the shell stops calling `render`).
  */
 export type HorizonSceneOptions = {
   /** Horizontal position of the sun, 0..1 across the footer. Default 0.7. */
@@ -25,22 +30,20 @@ export type HorizonSceneOptions = {
   clouds?: number;
   /** Seed for star and cloud placement. Default 7. */
   seed?: number;
+  /**
+   * `"auto"` (default) uses the WebGL ripple on capable devices and the flat 2D mirror elsewhere.
+   * `"2d"` never loads WebGL. `"webgl"` forces WebGL, even if software-rendered (for testing).
+   */
+  renderer?: "auto" | "webgl" | "2d";
 };
 
 const FRAME_INTERVAL: Record<SceneQuality, number> = { high: 1 / 30, medium: 1 / 20, low: 1 / 12 };
-const STAR_INTERVAL: Record<SceneQuality, number> = { high: 1 / 10, medium: 1 / 8, low: 1 / 5 };
-/** Render scale (canvas pixels per CSS pixel) for the rarely redrawn sun/moon layer. */
-const SKY_SCALE: Record<SceneQuality, number> = { high: 2, medium: 1, low: 1 };
-/** Render scale for the layers that animate every frame. */
-const ANIM_SCALE: Record<SceneQuality, number> = { high: 1, medium: 0.75, low: 0.5 };
-/** Reflection row spacing in canvas pixels. */
-const ROW_STEP: Record<SceneQuality, number> = { high: 1, medium: 1.5, low: 2 };
+/** Render scale (canvas pixels per CSS pixel) of the sky surface. */
+const SKY_SCALE: Record<SceneQuality, number> = { high: 1.5, medium: 1, low: 0.75 };
+/** Render scale of the water; it is soft by nature, so it can be lower. */
+const WATER_SCALE: Record<SceneQuality, number> = { high: 1, medium: 0.75, low: 0.5 };
 
 const SPRITE_COUNT = 6;
-const STRETCH = 2.4; // reflection elongation
-const WOBBLE = 1; // wave distortion of the reflection
-const BANDING = 0.25; // 0 = smooth reflection column, 1 = broken into ripples
-
 const ease = (x: number) => x * x * (3 - 2 * x);
 
 type Palette = {
@@ -60,53 +63,43 @@ type Sprite = { w: number; h: number; cool: HTMLCanvasElement; warm: HTMLCanvasE
 
 function create(ctx: SceneContext): SceneInstance {
   const opts = ctx.options as HorizonSceneOptions;
-  const sunX = clamp(opts.sunX ?? 0.7, 0.05, 0.95);
-  const moonX = clamp(opts.moonX ?? 0.3, 0.05, 0.95);
+  const sunFrac = clamp(opts.sunX ?? 0.7, 0.05, 0.95);
+  const moonFrac = clamp(opts.moonX ?? 0.3, 0.05, 0.95);
   const starAmount = clamp(opts.stars ?? 1, 0, 2);
   const cloudAmount = clamp(opts.clouds ?? 1, 0, 2);
   const seed = opts.seed ?? 7;
+  const rendererOption = opts.renderer === "2d" || opts.renderer === "webgl" ? opts.renderer : "auto";
 
-  /* ---------- layers ---------- */
+  /* ---------- surfaces ---------- */
   const mustContext = (c: HTMLCanvasElement) => {
     const g = c.getContext("2d");
     if (!g) throw new Error("2D canvas is unavailable");
     return g;
   };
-  const layer = () => {
-    const c = document.createElement("canvas");
-    c.style.cssText = "position:absolute;left:0;top:0;width:100%;height:100%;display:block;pointer-events:none";
-    c.setAttribute("aria-hidden", "true");
-    return c;
-  };
-  // Sky layers sit in a wrapper that fades out toward the top, so the sky melts into the page.
-  const sky = document.createElement("div");
-  sky.setAttribute("aria-hidden", "true");
-  sky.style.cssText =
+  // The sky canvas sits in a wrapper that fades out toward the top, so the sky melts into the page.
+  const skyWrap = document.createElement("div");
+  skyWrap.setAttribute("aria-hidden", "true");
+  skyWrap.style.cssText =
     "position:absolute;left:0;top:0;width:100%;overflow:hidden;pointer-events:none;" +
     "-webkit-mask-image:linear-gradient(to bottom,transparent,#000 45%);mask-image:linear-gradient(to bottom,transparent,#000 45%)";
-  const starsC = layer();
-  const skyC = layer();
-  const cloudsC = layer();
-  const waterC = layer();
-  waterC.style.height = "0";
-  sky.append(starsC, skyC, cloudsC);
-  const bodyC = document.createElement("canvas"); // offscreen: sun, moon and their local glow (also the reflection source)
-  const moonC = document.createElement("canvas");
-  const stx = mustContext(starsC);
-  const ktx = mustContext(skyC);
-  const ctx2 = mustContext(cloudsC);
-  const wtx = mustContext(waterC);
-  const btx = mustContext(bodyC);
-  ctx.host.append(sky, waterC);
+  const skyC = document.createElement("canvas");
+  skyC.style.cssText = canvasStyle + ";top:0;height:100%";
+  skyC.setAttribute("aria-hidden", "true");
+  skyWrap.append(skyC);
+  const staticC = document.createElement("canvas"); // offscreen: tint, glows, sun, moon
+  const moonC = document.createElement("canvas"); // offscreen: the crescent sprite
+  const sky = mustContext(skyC);
+  const still = mustContext(staticC);
+  ctx.host.append(skyWrap);
 
   /* ---------- state ---------- */
   let q: SceneQuality = ctx.quality;
   let theme: SceneTheme = ctx.theme;
   let W = 0;
-  let hz = 0; // horizon, CSS px from the top of the sky band
+  let hz = 0; // horizon: height of the sky band, CSS px
   let waterH = 0;
   let skyScale = 1;
-  let animScale = 1;
+  let waterScale = 1;
   let R = 50;
   let Rm = 36;
   let moonSize = 0;
@@ -115,7 +108,6 @@ function create(ctx: SceneContext): SceneInstance {
   let p = 0; // smoothed reveal progress
   let targetP = 0;
   let lastDraw = -1;
-  let lastStars = -1;
   let skyDirty = true;
   let paintedP = -1;
   let paintedM = -1;
@@ -139,6 +131,67 @@ function create(ctx: SceneContext): SceneInstance {
     };
   };
   let palette = readPalette();
+
+  // what the water renderer needs; refreshed whenever the still layer is repainted
+  const frame: FrameState = {
+    width: 0,
+    horizon: 0,
+    waterHeight: 0,
+    sunE: 0,
+    moonE: 0,
+    sunX: 0,
+    moonX: 0,
+    sunR: 0,
+    moonR: 0,
+    sun: palette.sun,
+    sunLight: palette.sunLight,
+    moon: palette.moon,
+  };
+
+  /* ---------- water renderer: WebGL ripple when it is worth it, flat 2D mirror otherwise ---------- */
+  let water: Water = makeMirror2d();
+  ctx.host.append(water.el);
+  let glState: "idle" | "loading" | "ready" | "unavailable" = rendererOption === "2d" ? "unavailable" : "idle";
+  let glFactory: ((o: { allowSoftware?: boolean; onLost?: () => void }) => Water | null) | undefined;
+
+  const useWater = (next: Water) => {
+    const prev = water;
+    next.el.style.top = hz + "px";
+    next.el.style.height = waterH + "px";
+    prev.el.replaceWith(next.el);
+    prev.destroy();
+    water = next;
+    if (W > 0 && waterH > 0) water.resize(W, waterH, waterScale);
+  };
+
+  const tryGl = () => {
+    if (destroyed || water.kind === "webgl" || glState === "unavailable" || q === "low") return;
+    if (glFactory) {
+      const gl = glFactory({
+        allowSoftware: rendererOption === "webgl",
+        onLost: () => {
+          if (destroyed) return;
+          glState = "unavailable";
+          if (water.kind === "webgl") useWater(makeMirror2d());
+        },
+      });
+      if (gl) useWater(gl);
+      else glState = "unavailable";
+      return;
+    }
+    if (glState === "loading") return;
+    glState = "loading";
+    import("./horizonGl.js")
+      .then((mod) => {
+        if (destroyed) return;
+        glFactory = mod.createGlWater;
+        glState = "ready";
+        tryGl();
+      })
+      .catch(() => {
+        glState = "unavailable";
+      });
+  };
 
   /* ---------- stars, clouds, moon ---------- */
   type Star = { x: number; y: number; r: number; ph: number; sp: number; c: RGB };
@@ -204,10 +257,10 @@ function create(ctx: SceneContext): SceneInstance {
     }
     const render = (body: RGB) => {
       const c = document.createElement("canvas");
-      c.width = Math.round(w * animScale);
-      c.height = Math.round(h * animScale);
+      c.width = Math.round(w * skyScale);
+      c.height = Math.round(h * skyScale);
       const x = mustContext(c);
-      x.setTransform(animScale, 0, 0, animScale, 0, 0);
+      x.setTransform(skyScale, 0, 0, skyScale, 0, 0);
       // soft darker halo first...
       for (const [px, py, rad] of puffs) {
         const R2 = rad * 1.4;
@@ -290,7 +343,8 @@ function create(ctx: SceneContext): SceneInstance {
   // 0 when the body is fully under the water, easing up to 1 as it clears the horizon
   const aboveWater = (y: number, r: number) => ease(clamp((hz - (y - r)) / (2.4 * r), 0, 1));
 
-  const paintSky = () => {
+  /** The layer that only changes when something moves: warm tint, horizon glow, sun and moon. */
+  const paintStill = () => {
     const e = ease(p);
     const sunE = e * (1 - m);
     const moonE = e * m;
@@ -298,100 +352,104 @@ function create(ctx: SceneContext): SceneInstance {
     const moonY = hz + Rm * 1.3 - moonE * Rm * 2.8;
     const sunVis = aboveWater(sunY, R);
     const moonVis = aboveWater(moonY, Rm);
-    const cx = W * sunX;
-    const mx = W * moonX;
+    const cx = W * sunFrac;
+    const mx = W * moonFrac;
 
-    // celestial bodies, offscreen
-    btx.setTransform(skyScale, 0, 0, skyScale, 0, 0);
-    btx.clearRect(0, 0, W, hz);
-    if (sunE > 0.001 || sunVis > 0) {
-      let g = btx.createRadialGradient(cx, sunY, R * 0.9, cx, sunY, R * 3.2);
-      g.addColorStop(0, rgba(palette.sunLight, 0.45 * sunVis));
-      g.addColorStop(1, rgba(palette.sun, 0));
-      btx.fillStyle = g;
-      btx.fillRect(cx - R * 3.2, sunY - R * 3.2, R * 6.4, R * 6.4);
-      g = btx.createRadialGradient(cx, sunY - R * 0.25, R * 0.1, cx, sunY, R);
-      g.addColorStop(0, rgba(palette.core));
-      g.addColorStop(0.55, rgba(palette.sunLight));
-      g.addColorStop(1, rgba(palette.sun));
-      btx.fillStyle = g;
-      btx.beginPath();
-      btx.arc(cx, sunY, R, 0, Math.PI * 2);
-      btx.fill();
-    }
-    if (moonE > 0.001 || moonVis > 0) {
-      const g = btx.createRadialGradient(mx, moonY, Rm * 0.6, mx, moonY, Rm * 3);
-      g.addColorStop(0, rgba(palette.moon, 0.22 * moonVis));
-      g.addColorStop(1, rgba(palette.moon, 0));
-      btx.fillStyle = g;
-      btx.fillRect(mx - Rm * 3, moonY - Rm * 3, Rm * 6, Rm * 6);
-      btx.drawImage(moonC, mx - moonSize / 2, moonY - moonSize / 2, moonSize, moonSize);
-    }
+    still.setTransform(skyScale, 0, 0, skyScale, 0, 0);
+    still.clearRect(0, 0, W, hz);
 
-    // visible sky: warm tint, flat glow hugging the horizon, then the bodies
-    ktx.setTransform(skyScale, 0, 0, skyScale, 0, 0);
-    ktx.clearRect(0, 0, W, hz);
     if (sunE > 0.001) {
-      const g = ktx.createLinearGradient(0, 0, 0, hz);
+      const g = still.createLinearGradient(0, 0, 0, hz);
       g.addColorStop(0, rgba(palette.sunLight, 0));
       g.addColorStop(1, rgba(palette.sunLight, 0.22 * sunE));
-      ktx.fillStyle = g;
-      ktx.fillRect(0, 0, W, hz);
-      ktx.save();
-      ktx.translate(cx, hz);
-      ktx.scale(3.2, 1);
-      const f = ktx.createRadialGradient(0, 0, 0, 0, 0, R * 3);
+      still.fillStyle = g;
+      still.fillRect(0, 0, W, hz);
+      still.save();
+      still.translate(cx, hz);
+      still.scale(3.2, 1);
+      const f = still.createRadialGradient(0, 0, 0, 0, 0, R * 3);
       f.addColorStop(0, rgba(palette.sunLight, 0.55 * sunE));
       f.addColorStop(0.5, rgba(palette.sun, 0.16 * sunE));
       f.addColorStop(1, rgba(palette.sun, 0));
-      ktx.fillStyle = f;
-      ktx.fillRect(-R * 3, -R * 3, R * 6, R * 3);
-      ktx.restore();
+      still.fillStyle = f;
+      still.fillRect(-R * 3, -R * 3, R * 6, R * 3);
+      still.restore();
     }
     if (moonE > 0.001) {
-      const g = ktx.createLinearGradient(0, 0, 0, hz);
+      const g = still.createLinearGradient(0, 0, 0, hz);
       g.addColorStop(0, rgba(palette.moon, 0));
       g.addColorStop(1, rgba(palette.moon, 0.07 * moonE));
-      ktx.fillStyle = g;
-      ktx.fillRect(0, 0, W, hz);
-      ktx.save();
-      ktx.translate(mx, hz);
-      ktx.scale(3, 1);
-      const f = ktx.createRadialGradient(0, 0, 0, 0, 0, Rm * 3);
+      still.fillStyle = g;
+      still.fillRect(0, 0, W, hz);
+      still.save();
+      still.translate(mx, hz);
+      still.scale(3, 1);
+      const f = still.createRadialGradient(0, 0, 0, 0, 0, Rm * 3);
       f.addColorStop(0, rgba(palette.moon, 0.16 * moonE));
       f.addColorStop(1, rgba(palette.moon, 0));
-      ktx.fillStyle = f;
-      ktx.fillRect(-Rm * 3, -Rm * 3, Rm * 6, Rm * 3);
-      ktx.restore();
+      still.fillStyle = f;
+      still.fillRect(-Rm * 3, -Rm * 3, Rm * 6, Rm * 3);
+      still.restore();
     }
-    ktx.drawImage(bodyC, 0, 0, W, hz);
+    if (sunE > 0.001 || sunVis > 0) {
+      let g = still.createRadialGradient(cx, sunY, R * 0.9, cx, sunY, R * 3.2);
+      g.addColorStop(0, rgba(palette.sunLight, 0.45 * sunVis));
+      g.addColorStop(1, rgba(palette.sun, 0));
+      still.fillStyle = g;
+      still.fillRect(cx - R * 3.2, sunY - R * 3.2, R * 6.4, R * 6.4);
+      g = still.createRadialGradient(cx, sunY - R * 0.25, R * 0.1, cx, sunY, R);
+      g.addColorStop(0, rgba(palette.core));
+      g.addColorStop(0.55, rgba(palette.sunLight));
+      g.addColorStop(1, rgba(palette.sun));
+      still.fillStyle = g;
+      still.beginPath();
+      still.arc(cx, sunY, R, 0, Math.PI * 2);
+      still.fill();
+    }
+    if (moonE > 0.001 || moonVis > 0) {
+      const g = still.createRadialGradient(mx, moonY, Rm * 0.6, mx, moonY, Rm * 3);
+      g.addColorStop(0, rgba(palette.moon, 0.22 * moonVis));
+      g.addColorStop(1, rgba(palette.moon, 0));
+      still.fillStyle = g;
+      still.fillRect(mx - Rm * 3, moonY - Rm * 3, Rm * 6, Rm * 6);
+      still.drawImage(moonC, mx - moonSize / 2, moonY - moonSize / 2, moonSize, moonSize);
+    }
+
+    frame.width = W;
+    frame.horizon = hz;
+    frame.waterHeight = waterH;
+    frame.sunE = sunE;
+    frame.moonE = moonE;
+    frame.sunX = cx;
+    frame.moonX = mx;
+    frame.sunR = R;
+    frame.moonR = Rm;
+    frame.sun = palette.sun;
+    frame.sunLight = palette.sunLight;
+    frame.moon = palette.moon;
   };
 
-  const paintStars = (t: number) => {
-    stx.setTransform(animScale, 0, 0, animScale, 0, 0);
-    stx.clearRect(0, 0, W, hz);
+  const drawStars = (t: number) => {
     const a = m * ease(p);
     if (a < 0.01 || starAmount <= 0) return;
     const count = Math.round((stars.length * starAmount) / 2);
     for (let i = 0; i < count; i++) {
       const s = stars[i];
       const tw = 0.55 + 0.45 * Math.sin(s.ph + t * s.sp);
-      stx.fillStyle = rgba(s.c, tw * a);
+      sky.fillStyle = rgba(s.c, tw * a);
       const x = s.x * W;
       const y = s.y * hz;
       if (s.r < 1) {
-        stx.fillRect(x - s.r, y - s.r, s.r * 2, s.r * 2);
+        sky.fillRect(x - s.r, y - s.r, s.r * 2, s.r * 2);
       } else {
-        stx.beginPath();
-        stx.arc(x, y, s.r, 0, Math.PI * 2);
-        stx.fill();
+        sky.beginPath();
+        sky.arc(x, y, s.r, 0, Math.PI * 2);
+        sky.fill();
       }
     }
   };
 
-  const paintClouds = (t: number) => {
-    ctx2.setTransform(animScale, 0, 0, animScale, 0, 0);
-    ctx2.clearRect(0, 0, W, hz);
+  const drawClouds = (t: number) => {
     const vis = (1 - m) * ease(clamp(p * 1.5, 0, 1));
     if (vis < 0.01 || !sprites.length || cloudAmount <= 0) return;
     const keep = cloudAmount / 2;
@@ -405,86 +463,28 @@ function create(ctx: SceneContext): SceneInstance {
       const span = W + sw;
       const x = ((((c.x * span + t * c.speed) % span) + span) % span) - sw;
       const alpha = c.a * vis;
-      if (c.flip < 0) ctx2.setTransform(-animScale, 0, 0, animScale, (x * 2 + sw) * animScale, 0);
-      else ctx2.setTransform(animScale, 0, 0, animScale, 0, 0);
-      ctx2.globalAlpha = alpha;
-      ctx2.drawImage(spr.cool, x, y, sw, sh);
+      if (c.flip < 0) sky.setTransform(-skyScale, 0, 0, skyScale, (x * 2 + sw) * skyScale, 0);
+      else sky.setTransform(skyScale, 0, 0, skyScale, 0, 0);
+      sky.globalAlpha = alpha;
+      sky.drawImage(spr.cool, x, y, sw, sh);
       // clouds low on the horizon catch the sunrise
       const warm = sunE * Math.pow(clamp((y + sh) / hz, 0, 1), 3);
       if (warm > 0.02) {
-        ctx2.globalAlpha = alpha * warm;
-        ctx2.drawImage(spr.warm, x, y, sw, sh);
+        sky.globalAlpha = alpha * warm;
+        sky.drawImage(spr.warm, x, y, sw, sh);
       }
     }
-    ctx2.globalAlpha = 1;
-    ctx2.setTransform(animScale, 0, 0, animScale, 0, 0);
+    sky.globalAlpha = 1;
+    sky.setTransform(skyScale, 0, 0, skyScale, 0, 0);
   };
 
-  const paintWater = (t: number) => {
-    wtx.setTransform(animScale, 0, 0, animScale, 0, 0);
-    wtx.clearRect(0, 0, W, waterH);
-    const e = ease(p);
-    const sunE = e * (1 - m);
-    const moonE = e * m;
-    if ((sunE < 0.002 && moonE < 0.002) || waterH <= 0) return;
-
-    // sunlit (or moonlit) water just below the horizon
-    const lit = wtx.createLinearGradient(0, 0, 0, waterH * 0.45);
-    lit.addColorStop(0, rgba(palette.sun, 0.2 * sunE));
-    lit.addColorStop(1, rgba(palette.sun, 0));
-    wtx.fillStyle = lit;
-    wtx.fillRect(0, 0, W, waterH * 0.45);
-
-    // reflections: flipped sky rows, stretched, wobbled, optionally banded
-    const cols: Array<[number, number, RGB, number]> = [];
-    if (sunE > 0.002) cols.push([W * sunX, R, palette.sunLight, sunE]);
-    if (moonE > 0.002) cols.push([W * moonX, Rm, palette.moon, moonE]);
-    const step = ROW_STEP[q] / animScale; // CSS px per drawn row
-    for (const [cx, r] of cols) {
-      const span = r * 6;
-      const sx0 = Math.max(0, cx - span);
-      const sw = Math.min(W, cx + span) - sx0;
-      if (sw <= 0) continue;
-      for (let d = 0; d < waterH; d += step) {
-        const syTop = hz - 1 - (d + step) / STRETCH;
-        if (syTop < 0) break;
-        const k = d / waterH;
-        const amp = (1 + d * 0.05) * WOBBLE;
-        // incommensurate frequencies so the pattern never visibly repeats
-        const dx =
-          amp *
-          (Math.sin(d * 0.11 - t * 1.7) +
-            0.45 * Math.sin(d * 0.37 + t * 2.9) +
-            0.25 * Math.sin(d * 0.83 - t * 4.3 + Math.sin(t * 0.5)));
-        let band = 0.5 + 0.3 * Math.sin(d * 0.55 - t * 3.1 + Math.sin(d * 0.07 + t * 0.8) * 3) + 0.2 * Math.sin(d * 1.31 + t * 2.3);
-        band *= band;
-        const widen = 1 + k * 0.4;
-        wtx.globalAlpha = (1 - BANDING + BANDING * band) * (1 - k * 0.7);
-        wtx.drawImage(
-          bodyC,
-          sx0 * skyScale,
-          syTop * skyScale,
-          sw * skyScale,
-          Math.max(1, (step / STRETCH) * skyScale),
-          cx + (sx0 - cx) * widen + dx,
-          d,
-          sw * widen,
-          step * 1.25,
-        );
-      }
-    }
-    wtx.globalAlpha = 1;
-
-    // bright seam along the horizon
-    for (const [cx, r, color, strength] of cols) {
-      const span = r * 6;
-      const g = wtx.createLinearGradient(cx - span, 0, cx + span, 0);
-      g.addColorStop(0, rgba(color, 0));
-      g.addColorStop(0.5, rgba(color, 0.7 * strength));
-      g.addColorStop(1, rgba(color, 0));
-      wtx.fillStyle = g;
-      wtx.fillRect(cx - span, 0, span * 2, 1);
-    }
+  /** The whole sky, in paint order: stars, then the still layer (tint, glow, sun, moon), then clouds. */
+  const composeSky = (t: number) => {
+    sky.setTransform(skyScale, 0, 0, skyScale, 0, 0);
+    sky.clearRect(0, 0, W, hz);
+    drawStars(t);
+    sky.drawImage(staticC, 0, 0, W, hz);
+    drawClouds(t);
   };
 
   /* ---------- instance ---------- */
@@ -500,32 +500,33 @@ function create(ctx: SceneContext): SceneInstance {
     waterH = Math.max(0, next.height - next.horizon);
     if (W <= 0 || hz <= 0) return;
     const dpr = window.devicePixelRatio || 1;
+    const prevSky = skyScale;
     skyScale = Math.min(dpr, SKY_SCALE[q]);
-    const prevAnim = animScale;
-    animScale = Math.min(dpr, ANIM_SCALE[q]);
-    sky.style.height = hz + "px";
-    waterC.style.top = hz + "px";
-    waterC.style.height = waterH + "px";
+    waterScale = Math.min(dpr, WATER_SCALE[q]);
+    skyWrap.style.height = hz + "px";
     size(skyC, W, hz, skyScale);
-    size(bodyC, W, hz, skyScale);
-    size(starsC, W, hz, animScale);
-    size(cloudsC, W, hz, animScale);
-    size(waterC, W, Math.max(1, waterH), animScale);
+    size(staticC, W, hz, skyScale);
+    water.el.style.top = hz + "px";
+    water.el.style.height = waterH + "px";
+    if (waterH > 0) water.resize(W, waterH, waterScale);
     R = Math.min(clamp(W * 0.07, 34, 72), hz / 1.8);
     Rm = R * 0.72;
     buildMoon();
     buildStars();
     buildClouds();
-    if (prevAnim !== animScale || spriteScale !== animScale) {
+    if (prevSky !== skyScale || spriteScale !== skyScale) {
       sprites.length = 0;
-      spriteScale = animScale;
+      spriteScale = skyScale;
     }
     scheduleSprites();
     skyDirty = true;
-    lastStars = -1;
+
+    // the ripple is for devices that can afford it; at the lowest quality the flat mirror takes over
+    if (q === "low" && water.kind === "webgl") useWater(makeMirror2d());
+    else if (water.kind === "2d") tryGl();
   };
   layout(ctx.layout, ctx.quality);
-  spriteScale = animScale;
+  spriteScale = skyScale;
 
   return {
     resize: layout,
@@ -559,24 +560,20 @@ function create(ctx: SceneContext): SceneInstance {
       if (Math.abs(mTarget - m) < 0.001) m = mTarget;
 
       if (skyDirty || p !== paintedP || m !== paintedM) {
-        paintSky();
+        paintStill();
         paintedP = p;
         paintedM = m;
         skyDirty = false;
       }
-      if (lastStars < 0 || time - lastStars >= STAR_INTERVAL[q]) {
-        lastStars = time;
-        paintStars(time);
-      }
-      paintClouds(time);
-      paintWater(time);
+      composeSky(time);
+      water.draw(time, frame, skyC);
     },
 
     destroy() {
       destroyed = true;
       cancelSprite?.();
-      sky.remove();
-      waterC.remove();
+      skyWrap.remove();
+      water.destroy();
       sprites.length = 0;
     },
   };

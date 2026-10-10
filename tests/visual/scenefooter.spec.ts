@@ -5,6 +5,8 @@ import { test, expect, type Page } from "@playwright/test";
 // `horizon-<hash>.js` in a built Storybook; `horizonStatic` (the CSS-side helper) is part of the main bundle.
 const STORY = (name: string) => `/iframe.html?id=components-organisms-scenefooter--${name}&viewMode=story`;
 const isSceneRequest = (url: string) => /\/horizon(-[\w-]+)?\.(ts|js|mjs)(\?|$)/.test(url);
+// The WebGL water renderer is its own chunk: `horizonGl.ts` under the dev server, `horizonGl-<hash>.js` when built.
+const isGlRequest = (url: string) => /\/horizonGl(-[\w-]+)?\.(ts|js|mjs)(\?|$)/.test(url);
 
 async function trackSceneRequests(page: Page) {
   const urls: string[] = [];
@@ -62,6 +64,18 @@ test.describe("SceneFooter loading contract", () => {
     await context.close();
   });
 
+  test("reduced motion switched on before the scene loads keeps it from ever loading", async ({ page }) => {
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    expect(requests).toHaveLength(0); // footer is still far away
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await scrollToBottom(page);
+    await page.waitForTimeout(2500);
+    expect(requests).toHaveLength(0);
+    expect(await sceneState(page)).toBe("static");
+  });
+
   test("a blocked scene request leaves the css footer in place", async ({ browser }) => {
     const context = await browser.newContext();
     await context.route((url) => isSceneRequest(url.toString()), (route) => route.abort());
@@ -74,6 +88,55 @@ test.describe("SceneFooter loading contract", () => {
     await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("failed");
     expect(errors).toHaveLength(0);
     await expect(page.locator(".nw-scene-footer__content")).toContainText("Noah Wright");
+    await context.close();
+  });
+});
+
+test.describe("SceneFooter water renderer", () => {
+  const rendererOf = (page: Page) =>
+    page.evaluate(() => document.querySelector<HTMLElement>(".nw-scene-footer__stage canvas[data-renderer]")?.dataset.renderer ?? "none");
+
+  test("the flat mirror never loads the WebGL code", async ({ page }) => {
+    const glRequests: string[] = [];
+    page.on("request", (r) => isGlRequest(r.url()) && glRequests.push(r.url()));
+    await page.goto(STORY("horizon-flat-mirror"));
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("live");
+    expect(await rendererOf(page)).toBe("2d");
+    expect(glRequests).toHaveLength(0);
+  });
+
+  test("forced WebGL renders through the shader when the browser has WebGL", async ({ page }) => {
+    await page.goto(STORY("horizon-webgl"));
+    await page.waitForSelector(".nw-scene-footer");
+    const hasWebgl = await page.evaluate(() => !!document.createElement("canvas").getContext("webgl"));
+    test.skip(!hasWebgl, "this browser has no WebGL");
+    await scrollToBottom(page);
+    await expect.poll(() => rendererOf(page), { timeout: 15000 }).toBe("webgl");
+  });
+
+  test("a browser without WebGL keeps the flat mirror and raises no errors", async ({ browser }) => {
+    const context = await browser.newContext();
+    await context.addInitScript(() => {
+      const original = HTMLCanvasElement.prototype.getContext;
+      // @ts-expect-error: deliberately refuse WebGL contexts
+      HTMLCanvasElement.prototype.getContext = function (type: string, ...rest: unknown[]) {
+        if (type === "webgl" || type === "webgl2" || type === "experimental-webgl") return null;
+        // @ts-expect-error: pass through
+        return original.call(this, type, ...rest);
+      };
+    });
+    const page = await context.newPage();
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    await page.goto(STORY("horizon-webgl")); // even when WebGL is forced
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("live");
+    await page.waitForTimeout(1500);
+    expect(await rendererOf(page)).toBe("2d");
+    expect(errors).toHaveLength(0);
     await context.close();
   });
 });

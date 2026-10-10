@@ -8,6 +8,7 @@ type StoryArgs = React.ComponentProps<typeof SceneFooter> & {
   moonX: number;
   stars: number;
   clouds: number;
+  renderer: "auto" | "webgl" | "2d";
 };
 
 const meta: Meta<StoryArgs> = {
@@ -22,8 +23,13 @@ const meta: Meta<StoryArgs> = {
     moonX: { control: { type: "range", min: 0.05, max: 0.95, step: 0.01 }, description: "Horizon scene: moon position across the footer" },
     stars: { control: { type: "range", min: 0, max: 2, step: 0.05 }, description: "Horizon scene: star density" },
     clouds: { control: { type: "range", min: 0, max: 2, step: 0.05 }, description: "Horizon scene: cloud density" },
+    renderer: {
+      control: { type: "inline-radio" },
+      options: ["auto", "webgl", "2d"],
+      description: "Horizon scene: water renderer. auto = WebGL ripple on capable devices, flat 2D mirror elsewhere",
+    },
   },
-  args: { animate: true, sunX: 0.7, moonX: 0.3, stars: 1, clouds: 1 },
+  args: { animate: true, sunX: 0.7, moonX: 0.3, stars: 1, clouds: 1, renderer: "auto" },
 };
 export default meta;
 
@@ -74,16 +80,34 @@ const footerSlots = {
 };
 
 export const Horizon: Story = {
-  render: ({ sunX, moonX, stars, clouds, ...args }) => (
+  render: ({ sunX, moonX, stars, clouds, renderer, ...args }) => (
     <Page>
-      <SceneFooter {...args} {...footerSlots} scene="horizon" sceneOptions={{ sunX, moonX, stars, clouds }} />
+      <SceneFooter {...args} {...footerSlots} scene="horizon" sceneOptions={{ sunX, moonX, stars, clouds, renderer }} />
     </Page>
   ),
 };
 
+/** Forces the flat 2D mirror: the sky flipped into the sea with no ripple, and no WebGL code is ever loaded. */
+export const HorizonFlatMirror: Story = {
+  args: { renderer: "2d" },
+  render: (args) => Horizon.render!(args, {} as never),
+};
+
+/** Forces the WebGL ripple even where it would be software-rendered (for testing). */
+export const HorizonWebgl: Story = {
+  args: { renderer: "webgl" },
+  render: (args) => Horizon.render!(args, {} as never),
+};
+
+/** The sun and moon close together, as on the portfolio site: one mirror, so one reflection even mid-handoff. */
+export const SunAndMoonClose: Story = {
+  args: { sunX: 0.62, moonX: 0.38 },
+  render: (args) => Horizon.render!(args, {} as never),
+};
+
 /** `animate={false}`: the CSS version only. No scene code is requested. */
 export const CssOnly: Story = {
-  render: ({ sunX, moonX, stars, clouds, ...args }) => (
+  render: ({ sunX, moonX, stars, clouds, renderer, ...args }) => (
     <Page>
       <SceneFooter {...args} {...footerSlots} animate={false} scene="horizon" sceneOptions={{ sunX, moonX }} />
     </Page>
@@ -91,7 +115,7 @@ export const CssOnly: Story = {
 };
 
 export const WithBottomStrip: Story = {
-  render: ({ sunX, moonX, stars, clouds, ...args }) => (
+  render: ({ sunX, moonX, stars, clouds, renderer, ...args }) => (
     <Page>
       <SceneFooter
         {...args}
@@ -99,7 +123,7 @@ export const WithBottomStrip: Story = {
         bottom="All rights reserved. Privacy Policy · Terms of Service"
         hasBottomSeparator
         scene="horizon"
-        sceneOptions={{ sunX, moonX, stars, clouds }}
+        sceneOptions={{ sunX, moonX, stars, clouds, renderer }}
       />
     </Page>
   ),
