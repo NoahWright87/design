@@ -129,7 +129,9 @@ test.describe("SceneFooter water renderer", () => {
     });
     const page = await context.newPage();
     const errors: string[] = [];
+    const glRequests: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
+    page.on("request", (r) => isGlRequest(r.url()) && glRequests.push(r.url()));
     await page.goto(STORY("horizon-webgl")); // even when WebGL is forced
     await page.waitForSelector(".nw-scene-footer");
     await scrollToBottom(page);
@@ -137,6 +139,7 @@ test.describe("SceneFooter water renderer", () => {
     await page.waitForTimeout(1500);
     expect(await rendererOf(page)).toBe("2d");
     expect(errors).toHaveLength(0);
+    expect(glRequests).toHaveLength(0); // the WebGL code is never downloaded when there is no WebGL
     await context.close();
   });
 });

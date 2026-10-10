@@ -44,6 +44,27 @@ const SKY_SCALE: Record<SceneQuality, number> = { high: 1.5, medium: 1, low: 0.7
 const WATER_SCALE: Record<SceneQuality, number> = { high: 1, medium: 0.75, low: 0.5 };
 
 const SPRITE_COUNT = 6;
+
+/**
+ * Whether this browser can give us a hardware-accelerated WebGL context. Checked with a throwaway
+ * context before any WebGL code is downloaded, so devices that cannot use it never fetch it.
+ */
+function canUseWebgl(allowSoftware: boolean): boolean {
+  try {
+    const probe = document.createElement("canvas");
+    const gl = probe.getContext("webgl", {
+      depth: false,
+      stencil: false,
+      antialias: false,
+      failIfMajorPerformanceCaveat: !allowSoftware,
+    }) as WebGLRenderingContext | null;
+    if (!gl) return false;
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    return true;
+  } catch {
+    return false;
+  }
+}
 const ease = (x: number) => x * x * (3 - 2 * x);
 
 type Palette = {
@@ -180,6 +201,10 @@ function create(ctx: SceneContext): SceneInstance {
       return;
     }
     if (glState === "loading") return;
+    if (!canUseWebgl(rendererOption === "webgl")) {
+      glState = "unavailable";
+      return;
+    }
     glState = "loading";
     import("./horizonGl.js")
       .then((mod) => {
