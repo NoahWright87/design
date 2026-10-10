@@ -11,6 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **SceneFooter (new organism):** A taller alternative to `Footer` that hosts a scroll-revealed "scene". The server renders a complete CSS-only footer; the scene is a separate lazily loaded chunk fetched only when the footer is within a screen of view and the browser is idle, and never for reduced-motion, save-data, forced-colors or low-end devices. Failures, timeouts and slow frames fall back to the CSS version (a governor steps resolution down, then freezes). First built-in scene: `horizon` (sun/moon rising over a reflective sea, clouds and stars confined to a sky band; ~3.8 KB gzipped). Custom scenes plug in via a loader function. Benchmarked on a CPU slowed 4x: away from the footer ~2-7% main thread (the original prototype's always-on layers cost 34-99%); at the footer 58-60fps where the prototype managed 2-9fps. Also adds `subscribeThemeMode()` to the theme utilities and extracts `FooterContent` (shared slot markup) from `Footer`.
 - **TextCarousel editing playground:** Added an editable Storybook preview with restart and typo frequency controls. Typewriter transitions cut and paste reordered words, repair rare typos, preserve shared casing/punctuation letters, and adjust dwell to phrase length and edit size.
 
 ## Version history

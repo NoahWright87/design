@@ -1,5 +1,6 @@
 import * as React from "react";
 import "./footer.css";
+import { FooterContent } from "./FooterContent.js";
 
 export type FooterProps = {
   /** Content for the left slot. */
@@ -42,26 +43,17 @@ export function Footer({
     ? "nw-footer--sticky"
     : "nw-footer--static";
 
-  const hasSlots = left != null || center != null || right != null;
-
   return (
     <footer className={`nw-footer ${positionClass}`}>
-      <div className="nw-footer__main">
-        {hasSlots ? (
-          <>
-            <div className="nw-footer__slot nw-footer__slot--left">{left}</div>
-            <div className="nw-footer__slot nw-footer__slot--center">{center}</div>
-            <div className="nw-footer__slot nw-footer__slot--right">{right}</div>
-          </>
-        ) : (
-          children
-        )}
-      </div>
-      {bottom != null && (
-        <div className={`nw-footer__bottom${hasBottomSeparator ? " nw-footer__bottom--separated" : ""}`}>
-          {bottom}
-        </div>
-      )}
+      <FooterContent
+        left={left}
+        center={center}
+        right={right}
+        bottom={bottom}
+        hasBottomSeparator={hasBottomSeparator}
+      >
+        {children}
+      </FooterContent>
     </footer>
   );
 }

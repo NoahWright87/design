@@ -30,6 +30,7 @@ export * from "./components/molecules/TextCarousel/index.js";
 export * from "./components/organisms/Hero/index.js";
 export * from "./components/organisms/Header/index.js";
 export * from "./components/organisms/Footer/index.js";
+export * from "./components/organisms/SceneFooter/index.js";
 export * from "./components/organisms/Layout/index.js";
 export * from "./components/organisms/Menu/index.js";
 export * from "./components/organisms/MobileNav/index.js";
