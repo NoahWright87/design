@@ -1,5 +1,6 @@
 import * as React from "react";
 import styles from "./EasingGraph.module.css";
+import { usePrefersReducedMotion } from "../../../atoms/usePrefersReducedMotion";
 
 export interface EasingGraphProps {
   x1: number;
@@ -35,6 +36,7 @@ function describeCurve(y1: number, y2: number) {
 }
 
 export function EasingGraph({ x1, y1, x2, y2, label = "Easing curve" }: EasingGraphProps) {
+  const reducedMotion = usePrefersReducedMotion();
   const W = 280;
   const H = 200;
   const xMin = 0;
@@ -76,9 +78,9 @@ export function EasingGraph({ x1, y1, x2, y2, label = "Easing curve" }: EasingGr
         <line x1={sx(p3.x)} y1={sy(p3.y)} x2={sx(p2.x)} y2={sy(p2.y)} className={styles.eg__handle} />
 
         <path d={path} className={styles.eg__curve} />
-        <circle r="5" className={styles.eg__playhead}>
+        {!reducedMotion && <circle r="5" className={styles.eg__playhead}>
           <animateMotion dur="1.6s" repeatCount="indefinite" path={path} />
-        </circle>
+        </circle>}
 
         {pts.map((p, idx) => (
           <circle key={idx} cx={p.x} cy={p.y} r={idx % 4 === 0 ? 2.2 : 1.4} className={styles.eg__dot} />

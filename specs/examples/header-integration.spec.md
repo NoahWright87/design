@@ -40,6 +40,8 @@ Each variant renders a header fixed at the top with content scrollable beneath. 
 
 **Nested resources:** The routed navigation includes Resources with About the studio and Contact the studio destinations. Clicking or ArrowRight opens the submenu and focuses its first destination. ArrowLeft or Escape closes that submenu and returns focus to Resources; selecting a destination closes both menus and updates the route.
 
+The submenu stays within its parent panel on mobile and desktop, including with reduced motion enabled.
+
 Each header variant spans the full viewport width and is fixed at the top. The left, center, and right slots hold different content in each variant. Menus open as dropdowns below their triggers. Page content below the header is scrollable.
 
 ## Acceptance

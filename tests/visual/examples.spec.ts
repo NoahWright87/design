@@ -4,6 +4,45 @@ for (const viewport of [{ name: 'desktop', width: 1280, height: 720 }, { name: '
   test.describe(`Examples ${viewport.name}`, () => {
     test.use({ viewport: { width: viewport.width, height: viewport.height }, reducedMotion: 'reduce' });
 
+    test('Motion Lab reduced motion and exports', async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto('/iframe.html?id=labs-motion-lab-button--button-motion&viewMode=story');
+      await page.waitForLoadState('networkidle');
+      expect(await page.evaluate(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)).toBe(true);
+      const graph = page.getByRole('img').first();
+      await expect(graph).toBeVisible();
+      await expect(page.locator('animateMotion')).toHaveCount(0);
+      await expect(graph).toHaveScreenshot(`motion-graph-reduced-${viewport.name}.png`);
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await expect.poll(() => page.locator('animateMotion').count()).toBeGreaterThan(0);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await expect(page.locator('animateMotion')).toHaveCount(0);
+      const exported = page.getByRole('textbox').last();
+      await page.getByLabel('Export format').selectOption('json');
+      const tokens: Record<string, { value: string }> = JSON.parse(await exported.inputValue());
+      expect(Object.keys(tokens).length).toBeGreaterThan(0);
+      await page.getByLabel('Export format').selectOption('tailwind');
+      await expect(exported).toHaveValue(/transitionTimingFunction:/);
+      const tailwind = await exported.inputValue();
+      for (const [name, token] of Object.entries(tokens)) {
+        if (name.startsWith('ease-')) expect(tailwind).toContain(`${JSON.stringify(name)}: ${JSON.stringify(token.value)}`);
+      }
+      expect(tailwind).not.toContain('t-press');
+      await expect(exported).toHaveScreenshot(`motion-tailwind-${viewport.name}.png`);
+      await page.goto('/iframe.html?id=labs-motion-lab-modal--modal-motion&viewMode=story');
+      await page.waitForLoadState('networkidle');
+      await expect(page.locator('animateMotion')).toHaveCount(0);
+      await page.getByLabel('Export format').selectOption('json');
+      const modalTokens = JSON.parse(await exported.inputValue());
+      expect(modalTokens['t-enter'].value).toMatch(/ms$/);
+      expect(modalTokens['ease-enter'].value).toContain('cubic-bezier');
+      await page.getByLabel('Export format').selectOption('scss');
+      await expect(exported).toHaveValue(/\$t-enter:.*!default;/);
+      await page.getByLabel('Export format').selectOption('root');
+      await expect(exported).toHaveValue(/--ease-enter:/);
+      await expect(exported).toHaveScreenshot(`motion-modal-tokens-${viewport.name}.png`);
+    });
+
     test('Carousel playground playback and frame inspection', async ({ page }) => {
       await page.goto('/iframe.html?id=examples-text-carousel-playground--playground&viewMode=story');
       await page.waitForLoadState('networkidle');

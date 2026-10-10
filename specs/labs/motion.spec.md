@@ -36,6 +36,12 @@ Motion Lab is an interactive playground for designing and tuning component anima
 
 **Reading easing graphs:** Easing graphs show an animated progress marker along the curve. The graph can receive keyboard focus and exposes a short screen reader description of the curve's shape.
 
+**Reduced motion:** Easing graphs remain static when reduced motion is preferred, retaining the curve, handles, focus state, and accessible description. Changing the preference updates the progress marker immediately.
+
+**Token exports:** Both adapters generate named easing and duration properties used by their component CSS. CSS custom-property, SCSS, and JSON exports include those values. Button exports also include its lift, scale, and squish settings.
+
+**Tailwind export:** Exported easing values preserve their original values, including references to custom properties. The timing-function configuration contains easing values; duration and transform values remain in the other token formats.
+
 **Current adapters:**
 - **Button** — controls hover lift, press scale and squish, and timing curves for press and release.
 - **Modal** — controls enter and exit duration, easing curves, and transform type (fade, scale-fade, slide-fade).
@@ -72,3 +78,6 @@ On small screens, the control grid collapses to a single column.
 15. Easing graphs show an animated playhead that follows the curve.
 16. Easing graphs show a visible focus state when focused by keyboard.
 17. Easing graphs expose a screen reader description of the current curve shape.
+18. Reduced motion displays static easing graphs; changing the preference updates animated marker visibility live.
+19. Tailwind exports preserve timing values and custom-property references.
+20. Button and Modal custom-property, SCSS, and JSON exports contain their generated easing and duration tokens; Tailwind exports contain their easing tokens.

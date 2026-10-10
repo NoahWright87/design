@@ -14,6 +14,7 @@ for (const viewport of [{ name: 'desktop', width: 1280, height: 720 }, { name: '
       await page.keyboard.press('Escape');
       const exiting = page.locator('.nw-menu__panel--closing');
       await expect(exiting).toHaveAttribute('inert', '');
+      await expect(exiting).toHaveCSS('animation-name', viewport.name === 'mobile' ? 'nw-menu-exit-mobile' : 'nw-menu-exit');
       await expect(page.getByRole('menu')).toHaveCount(0);
       await exiting.evaluate(panel => {
         for (const animation of panel.getAnimations()) {
@@ -27,6 +28,33 @@ for (const viewport of [{ name: 'desktop', width: 1280, height: 720 }, { name: '
       await expect(page.getByRole('menuitem', { name: 'Profile' })).toBeVisible();
       await page.keyboard.press('Escape');
       await page.clock.fastForward(200);
+      await expect(page.locator('.nw-menu__panel')).toHaveCount(0);
+    });
+    test('Left alignment exits and reduced motion stays immediate', async ({ page }) => {
+      await page.goto('/iframe.html?id=components-organisms-menu--with-hamburger&viewMode=story');
+      await page.waitForLoadState('networkidle');
+      const trigger = page.getByRole('button', { name: 'Open menu' });
+      await trigger.click();
+      await page.clock.install();
+      await page.clock.pauseAt(new Date(Date.now() + 1000));
+      await page.keyboard.press('Escape');
+      await expect(page.locator('.nw-menu__panel--closing')).toHaveCSS('animation-name', viewport.name === 'mobile' ? 'nw-menu-exit-mobile' : 'nw-menu-exit');
+      await page.clock.fastForward(200);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await trigger.click();
+      await expect(page.getByRole('menu')).toHaveCSS('animation-name', 'none');
+      const bounds = await page.getByRole('menu').boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(bounds!.x).toBeGreaterThanOrEqual(0);
+      expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewport.width);
+      await expect(page).toHaveScreenshot(`menu-reduced-${viewport.name}.png`);
+      await page.keyboard.press('Escape');
+      await expect(page.locator('.nw-menu__panel')).toHaveCount(0);
+      await page.clock.resume();
+      await page.goto('/iframe.html?id=examples-header-integration--routed-application-header&viewMode=story');
+      await page.getByRole('button', { name: 'Account' }).click();
+      await expect(page.getByRole('menu')).toHaveCSS('animation-name', 'none');
+      await page.keyboard.press('Escape');
       await expect(page.locator('.nw-menu__panel')).toHaveCount(0);
     });
   });

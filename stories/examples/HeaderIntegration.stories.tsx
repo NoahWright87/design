@@ -52,7 +52,7 @@ function ResourcesSubmenu() {
       }
     }
   }}>
-    <style>{'[data-resources] .nw-menu .nw-menu__panel { position: static; width: auto; min-width: 0; margin-top: 6px; animation-name: nw-menu-enter; } [data-resources] .nw-menu .nw-menu__panel--closing { animation-name: nw-menu-exit; } [data-resources] .nw-menu__overlay { display: none; }'}</style>
+    <style>{'[data-resources] .nw-menu .nw-menu__panel { position: static; transform: none; width: auto; min-width: 0; margin-top: 6px; animation-name: nw-menu-enter; } [data-resources] .nw-menu .nw-menu__panel--closing { animation-name: nw-menu-exit; } [data-resources] .nw-menu__overlay { display: none; }'}</style>
     <Menu trigger={<button type="button" role="menuitem" style={{ border: 0, padding: '10px 12px', background: 'var(--background)', color: 'var(--foreground)', font: 'inherit', cursor: 'pointer' }}>Resources</button>} items={[
       <MenuItem key="about" text="About the studio" href="#about" onClick={() => parent?.close()} />,
       <MenuItem key="contact" text="Contact the studio" href="#contact" onClick={() => parent?.close()} />,

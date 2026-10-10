@@ -11,6 +11,9 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **Review fixes:** Corrected mobile Menu exit and reduced-motion selector precedence, made Motion Lab easing playheads honor live reduced-motion preferences, and removed a redundant Tailwind export replacement. Added animation-name assertions and desktop/mobile regression screenshots.
+- **Motion export regression:** Added named properties to Button/Modal generated CSS so token exports contain values; limited Tailwind timing-function exports to easing tokens.
+
 - **Remaining examples:** Added Showcase forms/navigation/metadata/focus handling, carousel playback/frame inspection/timing controls, and Header Integration nested navigation with Menu exit transitions. Added matching desktop/mobile screenshots and linked form error descriptions.
 
 - **TextCarousel editing playground:** Added an editable Storybook preview with restart and typo frequency controls. Typewriter transitions cut and paste reordered words, repair rare typos, preserve shared casing/punctuation letters, and adjust dwell to phrase length and edit size.

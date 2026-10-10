@@ -219,6 +219,15 @@ export const buttonMotionAdapter: MotionAdapter = {
     const base = `/* Generated from Motion Lab - Button */
 
 .button {
+  --hover-lift: ${values.hover_lift}px;
+  --hover-scale: ${values.hover_scale};
+  --press-scale: ${values.press_scale};
+  --squish-x: ${values.press_squish_x};
+  --squish-y: ${values.press_squish_y};
+  --t-press: ${values.timing_press_ms}ms;
+  --t-release: ${values.timing_release_ms}ms;
+  --ease-press: ${pressEase};
+  --ease-release: ${releaseEase};
   appearance: none;
   border: 0;
   cursor: pointer;
@@ -244,15 +253,15 @@ export const buttonMotionAdapter: MotionAdapter = {
   transform-origin: ${origin};
 
   transition-property: transform, background, filter, box-shadow;
-  transition-duration: ${values.timing_release_ms}ms, 140ms, 140ms, 140ms;
-  transition-timing-function: ${releaseEase}, ease, ease, ease;
+  transition-duration: var(--t-release), 140ms, 140ms, 140ms;
+  transition-timing-function: var(--ease-release), ease, ease, ease;
 
   -webkit-tap-highlight-color: transparent;
 }
 
 .button:hover:not(:disabled) {
   filter: brightness(1.1);
-  transform: translateY(${values.hover_lift}px) scale(${values.hover_scale});
+  transform: translateY(var(--hover-lift)) scale(var(--hover-scale));
 }
 
 .button:focus-visible {
@@ -264,19 +273,19 @@ export const buttonMotionAdapter: MotionAdapter = {
 }
 
 .button:active:not(:disabled) {
-  transition-duration: ${values.timing_press_ms}ms, 140ms, 140ms, 140ms;
-  transition-timing-function: ${pressEase}, ease, ease, ease;
+  transition-duration: var(--t-press), 140ms, 140ms, 140ms;
+  transition-timing-function: var(--ease-press), ease, ease, ease;
 }
 `;
 
     const pressRule =
       pressMode === "shrink"
         ? `.button:active:not(:disabled) {
-  transform: translateY(0px) scale(${values.press_scale});
+  transform: translateY(0px) scale(var(--press-scale));
 }
 `
         : `.button:active:not(:disabled) {
-  transform: translateY(0px) scaleX(${values.press_squish_x}) scaleY(${values.press_squish_y});
+  transform: translateY(0px) scaleX(var(--squish-x)) scaleY(var(--squish-y));
   filter: saturate(0.98);
 }
 `;

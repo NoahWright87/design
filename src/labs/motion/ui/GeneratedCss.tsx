@@ -44,9 +44,9 @@ function formatExport(cssText: string, format: ExportFormat) {
 
   if (format === "tailwind") {
     const payload = Object.fromEntries(
-      tokens.map((token) => [
+      tokens.filter((token) => token.name.startsWith('--ease-')).map((token) => [
         token.name.slice(2),
-        token.value.replace(/^var\((--[\w-]+)\)$/, "var($1)"),
+        token.value,
       ]),
     );
 

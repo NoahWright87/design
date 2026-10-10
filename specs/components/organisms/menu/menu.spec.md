@@ -43,7 +43,9 @@ An interactive dropdown panel that appears below the trigger when opened and dis
 
 **Alignment:** The panel aligns to the left or right edge of the trigger based on the alignment configuration.
 
-**Mobile:** On smaller screens, the menu panel expands to a wider overlay format.
+**Mobile:** On smaller screens, the menu panel expands to a wider, centered overlay format. Centering remains stable with reduced motion.
+
+**Motion preferences:** Both alignments use an entrance transition when opening and an exit transition when closing on desktop and mobile. Reduced motion presents the open panel immediately and removes it immediately on dismissal.
 
 ## Interface
 
@@ -61,3 +63,4 @@ The trigger element appears in its normal position. When the menu is open, a pan
 9. On small screens, the wider overlay format activates.
 10. Closing panels animate out while inert and hidden from assistive technology; reduced-motion preferences remove them immediately.
 11. Reopening during exit cancels removal and restores interaction.
+12. Both alignments use the exit animation on mobile; reduced motion makes entrance and dismissal immediate at every viewport size.
