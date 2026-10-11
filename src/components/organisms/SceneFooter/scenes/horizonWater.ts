@@ -26,6 +26,11 @@ export type FrameState = {
   sun: RGB;
   sunLight: RGB;
   moon: RGB;
+  /** Ripple tuning (WebGL only; the flat mirror has no ripple). 1 is the default look. */
+  waveX: number;
+  waveY: number;
+  waveSpeed: number;
+  waveLength: number;
 };
 
 export type Water = {

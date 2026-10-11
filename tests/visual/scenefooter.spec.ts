@@ -237,3 +237,80 @@ test.describe("SceneFooter reader override (footer style)", () => {
     await context.close();
   });
 });
+
+test.describe("SceneFooter horizon sky", () => {
+  // Reads the sky canvas (the one without a data-renderer; the water canvas carries that attribute).
+  const SKY = `.nw-scene-footer__stage canvas:not([data-renderer])`;
+
+  /** Open the 2D-mirror story at night with the given scene options and wait for the sky to settle. */
+  async function openAtNight(page: Page, args: string) {
+    await page.goto(`${STORY("horizon-flat-mirror")}&args=${args}`);
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("live");
+    await page.evaluate(() => { document.documentElement.dataset.theme = "dark"; });
+    await page.waitForTimeout(3000);
+  }
+
+  /** Total opacity painted on the sky canvas. */
+  const skyOpacity = (page: Page) =>
+    page.evaluate((sel) => {
+      const c = document.querySelector<HTMLCanvasElement>(sel)!;
+      const d = c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data;
+      let sum = 0;
+      for (let i = 3; i < d.length; i += 4) sum += d[i];
+      return sum;
+    }, SKY);
+
+  /**
+   * Fraction of the stars' pixels that are still lit after `ms`. Looks only at the half of the sky
+   * away from the moon, and at pixels that stand out from their neighbors (stars, not glow).
+   */
+  const overlapAfter = (page: Page, ms: number) =>
+    page.evaluate(async ([sel, wait]) => {
+      const c = document.querySelector<HTMLCanvasElement>(sel as string)!;
+      const lit = () => {
+        const d = c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data;
+        const out = new Set<number>();
+        for (let y = 0; y < c.height; y++) {
+          for (let x = Math.round(c.width * 0.55) + 12; x < c.width; x++) {
+            const i = (y * c.width + x) * 4 + 3;
+            if (d[i] - d[i - 12 * 4] > 40) out.add(i);
+          }
+        }
+        return out;
+      };
+      const before = lit();
+      await new Promise((r) => setTimeout(r, wait as number));
+      const after = lit();
+      let both = 0;
+      for (const i of before) if (after.has(i)) both++;
+      return before.size === 0 ? 0 : both / before.size;
+    }, [SKY, ms] as const);
+
+  test("clouds stay visible at night, and nightClouds: 0 hides them", async ({ browser }) => {
+    const shown = await (await browser.newContext()).newPage();
+    await openAtNight(shown, "stars:0;clouds:2;nightClouds:0.8");
+    const hidden = await (await browser.newContext()).newPage();
+    await openAtNight(hidden, "stars:0;clouds:2;nightClouds:0");
+    const withClouds = await skyOpacity(shown);
+    const without = await skyOpacity(hidden);
+    expect(withClouds).toBeGreaterThan(without * 1.05);
+    await shown.context().close();
+    await hidden.context().close();
+  });
+
+  test("stars turn slowly about a point below the horizon, and starDrift: 0 holds them still", async ({ browser }) => {
+    const turning = await (await browser.newContext()).newPage();
+    await openAtNight(turning, "stars:2;clouds:0;starDrift:6");
+    const still = await (await browser.newContext()).newPage();
+    await openAtNight(still, "stars:2;clouds:0;starDrift:0");
+    const movedOverlap = await overlapAfter(turning, 1500);
+    const stillOverlap = await overlapAfter(still, 1500);
+    // still stars only dim and brighten (twinkle); turning stars land on fresh pixels
+    expect(stillOverlap).toBeGreaterThan(0.4);
+    expect(movedOverlap).toBeLessThan(0.15);
+    await turning.context().close();
+    await still.context().close();
+  });
+});

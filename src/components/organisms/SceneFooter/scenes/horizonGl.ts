@@ -31,6 +31,7 @@ uniform vec2  u_bodyE;    // sun, moon strength
 uniform vec3  u_sun;
 uniform vec3  u_sunLight;
 uniform vec3  u_moon;
+uniform vec4  u_wave;     // sideways amount, vertical amount, speed, wavelength (all 1 = default)
 
 float luma(vec4 c) { return dot(c.rgb, vec3(0.299, 0.587, 0.114)); }
 
@@ -39,20 +40,27 @@ void main() {
   float d = (u_size.y - gl_FragCoord.y) / u_scale;  // CSS px below the horizon
   float k = d / u_water;
 
-  // waves: incommensurate frequencies so the pattern never visibly repeats, varying across the width
-  float ph = x * 0.006;
+  // Waves: incommensurate frequencies so the pattern never visibly repeats, varying across the width.
+  // They shift the mirrored picture sideways (dx) and up/down (dy); calm water seen at a low angle
+  // moves mostly up and down, so the vertical part is what makes the sea read as water.
+  float T = u_time * u_wave.z;
+  float dd = d / u_wave.w;
+  float ph = x * 0.006 / u_wave.w;
   float amp = 1.0 + d * 0.05;
-  float dx = amp * (
-      sin(d * 0.11 - u_time * 1.7 + ph)
-    + 0.45 * sin(d * 0.37 + u_time * 2.9 - ph * 1.7)
-    + 0.25 * sin(d * 0.83 - u_time * 4.3 + sin(u_time * 0.5) + ph * 0.6));
+  float dx = u_wave.x * amp * (
+      sin(dd * 0.11 - T * 1.7 + ph)
+    + 0.45 * sin(dd * 0.37 + T * 2.9 - ph * 1.7)
+    + 0.25 * sin(dd * 0.83 - T * 4.3 + sin(T * 0.5) + ph * 0.6));
+  float dy = u_wave.y * amp * 1.4 * (
+      sin(dd * 0.17 - T * 1.9 + ph * 1.3)
+    + 0.5 * sin(dd * 0.53 + T * 3.1 - ph));
   float band = 0.5
-    + 0.3 * sin(d * 0.55 - u_time * 3.1 + sin(d * 0.07 + u_time * 0.8) * 3.0)
-    + 0.2 * sin(d * 1.31 + u_time * 2.3);
+    + 0.3 * sin(dd * 0.55 - T * 3.1 + sin(dd * 0.07 + T * 0.8) * 3.0)
+    + 0.2 * sin(dd * 1.31 + T * 2.3);
   band *= band;
 
   float u = clamp((x + dx) / u_width, 0.0, 1.0);
-  float sy = u_horizon - 1.0 - d / u_stretch;       // the sky row this water pixel mirrors
+  float sy = min(u_horizon - 1.0 - d / u_stretch - dy, u_horizon - 1.0);  // the sky row this water pixel mirrors
   float inside = step(0.0, sy);
   vec4 best = texture2D(u_sky, vec2(u, max(sy, 0.0) / u_horizon));
 
@@ -179,6 +187,7 @@ export function createGlWater({ allowSoftware = false, onLost }: GlWaterOptions 
     sun: u("u_sun"),
     sunLight: u("u_sunLight"),
     moon: u("u_moon"),
+    wave: u("u_wave"),
   };
 
   let scale = 1;
@@ -222,6 +231,7 @@ export function createGlWater({ allowSoftware = false, onLost }: GlWaterOptions 
       gl.uniform3fv(loc.sun, rgb(f.sun));
       gl.uniform3fv(loc.sunLight, rgb(f.sunLight));
       gl.uniform3fv(loc.moon, rgb(f.moon));
+      gl.uniform4f(loc.wave, f.waveX, f.waveY, f.waveSpeed, f.waveLength);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     },
 

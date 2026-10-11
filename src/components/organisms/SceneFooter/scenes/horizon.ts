@@ -28,6 +28,21 @@ export type HorizonSceneOptions = {
   stars?: number;
   /** Cloud density, 0..2. Default 1. */
   clouds?: number;
+  /** How visible clouds stay at night compared with by day, 0..1. Default 0.45. */
+  nightClouds?: number;
+  /**
+   * How fast the stars turn about a point far below the horizon (a stand-in for the Earth's
+   * spin), as a multiple of a very gentle default, 0..6. 0 holds them still. Default 1.
+   */
+  starDrift?: number;
+  /** Ripple shifting the reflection sideways, 0..2 (WebGL water only). Default 0.5. */
+  waveX?: number;
+  /** Ripple shifting the reflection up and down, 0..2 (WebGL water only). Default 1. */
+  waveY?: number;
+  /** Ripple speed, 0..3 (WebGL water only). Default 1. */
+  waveSpeed?: number;
+  /** Ripple wavelength, 0.4..3 (WebGL water only). Default 1. */
+  waveLength?: number;
   /** Seed for star and cloud placement. Default 7. */
   seed?: number;
   /**
@@ -81,14 +96,19 @@ type Palette = {
   sunLight: RGB;
   core: RGB;
   moon: RGB;
-  rim: RGB;
-  body: RGB;
-  bodyHi: RGB;
-  under: RGB;
-  warm: RGB;
+  /** Clouds are drawn white and grey, then multiplied by one of these. */
+  dayTint: RGB;
+  nightTint: RGB;
 };
 
-type Sprite = { w: number; h: number; cool: HTMLCanvasElement; warm: HTMLCanvasElement };
+type Sprite = { w: number; h: number; day: HTMLCanvasElement; night: HTMLCanvasElement };
+
+/** Stars turn about a point this many widths below the horizon, so near the horizon they glide almost sideways. */
+const PIVOT_DEPTH = 1.1;
+/** Sideways drift of the stars at the horizon, CSS px per second, at `starDrift: 1`. */
+const STAR_DRIFT_PX = 1.4;
+/** Extra star field past each edge, so stars wrap around off screen. */
+const STAR_MARGIN = 80;
 
 function create(ctx: SceneContext): SceneInstance {
   const opts = ctx.options as HorizonSceneOptions;
@@ -96,6 +116,8 @@ function create(ctx: SceneContext): SceneInstance {
   const moonFrac = clamp(opts.moonX ?? 0.3, 0.05, 0.95);
   const starAmount = clamp(opts.stars ?? 1, 0, 2);
   const cloudAmount = clamp(opts.clouds ?? 1, 0, 2);
+  const nightCloudAmount = clamp(opts.nightClouds ?? 0.45, 0, 1);
+  const starDrift = clamp(opts.starDrift ?? 1, 0, 6);
   const seed = opts.seed ?? 7;
   const rendererOption = opts.renderer === "2d" || opts.renderer === "webgl" ? opts.renderer : "auto";
 
@@ -152,11 +174,8 @@ function create(ctx: SceneContext): SceneInstance {
       sunLight: mix(sun, [255, 214, 140], 0.55),
       core: [255, 240, 205],
       moon,
-      rim: mix(sun, [150, 50, 0], 0.25),
-      body: mix(sun, [255, 205, 160], 0.45),
-      bodyHi: mix(sun, [255, 240, 225], 0.75),
-      under: mix(sun, secondary, 0.3),
-      warm: mix(sun, [255, 170, 90], 0.3),
+      dayTint: mix(sun, [255, 205, 160], 0.45),
+      nightTint: mix(mix(moon, secondary, 0.5), [130, 100, 190], 0.5),
     };
   };
   let palette = readPalette();
@@ -175,6 +194,10 @@ function create(ctx: SceneContext): SceneInstance {
     sun: palette.sun,
     sunLight: palette.sunLight,
     moon: palette.moon,
+    waveX: clamp(opts.waveX ?? 0.5, 0, 2),
+    waveY: clamp(opts.waveY ?? 1, 0, 2),
+    waveSpeed: clamp(opts.waveSpeed ?? 1, 0, 3),
+    waveLength: clamp(opts.waveLength ?? 1, 0.4, 3),
   };
 
   /* ---------- water renderer: WebGL ripple when it is worth it, flat 2D mirror otherwise ---------- */
@@ -227,9 +250,16 @@ function create(ctx: SceneContext): SceneInstance {
   };
 
   /* ---------- stars, clouds, moon ---------- */
-  type Star = { x: number; y: number; r: number; ph: number; sp: number; c: RGB };
+  // Stars live in polar coordinates about a pivot far below the horizon: `a` is the angle from
+  // straight up, `rad` the distance from the pivot. Turning every `a` by the same amount is a
+  // rigid rotation of the whole field, which near the horizon is a slow sideways glide.
+  type Star = { a: number; rad: number; r: number; ph: number; sp: number; c: RGB };
   type Cloud = { x: number; yFrac: number; near: number; scale: number; flip: number; sprite: number; speed: number; a: number; keep: number };
   let stars: Star[] = [];
+  let pivotX = 0;
+  let pivotY = 0;
+  let wrapAngle = 1; // stars wrap within -wrapAngle..wrapAngle, which is wider than the screen
+  let driftRate = 0; // radians per second
   let clouds: Cloud[] = [];
   const sprites: Sprite[] = [];
   let spriteScale = 0;
@@ -237,12 +267,21 @@ function create(ctx: SceneContext): SceneInstance {
 
   const buildStars = () => {
     const r = mulberry32(seed);
-    const n = Math.round((W * hz) / 1100); // pool for the max density; the option picks how many to draw
+    const depth = Math.max(W, 700) * PIVOT_DEPTH;
+    pivotX = W / 2;
+    pivotY = hz + depth;
+    wrapAngle = Math.atan2(W / 2 + STAR_MARGIN, depth);
+    driftRate = (starDrift * STAR_DRIFT_PX) / depth;
+    const span = W + STAR_MARGIN * 2;
+    // pool for the max density; the option picks how many to draw
+    const n = Math.round(((W + STAR_MARGIN * 2) * hz) / 1100);
     stars = Array.from({ length: n }, () => {
+      const x = r() * span - STAR_MARGIN;
+      const y = Math.pow(r(), 1.2) * hz;
       const roll = r();
       return {
-        x: r(),
-        y: Math.pow(r(), 1.2),
+        a: Math.atan2(x - pivotX, pivotY - y),
+        rad: Math.hypot(x - pivotX, pivotY - y),
         r: r() < 0.08 ? 1.2 + r() * 0.7 : 0.4 + r() * 0.7,
         ph: r() * Math.PI * 2,
         sp: 0.4 + r() * 2,
@@ -288,55 +327,69 @@ function create(ctx: SceneContext): SceneInstance {
       const rad = h * (0.3 + r() * 0.12) * (1 - Math.abs(fx - 0.5));
       puffs.push([w * fx, h * (0.46 + r() * 0.08), rad]);
     }
-    const render = (body: RGB) => {
+    // Drawn in white and grey with soft translucent edges; the day and night looks are the same
+    // shape multiplied by a tint, so a cloud is only ever designed once.
+    const neutral = document.createElement("canvas");
+    neutral.width = Math.round(w * skyScale);
+    neutral.height = Math.round(h * skyScale);
+    const x = mustContext(neutral);
+    x.setTransform(skyScale, 0, 0, skyScale, 0, 0);
+    // soft grey halo first...
+    for (const [px, py, rad] of puffs) {
+      const R2 = rad * 1.4;
+      const g = x.createRadialGradient(px, py, rad * 0.6, px, py, R2);
+      g.addColorStop(0, "rgba(120,124,138,0.32)");
+      g.addColorStop(0.7, "rgba(120,124,138,0.2)");
+      g.addColorStop(1, "rgba(120,124,138,0)");
+      x.fillStyle = g;
+      x.beginPath();
+      x.arc(px, py, R2, 0, Math.PI * 2);
+      x.fill();
+    }
+    // ...then the feathered white body, so the halo only shows at the edges
+    for (const [px, py, rad] of puffs) {
+      const R2 = rad * 1.2;
+      const g = x.createRadialGradient(px, py, 0, px, py, R2);
+      g.addColorStop(0, "rgba(255,255,255,0.6)");
+      g.addColorStop(0.65, "rgba(255,255,255,0.45)");
+      g.addColorStop(1, "rgba(255,255,255,0)");
+      x.fillStyle = g;
+      x.beginPath();
+      x.arc(px, py, R2, 0, Math.PI * 2);
+      x.fill();
+    }
+    // bright tops, grey undersides
+    x.globalCompositeOperation = "source-atop";
+    let g = x.createLinearGradient(0, h * 0.15, 0, h * 0.8);
+    g.addColorStop(0, "rgba(255,255,255,0.45)");
+    g.addColorStop(0.45, "rgba(255,255,255,0)");
+    g.addColorStop(0.6, "rgba(140,144,160,0)");
+    g.addColorStop(1, "rgba(140,144,160,0.55)");
+    x.fillStyle = g;
+    x.fillRect(0, 0, w, h);
+    // feather the flat-ish bottom
+    x.globalCompositeOperation = "destination-out";
+    g = x.createLinearGradient(0, h * 0.72, 0, h * 0.95);
+    g.addColorStop(0, "rgba(0,0,0,0)");
+    g.addColorStop(1, "rgba(0,0,0,1)");
+    x.fillStyle = g;
+    x.fillRect(0, h * 0.72, w, h * 0.28);
+
+    // multiply keeps the shading; destination-in puts the cloud's own edges back
+    const tinted = (color: RGB) => {
       const c = document.createElement("canvas");
-      c.width = Math.round(w * skyScale);
-      c.height = Math.round(h * skyScale);
-      const x = mustContext(c);
-      x.setTransform(skyScale, 0, 0, skyScale, 0, 0);
-      // soft darker halo first...
-      for (const [px, py, rad] of puffs) {
-        const R2 = rad * 1.4;
-        const g = x.createRadialGradient(px, py, rad * 0.6, px, py, R2);
-        g.addColorStop(0, rgba(palette.rim, 0.32));
-        g.addColorStop(0.7, rgba(palette.rim, 0.2));
-        g.addColorStop(1, rgba(palette.rim, 0));
-        x.fillStyle = g;
-        x.beginPath();
-        x.arc(px, py, R2, 0, Math.PI * 2);
-        x.fill();
-      }
-      // ...then the feathered body, so the halo only shows at the edges
-      for (const [px, py, rad] of puffs) {
-        const R2 = rad * 1.2;
-        const g = x.createRadialGradient(px, py, 0, px, py, R2);
-        g.addColorStop(0, rgba(body, 0.6));
-        g.addColorStop(0.65, rgba(body, 0.45));
-        g.addColorStop(1, rgba(body, 0));
-        x.fillStyle = g;
-        x.beginPath();
-        x.arc(px, py, R2, 0, Math.PI * 2);
-        x.fill();
-      }
-      // sunlit tops, dusky undersides
-      x.globalCompositeOperation = "source-atop";
-      let g = x.createLinearGradient(0, h * 0.15, 0, h * 0.8);
-      g.addColorStop(0, rgba(palette.bodyHi, 0.45));
-      g.addColorStop(0.45, rgba(palette.bodyHi, 0));
-      g.addColorStop(0.6, rgba(palette.under, 0));
-      g.addColorStop(1, rgba(palette.under, 0.45));
-      x.fillStyle = g;
-      x.fillRect(0, 0, w, h);
-      // feather the flat-ish bottom
-      x.globalCompositeOperation = "destination-out";
-      g = x.createLinearGradient(0, h * 0.72, 0, h * 0.95);
-      g.addColorStop(0, "rgba(0,0,0,0)");
-      g.addColorStop(1, "rgba(0,0,0,1)");
-      x.fillStyle = g;
-      x.fillRect(0, h * 0.72, w, h * 0.28);
+      c.width = neutral.width;
+      c.height = neutral.height;
+      const t = mustContext(c);
+      t.drawImage(neutral, 0, 0);
+      t.globalCompositeOperation = "multiply";
+      t.fillStyle = rgba(color);
+      t.fillRect(0, 0, c.width, c.height);
+      t.globalCompositeOperation = "destination-in";
+      t.drawImage(neutral, 0, 0);
       return c;
     };
-    return { w, h, cool: render(palette.body), warm: render(palette.warm) };
+    return { w, h, day: tinted(palette.dayTint), night: tinted(palette.nightTint) };
   };
 
   // One sprite per idle slice, so building them never blocks a frame.
@@ -463,15 +516,19 @@ function create(ctx: SceneContext): SceneInstance {
   };
 
   const drawStars = (t: number) => {
-    const a = m * ease(p);
-    if (a < 0.01 || starAmount <= 0) return;
+    const alpha = m * ease(p);
+    if (alpha < 0.01 || starAmount <= 0) return;
     const count = Math.round((stars.length * starAmount) / 2);
+    const turn = t * driftRate + wrapAngle;
+    const range = wrapAngle * 2;
     for (let i = 0; i < count; i++) {
       const s = stars[i];
+      const a = ((((s.a + turn) % range) + range) % range) - wrapAngle;
+      const x = pivotX + s.rad * Math.sin(a);
+      if (x < -2 || x > W + 2) continue;
+      const y = pivotY - s.rad * Math.cos(a);
       const tw = 0.55 + 0.45 * Math.sin(s.ph + t * s.sp);
-      sky.fillStyle = rgba(s.c, tw * a);
-      const x = s.x * W;
-      const y = s.y * hz;
+      sky.fillStyle = rgba(s.c, tw * alpha);
       if (s.r < 1) {
         sky.fillRect(x - s.r, y - s.r, s.r * 2, s.r * 2);
       } else {
@@ -483,10 +540,11 @@ function create(ctx: SceneContext): SceneInstance {
   };
 
   const drawClouds = (t: number) => {
-    const vis = (1 - m) * ease(clamp(p * 1.5, 0, 1));
-    if (vis < 0.01 || !sprites.length || cloudAmount <= 0) return;
+    const reveal = ease(clamp(p * 1.5, 0, 1));
+    const dayVis = (1 - m) * reveal;
+    const nightVis = m * reveal * nightCloudAmount;
+    if ((dayVis < 0.01 && nightVis < 0.01) || !sprites.length || cloudAmount <= 0) return;
     const keep = cloudAmount / 2;
-    const sunE = ease(p) * (1 - m);
     for (const c of clouds) {
       if (c.keep >= keep) continue;
       const spr = sprites[c.sprite % sprites.length];
@@ -495,16 +553,16 @@ function create(ctx: SceneContext): SceneInstance {
       const y = c.yFrac * hz - sh * 0.5 - (1 - p) * 18 * c.near;
       const span = W + sw;
       const x = ((((c.x * span + t * c.speed) % span) + span) % span) - sw;
-      const alpha = c.a * vis;
       if (c.flip < 0) sky.setTransform(-skyScale, 0, 0, skyScale, (x * 2 + sw) * skyScale, 0);
       else sky.setTransform(skyScale, 0, 0, skyScale, 0, 0);
-      sky.globalAlpha = alpha;
-      sky.drawImage(spr.cool, x, y, sw, sh);
-      // clouds low on the horizon catch the sunrise
-      const warm = sunE * Math.pow(clamp((y + sh) / hz, 0, 1), 3);
-      if (warm > 0.02) {
-        sky.globalAlpha = alpha * warm;
-        sky.drawImage(spr.warm, x, y, sw, sh);
+      // both looks are drawn only while the theme is changing; otherwise it is one draw per cloud
+      if (dayVis >= 0.01) {
+        sky.globalAlpha = c.a * dayVis;
+        sky.drawImage(spr.day, x, y, sw, sh);
+      }
+      if (nightVis >= 0.01) {
+        sky.globalAlpha = c.a * nightVis;
+        sky.drawImage(spr.night, x, y, sw, sh);
       }
     }
     sky.globalAlpha = 1;

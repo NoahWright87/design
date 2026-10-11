@@ -9,6 +9,12 @@ type StoryArgs = React.ComponentProps<typeof SceneFooter> & {
   moonX: number;
   stars: number;
   clouds: number;
+  nightClouds: number;
+  starDrift: number;
+  waveX: number;
+  waveY: number;
+  waveSpeed: number;
+  waveLength: number;
   renderer: "auto" | "webgl" | "2d";
 };
 
@@ -24,13 +30,32 @@ const meta: Meta<StoryArgs> = {
     moonX: { control: { type: "range", min: 0.05, max: 0.95, step: 0.01 }, description: "Horizon scene: moon position across the footer" },
     stars: { control: { type: "range", min: 0, max: 2, step: 0.05 }, description: "Horizon scene: star density" },
     clouds: { control: { type: "range", min: 0, max: 2, step: 0.05 }, description: "Horizon scene: cloud density" },
+    nightClouds: { control: { type: "range", min: 0, max: 1, step: 0.05 }, description: "Horizon scene: how visible clouds stay at night (0 hides them, 1 matches daytime)" },
+    starDrift: { control: { type: "range", min: 0, max: 6, step: 0.1 }, description: "Horizon scene: star rotation speed about a point far below the horizon (0 holds them still; 1 is the gentle default)" },
+    waveX: { control: { type: "range", min: 0, max: 2, step: 0.05 }, description: "Horizon scene, WebGL water: ripple that shifts the reflection sideways" },
+    waveY: { control: { type: "range", min: 0, max: 2, step: 0.05 }, description: "Horizon scene, WebGL water: ripple that shifts the reflection up and down" },
+    waveSpeed: { control: { type: "range", min: 0, max: 3, step: 0.05 }, description: "Horizon scene, WebGL water: ripple speed" },
+    waveLength: { control: { type: "range", min: 0.4, max: 3, step: 0.05 }, description: "Horizon scene, WebGL water: ripple wavelength (larger = broader, slower swells)" },
     renderer: {
       control: { type: "inline-radio" },
       options: ["auto", "webgl", "2d"],
       description: "Horizon scene: water renderer. auto = WebGL ripple on capable devices, flat 2D mirror elsewhere",
     },
   },
-  args: { animate: true, sunX: 0.7, moonX: 0.3, stars: 1, clouds: 1, renderer: "auto" },
+  args: {
+    animate: true,
+    sunX: 0.7,
+    moonX: 0.3,
+    stars: 1,
+    clouds: 1,
+    nightClouds: 0.45,
+    starDrift: 1,
+    waveX: 0.5,
+    waveY: 1,
+    waveSpeed: 1,
+    waveLength: 1,
+    renderer: "auto",
+  },
 };
 export default meta;
 
@@ -102,9 +127,9 @@ const footerSlots = {
 };
 
 export const Horizon: Story = {
-  render: ({ sunX, moonX, stars, clouds, renderer, ...args }) => (
+  render: ({ sunX, moonX, stars, clouds, nightClouds, starDrift, waveX, waveY, waveSpeed, waveLength, renderer, ...args }) => (
     <Page>
-      <SceneFooter {...args} {...footerSlots} scene="horizon" sceneOptions={{ sunX, moonX, stars, clouds, renderer }} />
+      <SceneFooter {...args} {...footerSlots} scene="horizon" sceneOptions={{ sunX, moonX, stars, clouds, nightClouds, starDrift, waveX, waveY, waveSpeed, waveLength, renderer }} />
     </Page>
   ),
 };
@@ -129,7 +154,7 @@ export const SunAndMoonClose: Story = {
 
 /** `animate={false}`: the CSS version only. No scene code is requested. */
 export const CssOnly: Story = {
-  render: ({ sunX, moonX, stars, clouds, renderer, ...args }) => (
+  render: ({ sunX, moonX, stars, clouds, nightClouds, starDrift, waveX, waveY, waveSpeed, waveLength, renderer, ...args }) => (
     <Page>
       <SceneFooter {...args} {...footerSlots} animate={false} scene="horizon" sceneOptions={{ sunX, moonX }} />
     </Page>
@@ -137,7 +162,7 @@ export const CssOnly: Story = {
 };
 
 export const WithBottomStrip: Story = {
-  render: ({ sunX, moonX, stars, clouds, renderer, ...args }) => (
+  render: ({ sunX, moonX, stars, clouds, nightClouds, starDrift, waveX, waveY, waveSpeed, waveLength, renderer, ...args }) => (
     <Page>
       <SceneFooter
         {...args}
@@ -145,7 +170,7 @@ export const WithBottomStrip: Story = {
         bottom="All rights reserved. Privacy Policy · Terms of Service"
         hasBottomSeparator
         scene="horizon"
-        sceneOptions={{ sunX, moonX, stars, clouds, renderer }}
+        sceneOptions={{ sunX, moonX, stars, clouds, nightClouds, starDrift, waveX, waveY, waveSpeed, waveLength, renderer }}
       />
     </Page>
   ),
