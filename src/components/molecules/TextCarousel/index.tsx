@@ -78,6 +78,8 @@ export interface TextCarouselProps {
   typoChance?: number;
   /** Pause the rotation while hovered. Default `true`. */
   pauseOnHover?: boolean;
+  /** Freeze playback independently of hover. Default `false`. */
+  paused?: boolean;
   /** Additional CSS class name. */
   className?: string;
 }
@@ -280,6 +282,7 @@ export function TextCarousel({
   similarityThreshold,
   typoChance,
   pauseOnHover = true,
+  paused = false,
   className = "",
 }: TextCarouselProps) {
   const [isPaused, setIsPaused] = useState(false);
@@ -308,7 +311,7 @@ export function TextCarousel({
     editPauseBeforeTyping,
     similarityThreshold,
     typoChance,
-    isPaused,
+    isPaused: paused || isPaused,
     hoverHandlers,
     className,
   };

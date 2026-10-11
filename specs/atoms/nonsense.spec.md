@@ -16,6 +16,7 @@ It is an atom in the atomic design sense: a non-rendering, zero-dependency utili
 - Optional `seed` — a string for reproducible random selection across calls.
 - Optional `customEntries` — an array of strings that replaces the built-in pool for array-based categories. Ignored for function-based categories (`abstractImage`, `date`).
 - Optional `weights` — an array of relative weights, same length as the active pool. Higher values increase the likelihood of that entry being selected. Ignored for function-based categories.
+- Emoji-focused category names can be requested the same way as text-focused categories.
 
 ### Outputs
 - A single random string from the requested category, or an array of strings if a count is requested.
@@ -40,6 +41,8 @@ When called with a category name, the atom returns a random entry from that cate
 
 **With weights:** Entries are selected using weighted probability — a weight of `3` for an entry makes it three times as likely as an entry with weight `1`. If the weights array length does not match the pool length, weights are silently ignored and uniform random selection is used.
 
+**Emoji-only categories:** Emoji-focused categories return compact emoji strings for playful placeholder states such as moods or skills.
+
 **Date category:** Accepts optional range constraints and returns a realistic date or date range formatted naturally (for example, "Jan 2024 – Sep 2025").
 
 **Image category:** Returns a minimal abstract SVG suitable for use as an image source.
@@ -63,7 +66,7 @@ When called with a category name, the atom returns a random entry from that cate
 - Project names, skill names, service names, testimonial quotes, accomplishments.
 
 **Utility:**
-- Intro text, call-to-action text, fictional social platform names, abstract images, and date ranges.
+- Intro text, call-to-action text, fictional social platform names, abstract images, emoji-focused categories, and date ranges.
 
 ### Usage
 The atom exposes a single function that accepts a category name and returns a random entry. Callers may request multiple entries at once or supply a seed for reproducible results.
@@ -80,3 +83,4 @@ The atom exposes a single function that accepts a category name and returns a ra
 9. Providing `customEntries` replaces the built-in pool for that call.
 10. Providing `weights` of the correct length biases selection toward higher-weighted entries.
 11. Providing `weights` of the wrong length falls back silently to uniform random selection.
+12. Emoji-only categories return emoji strings suitable for compact placeholder content.

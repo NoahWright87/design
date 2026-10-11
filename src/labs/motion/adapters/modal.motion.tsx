@@ -227,6 +227,10 @@ export const modalMotionAdapter: MotionAdapter = {
     return `/* Generated from Motion Lab - Modal */
 
 .modal-backdrop {
+  --t-enter: ${values.enter_duration_ms}ms;
+  --t-exit: ${values.exit_duration_ms}ms;
+  --ease-enter: ${enterEase};
+  --ease-exit: ${exitEase};
   position: fixed;
   inset: 0;
   display: grid;
@@ -235,11 +239,11 @@ export const modalMotionAdapter: MotionAdapter = {
   backdrop-filter: blur(${values.backdrop_blur}px);
   z-index: 1000;
   
-  animation: fade-in ${values.enter_duration_ms}ms ${enterEase};
+  animation: fade-in var(--t-enter) var(--ease-enter);
 }
 
 .modal-backdrop.is-exiting {
-  animation: fade-out ${values.exit_duration_ms}ms ${exitEase};
+  animation: fade-out var(--t-exit) var(--ease-exit);
 }
 
 .modal-container {
@@ -250,11 +254,11 @@ export const modalMotionAdapter: MotionAdapter = {
   width: 90%;
   padding: var(--spacing-lg);
   
-  animation: modal-enter ${values.enter_duration_ms}ms ${enterEase};
+  animation: modal-enter var(--t-enter) var(--ease-enter);
 }
 
 .modal-backdrop.is-exiting .modal-container {
-  animation: modal-exit ${values.exit_duration_ms}ms ${exitEase};
+  animation: modal-exit var(--t-exit) var(--ease-exit);
 }
 
 @keyframes fade-in {

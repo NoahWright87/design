@@ -40,6 +40,8 @@ export function Select({
   maxVisibleItems,
 }: SelectProps) {
   const rootRef = React.useRef<HTMLLabelElement>(null);
+  const errorId = React.useId();
+  const labelId = React.useId();
 
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = React.useState(defaultValue ?? (placeholder ? "" : ""));
@@ -80,13 +82,16 @@ export function Select({
 
   return (
     <label ref={rootRef} className={classNames} style={rootStyle}>
-      <span className="nw-select__label">
+      <span id={labelId} className="nw-select__label">
         {label}
-        {required && <span className="nw-select__required">*</span>}
+        {required && <span className="nw-select__required" aria-hidden="true">*</span>}
       </span>
       <div className="nw-select__wrapper">
         {/* Arrow hidden in listbox mode via CSS */}
         <select
+          aria-labelledby={labelId}
+          aria-invalid={!!effectiveError}
+          aria-describedby={effectiveError ? errorId : undefined}
           className="nw-select__field"
           name={name}
           value={value}
@@ -109,7 +114,7 @@ export function Select({
           &#9662;
         </span>
       </div>
-      <span className="nw-select__error" aria-live="polite">{effectiveError}</span>
+      <span id={errorId} className="nw-select__error" aria-live="polite">{effectiveError}</span>
     </label>
   );
 }

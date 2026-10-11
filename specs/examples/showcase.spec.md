@@ -9,7 +9,7 @@ The Showcase example composes multiple core components into a realistic full-pag
 ## Contract
 
 ### Inputs
-User interaction: clicking the button to open the modal, interacting with the modal.
+User interaction: section navigation, contact and address fields, form submission/reset, and modal controls.
 
 ### Outputs
 A complete page with header, hero section, card grid, modal trigger, typography section, and footer.
@@ -17,11 +17,12 @@ A complete page with header, hero section, card grid, modal trigger, typography 
 ### Guarantees / Constraints
 - All components render without errors.
 - The modal opens and closes correctly.
-- There is no routing or form submission — this is an illustrative example.
+- Form submission remains local and confirms the entered information without a network request.
+- The page supplies a title and description while mounted and restores previous metadata when leaving.
 
 ## Behavior
 
-The page is static except for the modal. Clicking the modal trigger button opens a dialog. The modal can be dismissed via its close button, action buttons, or by clicking outside.
+Section links navigate to Projects, Contact, Address, and Confirmation; a skip link moves keyboard focus to the main content. Contact fields include required name/email, a reason selector, response preference, and consent. Address fields include required street, city, postal code, and country. Submission displays all required errors together and focuses the first invalid field. Valid submission shows a local confirmation; Reset clears fields and feedback. Opening the confirmation dialog focuses its first control, Tab remains within it, and closing returns focus to the opener. Entrance transitions respect reduced-motion preferences.
 
 ## Interface
 
@@ -49,3 +50,9 @@ The card grid reflows from a multi-column layout on wide screens to a single col
 7. The modal shows title, content, and action buttons.
 8. The modal closes when dismissed via any supported method.
 9. The card grid reflows correctly on narrow viewports.
+10. Contact and address forms validate all required fields, reject malformed email, and show local success feedback for valid submissions.
+11. Reset clears the form values and feedback.
+12. Section links and the skip link move users to their intended content.
+13. Modal keyboard focus stays within the open dialog and returns to the opener when closed.
+14. Page title and description are installed while mounted and restored on cleanup.
+15. Desktop and mobile screenshots cover the page, invalid forms, successful forms, and open dialog.

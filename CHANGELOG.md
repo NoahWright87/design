@@ -12,7 +12,21 @@ This file documents planned and completed changes for the repository.
 ## WIP
 
 - **SceneFooter (new organism):** A taller alternative to `Footer` that hosts a scroll-revealed "scene". The server renders a complete CSS-only footer; the scene is a separate lazily loaded chunk fetched only when the footer is within a screen of view and the browser is idle, and never for reduced-motion, save-data, forced-colors or low-end devices. Failures, timeouts and slow frames fall back to the CSS version (a governor lowers quality, then freezes on the last frame and repaints it after a resize). First built-in scene: `horizon` (sun/moon rising over a reflective sea, clouds and stars confined to a sky band; about 3.8 KB gzipped plus an optional WebGL chunk). The whole sky is painted onto one surface and mirrored into the sea, so everything in it is reflected once: a WebGL shader ripples the mirror on capable (hardware-accelerated) devices, and a flat 2D mirror is the fallback (`renderer: "auto" | "webgl" | "2d"`). Custom scenes plug in via a loader function. Benchmarked on a CPU slowed 4x: away from the footer about 2-7% main thread (the original prototype's always-on layers cost 34-99%); at the footer 47-60fps with the flat mirror where the prototype managed 2-9fps. A reader override, `getFooterStyle()` / `setFooterStyle()` / `subscribeFooterStyle()` (`auto | static | flat | animated`, remembered and applied live to every mounted footer), lets a site offer a footer-style switch. Also adds `subscribeThemeMode()` to the theme utilities and extracts `FooterContent` (shared slot markup) from `Footer`.
+
+- **Review fixes:** Corrected mobile Menu exit and reduced-motion selector precedence, made Motion Lab easing playheads honor live reduced-motion preferences, and removed a redundant Tailwind export replacement. Added animation-name assertions and desktop/mobile regression screenshots; bumped the package and lockfile to 1.4.0 for the new features and fixes.
+- **Motion export regression:** Added named properties to Button/Modal generated CSS so token exports contain values; limited Tailwind timing-function exports to easing tokens.
+
+- **Remaining examples:** Added Showcase forms/navigation/metadata/focus handling, carousel playback/frame inspection/timing controls, and Header Integration nested navigation with Menu exit transitions. Added matching desktop/mobile screenshots and linked form error descriptions.
+
 - **TextCarousel editing playground:** Added an editable Storybook preview with restart and typo frequency controls. Typewriter transitions cut and paste reordered words, repair rare typos, preserve shared casing/punctuation letters, and adjust dwell to phrase length and edit size.
+
+- **Headers and Fonts examples:** Added hash-routed header navigation with keyboard focus handling, a modal navigation drawer, and editable font specimens; added desktop/mobile screenshot coverage.
+
+- **Motion Lab:** Added preset shortcuts, reset, easing copy feedback, multi-format exports, and animated, focusable, screen-reader-described easing graphs.
+
+- **Colors and spec cleanup:** Added Colors contrast/export helpers and promoted completed Colors, Contact Form, Header Responsive, and Nonsense items into current specs.
+
+- **Branch synchronization:** Merged current main, including the released component, font, and example updates.
 
 ## Version history
 
