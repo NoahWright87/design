@@ -11,7 +11,20 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- **Review fixes:** Corrected mobile Menu exit and reduced-motion selector precedence, made Motion Lab easing playheads honor live reduced-motion preferences, and removed a redundant Tailwind export replacement. Added animation-name assertions and desktop/mobile regression screenshots; bumped the package and lockfile to 1.4.0 for the new features and fixes.
+- **Motion export regression:** Added named properties to Button/Modal generated CSS so token exports contain values; limited Tailwind timing-function exports to easing tokens.
+
+- **Remaining examples:** Added Showcase forms/navigation/metadata/focus handling, carousel playback/frame inspection/timing controls, and Header Integration nested navigation with Menu exit transitions. Added matching desktop/mobile screenshots and linked form error descriptions.
+
 - **TextCarousel editing playground:** Added an editable Storybook preview with restart and typo frequency controls. Typewriter transitions cut and paste reordered words, repair rare typos, preserve shared casing/punctuation letters, and adjust dwell to phrase length and edit size.
+
+- **Headers and Fonts examples:** Added hash-routed header navigation with keyboard focus handling, a modal navigation drawer, and editable font specimens; added desktop/mobile screenshot coverage.
+
+- **Motion Lab:** Added preset shortcuts, reset, easing copy feedback, multi-format exports, and animated, focusable, screen-reader-described easing graphs.
+
+- **Colors and spec cleanup:** Added Colors contrast/export helpers and promoted completed Colors, Contact Form, Header Responsive, and Nonsense items into current specs.
+
+- **Branch synchronization:** Merged current main, including the released component, font, and example updates.
 
 ## Version history
 

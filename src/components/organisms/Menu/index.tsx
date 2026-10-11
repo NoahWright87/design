@@ -17,11 +17,24 @@ export interface MenuProps {
 
 export function Menu({ trigger, items = [], align = "left", icons, label, children }: MenuProps) {
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const panelId = useId();
 
-  const closeMenu = () => setOpen(false);
-  const toggleMenu = () => setOpen((v) => !v);
+  const closeMenu = () => {
+    setOpen(false);
+    setClosing(typeof window !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  };
+  const toggleMenu = () => {
+    if (open) closeMenu();
+    else { setClosing(false); setOpen(true); }
+  };
+
+  useEffect(() => {
+    if (!closing || typeof window === 'undefined') return;
+    const timer = window.setTimeout(() => setClosing(false), 140);
+    return () => window.clearTimeout(timer);
+  }, [closing]);
 
   // Close on outside click
   useEffect(() => {
@@ -121,11 +134,11 @@ export function Menu({ trigger, items = [], align = "left", icons, label, childr
     >
       {renderTrigger()}
 
-      {open && (
+      {(open || closing) && (
         <MenuContext.Provider value={{ close: closeMenu }}>
           {/* Overlay only shows on mobile via CSS */}
-          <div className="nw-menu__overlay" onClick={closeMenu} aria-hidden={true}></div>
-          <div id={panelId} className={"nw-menu__panel"} role="menu">
+          {open && <div className="nw-menu__overlay" onClick={closeMenu} aria-hidden={true}></div>}
+          <div id={panelId} className={`nw-menu__panel${closing ? ' nw-menu__panel--closing' : ''}`} role={open ? 'menu' : undefined} aria-hidden={!open || undefined} ref={node => { node?.toggleAttribute('inert', !open); }}>
             {renderedItems.map((child, idx) => (
               <div className="nw-menu__item" key={idx}>
                 {child}

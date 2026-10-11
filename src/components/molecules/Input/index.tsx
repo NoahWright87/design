@@ -40,6 +40,8 @@ export function Input({
   style,
 }: InputProps) {
   const rootRef = React.useRef<HTMLLabelElement>(null);
+  const errorId = React.useId();
+  const labelId = React.useId();
 
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = React.useState(defaultValue ?? "");
@@ -82,14 +84,14 @@ export function Input({
   };
 
   const labelInner = (
-    <span className="nw-input__label">
+    <span id={labelId} className="nw-input__label">
       {label}
-      {required && <span className="nw-input__required">*</span>}
+      {required && <span className="nw-input__required" aria-hidden="true">*</span>}
     </span>
   );
 
   const errorEl = (
-    <span className="nw-input__error" aria-live="polite">{effectiveError}</span>
+    <span id={errorId} className="nw-input__error" aria-live="polite">{effectiveError}</span>
   );
 
   if (multiline) {
@@ -97,6 +99,9 @@ export function Input({
       <label ref={rootRef} className={classNames} style={rootStyle}>
         {labelInner}
         <textarea
+          aria-labelledby={labelId}
+          aria-invalid={!!effectiveError}
+          aria-describedby={effectiveError ? errorId : undefined}
           className="nw-input__field nw-input__field--multiline"
           name={name}
           placeholder={placeholder}
@@ -121,6 +126,9 @@ export function Input({
     <label ref={rootRef} className={classNames} style={rootStyle}>
       {labelInner}
       <input
+        aria-labelledby={labelId}
+        aria-invalid={!!effectiveError}
+        aria-describedby={effectiveError ? errorId : undefined}
         className="nw-input__field"
         type={type}
         name={name}

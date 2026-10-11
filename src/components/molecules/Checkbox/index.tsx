@@ -30,6 +30,8 @@ export function Checkbox({
   style,
 }: CheckboxProps) {
   const rootRef = React.useRef<HTMLLabelElement>(null);
+  const errorId = React.useId();
+  const labelId = React.useId();
 
   const isControlled = checked !== undefined;
   const [internalChecked, setInternalChecked] = React.useState(defaultChecked ?? false);
@@ -67,6 +69,9 @@ export function Checkbox({
   return (
     <label ref={rootRef} className={classNames} style={rootStyle}>
       <input
+        aria-labelledby={labelId}
+        aria-invalid={!!effectiveError}
+        aria-describedby={effectiveError ? errorId : undefined}
         className="nw-checkbox__input"
         type="checkbox"
         name={name}
@@ -77,8 +82,8 @@ export function Checkbox({
         style={disabledCursor ? { cursor: "inherit" } : undefined}
       />
       <span className="nw-checkbox__box" aria-hidden="true" />
-      <span className="nw-checkbox__label">{label}</span>
-      <span className="nw-checkbox__error" aria-live="polite">{effectiveError}</span>
+      <span id={labelId} className="nw-checkbox__label">{label}</span>
+      <span id={errorId} className="nw-checkbox__error" aria-live="polite">{effectiveError}</span>
     </label>
   );
 }

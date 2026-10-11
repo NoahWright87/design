@@ -27,6 +27,7 @@ TextCarousel rotates a piece of text through a list of alternatives in place —
 - Optional similarity threshold controlling which differing word pairs are corrected in place versus treated as an unrelated swap, for the typewriter style.
 - Optional typo chance per typed letter, for the typewriter style. Defaults to rare temporary typing repairs.
 - Optional flag to pause rotation while hovered. On by default.
+- Optional `paused` boolean, default false, freezes rotation independently of hover.
 - Optional additional CSS class name.
 
 ### Outputs
@@ -55,6 +56,8 @@ Text that changes from one item to the next automatically and indefinitely, usin
 **Typewriter:** The first item is typed out a character at a time, with varied timing and an occasional repaired typo. It dwells with a blinking caret for a duration suited to its length and upcoming edit. A substantial reordered word can be selected, cut, and pasted. Remaining changes use character edits: wholly wrong words are cleared and replaced, while similar words preserve their shared letters. See the `useTypewriter` and `typewriterDiff` atoms for the full behavior.
 
 **Hover pause:** While `pauseOnHover` is enabled and the pointer is over the element, rotation halts exactly where it is (mid-fade or mid-type) and resumes when the pointer leaves.
+
+**Controlled pause:** Setting paused freezes scheduled text changes in every animation style. Clearing it resumes playback; hover pause continues to apply independently.
 
 **Single item:** Renders the one item with no rotation, regardless of animation style.
 
@@ -90,3 +93,4 @@ Crossfade suits a tagline or label where a smooth, ambient overlap feels natural
 16. Typewriter drives characters that correct a word in place at a different (by default slower) speed than characters that type or delete a wholly new/unwanted word, and holds the caret longer before starting a correction than before fresh content.
 17. A moved word gains a visible selection, leaves in one cut frame, and appears in one paste frame at its new position.
 18. A typo is visibly backspaced and corrected, and `typoChance={0}` produces clean typing.
+19. Setting paused freezes scheduled text changes, including under reduced motion, and clearing it resumes playback.

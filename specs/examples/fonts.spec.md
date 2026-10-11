@@ -14,6 +14,7 @@ The Fonts example is the design system's visual reference for type. It shows whi
 - The theme's font role tokens, read from the computed styles of the rendered page.
 - The list of typefaces, each with its family name, display name, status (in use or candidate), role, available weights, and notes.
 - For candidates, their font files, which the pages register themselves so the candidate stays out of the published package.
+- Editable sample text on each page; Roles defaults to a pangram, Typefaces to Software builder, and Comparison to its individual reference samples.
 
 ### Outputs
 Three pages: a Roles page with one sample per font role, a Typefaces page with one specimen per typeface, and a Comparison page setting the same samples in every typeface.
@@ -33,7 +34,7 @@ Three pages: a Roles page with one sample per font role, a Typefaces page with o
 
 **Comparison:** A handful of samples (a heading, a subheading, commonly confused letters and kerning pairs, figures, and a pangram) are each set in every typeface at the same size and weight, one typeface per line, labelled with the typeface's display name.
 
-The pages are static references with no interactions.
+**Editing samples:** A labeled text field updates the role samples, specimen weight/display/type-scale samples, or comparison samples immediately. Character reference rows remain available. Empty Roles and Typefaces samples stay empty; an empty Comparison field restores the individual reference samples. Long words wrap within the page on narrow screens.
 
 ## Interface
 
@@ -51,3 +52,6 @@ This page is a developer and designer reference tool, not a user-facing feature.
 7. All three pages follow the active light or dark theme.
 8. The Comparison page sets every sample in every typeface on the list, fonts in use and candidates alike, at the same size and weight.
 9. Candidate fonts render on these pages while the published stylesheet contains only the fonts in use.
+10. Editing sample text updates all applicable samples on the current page.
+11. Clearing Comparison restores its reference samples; clearing Roles or Typefaces shows an empty sample.
+12. Desktop and mobile screenshot tests cover each page and edited samples after bundled fonts load.

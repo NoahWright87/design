@@ -13,6 +13,81 @@ const meta: Meta<typeof Header> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+function DrawerHeaderDemo() {
+  const dialogRef = React.useRef<HTMLDialogElement>(null);
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = React.useState(false);
+  const [page, setPage] = React.useState('Home');
+  const buttonStyle: React.CSSProperties = {
+    border: '1px solid var(--overlay)', borderRadius: 6, padding: '10px 14px',
+    background: 'var(--background)', color: 'var(--foreground)', cursor: 'pointer',
+    font: 'inherit', textAlign: 'left',
+  };
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const dialog = dialogRef.current;
+    if (open && dialog && !dialog.open) {
+      dialog.showModal();
+      dialog.querySelector<HTMLButtonElement>('button')?.focus();
+    }
+    if (!open && dialog?.open) dialog.close();
+    if (!open || !dialog) return;
+    const handleOutside = (event: PointerEvent) => {
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', handleOutside, true);
+    return () => document.removeEventListener('pointerdown', handleOutside, true);
+  }, [open]);
+
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
+      <Header
+        left={<button ref={triggerRef} style={buttonStyle} type="button" aria-label="Open navigation drawer" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(true)}>Menu</button>}
+        center={<span>{page}</span>}
+        right={<ThemeToggle />}
+      />
+      <main style={{ padding: 24 }}><h1>{page}</h1></main>
+      <dialog
+        ref={dialogRef}
+        aria-label="Navigation drawer"
+        onCancel={() => setOpen(false)}
+        onClose={() => { setOpen(false); triggerRef.current?.focus(); }}
+        onKeyDown={(event) => {
+          if (event.key !== 'Tab') return;
+          const buttons = event.currentTarget.querySelectorAll<HTMLButtonElement>('button');
+          const first = buttons[0];
+          const last = buttons[buttons.length - 1];
+          if (event.shiftKey && event.target === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && event.target === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }}
+        onClick={(event) => { if (event.target === event.currentTarget) setOpen(false); }}
+        style={{ margin: 0, width: 'min(320px, 85vw)', height: '100vh', maxHeight: '100vh', maxWidth: '85vw', boxSizing: 'border-box', border: '1px solid var(--overlay)', background: 'var(--background)', color: 'var(--foreground)', padding: 24 }}
+      >
+        <div onClick={(event) => event.stopPropagation()}>
+          <button style={buttonStyle} type="button" aria-label="Close navigation drawer" onClick={() => setOpen(false)}>Close</button>
+          <h2>Navigation</h2>
+          <nav aria-label="Main navigation" style={{ display: 'grid', gap: 16 }}>
+            {['Home', 'About', 'Contact'].map((name) => (
+              <button key={name} style={{ ...buttonStyle, color: page === name ? 'var(--primary)' : 'var(--foreground)' }} type="button" aria-current={page === name ? 'page' : undefined} onClick={() => { setPage(name); setOpen(false); }}>{name}</button>
+            ))}
+          </nav>
+        </div>
+      </dialog>
+    </div>
+  );
+}
+
+export const NavigationDrawer: Story = { render: () => <DrawerHeaderDemo /> };
+
 function ThemeToggle() {
   const [mode, setMode] = React.useState("light");
 
