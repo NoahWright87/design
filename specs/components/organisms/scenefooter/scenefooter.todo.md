@@ -1,7 +1,7 @@
 # SceneFooter — Backlog
 
 ## Sooner
-- [ ] Tune the horizon's ripple defaults (sideways vs up-and-down amounts, speed, wavelength) by eye in Storybook on real hardware, then set them as the defaults.
+- [x] Tune the horizon's ripple, star and cloud defaults by eye in Storybook, then set them as the defaults.
 
 ## Later
 - [ ] Birds: Occasional flocks crossing the sky band, a few small silhouettes with a wing-flap cycle, drawn onto the sky surface so the water reflects them automatically. Rare and brief so it stays an easter egg.

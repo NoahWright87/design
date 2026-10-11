@@ -26,23 +26,28 @@ export type HorizonSceneOptions = {
   moonX?: number;
   /** Star density, 0..2. Default 1. */
   stars?: number;
-  /** Cloud density, 0..2. Default 1. */
+  /** Cloud density, 0..2. Default 1.5. */
   clouds?: number;
-  /** How visible clouds stay at night compared with by day, 0..1. Default 0.45. */
-  nightClouds?: number;
   /**
    * How fast the stars turn about a point far below the horizon (a stand-in for the Earth's
-   * spin), as a multiple of a very gentle default, 0..6. 0 holds them still. Default 1.
+   * spin), as a multiple of a very gentle base speed, 0..6. 0 holds them still. Default 2.
    */
   starDrift?: number;
-  /** Ripple shifting the reflection sideways, 0..2 (WebGL water only). Default 0.5. */
+  /** Ripple shifting the reflection sideways, 0..2 (WebGL water only). Default 1.5. */
   waveX?: number;
-  /** Ripple shifting the reflection up and down, 0..2 (WebGL water only). Default 1. */
+  /** Ripple shifting the reflection up and down, 0..2 (WebGL water only). Default 0.75. */
   waveY?: number;
   /** Ripple speed, 0..3 (WebGL water only). Default 1. */
   waveSpeed?: number;
-  /** Ripple wavelength, 0.4..3 (WebGL water only). Default 1. */
+  /** Ripple wavelength, 0.4..3 (WebGL water only). Default 0.75. */
   waveLength?: number;
+  /**
+   * How far each visit may stray from the settings above, as a fraction, 0..0.5: with the default
+   * 0.2 every visitor gets star, cloud, drift and ripple amounts within 20% either way of them
+   * (a calmer or choppier sea, more or fewer clouds). Rolled once per page load. 0 uses the
+   * settings exactly. Default 0.2.
+   */
+  variation?: number;
   /** Seed for star and cloud placement. Default 7. */
   seed?: number;
   /**
@@ -59,6 +64,10 @@ const SKY_SCALE: Record<SceneQuality, number> = { high: 1.5, medium: 1, low: 0.7
 const WATER_SCALE: Record<SceneQuality, number> = { high: 1, medium: 0.75, low: 0.5 };
 
 const SPRITE_COUNT = 6;
+
+// One roll per setting per page load (-1..1), so a footer that remounts keeps the same sky and sea.
+const rolls: Record<string, number> = {};
+const roll = (key: string) => (rolls[key] ??= Math.random() * 2 - 1);
 
 /**
  * Whether this browser can give us a hardware-accelerated WebGL context. Checked with a throwaway
@@ -114,10 +123,13 @@ function create(ctx: SceneContext): SceneInstance {
   const opts = ctx.options as HorizonSceneOptions;
   const sunFrac = clamp(opts.sunX ?? 0.7, 0.05, 0.95);
   const moonFrac = clamp(opts.moonX ?? 0.3, 0.05, 0.95);
-  const starAmount = clamp(opts.stars ?? 1, 0, 2);
-  const cloudAmount = clamp(opts.clouds ?? 1, 0, 2);
-  const nightCloudAmount = clamp(opts.nightClouds ?? 0.45, 0, 1);
-  const starDrift = clamp(opts.starDrift ?? 1, 0, 6);
+  const variation = clamp(opts.variation ?? 0.2, 0, 0.5);
+  /** A setting, nudged by this visit's roll (within `variation` either way) and kept in range. */
+  const vary = (key: keyof HorizonSceneOptions, fallback: number, lo: number, hi: number) =>
+    clamp(((opts[key] as number | undefined) ?? fallback) * (1 + variation * roll(key)), lo, hi);
+  const starAmount = vary("stars", 1, 0, 2);
+  const cloudAmount = vary("clouds", 1.5, 0, 2);
+  const starDrift = vary("starDrift", 2, 0, 6);
   const seed = opts.seed ?? 7;
   const rendererOption = opts.renderer === "2d" || opts.renderer === "webgl" ? opts.renderer : "auto";
 
@@ -194,10 +206,10 @@ function create(ctx: SceneContext): SceneInstance {
     sun: palette.sun,
     sunLight: palette.sunLight,
     moon: palette.moon,
-    waveX: clamp(opts.waveX ?? 0.5, 0, 2),
-    waveY: clamp(opts.waveY ?? 1, 0, 2),
-    waveSpeed: clamp(opts.waveSpeed ?? 1, 0, 3),
-    waveLength: clamp(opts.waveLength ?? 1, 0.4, 3),
+    waveX: vary("waveX", 1.5, 0, 2),
+    waveY: vary("waveY", 0.75, 0, 2),
+    waveSpeed: vary("waveSpeed", 1, 0, 3),
+    waveLength: vary("waveLength", 0.75, 0.4, 3),
   };
 
   /* ---------- water renderer: WebGL ripple when it is worth it, flat 2D mirror otherwise ---------- */
@@ -542,7 +554,7 @@ function create(ctx: SceneContext): SceneInstance {
   const drawClouds = (t: number) => {
     const reveal = ease(clamp(p * 1.5, 0, 1));
     const dayVis = (1 - m) * reveal;
-    const nightVis = m * reveal * nightCloudAmount;
+    const nightVis = m * reveal;
     if ((dayVis < 0.01 && nightVis < 0.01) || !sprites.length || cloudAmount <= 0) return;
     const keep = cloudAmount / 2;
     for (const c of clouds) {

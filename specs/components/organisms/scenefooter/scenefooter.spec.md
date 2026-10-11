@@ -14,7 +14,7 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 ### Inputs
 - The same slots as `Footer`: left, center, right, an optional bottom strip with an optional separator, and plain children for unslotted use.
 - A scene: the name of a built-in scene (`"horizon"` today), a loader function that fetches a custom scene on demand, a scene object, or nothing at all for a plain footer panel. Defaults to the horizon scene.
-- Scene options, passed through to the scene. The horizon scene accepts the positions of its sun and moon across the footer, a star density, a cloud density, how visible clouds stay at night, how fast the stars turn, a seed for placement, a renderer choice (automatic, WebGL, or the flat 2D mirror) for its water, and four ripple controls for the WebGL water: how far the ripple shifts the reflection sideways, how far it shifts it up and down, its speed, and its wavelength. Every option has a gentle default and is clamped to a sensible range.
+- Scene options, passed through to the scene. The horizon scene accepts the positions of its sun and moon across the footer, a star density, a cloud density, how fast the stars turn, a seed for placement, a renderer choice (automatic, WebGL, or the flat 2D mirror) for its water, and four ripple controls for the WebGL water: how far the ripple shifts the reflection sideways, how far it shifts it up and down, its speed, and its wavelength. It also accepts a variation amount (a fraction, 0.2 by default). Every option has a default chosen by eye and is clamped to a sensible range.
 - An animate switch. Turning it off shows only the CSS version of the scene and never loads scene code.
 - Optional heights for the sky band and the sea panel, and an optional additional CSS class name.
 - The reader's footer style, an override stored on the reader's device and mirrored on the page: automatic (the site's own choice, the default), still (the CSS version only), flat (the scene with a calm flat reflection), or animated (the scene with the rippling reflection where the browser can run it). The design system offers helpers to read, set and watch it.
@@ -47,9 +47,11 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 
 **Water renderers (horizon):** The scene paints the entire sky onto a single surface and mirrors that surface into the sea. On a capable device the mirror is rippled by a WebGL shader: waves vary across the width, bright bodies glitter downward, and clouds and stars shimmer faintly. Everywhere else, and for the lowest quality setting, the sky is mirrored flat: a calm, softly fading copy with no ripple. The WebGL code is a separate download, fetched only after a hardware-accelerated context is confirmed. Choosing the flat mirror explicitly never downloads it.
 
+**Variation (horizon):** Each visit strays a little from the configured settings so the page is not identical every time: the star and cloud densities, the star turning speed and the four ripple controls are each nudged by up to the variation amount either way (20% by default), so some visits have more clouds or a choppier sea. The nudge is rolled once per page load and holds for that visit, even if the footer is remounted. A variation of zero uses the settings exactly, which is how Storybook starts so its sliders are exact.
+
 **Ripple direction (horizon, WebGL):** The ripple shifts the mirrored picture both sideways and up and down. Calm water seen at a low angle reads best when the up-and-down movement leads, so that is the default mix; a site or a designer in Storybook can tune the two amounts independently, along with speed and wavelength. Setting both amounts to zero gives a still mirror. The flat 2D mirror has no ripple and ignores these controls.
 
-**Clouds (horizon):** Clouds drift across the sky band by day and night. Each cloud is drawn once in white and grey with soft translucent edges, then tinted warm (from the sun color) for day and purple for night, so the two looks share one shape. At night they sit at a lower, quieter strength (a site option sets how much) and pass in front of the moon. They are reflected like everything else in the sky.
+**Clouds (horizon):** Clouds drift across the sky band by day and night. Each cloud is drawn once in white and grey with soft translucent edges, then tinted warm (from the sun color) for day and purple for night, so the two looks share one shape. At night they keep the same strength, in the purple tint, and pass in front of the moon. They are reflected like everything else in the sky.
 
 **Star rotation (horizon):** Stars turn very slowly about a point far below the horizon, a stand-in for the Earth's spin. Near the horizon this reads as a gentle sideways glide. Stars leaving one edge of the sky return from the other, off screen, so the field never thins. The turning speed is an option, where zero holds the stars still. Because the water mirrors the sky, the reflected stars turn with them.
 
@@ -103,6 +105,7 @@ Use `SceneFooter` where `Footer` would go. Choose `animate={false}` on pages tha
 17. The flat style plays the scene on a footer the site asked to keep still, with no WebGL code requested.
 18. Changing the footer style while the footer is live swaps or removes the scene without a reload.
 19. A system preference for reduced motion keeps the footer still even when the animated style is chosen.
-20. Clouds remain visible in dark mode at a lower strength, and setting the night cloud visibility to zero hides them.
+20. Clouds remain visible in dark mode, tinted purple.
 21. With star rotation on, the stars move across the sky over time; with it set to zero they hold their places and only twinkle.
 22. The ripple controls change the WebGL water's movement, and the flat mirror is unaffected by them.
+23. With a variation above zero, the star and cloud amounts differ from visit to visit within that fraction of the settings; with zero they stay put.

@@ -288,11 +288,11 @@ test.describe("SceneFooter horizon sky", () => {
       return before.size === 0 ? 0 : both / before.size;
     }, [SKY, ms] as const);
 
-  test("clouds stay visible at night, and nightClouds: 0 hides them", async ({ browser }) => {
+  test("clouds stay visible at night", async ({ browser }) => {
     const shown = await (await browser.newContext()).newPage();
-    await openAtNight(shown, "stars:0;clouds:2;nightClouds:0.8");
+    await openAtNight(shown, "stars:0;clouds:2");
     const hidden = await (await browser.newContext()).newPage();
-    await openAtNight(hidden, "stars:0;clouds:2;nightClouds:0");
+    await openAtNight(hidden, "stars:0;clouds:0");
     const withClouds = await skyOpacity(shown);
     const without = await skyOpacity(hidden);
     expect(withClouds).toBeGreaterThan(without * 1.05);
@@ -300,11 +300,32 @@ test.describe("SceneFooter horizon sky", () => {
     await hidden.context().close();
   });
 
+  test("variation: 0.5 shifts the star count from visit to visit, 0 does not", async ({ browser }) => {
+    // The star count follows a roll made once per page load, so compare the lit pixels of several loads.
+    const litStars = async (variation: number) => {
+      const page = await (await browser.newContext()).newPage();
+      await openAtNight(page, `stars:1;clouds:0;starDrift:0;variation:${variation}`);
+      const n = await page.evaluate((sel) => {
+        const c = document.querySelector<HTMLCanvasElement>(sel)!;
+        const d = c.getContext("2d")!.getImageData(Math.round(c.width * 0.55), 0, Math.round(c.width * 0.45), c.height).data;
+        let sum = 0;
+        for (let i = 3; i < d.length; i += 4) sum += d[i];
+        return sum;
+      }, SKY);
+      await page.context().close();
+      return n;
+    };
+    const steady = [await litStars(0), await litStars(0)];
+    const varied = [await litStars(0.5), await litStars(0.5), await litStars(0.5)];
+    expect(Math.abs(steady[0] - steady[1]) / steady[0]).toBeLessThan(0.15); // twinkle only
+    expect(Math.max(...varied) - Math.min(...varied)).toBeGreaterThan(Math.abs(steady[0] - steady[1]));
+  });
+
   test("stars turn slowly about a point below the horizon, and starDrift: 0 holds them still", async ({ browser }) => {
     const turning = await (await browser.newContext()).newPage();
-    await openAtNight(turning, "stars:2;clouds:0;starDrift:6");
+    await openAtNight(turning, "stars:2;clouds:0;starDrift:6;variation:0");
     const still = await (await browser.newContext()).newPage();
-    await openAtNight(still, "stars:2;clouds:0;starDrift:0");
+    await openAtNight(still, "stars:2;clouds:0;starDrift:0;variation:0");
     const movedOverlap = await overlapAfter(turning, 1500);
     const stillOverlap = await overlapAfter(still, 1500);
     // still stars only dim and brighten (twinkle); turning stars land on fresh pixels
