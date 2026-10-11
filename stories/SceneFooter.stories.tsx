@@ -1,6 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { SceneFooter, ToggleIcon, toggleThemeMode, getThemeMode } from "../src";
+import { SceneFooter, ToggleIcon, toggleThemeMode, getThemeMode, getFooterStyle, setFooterStyle, FOOTER_STYLES } from "../src";
+import type { FooterStyle } from "../src";
 import type { FooterScene } from "../src";
 
 type StoryArgs = React.ComponentProps<typeof SceneFooter> & {
@@ -43,11 +44,32 @@ const pageStyle: React.CSSProperties = {
   flexDirection: "column",
 };
 
-function ThemeSwitch() {
+function StoryControls() {
   const [dark, setDark] = React.useState(false);
-  React.useEffect(() => setDark(getThemeMode() === "dark"), []);
+  const [style, setStyle] = React.useState<FooterStyle>("auto");
+  React.useEffect(() => {
+    setDark(getThemeMode() === "dark");
+    setStyle(getFooterStyle());
+  }, []);
   return (
-    <div style={{ position: "fixed", top: 12, right: 12, zIndex: 2000 }}>
+    <div style={{ position: "fixed", top: 12, right: 12, zIndex: 2000, display: "flex", gap: 8, alignItems: "center" }}>
+      <label style={{ display: "flex", gap: 6, alignItems: "center", color: "var(--foreground)" }}>
+        Footer style
+        <select
+          value={style}
+          onChange={(e) => {
+            const next = e.target.value as FooterStyle;
+            setFooterStyle(next);
+            setStyle(next);
+          }}
+        >
+          {FOOTER_STYLES.map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+        </select>
+      </label>
       <ToggleIcon
         preset="moon-sun"
         isToggled={dark}
@@ -62,7 +84,7 @@ function ThemeSwitch() {
 function Page({ children }: { children: React.ReactNode }) {
   return (
     <div style={pageStyle}>
-      <ThemeSwitch />
+      <StoryControls />
       <main style={{ flex: 1, padding: "var(--spacing-xl)", maxWidth: "40rem", margin: "0 auto" }}>
         <h1>Scroll to the bottom</h1>
         <p>The footer is the sea and its top edge is the horizon. Flip the theme while you are down there.</p>

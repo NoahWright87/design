@@ -4,6 +4,7 @@ import "../Footer/footer.css";
 import "./sceneFooter.css";
 import { FooterContent } from "../Footer/FooterContent.js";
 import { startScene, type SceneSource } from "./controller.js";
+import { getFooterStyle, subscribeFooterStyle, type FooterStyle } from "../../../styles/footerStyle.js";
 import { BUILT_IN_SCENES, isBuiltInScene } from "./scenes/index.js";
 
 export type { FooterScene, SceneContext, SceneInstance, SceneLayout, SceneLoader, SceneQuality, SceneState, SceneTheme } from "./types.js";
@@ -46,6 +47,28 @@ export type SceneFooterProps = {
 };
 
 /**
+ * What a reader's override means for this footer. `static` keeps the CSS version, `flat` and
+ * `animated` ask for motion (with the matching water renderer) even where the site said not to,
+ * and `auto` leaves the site's own props alone.
+ */
+function planScene(
+  override: FooterStyle,
+  animate: boolean,
+  options: Record<string, unknown>,
+): { animate: boolean; options: Record<string, unknown>; force: boolean } {
+  switch (override) {
+    case "static":
+      return { animate: false, options, force: false };
+    case "flat":
+      return { animate: true, options: { ...options, renderer: "2d" }, force: true };
+    case "animated":
+      return { animate: true, options: { ...options, renderer: "webgl" }, force: true };
+    default:
+      return { animate, options, force: false };
+  }
+}
+
+/**
  * A footer that is also a stage. The server renders a complete, good-looking footer with CSS alone;
  * when the footer nears the viewport, a scene (an animated canvas effect) is loaded and fades in over it.
  * The scene never loads for reduced-motion, save-data or low-end devices, and any failure leaves the
@@ -72,8 +95,23 @@ export function SceneFooter({
   React.useEffect(() => {
     const root = rootRef.current;
     const stage = stageRef.current;
-    if (!root || !stage || !scene || !animate) return;
-    return startScene({ root, stage, scene, options: JSON.parse(optionsKey) });
+    if (!root || !stage || !scene) return;
+
+    let stop: () => void = () => {};
+    // The reader's override (see `footerStyle`) is read here, not in render, so the server markup
+    // never depends on it and a stored choice is applied before the scene can start.
+    const apply = (override: FooterStyle) => {
+      stop();
+      stop = () => {};
+      const plan = planScene(override, animate, JSON.parse(optionsKey));
+      if (plan.animate) stop = startScene({ root, stage, scene, options: plan.options, force: plan.force });
+    };
+    apply(getFooterStyle());
+    const unsubscribe = subscribeFooterStyle(apply);
+    return () => {
+      unsubscribe();
+      stop();
+    };
   }, [scene, animate, optionsKey]);
 
   const options = sceneOptions ?? {};

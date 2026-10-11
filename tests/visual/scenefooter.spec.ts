@@ -174,3 +174,66 @@ test.describe("SceneFooter water renderer", () => {
     await context.close();
   });
 });
+
+test.describe("SceneFooter reader override (footer style)", () => {
+  const rendererOf = (page: Page) =>
+    page.evaluate(() => document.querySelector<HTMLElement>(".nw-scene-footer__stage canvas[data-renderer]")?.dataset.renderer ?? "none");
+  const setStyle = (page: Page, style: string) => page.evaluate((v) => { document.documentElement.dataset.footerStyle = v; }, style);
+
+  test("a stored 'static' choice keeps the scene from ever loading", async ({ browser }) => {
+    const context = await browser.newContext();
+    await context.addInitScript(() => { try { localStorage.setItem("nw-footer-style", "static"); } catch {} });
+    const page = await context.newPage();
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await page.waitForTimeout(2500);
+    expect(requests).toHaveLength(0);
+    expect(["unset", "static"]).toContain(await sceneState(page));
+    await context.close();
+  });
+
+  test("'flat' overrides a site that asked for the css-only footer, without WebGL code", async ({ page }) => {
+    const glRequests: string[] = [];
+    page.on("request", (r) => isGlRequest(r.url()) && glRequests.push(r.url()));
+    await page.goto(STORY("css-only")); // the site said animate={false}
+    await page.waitForSelector(".nw-scene-footer");
+    await setStyle(page, "flat");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("live");
+    expect(await rendererOf(page)).toBe("2d");
+    expect(glRequests).toHaveLength(0);
+  });
+
+  test("switching styles while the footer is live swaps the renderer", async ({ page }) => {
+    await page.goto(STORY("horizon-flat-mirror"));
+    await page.waitForSelector(".nw-scene-footer");
+    const hasWebgl = await page.evaluate(() => !!document.createElement("canvas").getContext("webgl"));
+    await scrollToBottom(page);
+    await expect.poll(() => rendererOf(page), { timeout: 10000 }).toBe("2d");
+
+    if (hasWebgl) {
+      await setStyle(page, "animated");
+      await expect.poll(() => rendererOf(page), { timeout: 15000 }).toBe("webgl");
+    }
+    await setStyle(page, "static");
+    await expect.poll(() => page.locator(".nw-scene-footer__stage canvas").count(), { timeout: 5000 }).toBe(0);
+    await setStyle(page, "flat");
+    await expect.poll(() => rendererOf(page), { timeout: 10000 }).toBe("2d");
+  });
+
+  test("reduced motion still wins over an explicit 'animated' choice", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce" });
+    const page = await context.newPage();
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    await setStyle(page, "animated");
+    await scrollToBottom(page);
+    await page.waitForTimeout(2500);
+    expect(requests).toHaveLength(0);
+    expect(await sceneState(page)).toBe("static");
+    await context.close();
+  });
+});

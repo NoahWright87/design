@@ -17,6 +17,7 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 - Scene options, passed through to the scene. The horizon scene accepts the positions of its sun and moon across the footer, a star density, a cloud density, a seed for placement, and a renderer choice (automatic, WebGL, or the flat 2D mirror) for its water.
 - An animate switch. Turning it off shows only the CSS version of the scene and never loads scene code.
 - Optional heights for the sky band and the sea panel, and an optional additional CSS class name.
+- The reader's footer style, an override stored on the reader's device and mirrored on the page: automatic (the site's own choice, the default), still (the CSS version only), flat (the scene with a calm flat reflection), or animated (the scene with the rippling reflection where the browser can run it). The design system offers helpers to read, set and watch it.
 - The page theme (light or dark), read from the same theme setting the rest of the design system uses, and design tokens for color. Optional scene-specific color tokens (sun, moon, sea, text) override the defaults derived from the primary and secondary colors.
 
 ### Outputs
@@ -29,6 +30,7 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 - The footer reserves its height up front, so a scene arriving later never moves the page.
 - Scene code is requested only when the footer is within about one screen of the viewport and the browser is idle. A page whose footer is far away never fetches it.
 - Scene code is never requested for readers who prefer reduced motion, who have data saving on, whose device reports very few processor cores or very little memory, or who use forced-colors mode. Those readers keep the CSS version.
+- A reader's explicit footer style wins over the site's choice: a flat or animated style plays the scene even where the site asked for a still footer, and even on devices the footer would leave still to save data or battery. A reader's system preference for reduced motion, and forced-colors mode, always win over every choice, so those readers keep the still footer.
 - If the scene fails to load, takes too long, or throws, the CSS version stays in place and the page keeps working.
 - The scene runs only while the footer is on screen and the tab is visible.
 - If frames run slow, the footer lowers its own rendering effort in steps, and stops on its last frame when it can go no lower.
@@ -40,6 +42,8 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 ## Behavior
 
 **Default:** The reader sees the CSS version immediately. Scrolling toward the bottom, the scene loads in the background and fades in over the CSS version. By day the sun rises as the footer scrolls into view, clouds drift across the sky band, and the sea shimmers with a reflection of the sun. By night the moon rises, stars come out, and the reflection follows the moon.
+
+**Footer style override:** Choosing a footer style takes effect immediately on every mounted footer, whoever set it, and is remembered for the reader's next visit. Choosing still removes a running scene and keeps the CSS version. Choosing flat or animated starts the scene if it is not running, or swaps its water renderer if it is. Choosing automatic returns to the site's own choice. If the browser cannot run WebGL, the animated style shows the flat reflection.
 
 **Water renderers (horizon):** The scene paints the entire sky onto a single surface and mirrors that surface into the sea. On a capable device the mirror is rippled by a WebGL shader: waves vary across the width, bright bodies glitter downward, and clouds and stars shimmer faintly. Everywhere else, and for the lowest quality setting, the sky is mirrored flat: a calm, softly fading copy with no ripple. The WebGL code is a separate download, fetched only after a hardware-accelerated context is confirmed. Choosing the flat mirror explicitly never downloads it.
 
@@ -89,3 +93,7 @@ Use `SceneFooter` where `Footer` would go. Choose `animate={false}` on pages tha
 13. With WebGL unavailable or refused by the browser, the footer renders with the flat mirror and raises no error.
 14. Clouds and stars appear in the reflection.
 15. Resizing a frozen footer leaves the sky and water painted.
+16. A stored still style keeps the scene from loading on the next visit.
+17. The flat style plays the scene on a footer the site asked to keep still, with no WebGL code requested.
+18. Changing the footer style while the footer is live swaps or removes the scene without a reload.
+19. A system preference for reduced motion keeps the footer still even when the animated style is chosen.

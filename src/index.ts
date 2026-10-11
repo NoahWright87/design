@@ -45,6 +45,7 @@ export * from "./sites/portfolio/index.js";
 
 // Theme utilities
 export * from "./styles/themeToggle.js";
+export * from "./styles/footerStyle.js";
 
 /** Typed theme input for generating a CSS file at build time. All fields optional. */
 export type Theme = {

@@ -13,6 +13,11 @@ export type StartSceneOptions = {
   stage: HTMLElement;
   scene: SceneSource;
   options?: Record<string, unknown>;
+  /**
+   * The reader explicitly asked for motion: skip the save-data and low-end-device heuristics.
+   * A system preference for reduced motion (or forced colors) still wins.
+   */
+  force?: boolean;
 };
 
 const LOAD_TIMEOUT_MS = 10_000;
@@ -29,8 +34,9 @@ function matches(query: string): boolean {
 }
 
 /** The CSS-only footer is the right answer on these devices and settings: no scene code is ever fetched. */
-function shouldStayStatic(): boolean {
+function shouldStayStatic(force: boolean): boolean {
   if (matches("(prefers-reduced-motion: reduce)") || matches("(forced-colors: active)")) return true;
+  if (force) return false;
   const nav = navigator as NavigatorHints;
   if (nav.connection?.saveData) return true;
   if ((nav.hardwareConcurrency ?? 8) <= 2) return true;
@@ -68,12 +74,12 @@ function toScene(mod: SceneModule): FooterScene {
  *
  * Returns a function that undoes all of it.
  */
-export function startScene({ root, stage, scene, options = {} }: StartSceneOptions): () => void {
+export function startScene({ root, stage, scene, options = {}, force = false }: StartSceneOptions): () => void {
   const setState = (state: SceneState) => {
     root.dataset.sceneState = state;
   };
 
-  if (shouldStayStatic()) {
+  if (shouldStayStatic(force)) {
     setState("static");
     return () => {};
   }
