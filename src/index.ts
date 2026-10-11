@@ -30,6 +30,7 @@ export * from "./components/molecules/TextCarousel/index.js";
 export * from "./components/organisms/Hero/index.js";
 export * from "./components/organisms/Header/index.js";
 export * from "./components/organisms/Footer/index.js";
+export * from "./components/organisms/SceneFooter/index.js";
 export * from "./components/organisms/Layout/index.js";
 export * from "./components/organisms/Menu/index.js";
 export * from "./components/organisms/MobileNav/index.js";
@@ -44,6 +45,7 @@ export * from "./sites/portfolio/index.js";
 
 // Theme utilities
 export * from "./styles/themeToggle.js";
+export * from "./styles/footerStyle.js";
 
 /** Typed theme input for generating a CSS file at build time. All fields optional. */
 export type Theme = {

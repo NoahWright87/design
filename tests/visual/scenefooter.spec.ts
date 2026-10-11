@@ -1,0 +1,337 @@
+import { test, expect, type Page } from "@playwright/test";
+
+// Behavior tests for SceneFooter's loading contract. These assert network and state, not pixels,
+// so they hold on any platform. The scene module is `horizon.ts` under the dev server and
+// `horizon-<hash>.js` in a built Storybook; `horizonStatic` (the CSS-side helper) is part of the main bundle.
+const STORY = (name: string) => `/iframe.html?id=components-organisms-scenefooter--${name}&viewMode=story`;
+const isSceneRequest = (url: string) => /\/horizon(-[\w-]+)?\.(ts|js|mjs)(\?|$)/.test(url);
+// The WebGL water renderer is its own chunk: `horizonGl.ts` under the dev server, `horizonGl-<hash>.js` when built.
+const isGlRequest = (url: string) => /\/horizonGl(-[\w-]+)?\.(ts|js|mjs)(\?|$)/.test(url);
+
+async function trackSceneRequests(page: Page) {
+  const urls: string[] = [];
+  page.on("request", (r) => {
+    if (isSceneRequest(r.url())) urls.push(r.url());
+  });
+  return urls;
+}
+
+const sceneState = (page: Page) =>
+  page.evaluate(() => document.querySelector<HTMLElement>(".nw-scene-footer")?.dataset.sceneState ?? "unset");
+
+const scrollToBottom = (page: Page) => page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+
+test.describe("SceneFooter loading contract", () => {
+  test("does not load the scene while the footer is far away", async ({ page }) => {
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    await page.waitForTimeout(1500);
+    expect(requests).toHaveLength(0);
+    expect(await sceneState(page)).toBe("unset");
+  });
+
+  test("loads the scene on approach and fills the stage", async ({ page }) => {
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("live");
+    expect(requests.length).toBeGreaterThan(0);
+    expect(await page.locator(".nw-scene-footer__stage canvas").count()).toBeGreaterThan(0);
+  });
+
+  test("css-only story never loads the scene", async ({ page }) => {
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("css-only"));
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await page.waitForTimeout(2000);
+    expect(requests).toHaveLength(0);
+    expect(await sceneState(page)).toBe("unset");
+  });
+
+  test("reduced motion keeps the css footer and loads nothing", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce" });
+    const page = await context.newPage();
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await page.waitForTimeout(2000);
+    expect(requests).toHaveLength(0);
+    expect(await sceneState(page)).toBe("static");
+    await context.close();
+  });
+
+  test("reduced motion switched on before the scene loads keeps it from ever loading", async ({ page }) => {
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    expect(requests).toHaveLength(0); // footer is still far away
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await scrollToBottom(page);
+    await page.waitForTimeout(2500);
+    expect(requests).toHaveLength(0);
+    expect(await sceneState(page)).toBe("static");
+  });
+
+  test("a blocked scene request leaves the css footer in place", async ({ browser }) => {
+    const context = await browser.newContext();
+    await context.route((url) => isSceneRequest(url.toString()), (route) => route.abort());
+    const page = await context.newPage();
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("failed");
+    expect(errors).toHaveLength(0);
+    await expect(page.locator(".nw-scene-footer__content")).toContainText("Noah Wright");
+    await context.close();
+  });
+});
+
+test.describe("SceneFooter water renderer", () => {
+  const rendererOf = (page: Page) =>
+    page.evaluate(() => document.querySelector<HTMLElement>(".nw-scene-footer__stage canvas[data-renderer]")?.dataset.renderer ?? "none");
+
+  test("the flat mirror never loads the WebGL code", async ({ page }) => {
+    const glRequests: string[] = [];
+    page.on("request", (r) => isGlRequest(r.url()) && glRequests.push(r.url()));
+    await page.goto(STORY("horizon-flat-mirror"));
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("live");
+    expect(await rendererOf(page)).toBe("2d");
+    expect(glRequests).toHaveLength(0);
+  });
+
+  test("forced WebGL renders through the shader when the browser has WebGL", async ({ page }) => {
+    await page.goto(STORY("horizon-webgl"));
+    await page.waitForSelector(".nw-scene-footer");
+    const hasWebgl = await page.evaluate(() => !!document.createElement("canvas").getContext("webgl"));
+    test.skip(!hasWebgl, "this browser has no WebGL");
+    await scrollToBottom(page);
+    await expect.poll(() => rendererOf(page), { timeout: 15000 }).toBe("webgl");
+  });
+
+  test("a browser without WebGL keeps the flat mirror and raises no errors", async ({ browser }) => {
+    const context = await browser.newContext();
+    await context.addInitScript(() => {
+      const original = HTMLCanvasElement.prototype.getContext;
+      // @ts-expect-error: deliberately refuse WebGL contexts
+      HTMLCanvasElement.prototype.getContext = function (type: string, ...rest: unknown[]) {
+        if (type === "webgl" || type === "webgl2" || type === "experimental-webgl") return null;
+        // @ts-expect-error: pass through
+        return original.call(this, type, ...rest);
+      };
+    });
+    const page = await context.newPage();
+    const errors: string[] = [];
+    const glRequests: string[] = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    page.on("request", (r) => isGlRequest(r.url()) && glRequests.push(r.url()));
+    await page.goto(STORY("horizon-webgl")); // even when WebGL is forced
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("live");
+    await page.waitForTimeout(1500);
+    expect(await rendererOf(page)).toBe("2d");
+    expect(errors).toHaveLength(0);
+    expect(glRequests).toHaveLength(0); // the WebGL code is never downloaded when there is no WebGL
+    await context.close();
+  });
+
+  test("a software-rendered WebGL context counts as no WebGL for auto, but can still be forced", async ({ browser }) => {
+    const context = await browser.newContext();
+    await context.addInitScript(() => {
+      const original = WebGLRenderingContext.prototype.getParameter;
+      WebGLRenderingContext.prototype.getParameter = function (this: WebGLRenderingContext, parameter: number) {
+        if (parameter === 0x9246) return "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device), SwiftShader driver)";
+        return original.call(this, parameter);
+      };
+    });
+    const hasWebgl = await (await context.newPage()).evaluate(() => !!document.createElement("canvas").getContext("webgl"));
+    test.skip(!hasWebgl, "this browser has no WebGL to disguise");
+
+    const auto = await context.newPage();
+    const glRequests: string[] = [];
+    auto.on("request", (r) => isGlRequest(r.url()) && glRequests.push(r.url()));
+    await auto.goto(STORY("horizon"));
+    await auto.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(auto);
+    await expect.poll(() => sceneState(auto), { timeout: 10000 }).toBe("live");
+    await auto.waitForTimeout(1500);
+    expect(await rendererOf(auto)).toBe("2d");
+    expect(glRequests).toHaveLength(0);
+
+    const forced = await context.newPage();
+    await forced.goto(STORY("horizon-webgl"));
+    await forced.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(forced);
+    await expect.poll(() => rendererOf(forced), { timeout: 15000 }).toBe("webgl");
+    await context.close();
+  });
+});
+
+test.describe("SceneFooter reader override (footer style)", () => {
+  const rendererOf = (page: Page) =>
+    page.evaluate(() => document.querySelector<HTMLElement>(".nw-scene-footer__stage canvas[data-renderer]")?.dataset.renderer ?? "none");
+  const setStyle = (page: Page, style: string) => page.evaluate((v) => { document.documentElement.dataset.footerStyle = v; }, style);
+
+  test("a stored 'static' choice keeps the scene from ever loading", async ({ browser }) => {
+    const context = await browser.newContext();
+    await context.addInitScript(() => { try { localStorage.setItem("nw-footer-style", "static"); } catch {} });
+    const page = await context.newPage();
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await page.waitForTimeout(2500);
+    expect(requests).toHaveLength(0);
+    expect(["unset", "static"]).toContain(await sceneState(page));
+    await context.close();
+  });
+
+  test("'flat' overrides a site that asked for the css-only footer, without WebGL code", async ({ page }) => {
+    const glRequests: string[] = [];
+    page.on("request", (r) => isGlRequest(r.url()) && glRequests.push(r.url()));
+    await page.goto(STORY("css-only")); // the site said animate={false}
+    await page.waitForSelector(".nw-scene-footer");
+    await setStyle(page, "flat");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("live");
+    expect(await rendererOf(page)).toBe("2d");
+    expect(glRequests).toHaveLength(0);
+  });
+
+  test("switching styles while the footer is live swaps the renderer", async ({ page }) => {
+    await page.goto(STORY("horizon-flat-mirror"));
+    await page.waitForSelector(".nw-scene-footer");
+    const hasWebgl = await page.evaluate(() => !!document.createElement("canvas").getContext("webgl"));
+    await scrollToBottom(page);
+    await expect.poll(() => rendererOf(page), { timeout: 10000 }).toBe("2d");
+
+    if (hasWebgl) {
+      await setStyle(page, "animated");
+      await expect.poll(() => rendererOf(page), { timeout: 15000 }).toBe("webgl");
+    }
+    await setStyle(page, "static");
+    await expect.poll(() => page.locator(".nw-scene-footer__stage canvas").count(), { timeout: 5000 }).toBe(0);
+    await setStyle(page, "flat");
+    await expect.poll(() => rendererOf(page), { timeout: 10000 }).toBe("2d");
+  });
+
+  test("reduced motion still wins over an explicit 'animated' choice", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce" });
+    const page = await context.newPage();
+    const requests = await trackSceneRequests(page);
+    await page.goto(STORY("horizon"));
+    await page.waitForSelector(".nw-scene-footer");
+    await setStyle(page, "animated");
+    await scrollToBottom(page);
+    await page.waitForTimeout(2500);
+    expect(requests).toHaveLength(0);
+    expect(await sceneState(page)).toBe("static");
+    await context.close();
+  });
+});
+
+test.describe("SceneFooter horizon sky", () => {
+  // Reads the sky canvas (the one without a data-renderer; the water canvas carries that attribute).
+  const SKY = `.nw-scene-footer__stage canvas:not([data-renderer])`;
+
+  /** Open the 2D-mirror story at night with the given scene options and wait for the sky to settle. */
+  async function openAtNight(page: Page, args: string) {
+    await page.goto(`${STORY("horizon-flat-mirror")}&args=${args}`);
+    await page.waitForSelector(".nw-scene-footer");
+    await scrollToBottom(page);
+    await expect.poll(() => sceneState(page), { timeout: 10000 }).toBe("live");
+    await page.evaluate(() => { document.documentElement.dataset.theme = "dark"; });
+    await page.waitForTimeout(3000);
+  }
+
+  /** Total opacity painted on the sky canvas. */
+  const skyOpacity = (page: Page) =>
+    page.evaluate((sel) => {
+      const c = document.querySelector<HTMLCanvasElement>(sel)!;
+      const d = c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data;
+      let sum = 0;
+      for (let i = 3; i < d.length; i += 4) sum += d[i];
+      return sum;
+    }, SKY);
+
+  /**
+   * Fraction of the stars' pixels that are still lit after `ms`. Looks only at the half of the sky
+   * away from the moon, and at pixels that stand out from their neighbors (stars, not glow).
+   */
+  const overlapAfter = (page: Page, ms: number) =>
+    page.evaluate(async ([sel, wait]) => {
+      const c = document.querySelector<HTMLCanvasElement>(sel as string)!;
+      const lit = () => {
+        const d = c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data;
+        const out = new Set<number>();
+        for (let y = 0; y < c.height; y++) {
+          for (let x = Math.round(c.width * 0.55) + 12; x < c.width; x++) {
+            const i = (y * c.width + x) * 4 + 3;
+            if (d[i] - d[i - 12 * 4] > 40) out.add(i);
+          }
+        }
+        return out;
+      };
+      const before = lit();
+      await new Promise((r) => setTimeout(r, wait as number));
+      const after = lit();
+      let both = 0;
+      for (const i of before) if (after.has(i)) both++;
+      return before.size === 0 ? 0 : both / before.size;
+    }, [SKY, ms] as const);
+
+  test("clouds stay visible at night", async ({ browser }) => {
+    const shown = await (await browser.newContext()).newPage();
+    await openAtNight(shown, "stars:0;clouds:2");
+    const hidden = await (await browser.newContext()).newPage();
+    await openAtNight(hidden, "stars:0;clouds:0");
+    const withClouds = await skyOpacity(shown);
+    const without = await skyOpacity(hidden);
+    expect(withClouds).toBeGreaterThan(without * 1.05);
+    await shown.context().close();
+    await hidden.context().close();
+  });
+
+  test("variation: 0.5 shifts the star count from visit to visit, 0 does not", async ({ browser }) => {
+    // The star count follows a roll made once per page load, so compare the lit pixels of several loads.
+    const litStars = async (variation: number) => {
+      const page = await (await browser.newContext()).newPage();
+      await openAtNight(page, `stars:1;clouds:0;starDrift:0;variation:${variation}`);
+      const n = await page.evaluate((sel) => {
+        const c = document.querySelector<HTMLCanvasElement>(sel)!;
+        const d = c.getContext("2d")!.getImageData(Math.round(c.width * 0.55), 0, Math.round(c.width * 0.45), c.height).data;
+        let sum = 0;
+        for (let i = 3; i < d.length; i += 4) sum += d[i];
+        return sum;
+      }, SKY);
+      await page.context().close();
+      return n;
+    };
+    const steady = [await litStars(0), await litStars(0)];
+    const varied = [await litStars(0.5), await litStars(0.5), await litStars(0.5)];
+    expect(Math.abs(steady[0] - steady[1]) / steady[0]).toBeLessThan(0.15); // twinkle only
+    expect(Math.max(...varied) - Math.min(...varied)).toBeGreaterThan(Math.abs(steady[0] - steady[1]));
+  });
+
+  test("stars turn slowly about a point below the horizon, and starDrift: 0 holds them still", async ({ browser }) => {
+    const turning = await (await browser.newContext()).newPage();
+    await openAtNight(turning, "stars:2;clouds:0;starDrift:6;variation:0");
+    const still = await (await browser.newContext()).newPage();
+    await openAtNight(still, "stars:2;clouds:0;starDrift:0;variation:0");
+    const movedOverlap = await overlapAfter(turning, 1500);
+    const stillOverlap = await overlapAfter(still, 1500);
+    // still stars only dim and brighten (twinkle); turning stars land on fresh pixels
+    expect(stillOverlap).toBeGreaterThan(0.4);
+    expect(movedOverlap).toBeLessThan(0.15);
+    await turning.context().close();
+    await still.context().close();
+  });
+});

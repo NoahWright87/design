@@ -64,3 +64,15 @@ export function initThemeMode(): ThemeMode {
   document.documentElement.dataset.theme = preferred;
   return preferred;
 }
+
+/**
+ * Calls `callback` with the new mode whenever `data-theme` changes on `<html>`,
+ * however it was changed (`toggleThemeMode`, `setThemeMode`, or a site's own code).
+ * Returns an unsubscribe function. A no-op on the server.
+ */
+export function subscribeThemeMode(callback: (mode: ThemeMode) => void): () => void {
+  if (typeof document === 'undefined' || typeof MutationObserver === 'undefined') return () => {};
+  const observer = new MutationObserver(() => callback(getThemeMode()));
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  return () => observer.disconnect();
+}
