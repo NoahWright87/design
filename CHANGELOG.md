@@ -11,7 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- **Review fixes:** Corrected mobile Menu exit and reduced-motion selector precedence, made Motion Lab easing playheads honor live reduced-motion preferences, and removed a redundant Tailwind export replacement. Added animation-name assertions and desktop/mobile regression screenshots.
+- **Review fixes:** Corrected mobile Menu exit and reduced-motion selector precedence, made Motion Lab easing playheads honor live reduced-motion preferences, and removed a redundant Tailwind export replacement. Added animation-name assertions and desktop/mobile regression screenshots; bumped the package and lockfile to 1.4.0 for the new features and fixes.
 - **Motion export regression:** Added named properties to Button/Modal generated CSS so token exports contain values; limited Tailwind timing-function exports to easing tokens.
 
 - **Remaining examples:** Added Showcase forms/navigation/metadata/focus handling, carousel playback/frame inspection/timing controls, and Header Integration nested navigation with Menu exit transitions. Added matching desktop/mobile screenshots and linked form error descriptions.
