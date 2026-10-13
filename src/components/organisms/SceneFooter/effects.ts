@@ -1,9 +1,9 @@
 /** A temporary, decorative Horizon sky effect. Positions are fractions of the sky band. */
 export type FireworkEffect = {
   type: "firework";
-  /** Burst center: x runs left to right, y runs top to horizon. Default { x: 0.5, y: 0.55 }. */
+  /** Burst center: x runs left to right, y runs top to horizon. Omit to choose a fresh random position. */
   position?: { x: number; y: number };
-  /** CSS color or a single CSS variable, e.g. "var(--confirm)". Defaults to the scene's sun light. */
+  /** CSS color or a single CSS variable, e.g. "var(--confirm)". Omit for multicolor explosions. */
   color?: string;
   /** One modest burst, or a larger, staggered group. Default "small". */
   size?: "small" | "large";

@@ -639,17 +639,22 @@ function create(ctx: SceneContext): SceneInstance {
   return {
     resize: layout,
 
+    setFireworksFrequency(frequency) {
+      if (!destroyed) fireworks.setFrequency(frequency);
+    },
+
     trigger(effect) {
       if (destroyed || W <= 0 || hz <= 0 || effect.type !== "firework") return false;
       const token = effect.color?.match(/^var\(\s*(--[\w-]+)\s*\)$/)?.[1];
       const color = token ? ctx.readColor([token], palette.sunLight)
-        : (effect.color ? parseColor(effect.color) : undefined) ?? palette.sunLight;
+        : effect.color ? parseColor(effect.color) ?? palette.sunLight : undefined;
       return fireworks.add(effect, performance.now() / 1000, q, color);
     },
 
     clearEffects() {
-      if (!fireworks.particleCount) return;
+      const hadParticles = fireworks.particleCount > 0;
       fireworks.clear();
+      if (!hadParticles) return;
       // Remove a celebration from the last visible frame too, without advancing the scene.
       if (!destroyed && lastDraw >= 0 && W > 0 && hz > 0) {
         composeSky(lastDraw);
@@ -679,6 +684,7 @@ function create(ctx: SceneContext): SceneInstance {
       if (lastDraw >= 0 && time - lastDraw < FRAME_INTERVAL[q] - 0.003) return;
       const dt = lastDraw < 0 ? 0.016 : Math.min(0.25, time - lastDraw);
       lastDraw = time;
+      fireworks.update(time, q);
 
       p += (targetP - p) * (1 - Math.exp(-dt / 0.22));
       if (Math.abs(targetP - p) < 0.0005) p = targetP;
@@ -697,6 +703,7 @@ function create(ctx: SceneContext): SceneInstance {
 
     destroy() {
       destroyed = true;
+      fireworks.setFrequency(0);
       fireworks.clear();
       cancelSprite?.();
       skyWrap.remove();

@@ -21,7 +21,7 @@ async function loadSource(url) {
 }
 const source = (path) => loadSource(new URL(`../src/components/organisms/SceneFooter/${path}`, import.meta.url));
 const { createSceneEffects, subscribeSceneEffects } = await import(await source("effects.ts"));
-const { createFireworks } = await import(await source("scenes/fireworks.ts"));
+const { createFireworks, planLaunch, launchPoint } = await import(await source("scenes/fireworks.ts"));
 const { startScene } = await import(await source("controller.ts"));
 
 test("SSR-safe handles drop early events, isolate owners, broadcast, and unsubscribe", () => {
@@ -52,9 +52,9 @@ test("overlapping bursts reserve bounded capacity, expire, and accept new events
     for (let i = 0; i < 1000; i++) pool.add({ type: "firework", size: "large" }, 0, quality, [20, 160, 70]);
     assert.equal(pool.particleCount, limit);
     assert.equal(pool.add({ type: "firework" }, 0, quality, [20, 160, 70]), false);
-    pool.draw({}, 3, 400, 200); // expired particles need no drawing context
+    pool.draw({}, 6, 400, 200); // expired particles need no drawing context
     assert.equal(pool.particleCount, 0);
-    assert.equal(pool.add({ type: "firework" }, 3, quality, [20, 160, 70]), true);
+    assert.equal(pool.add({ type: "firework" }, 6, quality, [20, 160, 70]), true);
     pool.clear(); pool.clear();
     assert.equal(pool.particleCount, 0);
   }
@@ -69,7 +69,7 @@ test("quality reductions trim pending particles immediately", () => {
   assert.equal(pool.particleCount, 64);
 });
 
-test("positions scale with the sky, clamp finite values, and default nonfinite values", () => {
+test("positions scale with the sky and handle clamped/nonfinite coordinates", () => {
   const centers = [];
   const g = {
     save() {}, restore() {}, beginPath() {}, stroke() {}, fill() {}, arc() {}, moveTo() {},
@@ -78,17 +78,99 @@ test("positions scale with the sky, clamp finite values, and default nonfinite v
   const pool = createFireworks(() => 0.5);
   pool.add({ type: "firework", position: { x: 0.25, y: 0.5 } }, 0, "high", [1, 2, 3]);
   pool.draw(g, 0.14, 400, 200);
-  assert.deepEqual(centers.pop(), [100, 125]);
+  const small = centers.pop();
   pool.draw(g, 0.14, 800, 400);
-  assert.deepEqual(centers.pop(), [200, 250]);
+  const big = centers.pop();
+  assert.deepEqual(big, small.map((value) => value * 2));
   pool.clear();
   pool.add({ type: "firework", position: { x: 4, y: -1 } }, 0, "high", [1, 2, 3]);
-  pool.draw(g, 0.14, 400, 200);
-  assert.deepEqual(centers.pop(), [400, 50]);
+  pool.draw(g, 1.12875 - 1e-8, 400, 200);
+  const edge = centers.pop();
+  assert.ok(Math.abs(edge[0] - 400) < 0.001);
+  assert.ok(Math.abs(edge[1]) < 0.001);
   pool.clear();
   pool.add({ type: "firework", position: { x: NaN, y: Infinity } }, 0, "high", [1, 2, 3]);
   pool.draw(g, 0.14, 400, 200);
-  assert.deepEqual(centers.pop(), [200, 132.5]);
+  assert.ok(centers.pop().every(Number.isFinite));
+});
+
+function seededRandom(seed = 7) {
+  return () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 2 ** 32; };
+}
+
+test("shells vary launch position, speed and fuse, decelerate, and can burst while falling", () => {
+  const random = seededRandom();
+  const flights = Array.from({ length: 50 }, () => planLaunch(0.5, 0.5, random));
+  assert.ok(new Set(flights.map((flight) => flight.fromX)).size > 40);
+  assert.ok(Math.max(...flights.map((flight) => flight.velocity)) > Math.min(...flights.map((flight) => flight.velocity)) * 1.5);
+  assert.ok(Math.max(...flights.map((flight) => flight.fuse)) > Math.min(...flights.map((flight) => flight.fuse)) * 1.5);
+  assert.ok(flights.some((flight) => flight.fuse > flight.apex + 0.1));
+  assert.ok(flights.some((flight) => flight.fuse < flight.apex));
+  for (const flight of flights) {
+    const start = launchPoint(flight, 0);
+    const early = launchPoint(flight, 0.1);
+    const later = launchPoint(flight, 0.2);
+    assert.notEqual(start.x, early.x);
+    assert.ok(start.y - early.y > early.y - later.y);
+    const end = launchPoint(flight, flight.fuse);
+    assert.ok(Math.abs(end.x - 0.5) < 1e-8 && Math.abs(end.y - 0.5) < 1e-8);
+    if (flight.fuse > flight.apex) assert.ok(end.y > launchPoint(flight, flight.apex).y);
+  }
+});
+
+test("default explosions have many colors and varied radii; an explicit color stays an override", () => {
+  const colors = new Set();
+  const radii = [];
+  let largest = 0;
+  const g = {
+    save() {}, restore() {}, beginPath() {}, stroke() {}, moveTo() {}, lineTo() {},
+    arc(x, y) { largest = Math.max(largest, Math.hypot(x - 200, y - 100)); },
+    fill() { colors.add(this.fillStyle); },
+  };
+  for (let i = 0; i < 20; i++) {
+    const pool = createFireworks(seededRandom(i + 1));
+    pool.add({ type: "firework", position: { x: 0.5, y: 0.5 } }, 0, "high");
+    largest = 0;
+    pool.draw(g, 1.8, 400, 200);
+    radii.push(largest);
+  }
+  assert.ok(colors.size > 20);
+  assert.ok(Math.max(...radii) > Math.min(...radii.filter(Boolean)) * 2);
+  colors.clear();
+  const pool = createFireworks(() => 0.5);
+  pool.add({ type: "firework" }, 0, "high", [20, 160, 70]);
+  pool.draw(g, 1.8, 400, 200);
+  assert.equal(colors.size, 1);
+});
+
+test("automatic frequency is bounded, frame-driven, and never catches up missed launches", () => {
+  const pool = createFireworks(() => 0.5);
+  pool.setFrequency(2);
+  pool.update(0, "high");
+  pool.update(0.49, "high");
+  assert.equal(pool.particleCount, 0);
+  pool.update(0.5, "high");
+  assert.equal(pool.particleCount, 32);
+  pool.update(1, "high");
+  assert.equal(pool.particleCount, 64);
+  pool.update(100, "high");
+  assert.equal(pool.particleCount, 32); // one fresh launch, not 198 missed launches
+  pool.setFrequency(0);
+  pool.clear();
+  pool.update(200, "high");
+  assert.equal(pool.particleCount, 0);
+  pool.setFrequency(Infinity);
+  pool.update(300, "high");
+  assert.equal(pool.particleCount, 0);
+  pool.setFrequency(10000);
+  pool.update(400, "high");
+  pool.update(400.124, "high");
+  assert.equal(pool.particleCount, 0);
+  pool.update(400.125, "high");
+  assert.equal(pool.particleCount, 32); // clamped to 8 launches/second
+  pool.clear();
+  pool.update(1000, "high");
+  assert.equal(pool.particleCount, 0); // clearing starts a fresh interval
 });
 
 function browserFixture(t, { reduced = false, lowEnd = false, saveData = false, forcedColors = false } = {}) {
@@ -138,11 +220,12 @@ function browserFixture(t, { reduced = false, lowEnd = false, saveData = false, 
 }
 
 function sceneFixture() {
-  const stats = { created: 0, delivered: [], cleared: 0, destroyed: 0, rendered: 0, resized: [] };
+  const stats = { created: 0, delivered: [], cleared: 0, destroyed: 0, rendered: 0, resized: [], frequencies: [] };
   const scene = { create() {
     stats.created++;
     return {
       trigger(event) { stats.delivered.push(event); return true; },
+      setFireworksFrequency(frequency) { stats.frequencies.push(frequency); },
       clearEffects() { stats.cleared++; },
       resize(_layout, quality) { stats.resized.push(quality); },
       setTheme() {}, render() { stats.rendered++; }, destroy() { stats.destroyed++; },
@@ -169,6 +252,40 @@ test("controller delivers repeated events only to its existing live visible inst
   assert.equal(stats.destroyed, 1);
   assert.equal(f.frames.size, 0);
   assert.ok(f.observers.every((observer) => observer.disconnected));
+});
+
+test("automatic frequency updates preserve the instance and pause offscreen/hidden/frozen", async (t) => {
+  const f = browserFixture(t);
+  const { scene, stats } = sceneFixture();
+  const controller = startScene({ root: f.root, stage: f.stage, scene });
+  f.cleanup.push(controller);
+  controller.setFireworksFrequency(2);
+  assert.equal(stats.created, 0);
+  f.observers[1].emit(true);
+  await f.load();
+  assert.equal(stats.frequencies.at(-1), 2);
+  controller.setFireworksFrequency(4);
+  assert.equal(stats.frequencies.at(-1), 4);
+  assert.equal(stats.created, 1);
+  f.observers[1].emit(false);
+  assert.equal(stats.frequencies.at(-1), 0);
+  f.observers[1].emit(true);
+  assert.equal(stats.frequencies.at(-1), 4);
+  f.document.hidden = true;
+  f.document.dispatchEvent(new Event("visibilitychange"));
+  assert.equal(stats.frequencies.at(-1), 0);
+  f.document.hidden = false;
+  f.document.dispatchEvent(new Event("visibilitychange"));
+  assert.equal(stats.frequencies.at(-1), 4);
+  for (let frame = 1; frame <= 370; frame++) f.step(frame * 40);
+  assert.equal(f.root.dataset.sceneState, "frozen");
+  assert.equal(stats.frequencies.at(-1), 0);
+  controller.setFireworksFrequency(8);
+  assert.equal(stats.frequencies.at(-1), 0);
+  controller();
+  const calls = stats.frequencies.length;
+  controller.setFireworksFrequency(8);
+  assert.equal(stats.frequencies.length, calls);
 });
 
 test("offscreen and hidden events drop; pause clears existing celebrations with no replay", async (t) => {
@@ -204,6 +321,7 @@ test("reduced motion, static device fallbacks and forced colors never load for e
     const f = browserFixture(subtest, options);
     const { scene, stats } = sceneFixture();
     const controller = startScene({ root: f.root, stage: f.stage, scene });
+    controller.setFireworksFrequency(8);
     assert.equal(controller.trigger({ type: "firework" }), false);
     assert.equal(f.root.dataset.sceneState, "static");
     assert.equal(stats.created, 0);

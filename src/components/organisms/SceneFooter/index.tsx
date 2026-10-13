@@ -45,6 +45,8 @@ export type SceneFooterProps = {
   sceneOptions?: Record<string, unknown>;
   /** Stable handle for temporary effects; event delivery never changes sceneOptions or restarts the scene. */
   effects?: SceneEffects;
+  /** Automatic Horizon shells per second, 0..8. Default 0 (off). Updates preserve the running scene. */
+  fireworksFrequency?: number;
   /**
    * `false` shows only the CSS version of the scene: no scene code is ever loaded.
    * Use it on pages that are already busy.
@@ -95,6 +97,7 @@ export function SceneFooter({
   scene = "horizon",
   sceneOptions,
   effects,
+  fireworksFrequency = 0,
   animate = true,
   skyHeight,
   seaHeight,
@@ -103,7 +106,13 @@ export function SceneFooter({
   const rootRef = React.useRef<HTMLElement>(null);
   const stageRef = React.useRef<HTMLDivElement>(null);
   const controllerRef = React.useRef<SceneController | null>(null);
+  const frequencyRef = React.useRef(fireworksFrequency);
   const optionsKey = JSON.stringify(sceneOptions ?? {});
+
+  React.useEffect(() => {
+    frequencyRef.current = fireworksFrequency;
+    controllerRef.current?.setFireworksFrequency(fireworksFrequency);
+  }, [fireworksFrequency]);
 
   React.useEffect(() => {
     if (!effects) return;
@@ -126,6 +135,7 @@ export function SceneFooter({
       if (plan.animate) {
         const controller = startScene({ root, stage, scene, options: plan.options, force: plan.force });
         controllerRef.current = controller;
+        controller.setFireworksFrequency(frequencyRef.current);
         stop = controller;
       }
     };

@@ -31,7 +31,8 @@ All tests navigate to Storybook iframe URLs and wait for stable rendering before
 ## Scene effects checks
 
 Fireworks behavior tests read rendered sky and water pixels, exercise repeated events,
-Still/unmount/offscreen/reduced-motion behavior, and capture review screenshots in
+multicolor explosions, live automatic-frequency updates, Still/unmount/offscreen/reduced-motion
+behavior, and capture review screenshots in
 `test-results/`. They require real Chromium with WebGL and do not create or update
 screenshot baselines. Run the new and existing SceneFooter tests from the repository root:
 

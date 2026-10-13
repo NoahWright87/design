@@ -32,6 +32,8 @@ export type SceneContext = {
 };
 
 export type SceneInstance = {
+  /** Horizon automatic launch rate; zero pauses future launches without clearing current bursts. */
+  setFireworksFrequency?(frequency: number): void;
   /** Optional support for temporary effects. Return false for unsupported or capacity-limited effects. */
   trigger?(effect: SceneEffect): boolean;
   /** Discard temporary effects when the controller pauses or freezes the scene. */

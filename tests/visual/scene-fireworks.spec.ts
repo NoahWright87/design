@@ -27,6 +27,8 @@ async function open(page: Page, story = STORY) {
   });
   await page.goto(story);
   await expect(page.locator(FOOTER)).toHaveAttribute("data-scene-state", "live");
+  // Keep pixel reflection checks controlled; the demo itself defaults to the multicolor palette.
+  await page.getByLabel("Explosion colors").selectOption("confirm");
 }
 
 async function greenPixels(page: Page, selector: string) {
@@ -56,13 +58,13 @@ for (const renderer of ["2d", "webgl"] as const) {
         expect(await greenPixels(page, WATER)).toBe(0);
         await page.getByRole("button", { name: "Larger celebration" }).click();
         await expect(page.locator("output")).toHaveText("Accepted");
-        await page.waitForTimeout(650);
+        await page.waitForTimeout(2000);
         expect(await greenPixels(page, SKY)).toBeGreaterThan(20);
         expect(await greenPixels(page, WATER)).toBeGreaterThan(5);
         await page.locator(FOOTER).screenshot({ path: testInfo.outputPath("reflected-fireworks.png") });
         await expect(page.locator(`${FOOTER}__stage`)).toHaveAttribute("aria-hidden", "true");
         await expect(page.getByRole("link", { name: "Footer link" })).toBeVisible();
-        await expect.poll(() => greenPixels(page, SKY), { timeout: 4000 }).toBe(0);
+        await expect.poll(() => greenPixels(page, SKY), { timeout: 6500 }).toBe(0);
         await expect.poll(() => greenPixels(page, WATER)).toBe(0);
       });
     }
@@ -79,7 +81,7 @@ test("repeated triggers overlap without replacing canvases or loading the scene 
   await page.getByRole("button", { name: "Single burst" }).click();
   await page.getByRole("button", { name: "Single burst" }).click();
   await expect(page.locator("output")).toHaveText("Accepted");
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(1800);
   expect(await greenPixels(page, SKY)).toBeGreaterThan(10);
   expect(await greenPixels(page, WATER)).toBeGreaterThan(3);
   expect(await sky!.evaluate((el) => el.isConnected)).toBe(true);
@@ -134,4 +136,55 @@ test("animate=false and reduced motion reject fireworks without creating canvase
   await page.getByRole("button", { name: "Single burst" }).click();
   await expect(page.locator("output")).toHaveText("Dropped");
   await expect(page.locator(`${FOOTER}__stage canvas`)).toHaveCount(0);
+  await page.getByLabel("Automatic fireworks").check();
+  await page.waitForTimeout(600);
+  await expect(page.locator(`${FOOTER}__stage canvas`)).toHaveCount(0);
 });
+
+async function vividHues(page: Page): Promise<number> {
+  return page.locator(SKY).evaluate((canvas: HTMLCanvasElement) => {
+    const pixels = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height).data;
+    const bins = new Set<number>();
+    for (let i = 0; i < pixels.length; i += 4) {
+      const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2];
+      const max = Math.max(r, g, b), min = Math.min(r, g, b), chroma = max - min;
+      if (pixels[i + 3] < 120 || chroma < 70) continue;
+      const hue = (max === r ? (g - b) / chroma : max === g ? 2 + (b - r) / chroma : 4 + (r - g) / chroma) * 60;
+      bins.add(Math.floor(((hue + 360) % 360) / 45));
+    }
+    return bins.size;
+  });
+}
+
+for (const renderer of ["2d", "webgl"] as const) {
+  test(`multicolor explosions and automatic mode in ${renderer}`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 1280, height: 1100 });
+    await open(page);
+    await page.getByLabel("Water renderer").selectOption(renderer);
+    await expect(page.locator(WATER)).toHaveAttribute("data-renderer", renderer, { timeout: 15000 });
+    const originalSky = await page.locator(SKY).elementHandle();
+    const originalWater = await page.locator(WATER).elementHandle();
+    await page.getByLabel("Explosion colors").selectOption("multicolor");
+    await page.getByRole("button", { name: "Larger celebration" }).click();
+    await expect.poll(() => vividHues(page), { timeout: 6000 }).toBeGreaterThanOrEqual(5);
+    await page.waitForTimeout(600);
+    await page.locator(FOOTER).screenshot({ path: testInfo.outputPath("multicolor-fireworks.png") });
+    await page.getByLabel("Launches per second").fill("4");
+    await page.getByLabel("Automatic fireworks").check();
+    await expect.poll(() => vividHues(page), { timeout: 6500 }).toBeGreaterThanOrEqual(5);
+    await page.getByLabel("Launches per second").fill("2");
+    expect(await originalSky!.evaluate((el) => el.isConnected)).toBe(true);
+    expect(await originalWater!.evaluate((el) => el.isConnected)).toBe(true);
+    await page.getByLabel("Automatic fireworks").uncheck();
+    await page.waitForTimeout(6000);
+    expect(await vividHues(page)).toBeLessThan(4);
+    await page.getByLabel("Automatic fireworks").check();
+    await expect.poll(() => vividHues(page), { timeout: 6500 }).toBeGreaterThanOrEqual(5);
+    await page.locator(FOOTER).evaluate((footer: HTMLElement) => { footer.style.marginTop = "2000px"; });
+    await expect.poll(() => vividHues(page)).toBeLessThan(4);
+    await page.getByLabel("Automatic fireworks").uncheck();
+    await page.locator(FOOTER).evaluate((footer: HTMLElement) => { footer.style.marginTop = ""; });
+    await page.waitForTimeout(700);
+    expect(await vividHues(page)).toBeLessThan(4);
+  });
+}

@@ -75,7 +75,10 @@ function toScene(mod: SceneModule): FooterScene {
  *
  * Returns a function that undoes all of it.
  */
-export type SceneController = (() => void) & { trigger(effect: SceneEffect): boolean };
+export type SceneController = (() => void) & {
+  trigger(effect: SceneEffect): boolean;
+  setFireworksFrequency(frequency: number): void;
+};
 
 export function startScene({ root, stage, scene, options = {}, force = false }: StartSceneOptions): SceneController {
   const setState = (state: SceneState) => {
@@ -84,7 +87,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
 
   if (shouldStayStatic(force)) {
     setState("static");
-    return Object.assign(() => {}, { trigger: () => false });
+    return Object.assign(() => {}, { trigger: () => false, setFireworksFrequency: () => {} });
   }
 
   let disposed = false;
@@ -99,6 +102,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
   let unsubscribeTheme: (() => void) | undefined;
   let resizeObserver: ResizeObserver | undefined;
   let onLoad: (() => void) | undefined;
+  let fireworksFrequency = 0;
 
   // governor bookkeeping
   let lastTick = 0;
@@ -117,6 +121,13 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
   const isInViewport = () => {
     const rect = root.getBoundingClientRect();
     return rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth;
+  };
+
+  const syncFireworks = () => {
+    instance?.setFireworksFrequency?.(
+      fireworksFrequency > 0 && !disposed && !frozen && inView && !document.hidden && isInViewport()
+        ? fireworksFrequency : 0,
+    );
   };
 
   const resetGovernor = () => {
@@ -142,6 +153,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
     else if (quality === "medium") quality = "low";
     else {
       frozen = true; // already at the lowest setting: leave the last frame on screen
+      syncFireworks();
       instance.clearEffects?.();
       setState("frozen");
       return;
@@ -152,12 +164,14 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
   const tick = (now: number) => {
     raf = 0;
     if (!instance || !inView || frozen || document.hidden) return;
+    syncFireworks();
     instance.render(now / 1000, progress());
     govern(now);
     raf = requestAnimationFrame(tick);
   };
 
   const kick = () => {
+    syncFireworks();
     // Keep the scene's prewarm margin, but discard celebrations once the footer itself leaves view.
     if (instance && !isInViewport()) instance.clearEffects?.();
     if (raf || !instance || !inView || frozen || document.hidden) return;
@@ -167,6 +181,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
 
   const onVisibility = () => {
     if (document.hidden) {
+      syncFireworks();
       instance?.clearEffects?.();
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
@@ -222,6 +237,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
         options,
         readColor: (tokens, fallback) => readColorToken(root, tokens, fallback),
       });
+      syncFireworks();
       instance.render(performance.now() / 1000, progress());
     } catch {
       fail();
@@ -275,6 +291,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
       inView = entries[entries.length - 1].isIntersecting;
       if (inView) kick();
       else {
+        syncFireworks();
         instance?.clearEffects?.();
         if (raf) cancelAnimationFrame(raf);
         raf = 0;
@@ -314,6 +331,11 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
     setState("static");
   };
   return Object.assign(stop, {
+    setFireworksFrequency(value: number) {
+      if (disposed) return;
+      fireworksFrequency = Number.isFinite(value) ? clamp(value, 0, 8) : 0;
+      syncFireworks();
+    },
     trigger(effect: SceneEffect) {
       if (disposed || !instance || frozen || !inView || document.hidden || shouldStayStatic(force)) return false;
       // The observer's prewarm margin may include a footer that is just outside the viewport.
