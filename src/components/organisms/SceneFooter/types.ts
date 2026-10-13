@@ -1,3 +1,5 @@
+import type { SceneEffect } from "./effects.js";
+
 export type SceneTheme = "light" | "dark";
 
 /** Rendering effort. The footer steps down on its own when frames run slow. */
@@ -30,6 +32,10 @@ export type SceneContext = {
 };
 
 export type SceneInstance = {
+  /** Optional support for temporary effects. Return false for unsupported or capacity-limited effects. */
+  trigger?(effect: SceneEffect): boolean;
+  /** Discard temporary effects when the controller pauses or freezes the scene. */
+  clearEffects?(): void;
   /** The footer changed size (or the quality changed): lay the scene out again. */
   resize(layout: SceneLayout, quality: SceneQuality): void;
   /** The page theme changed. */

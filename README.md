@@ -180,6 +180,68 @@ npm i
 npm run storybook
 ```
 
+## Trigger Horizon fireworks from React
+
+Create a stable handle with `useSceneEffects()` (or `createSceneEffects()` outside React).
+Pass it to `SceneFooter` through `effects`, and share it with an activity through props or
+your app's React context. Keep spelling, scoring, and quiz decisions in your app:
+
+```tsx
+import { SceneFooter, useSceneEffects } from "@noahwright/design";
+import type { SceneEffects } from "@noahwright/design";
+
+function Activity({ effects }: { effects: SceneEffects }) {
+  // Call these from your app's correct-answer and quiz-completion handlers.
+  const onCorrectAnswer = () => effects.trigger({ type: "firework" });
+  const onQuizFinished = () => effects.trigger({ type: "firework", size: "large" });
+  return <>
+    <button onClick={onCorrectAnswer}>Correct answer</button>
+    <button onClick={onQuizFinished}>Quiz finished</button>
+  </>;
+}
+
+export function LearningPage() {
+  const effects = useSceneEffects();
+  return <>
+    <Activity effects={effects} />
+    <SceneFooter scene="horizon" effects={effects} bottom="Learning together" />
+  </>;
+}
+```
+
+`effects.trigger({ type: "firework", position: { x: 0.5, y: 0.55 },
+color: "var(--confirm)", size: "small" })` returns `true` when at least one attached
+footer accepts it. It returns `false` when none can accept it. The default is a single
+modest burst at the center of the sky, in the scene's sun-light color; `"large"` launches
+a larger staggered group. Positions are normalized: x runs left to right and y runs
+from sky top to horizon. Finite values are clamped to 0–1; nonfinite values use defaults.
+Colors accept CSS colors or a single `var(--token)` resolved against the footer at
+trigger time; invalid colors fall back to the default. Color alpha is discarded.
+Bursts near an edge may be clipped by the sky band.
+
+Triggers use the current scene instance; they never serialize into `sceneOptions`,
+reload assets, reset the sky, or restart the scene. Changing the shared handle only
+changes its subscription. Separate handles isolate activities; a deliberately shared
+handle broadcasts to every attached eligible footer.
+
+Effects are **dropped, never queued**, before loading, offscreen, in a hidden tab,
+after unmount/destruction, in Still/static or reduced-motion mode, on static-fallback
+devices, or after the performance governor freezes the scene. Active bursts are cleared
+when the footer leaves view, the tab hides, or the governor freezes it. Returning to the
+footer plays only new events. Visibility refers to the footer: an activity higher on
+the page can trigger it only while the footer is visible.
+
+Repeated triggers overlap, up to 256/144/64 particles at high/medium/low quality,
+including staggered launches. At capacity, new bursts are dropped; large groups may
+be shortened to fit. Each accepted group finishes in under three seconds and shares
+the existing capped frame loop. Fireworks are drawn into the sky before either water
+renderer reflects it. Reflections cover only the sky rows that fit in the sea, like
+the existing sun, clouds, and stars. Custom scenes can optionally implement
+`SceneInstance.trigger` and `clearEffects`; unsupported scenes return `false`.
+
+Storybook's **Examples → Scene fireworks → Shared trigger** demo includes both sizes,
+water modes, theme switching, Still, and mount/unmount controls.
+
 ## Build the library
 
 ```bash

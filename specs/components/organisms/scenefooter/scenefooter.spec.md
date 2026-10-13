@@ -16,6 +16,7 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 - A scene: the name of a built-in scene (`"horizon"` today), a loader function that fetches a custom scene on demand, a scene object, or nothing at all for a plain footer panel. Defaults to the horizon scene.
 - Scene options, passed through to the scene. The horizon scene accepts the positions of its sun and moon across the footer, a star density, a cloud density, how fast the stars turn, a seed for placement, a renderer choice (automatic, WebGL, or the flat 2D mirror) for its water, and four ripple controls for the WebGL water: how far the ripple shifts the reflection sideways, how far it shifts it up and down, its speed, and its wavelength. It also accepts a variation amount (a fraction, 0.2 by default). Every option has a default chosen by eye and is clamped to a sensible range.
 - An animate switch. Turning it off shows only the CSS version of the scene and never loads scene code.
+- An optional `effects: SceneEffects` handle, created with `useSceneEffects()` or `createSceneEffects()`. Default: absent. Its typed `trigger` method accepts a firework with optional normalized position, color, and size. Defaults: center across the sky, slightly below its middle, sun-light color, and small size. A large size launches a staggered celebration.
 - Optional heights for the sky band and the sea panel, and an optional additional CSS class name.
 - The reader's footer style, an override stored on the reader's device and mirrored on the page: automatic (the site's own choice, the default), still (the CSS version only), flat (the scene with a calm flat reflection), or animated (the scene with the rippling reflection where the browser can run it). The design system offers helpers to read, set and watch it.
 - The page theme (light or dark), read from the same theme setting the rest of the design system uses, and design tokens for color. Optional scene-specific color tokens (sun, moon, sea, text) override the defaults derived from the primary and secondary colors.
@@ -23,6 +24,7 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 ### Outputs
 - A footer element made of a sky band above a sea panel. The panel holds the footer content along its bottom edge.
 - A scene state that describes what the reader is seeing: static (the CSS version), loading, live (the scene is running), frozen (the scene stopped on its last frame), or failed (the scene could not load and the CSS version remains).
+- Trigger delivery reports whether at least one attached eligible footer accepted the effect.
 
 ### Guarantees / Constraints
 - The server-rendered footer is complete without scripts: sky, sea, a risen sun or moon with its reflection, and all content.
@@ -71,6 +73,10 @@ SceneFooter is a taller alternative to `Footer` that doubles as a stage for a sc
 
 **Print:** The footer prints as plain text without the stage.
 
+**Externally triggered fireworks (horizon):** An activity shares a stable effect handle with a footer through props or context. The activity decides when to celebrate; the footer paints a small launch and radial burst or a larger staggered group onto its existing sky, so both water modes reflect it. Triggers preserve the current scene, sun, moon, stars, clouds, theme transition, and assets. Changing handles changes only the event subscription. The firework position runs from left to right and sky top to horizon in normalized fractions; finite values are clamped and nonfinite values use defaults. A CSS color or a single CSS color variable is resolved at delivery, with invalid colors using the default and alpha discarded.
+
+**Effect lifecycle and performance:** Delivery requires a loaded, live, visible footer in a visible tab. Loading, unsupported scenes, destroyed scenes, Still, reduced motion, static fallbacks, offscreen footers, hidden tabs, and frozen scenes drop triggers immediately. Returning to view accepts new events; previously active celebrations are cleared when rendering pauses or freezes. The sky clips decorations at its edges. Repeated bursts overlap within a shared particle budget, including staggered launches: high, medium, and low quality allow 256, 144, and 64 particles respectively. Quality reductions trim the pool immediately. Large groups fit available capacity; full capacity drops new bursts. Effects complete in under three seconds on the existing capped frame loop and remain decorative behind ordinary footer content.
+
 ## Interface
 
 ### Layout
@@ -109,3 +115,9 @@ Use `SceneFooter` where `Footer` would go. Choose `animate={false}` on pages tha
 21. With star rotation on, the stars move across the sky over time; with it set to zero they hold their places and only twinkle.
 22. The ripple controls change the WebGL water's movement, and the flat mirror is unaffected by them.
 23. With a variation above zero, the star and cloud amounts differ from visit to visit within that fraction of the settings; with zero they stay put.
+24. A shared effect handle delivers a small or large firework from a React event handler without recreating the scene, changing its options, or reloading assets.
+25. Fireworks appear in the sky and both water reflections in light and dark themes and narrow layouts.
+26. Repeated triggers overlap within the quality tier's particle budget and expire; reducing quality trims the pool.
+27. Unavailable, offscreen, hidden, static, reduced-motion, frozen, and destroyed scenes drop triggers; returning to view replays only new events.
+28. Changing effect handles detaches the old subscription while preserving the scene; unmounting releases subscriptions and particles.
+29. Custom scenes without effect support preserve their existing behavior and report an unaccepted trigger.
