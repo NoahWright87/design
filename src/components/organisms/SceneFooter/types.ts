@@ -32,9 +32,11 @@ export type SceneContext = {
 };
 
 export type SceneInstance = {
+  /** Live total particle budget; lower limits evict oldest particles, never reject new shots. */
+  setFireworksParticleLimit?(limit: number): void;
   /** Horizon automatic launch rate; zero pauses future launches without clearing current bursts. */
   setFireworksFrequency?(frequency: number): void;
-  /** Optional support for temporary effects. Return false for unsupported or capacity-limited effects. */
+  /** Optional temporary effects. Return false when unsupported; Horizon recycles oldest particles at capacity. */
   trigger?(effect: SceneEffect): boolean;
   /** Discard temporary effects when the controller pauses or freezes the scene. */
   clearEffects?(): void;

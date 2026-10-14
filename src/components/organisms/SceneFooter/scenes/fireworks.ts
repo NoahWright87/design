@@ -1,9 +1,8 @@
 import { clamp, mix, rgba, type RGB } from "../color.js";
-import type { FireworkEffect } from "../effects.js";
+import { DEFAULT_FIREWORKS_PARTICLE_LIMIT, normalizeFireworksParticleLimit, type FireworkEffect } from "../effects.js";
 import type { SceneQuality } from "../types.js";
 
-/** Includes particles in staggered launches, so a rapid event stream cannot grow a pending pool. */
-const LIMIT: Record<SceneQuality, number> = { high: 256, medium: 144, low: 64 };
+/** Quality controls each shell's detail; the consumer controls the overall pool size. */
 const SPARKS: Record<SceneQuality, number> = { high: 32, medium: 24, low: 16 };
 const GROUPS: Record<SceneQuality, number> = { high: 5, medium: 4, low: 3 };
 type Spark = { angle: number; speed: number; life: number; stroke: string; fill: string };
@@ -42,23 +41,64 @@ const hueColor = (hue: number): RGB => {
 /** Local state only: automatic launches share the scene's frame loop, with no timers or assets. */
 export function createFireworks(random: () => number = Math.random) {
   let bursts: Burst[] = [];
+  let available: Spark[] = [];
+  let particleCount = 0;
+  let particleLimit = DEFAULT_FIREWORKS_PARTICLE_LIMIT;
+  let destroyed = false;
   let frequency = 0;
   let nextLaunch: number | undefined;
-  const clear = () => { bursts = []; nextLaunch = undefined; };
-  const count = () => bursts.reduce((sum, burst) => sum + burst.sparks.length, 0);
+  const recycle = (spark: Spark) => { available.push(spark); particleCount--; };
+  const clear = () => {
+    for (const burst of bursts) for (const spark of burst.sparks) recycle(spark);
+    bursts.length = 0;
+    nextLaunch = undefined;
+  };
+  const evict = (target: number) => {
+    let removed = 0;
+    while (particleCount > target) {
+      const oldest = bursts[removed];
+      const count = Math.min(particleCount - target, oldest.sparks.length);
+      for (let i = 0; i < count; i++) recycle(oldest.sparks[i]);
+      oldest.sparks.copyWithin(0, count);
+      oldest.sparks.length -= count;
+      if (!oldest.sparks.length) removed++;
+    }
+    if (removed) bursts.splice(0, removed);
+  };
   const prune = (time: number) => {
-    if (bursts.length) bursts = bursts.filter((burst) => time - burst.start < burst.flight.fuse + 2.2);
+    let kept = 0;
+    for (const burst of bursts) {
+      const age = time - burst.start - burst.flight.fuse;
+      let live = 0;
+      for (const spark of burst.sparks) {
+        if (age >= spark.life) recycle(spark);
+        else burst.sparks[live++] = spark;
+      }
+      burst.sparks.length = live;
+      if (live) bursts[kept++] = burst;
+    }
+    bursts.length = kept;
   };
 
   return {
-    get particleCount() { return count(); },
+    get particleCount() { return particleCount; },
+    get retainedParticleCount() { return particleCount + available.length; },
     clear,
-    /** Quality reductions trim the pool immediately, including launches still in progress. */
-    setQuality(quality: SceneQuality) {
-      while (count() > LIMIT[quality]) bursts.shift();
+    setParticleLimit(value: number) {
+      if (destroyed) return;
+      particleLimit = normalizeFireworksParticleLimit(value);
+      evict(particleLimit);
+      available.length = Math.min(available.length, particleLimit - particleCount);
+    },
+    destroy() {
+      destroyed = true;
+      bursts.length = available.length = particleCount = 0;
+      frequency = 0;
+      nextLaunch = undefined;
     },
     setFrequency(value: number) {
-      const next = Number.isFinite(value) ? clamp(value, 0, 8) : 0;
+      if (destroyed) return;
+      const next = Number.isFinite(value) ? Math.max(0, value) : 0;
       if (frequency === next) return;
       frequency = next;
       nextLaunch = undefined;
@@ -75,11 +115,13 @@ export function createFireworks(random: () => number = Math.random) {
       }
     },
     add(effect: FireworkEffect, time: number, quality: SceneQuality, color?: RGB): boolean {
+      if (destroyed) return false;
       prune(time);
       const large = effect.size === "large";
-      const sparks = SPARKS[quality];
-      const groups = Math.min(large ? GROUPS[quality] : 1, Math.floor((LIMIT[quality] - count()) / sparks));
-      if (groups <= 0) return false;
+      const sparks = Math.min(SPARKS[quality], particleLimit);
+      const groups = Math.min(large ? GROUPS[quality] : 1, Math.floor(particleLimit / sparks));
+      // Reserve the whole incoming celebration by recycling older particles, including pending launches.
+      evict(particleLimit - groups * sparks);
       const x = fraction(effect.position?.x, 0.12 + random() * 0.76);
       const y = fraction(effect.position?.y, 0.32 + random() * 0.34);
       let delay = 0;
@@ -96,13 +138,14 @@ export function createFireworks(random: () => number = Math.random) {
           aspect: 0.75 + random() * 0.5,
           sparks: Array.from({ length: sparks }, (_, i) => {
             const color = colors[i % colors.length];
-            return {
-              angle: i / sparks * Math.PI * 2 + (random() - 0.5) * 0.15,
-              speed: 0.65 + random() * 0.65,
-              life: 1.3 + random() * 0.9,
-              stroke: rgba(color),
-              fill: rgba(mix(color, [255, 255, 255], 0.25)),
-            };
+            const spark = available.pop() ?? { angle: 0, speed: 0, life: 0, stroke: "", fill: "" };
+            spark.angle = i / sparks * Math.PI * 2 + (random() - 0.5) * 0.15;
+            spark.speed = 0.65 + random() * 0.65;
+            spark.life = 1.3 + random() * 0.9;
+            spark.stroke = rgba(color);
+            spark.fill = rgba(mix(color, [255, 255, 255], 0.25));
+            particleCount++;
+            return spark;
           }),
         });
         delay += 0.16 + random() * 0.18;

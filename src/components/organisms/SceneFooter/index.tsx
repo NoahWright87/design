@@ -4,7 +4,7 @@ import "../Footer/footer.css";
 import "./sceneFooter.css";
 import { FooterContent } from "../Footer/FooterContent.js";
 import { startScene, type SceneSource, type SceneController } from "./controller.js";
-import { createSceneEffects, subscribeSceneEffects, type SceneEffects } from "./effects.js";
+import { createSceneEffects, subscribeSceneEffects, DEFAULT_FIREWORKS_PARTICLE_LIMIT, type SceneEffects } from "./effects.js";
 import { getFooterStyle, subscribeFooterStyle, type FooterStyle } from "../../../styles/footerStyle.js";
 import { BUILT_IN_SCENES, isBuiltInScene } from "./scenes/index.js";
 
@@ -45,8 +45,10 @@ export type SceneFooterProps = {
   sceneOptions?: Record<string, unknown>;
   /** Stable handle for temporary effects; event delivery never changes sceneOptions or restarts the scene. */
   effects?: SceneEffects;
-  /** Automatic Horizon shells per second, 0..8. Default 0 (off). Updates preserve the running scene. */
+  /** Requested automatic Horizon shells per second. Default 0 (off); paced by the scene's frame rate. */
   fireworksFrequency?: number;
+  /** Total pooled Horizon particle limit. Default 2048. New shots replace oldest particles; updates preserve the scene. */
+  fireworksParticleLimit?: number;
   /**
    * `false` shows only the CSS version of the scene: no scene code is ever loaded.
    * Use it on pages that are already busy.
@@ -98,6 +100,7 @@ export function SceneFooter({
   sceneOptions,
   effects,
   fireworksFrequency = 0,
+  fireworksParticleLimit = DEFAULT_FIREWORKS_PARTICLE_LIMIT,
   animate = true,
   skyHeight,
   seaHeight,
@@ -107,7 +110,13 @@ export function SceneFooter({
   const stageRef = React.useRef<HTMLDivElement>(null);
   const controllerRef = React.useRef<SceneController | null>(null);
   const frequencyRef = React.useRef(fireworksFrequency);
+  const particleLimitRef = React.useRef(fireworksParticleLimit);
   const optionsKey = JSON.stringify(sceneOptions ?? {});
+
+  React.useEffect(() => {
+    particleLimitRef.current = fireworksParticleLimit;
+    controllerRef.current?.setFireworksParticleLimit(fireworksParticleLimit);
+  }, [fireworksParticleLimit]);
 
   React.useEffect(() => {
     frequencyRef.current = fireworksFrequency;
@@ -135,6 +144,7 @@ export function SceneFooter({
       if (plan.animate) {
         const controller = startScene({ root, stage, scene, options: plan.options, force: plan.force });
         controllerRef.current = controller;
+        controller.setFireworksParticleLimit(particleLimitRef.current);
         controller.setFireworksFrequency(frequencyRef.current);
         stop = controller;
       }

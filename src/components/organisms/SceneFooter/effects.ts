@@ -1,3 +1,10 @@
+export const DEFAULT_FIREWORKS_PARTICLE_LIMIT = 2048;
+
+/** Allocate on demand; a large configured limit never preallocates a large array. */
+export const normalizeFireworksParticleLimit = (value: number): number => Number.isFinite(value)
+  ? Math.min(Number.MAX_SAFE_INTEGER, Math.max(1, Math.floor(value)))
+  : DEFAULT_FIREWORKS_PARTICLE_LIMIT;
+
 /** A temporary, decorative Horizon sky effect. Positions are fractions of the sky band. */
 export type FireworkEffect = {
   type: "firework";
@@ -15,7 +22,8 @@ export type SceneEffect = FireworkEffect;
 export type SceneEffects = {
   /**
    * Synchronously deliver to attached, visible, live scenes. Returns true if any accepted it.
-   * Unavailable or capacity-limited effects are dropped, never queued. Safe during SSR.
+   * Unavailable scenes ignore events, never queue them. Live Horizon scenes replace oldest particles at capacity.
+   * Safe during SSR; callers can ignore this optional availability result.
    */
   readonly trigger: (effect: SceneEffect) => boolean;
 };

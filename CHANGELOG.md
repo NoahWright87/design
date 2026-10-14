@@ -11,6 +11,8 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- Replace firework capacity rejection with a configurable reusable particle pool (2,048 by default) that evicts oldest particles; remove the demo status badge and add frenzy/live pool-size controls.
+
 - Make Horizon fireworks multicolored with varied angled ballistic launches, slower ascent, independent fuses, falling-before-burst shots, and varied explosion sizes; add a live automatic launch frequency control.
 
 - Add externally triggered Horizon fireworks with a typed shared effect handle, bounded overlapping particles, automatic water reflections, lifecycle guards, and a React demo and integration guide.

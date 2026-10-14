@@ -57,7 +57,6 @@ for (const renderer of ["2d", "webgl"] as const) {
         expect(await greenPixels(page, SKY)).toBe(0);
         expect(await greenPixels(page, WATER)).toBe(0);
         await page.getByRole("button", { name: "Larger celebration" }).click();
-        await expect(page.locator("output")).toHaveText("Accepted");
         await page.waitForTimeout(2000);
         expect(await greenPixels(page, SKY)).toBeGreaterThan(20);
         expect(await greenPixels(page, WATER)).toBeGreaterThan(5);
@@ -80,7 +79,6 @@ test("repeated triggers overlap without replacing canvases or loading the scene 
   const loaded = requests.length;
   await page.getByRole("button", { name: "Single burst" }).click();
   await page.getByRole("button", { name: "Single burst" }).click();
-  await expect(page.locator("output")).toHaveText("Accepted");
   await page.waitForTimeout(1800);
   expect(await greenPixels(page, SKY)).toBeGreaterThan(10);
   expect(await greenPixels(page, WATER)).toBeGreaterThan(3);
@@ -96,12 +94,12 @@ test("offscreen delivery drops and active bursts clear without replay on return"
   await page.locator(FOOTER).evaluate((footer: HTMLElement) => { footer.style.marginTop = "2000px"; });
   await expect.poll(() => greenPixels(page, SKY)).toBe(0);
   await page.getByRole("button", { name: "Single burst" }).click();
-  await expect(page.locator("output")).toHaveText("Dropped");
+  expect(await greenPixels(page, SKY)).toBe(0);
   await page.locator(FOOTER).evaluate((footer: HTMLElement) => { footer.style.marginTop = ""; });
   await page.waitForTimeout(500);
   expect(await greenPixels(page, SKY)).toBe(0);
   await page.getByRole("button", { name: "Single burst" }).click();
-  await expect(page.locator("output")).toHaveText("Accepted");
+  await expect.poll(() => greenPixels(page, SKY)).toBeGreaterThan(5);
 });
 
 test("Still and unmount remove resources; a retained handle cannot deliver until remounted", async ({ page }) => {
@@ -110,31 +108,29 @@ test("Still and unmount remove resources; a retained handle cannot deliver until
   await page.getByRole("button", { name: "Toggle Still" }).click();
   await expect(page.locator(`${FOOTER}__stage canvas`)).toHaveCount(0);
   await page.getByRole("button", { name: "Single burst" }).click();
-  await expect(page.locator("output")).toHaveText("Dropped");
+  await expect(page.locator(`${FOOTER}__stage canvas`)).toHaveCount(0);
   await page.getByRole("button", { name: "Toggle Still" }).click();
   await expect(page.locator(FOOTER)).toHaveAttribute("data-scene-state", "live");
   await page.getByRole("button", { name: "Unmount footer" }).click();
   await expect(page.locator(FOOTER)).toHaveCount(0);
   await page.getByRole("button", { name: "Larger celebration" }).click();
-  await expect(page.locator("output")).toHaveText("Dropped");
+  await expect(page.locator(FOOTER)).toHaveCount(0);
   await page.getByRole("button", { name: "Mount footer" }).click();
   await expect(page.locator(FOOTER)).toHaveAttribute("data-scene-state", "live");
   await page.waitForTimeout(400);
   expect(await greenPixels(page, SKY)).toBe(0);
   await page.getByRole("button", { name: "Single burst" }).click();
-  await expect(page.locator("output")).toHaveText("Accepted");
+  await expect.poll(() => greenPixels(page, SKY)).toBeGreaterThan(5);
 });
 
 test("animate=false and reduced motion reject fireworks without creating canvases", async ({ page }) => {
   await page.goto(STORY.replace("shared-trigger", "disabled"));
   await page.getByRole("button", { name: "Single burst" }).click();
-  await expect(page.locator("output")).toHaveText("Dropped");
   await expect(page.locator(`${FOOTER}__stage canvas`)).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(STORY);
   await expect(page.locator(FOOTER)).toHaveAttribute("data-scene-state", "static");
   await page.getByRole("button", { name: "Single burst" }).click();
-  await expect(page.locator("output")).toHaveText("Dropped");
   await expect(page.locator(`${FOOTER}__stage canvas`)).toHaveCount(0);
   await page.getByLabel("Automatic fireworks").check();
   await page.waitForTimeout(600);
@@ -153,6 +149,35 @@ async function vividHues(page: Page): Promise<number> {
       bins.add(Math.floor(((hue + 360) % 360) / 45));
     }
     return bins.size;
+  });
+}
+
+for (const renderer of ["2d", "webgl"] as const) {
+  test(`frenzy and live particle limits preserve the scene in ${renderer}`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 1280, height: 1100 });
+    await open(page);
+    await page.getByLabel("Water renderer").selectOption(renderer);
+    await expect(page.locator(WATER)).toHaveAttribute("data-renderer", renderer, { timeout: 15000 });
+    const originalSky = await page.locator(SKY).elementHandle();
+    const originalWater = await page.locator(WATER).elementHandle();
+    await expect(page.getByLabel("Particle limit")).toHaveValue("2048");
+    await page.getByRole("button", { name: "Fireworks frenzy" }).click();
+    await page.waitForTimeout(2000);
+    expect(await greenPixels(page, SKY)).toBeGreaterThan(100);
+    expect(await greenPixels(page, WATER)).toBeGreaterThan(10);
+    await expect(page.locator(FOOTER)).toHaveAttribute("data-scene-state", "live");
+    await page.locator(FOOTER).screenshot({ path: testInfo.outputPath("default-pool-frenzy.png") });
+    await page.getByLabel("Particle limit").fill("64");
+    await page.getByRole("button", { name: "Fireworks frenzy" }).click();
+    await page.waitForTimeout(1800);
+    expect(await greenPixels(page, SKY)).toBeGreaterThan(5);
+    expect(await greenPixels(page, WATER)).toBeGreaterThan(3);
+    await page.locator(FOOTER).screenshot({ path: testInfo.outputPath("pooled-frenzy.png") });
+    await page.getByLabel("Particle limit").fill("4096");
+    await page.getByRole("button", { name: "Single burst" }).click();
+    expect(await originalSky!.evaluate((el) => el.isConnected)).toBe(true);
+    expect(await originalWater!.evaluate((el) => el.isConnected)).toBe(true);
+    await expect(page.locator("output")).toHaveCount(0);
   });
 }
 

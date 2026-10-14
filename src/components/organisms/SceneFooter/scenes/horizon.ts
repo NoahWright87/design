@@ -602,7 +602,6 @@ function create(ctx: SceneContext): SceneInstance {
 
   const layout = (next: SceneLayout, quality: SceneQuality) => {
     q = quality;
-    fireworks.setQuality(q);
     W = next.width;
     hz = next.horizon;
     waterH = Math.max(0, next.height - next.horizon);
@@ -638,6 +637,10 @@ function create(ctx: SceneContext): SceneInstance {
 
   return {
     resize: layout,
+
+    setFireworksParticleLimit(limit) {
+      if (!destroyed) fireworks.setParticleLimit(limit);
+    },
 
     setFireworksFrequency(frequency) {
       if (!destroyed) fireworks.setFrequency(frequency);
@@ -703,8 +706,7 @@ function create(ctx: SceneContext): SceneInstance {
 
     destroy() {
       destroyed = true;
-      fireworks.setFrequency(0);
-      fireworks.clear();
+      fireworks.destroy();
       cancelSprite?.();
       skyWrap.remove();
       water.destroy();

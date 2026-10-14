@@ -42,31 +42,75 @@ test("SSR-safe handles drop early events, isolate owners, broadcast, and unsubsc
   assert.equal(effects.trigger(event), false);
 });
 
-test("overlapping bursts reserve bounded capacity, expire, and accept new events", () => {
-  for (const [quality, limit, small] of [["high", 256, 32], ["medium", 144, 24], ["low", 64, 16]]) {
+test("continuous clicking replaces oldest particles, reuses records, and stays bounded", () => {
+  for (const [quality, small] of [["high", 32], ["medium", 24], ["low", 16]]) {
+    const limit = 2048;
     const pool = createFireworks(() => 0.5);
     assert.equal(pool.add({ type: "firework" }, 0, quality, [20, 160, 70]), true);
     assert.equal(pool.particleCount, small);
     assert.equal(pool.add({ type: "firework", size: "large" }, 0, quality, [20, 160, 70]), true);
     assert.ok(pool.particleCount > small);
-    for (let i = 0; i < 1000; i++) pool.add({ type: "firework", size: "large" }, 0, quality, [20, 160, 70]);
+    for (let i = 0; i < 1000; i++) {
+      assert.equal(pool.add({ type: "firework", size: "large" }, 0, quality, [20, 160, 70]), true);
+      assert.ok(pool.particleCount <= limit);
+      assert.ok(pool.retainedParticleCount <= limit);
+    }
     assert.equal(pool.particleCount, limit);
-    assert.equal(pool.add({ type: "firework" }, 0, quality, [20, 160, 70]), false);
+    assert.equal(pool.add({ type: "firework" }, 0, quality, [20, 160, 70]), true);
     pool.draw({}, 6, 400, 200); // expired particles need no drawing context
     assert.equal(pool.particleCount, 0);
+    assert.equal(pool.retainedParticleCount, limit);
     assert.equal(pool.add({ type: "firework" }, 6, quality, [20, 160, 70]), true);
+    assert.equal(pool.retainedParticleCount, limit); // expired records are reused instead of allocating another batch
     pool.clear(); pool.clear();
     assert.equal(pool.particleCount, 0);
+    pool.destroy();
+    assert.equal(pool.retainedParticleCount, 0);
+    assert.equal(pool.add({ type: "firework" }, 7, quality), false);
   }
 });
 
-test("quality reductions trim pending particles immediately", () => {
+test("quality changes reduce new shell detail while retaining the configured total limit", () => {
   const pool = createFireworks(() => 0.5);
-  for (let i = 0; i < 8; i++) pool.add({ type: "firework" }, 0, "high", [1, 2, 3]);
-  pool.setQuality("medium");
-  assert.ok(pool.particleCount <= 144);
-  pool.setQuality("low");
-  assert.equal(pool.particleCount, 64);
+  pool.add({ type: "firework" }, 0, "high");
+  assert.equal(pool.particleCount, 32);
+  pool.add({ type: "firework" }, 0, "medium");
+  assert.equal(pool.particleCount, 56);
+  pool.add({ type: "firework" }, 0, "low");
+  assert.equal(pool.particleCount, 72);
+});
+
+test("live limits evict the oldest individual particles and retain the newest colors", () => {
+  const pool = createFireworks(() => 0.5);
+  pool.setParticleLimit(48);
+  pool.add({ type: "firework" }, 0, "high", [220, 0, 0]);
+  pool.add({ type: "firework" }, 0, "high", [0, 220, 0]);
+  assert.equal(pool.particleCount, 48);
+  const colors = [];
+  const g = { save() {}, restore() {}, beginPath() {}, moveTo() {}, lineTo() {}, arc() {}, fill() {},
+    stroke() { colors.push(this.strokeStyle); },
+  };
+  pool.draw(g, 1.8, 400, 200);
+  assert.equal(colors.filter((c) => c === "rgba(220,0,0,1)").length, 16);
+  assert.equal(colors.filter((c) => c === "rgba(0,220,0,1)").length, 32);
+  pool.setParticleLimit(17.9);
+  assert.equal(pool.particleCount, 17);
+  assert.equal(pool.retainedParticleCount, 17);
+  colors.length = 0;
+  pool.draw(g, 1.8, 400, 200);
+  assert.equal(colors.length, 17);
+  assert.ok(colors.every((c) => c === "rgba(0,220,0,1)"));
+  pool.setParticleLimit(4096);
+  for (let i = 0; i < 100; i++) assert.equal(pool.add({ type: "firework", size: "large" }, 1.8, "high"), true);
+  assert.equal(pool.particleCount, 4096);
+  assert.equal(pool.retainedParticleCount, 4096);
+  pool.setParticleLimit(1);
+  assert.equal(pool.retainedParticleCount, 1);
+  assert.equal(pool.add({ type: "firework", size: "large" }, 1.8, "high"), true);
+  assert.equal(pool.particleCount, 1);
+  pool.setParticleLimit(NaN); // invalid values restore the default
+  for (let i = 0; i < 30; i++) pool.add({ type: "firework", size: "large" }, 1.8, "high");
+  assert.equal(pool.particleCount, 2048);
 });
 
 test("positions scale with the sky and handle clamped/nonfinite coordinates", () => {
@@ -143,7 +187,7 @@ test("default explosions have many colors and varied radii; an explicit color st
   assert.equal(colors.size, 1);
 });
 
-test("automatic frequency is bounded, frame-driven, and never catches up missed launches", () => {
+test("automatic rates are frame-paced and never catch up missed launches", () => {
   const pool = createFireworks(() => 0.5);
   pool.setFrequency(2);
   pool.update(0, "high");
@@ -164,10 +208,10 @@ test("automatic frequency is bounded, frame-driven, and never catches up missed 
   assert.equal(pool.particleCount, 0);
   pool.setFrequency(10000);
   pool.update(400, "high");
-  pool.update(400.124, "high");
+  pool.update(400.00009, "high");
   assert.equal(pool.particleCount, 0);
-  pool.update(400.125, "high");
-  assert.equal(pool.particleCount, 32); // clamped to 8 launches/second
+  pool.update(400.0001, "high");
+  assert.equal(pool.particleCount, 32); // high rates still launch at most one fresh shell per frame
   pool.clear();
   pool.update(1000, "high");
   assert.equal(pool.particleCount, 0); // clearing starts a fresh interval
@@ -220,12 +264,13 @@ function browserFixture(t, { reduced = false, lowEnd = false, saveData = false, 
 }
 
 function sceneFixture() {
-  const stats = { created: 0, delivered: [], cleared: 0, destroyed: 0, rendered: 0, resized: [], frequencies: [] };
+  const stats = { created: 0, delivered: [], cleared: 0, destroyed: 0, rendered: 0, resized: [], frequencies: [], limits: [] };
   const scene = { create() {
     stats.created++;
     return {
       trigger(event) { stats.delivered.push(event); return true; },
       setFireworksFrequency(frequency) { stats.frequencies.push(frequency); },
+      setFireworksParticleLimit(limit) { stats.limits.push(limit); },
       clearEffects() { stats.cleared++; },
       resize(_layout, quality) { stats.resized.push(quality); },
       setTheme() {}, render() { stats.rendered++; }, destroy() { stats.destroyed++; },
@@ -286,6 +331,28 @@ test("automatic frequency updates preserve the instance and pause offscreen/hidd
   const calls = stats.frequencies.length;
   controller.setFireworksFrequency(8);
   assert.equal(stats.frequencies.length, calls);
+});
+
+test("particle limit configuration survives loading and updates the live instance without restarting", async (t) => {
+  const f = browserFixture(t);
+  const { scene, stats } = sceneFixture();
+  const controller = startScene({ root: f.root, stage: f.stage, scene });
+  f.cleanup.push(controller);
+  controller.setFireworksParticleLimit(4096);
+  assert.equal(stats.created, 0);
+  f.observers[1].emit(true);
+  await f.load();
+  assert.equal(stats.limits.at(-1), 4096);
+  controller.setFireworksParticleLimit(65.9);
+  assert.equal(stats.limits.at(-1), 65);
+  controller.setFireworksParticleLimit(NaN);
+  assert.equal(stats.limits.at(-1), 2048);
+  assert.equal(stats.created, 1);
+  assert.equal(stats.rendered, 1);
+  controller();
+  const changes = stats.limits.length;
+  controller.setFireworksParticleLimit(8192);
+  assert.equal(stats.limits.length, changes);
 });
 
 test("offscreen and hidden events drop; pause clears existing celebrations with no replay", async (t) => {

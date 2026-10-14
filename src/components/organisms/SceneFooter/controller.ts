@@ -3,7 +3,7 @@ import { clamp, readColorToken } from "./color.js";
 import { onIdle } from "./idle.js";
 import { BUILT_IN_SCENES, isBuiltInScene, type BuiltInSceneId } from "./scenes/index.js";
 import type { FooterScene, SceneInstance, SceneLayout, SceneLoader, SceneModule, SceneQuality, SceneState } from "./types.js";
-import type { SceneEffect } from "./effects.js";
+import { DEFAULT_FIREWORKS_PARTICLE_LIMIT, normalizeFireworksParticleLimit, type SceneEffect } from "./effects.js";
 
 export type SceneSource = BuiltInSceneId | FooterScene | SceneLoader;
 
@@ -78,6 +78,7 @@ function toScene(mod: SceneModule): FooterScene {
 export type SceneController = (() => void) & {
   trigger(effect: SceneEffect): boolean;
   setFireworksFrequency(frequency: number): void;
+  setFireworksParticleLimit(limit: number): void;
 };
 
 export function startScene({ root, stage, scene, options = {}, force = false }: StartSceneOptions): SceneController {
@@ -87,7 +88,9 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
 
   if (shouldStayStatic(force)) {
     setState("static");
-    return Object.assign(() => {}, { trigger: () => false, setFireworksFrequency: () => {} });
+    return Object.assign(() => {}, {
+      trigger: () => false, setFireworksFrequency: () => {}, setFireworksParticleLimit: () => {},
+    });
   }
 
   let disposed = false;
@@ -103,6 +106,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
   let resizeObserver: ResizeObserver | undefined;
   let onLoad: (() => void) | undefined;
   let fireworksFrequency = 0;
+  let fireworksParticleLimit = DEFAULT_FIREWORKS_PARTICLE_LIMIT;
 
   // governor bookkeeping
   let lastTick = 0;
@@ -237,6 +241,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
         options,
         readColor: (tokens, fallback) => readColorToken(root, tokens, fallback),
       });
+      instance.setFireworksParticleLimit?.(fireworksParticleLimit);
       syncFireworks();
       instance.render(performance.now() / 1000, progress());
     } catch {
@@ -331,9 +336,14 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
     setState("static");
   };
   return Object.assign(stop, {
+    setFireworksParticleLimit(value: number) {
+      if (disposed) return;
+      fireworksParticleLimit = normalizeFireworksParticleLimit(value);
+      instance?.setFireworksParticleLimit?.(fireworksParticleLimit);
+    },
     setFireworksFrequency(value: number) {
       if (disposed) return;
-      fireworksFrequency = Number.isFinite(value) ? clamp(value, 0, 8) : 0;
+      fireworksFrequency = Number.isFinite(value) ? Math.max(0, value) : 0;
       syncFireworks();
     },
     trigger(effect: SceneEffect) {
