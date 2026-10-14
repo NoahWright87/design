@@ -11,15 +11,22 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- Replace firework capacity rejection with a configurable reusable particle pool (2,048 by default) that evicts oldest particles; remove the demo status badge and add frenzy/live pool-size controls.
+- Prepare the v1.6.0 minor release: synchronize package and lockfile versions, document installation, and move completed release notes into version history.
 
-- Make Horizon fireworks multicolored with varied angled ballistic launches, slower ascent, independent fuses, falling-before-burst shots, and varied explosion sizes; add a live automatic launch frequency control.
+## Version history
 
-- Add externally triggered Horizon fireworks with a typed shared effect handle, bounded overlapping particles, automatic water reflections, lifecycle guards, and a React demo and integration guide.
+### v1.6.0
+- **Public fireworks API:** `createSceneEffects()` / `useSceneEffects()` provide a typed handle shared by activities and `SceneFooter`. Trigger small or large celebrations with normalized positions and optional colors, without restarting the scene; both WebGL and flat 2D water reflect the effects.
+- **Varied launches and automatic mode:** Multicolored explosions use angled ballistic paths, varied speeds, independent fuses, and varied sizes. `fireworksFrequency` controls automatic launches live.
+- **Repeated triggers and lifecycle:** `fireworksParticleLimit` configures a reusable pool (2,048 by default) that recycles oldest particles at capacity. Unavailable, offscreen, Still, and reduced-motion scenes ignore triggers immediately; paused scenes clear effects without replaying stale celebrations.
+- **Integration and demo:** React examples show sharing the handle through props/context; the Storybook demo includes single bursts, larger celebrations, frenzy, frequency, and live pool-size controls.
+
+### v1.5.0
 
 - **SceneFooter (new organism):** A taller alternative to `Footer` that hosts a scroll-revealed "scene". The server renders a complete CSS-only footer; the scene is a separate lazily loaded chunk fetched only when the footer is within a screen of view and the browser is idle, and never for reduced-motion, save-data, forced-colors or low-end devices. Failures, timeouts and slow frames fall back to the CSS version (a governor lowers quality, then freezes on the last frame and repaints it after a resize). First built-in scene: `horizon` (sun/moon rising over a reflective sea, clouds and stars confined to a sky band; about 3.8 KB gzipped plus an optional WebGL chunk). The whole sky is painted onto one surface and mirrored into the sea, so everything in it is reflected once: a WebGL shader ripples the mirror on capable (hardware-accelerated) devices, and a flat 2D mirror is the fallback (`renderer: "auto" | "webgl" | "2d"`). Custom scenes plug in via a loader function. Benchmarked on a CPU slowed 4x: away from the footer about 2-7% main thread (the original prototype's always-on layers cost 34-99%); at the footer 47-60fps with the flat mirror where the prototype managed 2-9fps. A reader override, `getFooterStyle()` / `setFooterStyle()` / `subscribeFooterStyle()` (`auto | static | flat | animated`, remembered and applied live to every mounted footer), lets a site offer a footer-style switch. The horizon's clouds stay visible at night (one white/grey sprite set, tinted warm or purple per theme), its stars turn slowly about a point far below the horizon, and its WebGL ripple has sideways, up-and-down, speed and wavelength controls, all exposed as Storybook sliders with hand-tuned defaults. A `variation` option (20% by default, rolled once per page load) makes each visit's cloud, star, drift and ripple amounts differ slightly. Future wildlife and scene ideas are in `scenefooter.todo.md`. Also adds `subscribeThemeMode()` to the theme utilities and extracts `FooterContent` (shared slot markup) from `Footer`.
 
-- **Review fixes:** Corrected mobile Menu exit and reduced-motion selector precedence, made Motion Lab easing playheads honor live reduced-motion preferences, and removed a redundant Tailwind export replacement. Added animation-name assertions and desktop/mobile regression screenshots; bumped the package and lockfile to 1.4.0 for the new features and fixes.
+### v1.4.0
+- **Review fixes:** Corrected mobile Menu exit and reduced-motion selector precedence, made Motion Lab easing playheads honor live reduced-motion preferences, and removed a redundant Tailwind export replacement. Added animation-name assertions and desktop/mobile regression screenshots.
 - **Motion export regression:** Added named properties to Button/Modal generated CSS so token exports contain values; limited Tailwind timing-function exports to easing tokens.
 
 - **Remaining examples:** Added Showcase forms/navigation/metadata/focus handling, carousel playback/frame inspection/timing controls, and Header Integration nested navigation with Menu exit transitions. Added matching desktop/mobile screenshots and linked form error descriptions.
@@ -31,10 +38,6 @@ This file documents planned and completed changes for the repository.
 - **Motion Lab:** Added preset shortcuts, reset, easing copy feedback, multi-format exports, and animated, focusable, screen-reader-described easing graphs.
 
 - **Colors and spec cleanup:** Added Colors contrast/export helpers and promoted completed Colors, Contact Form, Header Responsive, and Nonsense items into current specs.
-
-- **Branch synchronization:** Merged current main, including the released component, font, and example updates.
-
-## Version history
 
 ### v1.3.0
 - **Consumer-site fixes (#21, #22, #23):** `CardGrid` fills its container's width, fixing rows far taller than their cards inside a vertical `Container`. `MobileNav` highlights `aria-current="page"` links, closes its dropdown on link click (`closeOnNavigate`), and spans the full `Header` width inside a slot; `MenuItem` gains a matching `current` prop.
