@@ -180,6 +180,108 @@ npm i
 npm run storybook
 ```
 
+## Trigger Horizon fireworks from React
+
+Create a stable handle with `useSceneEffects()` (or `createSceneEffects()` outside React).
+Pass it to `SceneFooter` through `effects`, and share it with an activity through props or
+your app's React context. Keep spelling, scoring, and quiz decisions in your app:
+
+```tsx
+import { SceneFooter, useSceneEffects } from "@noahwright/design";
+import type { SceneEffects } from "@noahwright/design";
+
+function Activity({ effects }: { effects: SceneEffects }) {
+  // Call these from your app's correct-answer and quiz-completion handlers.
+  const onCorrectAnswer = () => effects.trigger({ type: "firework" });
+  const onQuizFinished = () => effects.trigger({ type: "firework", size: "large" });
+  return <>
+    <button onClick={onCorrectAnswer}>Correct answer</button>
+    <button onClick={onQuizFinished}>Quiz finished</button>
+  </>;
+}
+
+export function LearningPage() {
+  const effects = useSceneEffects();
+  return <>
+    <Activity effects={effects} />
+    <SceneFooter scene="horizon" effects={effects} bottom="Learning together" />
+  </>;
+}
+```
+
+`effects.trigger({ type: "firework", position: { x: 0.5, y: 0.55 },
+color: "var(--confirm)", size: "small" })` returns `true` when at least one attached
+footer can receive it. This optional availability result can be ignored in event handlers;
+live Horizon scenes always create new fireworks, recycling oldest particles at capacity.
+Unavailable scenes remain quiet. The default is a single
+modest multicolor burst at a fresh random sky position; `"large"` launches a larger
+staggered group. Each shell has a different angled launch, speed, fuse, and explosion
+size. Rockets rise slowly and decelerate under gravity; longer fuses let them start
+falling before bursting. Omitted colors choose a new saturated three-color palette
+per shell. An explicit color keeps the explosion in that chosen color.
+Positions are normalized: x runs left to right and y runs
+from sky top to horizon. Finite values are clamped to 0–1; nonfinite values use defaults.
+Colors accept CSS colors or a single `var(--token)` resolved against the footer at
+trigger time; invalid explicit colors fall back to the scene's sun-light color. Color alpha is discarded.
+Bursts near an edge may be clipped by the sky band.
+
+Triggers use the current scene instance; they never serialize into `sceneOptions`,
+reload assets, reset the sky, or restart the scene. Changing the shared handle only
+changes its subscription. Separate handles isolate activities; a deliberately shared
+handle broadcasts to every attached eligible footer.
+
+For a continuous show, set a requested average launch frequency in shells per second:
+
+```tsx
+<SceneFooter fireworksFrequency={1.5} bottom="Learning together" />
+```
+
+`fireworksFrequency` defaults to `0` (off), and treats negative or
+nonfinite values as off. Change it live with React state; updates preserve the scene
+and its assets. Automatic shells choose random positions, multicolor palettes, flight
+speeds, fuses, and sizes; manual triggers can still overlap them. Launch intervals
+vary around the chosen rate for a natural rhythm. High rates are paced by the existing
+scene frame rate, with no artificial eight-per-second cap. Setting the rate to zero stops new
+launches while existing effects finish. Still, static fallbacks, reduced motion,
+hidden tabs, offscreen footers, and frozen scenes pause the show and clear active
+effects. Returning to view starts a fresh interval, with no missed launches replayed.
+
+Effects are **dropped, never queued**, before loading, offscreen, in a hidden tab,
+after unmount/destruction, in Still/static or reduced-motion mode, on static-fallback
+devices, or after the performance governor freezes the scene. Active bursts are cleared
+when the footer leaves view, the tab hides, or the governor freezes it. Returning to the
+footer plays only new events. Visibility refers to the footer: an activity higher on
+the page can trigger it only while the footer is visible.
+
+Click as often as you like. `fireworksParticleLimit` controls a reusable pool that
+defaults to **2,048 particles**, including shells still rising or waiting on a fuse:
+
+```tsx
+<SceneFooter effects={effects} fireworksParticleLimit={8192} />
+```
+
+The limit updates live without replacing the scene. At capacity, each new trigger
+recycles the oldest particles first, preserving the newest fireworks. Retired and
+expired records are reused; the pool allocates on demand rather than reserving the
+entire configured size. Fractional limits round down, values below one become one,
+and nonfinite limits restore the default. Lowering the limit immediately retires
+oldest particles and releases spare records above it. Even tiny limits allow new
+shots; celebrations reduce their group/detail count to fit. Quality still controls
+shell detail and rendering resolution/frame rate, while the configured total limit
+stays the same. Pause clears active effects; destruction releases the whole pool.
+
+Each group finishes in under six seconds and shares
+the existing capped frame loop. Fireworks are drawn into the sky before either water
+renderer reflects it. Reflections cover only the sky rows that fit in the sea, like
+the existing sun, clouds, and stars. Custom scenes can optionally implement
+`SceneInstance.trigger`, `clearEffects`, `setFireworksFrequency`, and `setFireworksParticleLimit`; unsupported scenes
+return `false` for triggers and ignore the automatic rate.
+
+Storybook's **Examples → Scene fireworks → Shared trigger** demo includes both sizes,
+water modes, multicolor/explicit-color choices, a frenzy button, a live particle-limit
+input, automatic mode with a frequency input,
+theme switching, Still, and mount/unmount controls.
+
 ## Build the library
 
 ```bash

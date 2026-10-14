@@ -28,6 +28,34 @@ Tests cover:
 
 All tests navigate to Storybook iframe URLs and wait for stable rendering before capturing screenshots.
 
+## Scene effects checks
+
+Fireworks behavior tests read rendered sky and water pixels, exercise repeated events,
+multicolor explosions, frenzy clicks, live particle-limit/automatic-frequency updates, Still/unmount/offscreen/reduced-motion
+behavior, and capture review screenshots in
+`test-results/`. They require real Chromium with WebGL and do not create or update
+screenshot baselines. Run the new and existing SceneFooter tests from the repository root:
+
+```bash
+npm run test:visual -- scene-fireworks.spec.ts scenefooter.spec.ts --workers=1
+```
+
+Particle, delivery, and controller lifecycle checks use the existing TypeScript compiler
+and Node runner, with no browser dependencies:
+
+```bash
+node tests/sceneEffects.test.mjs
+node tests/typewriterDiff.test.mjs
+npm run typecheck
+npm run build
+npx tsc --strict --module nodenext --moduleResolution nodenext --target es2020 --skipLibCheck --noEmit tests/sceneEffects.types.mts
+```
+
+The final command checks the package's built public exports, including rejected invalid
+effect types/options. Build the library before running it. In this cloud environment,
+the equivalent browser run uses the ignored `.tmp/fireworks.playwright.config.cjs`
+override for system Chromium and a static Storybook server after `npm run build-storybook`.
+
 ## Baselines
 
 Screenshot baselines are stored in `tests/visual/*-snapshots/` and committed to the repository. Update baselines only when visual changes are intentional.

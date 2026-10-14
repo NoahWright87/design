@@ -1,8 +1,9 @@
 import type { FooterScene, SceneContext, SceneInstance, SceneLayout, SceneQuality, SceneTheme } from "../types.js";
-import { clamp, mix, rgba, type RGB } from "../color.js";
+import { clamp, mix, parseColor, rgba, type RGB } from "../color.js";
 import { mulberry32 } from "../random.js";
 import { onIdle } from "../idle.js";
 import { canvasStyle, makeMirror2d, type FrameState, type Water } from "./horizonWater.js";
+import { createFireworks } from "./fireworks.js";
 
 /**
  * Horizon: the footer is a sea and its top edge is the horizon. By day the sun rises as the
@@ -175,6 +176,7 @@ function create(ctx: SceneContext): SceneInstance {
   let paintedP = -1;
   let paintedM = -1;
   let destroyed = false;
+  const fireworks = createFireworks();
 
   const readPalette = (): Palette => {
     const sun = ctx.readColor(["--nw-scene-sun", "--primary"], [255, 122, 26]);
@@ -588,6 +590,8 @@ function create(ctx: SceneContext): SceneInstance {
     drawStars(t);
     sky.drawImage(staticC, 0, 0, W, hz);
     drawClouds(t);
+    // Both water renderers receive this same finished sky, including temporary effects.
+    fireworks.draw(sky, t, W, hz);
   };
 
   /* ---------- instance ---------- */
@@ -634,6 +638,33 @@ function create(ctx: SceneContext): SceneInstance {
   return {
     resize: layout,
 
+    setFireworksParticleLimit(limit) {
+      if (!destroyed) fireworks.setParticleLimit(limit);
+    },
+
+    setFireworksFrequency(frequency) {
+      if (!destroyed) fireworks.setFrequency(frequency);
+    },
+
+    trigger(effect) {
+      if (destroyed || W <= 0 || hz <= 0 || effect.type !== "firework") return false;
+      const token = effect.color?.match(/^var\(\s*(--[\w-]+)\s*\)$/)?.[1];
+      const color = token ? ctx.readColor([token], palette.sunLight)
+        : effect.color ? parseColor(effect.color) ?? palette.sunLight : undefined;
+      return fireworks.add(effect, performance.now() / 1000, q, color);
+    },
+
+    clearEffects() {
+      const hadParticles = fireworks.particleCount > 0;
+      fireworks.clear();
+      if (!hadParticles) return;
+      // Remove a celebration from the last visible frame too, without advancing the scene.
+      if (!destroyed && lastDraw >= 0 && W > 0 && hz > 0) {
+        composeSky(lastDraw);
+        water.draw(lastDraw, frame, skyC);
+      }
+    },
+
     setTheme(next) {
       theme = next;
       mTarget = theme === "dark" ? 1 : 0;
@@ -656,6 +687,7 @@ function create(ctx: SceneContext): SceneInstance {
       if (lastDraw >= 0 && time - lastDraw < FRAME_INTERVAL[q] - 0.003) return;
       const dt = lastDraw < 0 ? 0.016 : Math.min(0.25, time - lastDraw);
       lastDraw = time;
+      fireworks.update(time, q);
 
       p += (targetP - p) * (1 - Math.exp(-dt / 0.22));
       if (Math.abs(targetP - p) < 0.0005) p = targetP;
@@ -674,6 +706,7 @@ function create(ctx: SceneContext): SceneInstance {
 
     destroy() {
       destroyed = true;
+      fireworks.destroy();
       cancelSprite?.();
       skyWrap.remove();
       water.destroy();

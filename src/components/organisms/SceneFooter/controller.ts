@@ -3,6 +3,7 @@ import { clamp, readColorToken } from "./color.js";
 import { onIdle } from "./idle.js";
 import { BUILT_IN_SCENES, isBuiltInScene, type BuiltInSceneId } from "./scenes/index.js";
 import type { FooterScene, SceneInstance, SceneLayout, SceneLoader, SceneModule, SceneQuality, SceneState } from "./types.js";
+import { DEFAULT_FIREWORKS_PARTICLE_LIMIT, normalizeFireworksParticleLimit, type SceneEffect } from "./effects.js";
 
 export type SceneSource = BuiltInSceneId | FooterScene | SceneLoader;
 
@@ -74,14 +75,22 @@ function toScene(mod: SceneModule): FooterScene {
  *
  * Returns a function that undoes all of it.
  */
-export function startScene({ root, stage, scene, options = {}, force = false }: StartSceneOptions): () => void {
+export type SceneController = (() => void) & {
+  trigger(effect: SceneEffect): boolean;
+  setFireworksFrequency(frequency: number): void;
+  setFireworksParticleLimit(limit: number): void;
+};
+
+export function startScene({ root, stage, scene, options = {}, force = false }: StartSceneOptions): SceneController {
   const setState = (state: SceneState) => {
     root.dataset.sceneState = state;
   };
 
   if (shouldStayStatic(force)) {
     setState("static");
-    return () => {};
+    return Object.assign(() => {}, {
+      trigger: () => false, setFireworksFrequency: () => {}, setFireworksParticleLimit: () => {},
+    });
   }
 
   let disposed = false;
@@ -95,6 +104,9 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
   let loadTimer: ReturnType<typeof setTimeout> | undefined;
   let unsubscribeTheme: (() => void) | undefined;
   let resizeObserver: ResizeObserver | undefined;
+  let onLoad: (() => void) | undefined;
+  let fireworksFrequency = 0;
+  let fireworksParticleLimit = DEFAULT_FIREWORKS_PARTICLE_LIMIT;
 
   // governor bookkeeping
   let lastTick = 0;
@@ -108,6 +120,18 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
   const progress = () => {
     const rect = root.getBoundingClientRect();
     return rect.height > 0 ? clamp((window.innerHeight - rect.top) / rect.height, 0, 1) : 0;
+  };
+
+  const isInViewport = () => {
+    const rect = root.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth;
+  };
+
+  const syncFireworks = () => {
+    instance?.setFireworksFrequency?.(
+      fireworksFrequency > 0 && !disposed && !frozen && inView && !document.hidden && isInViewport()
+        ? fireworksFrequency : 0,
+    );
   };
 
   const resetGovernor = () => {
@@ -133,6 +157,8 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
     else if (quality === "medium") quality = "low";
     else {
       frozen = true; // already at the lowest setting: leave the last frame on screen
+      syncFireworks();
+      instance.clearEffects?.();
       setState("frozen");
       return;
     }
@@ -142,15 +168,28 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
   const tick = (now: number) => {
     raf = 0;
     if (!instance || !inView || frozen || document.hidden) return;
+    syncFireworks();
     instance.render(now / 1000, progress());
     govern(now);
     raf = requestAnimationFrame(tick);
   };
 
   const kick = () => {
+    syncFireworks();
+    // Keep the scene's prewarm margin, but discard celebrations once the footer itself leaves view.
+    if (instance && !isInViewport()) instance.clearEffects?.();
     if (raf || !instance || !inView || frozen || document.hidden) return;
     resetGovernor();
     raf = requestAnimationFrame(tick);
+  };
+
+  const onVisibility = () => {
+    if (document.hidden) {
+      syncFireworks();
+      instance?.clearEffects?.();
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    } else kick();
   };
 
   const onResize = () => {
@@ -179,7 +218,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
     unsubscribeTheme?.();
     resizeObserver?.disconnect();
     window.removeEventListener("scroll", kick);
-    document.removeEventListener("visibilitychange", kick);
+    document.removeEventListener("visibilitychange", onVisibility);
     unsubscribeTheme = resizeObserver = undefined;
     try {
       instance?.destroy();
@@ -202,6 +241,8 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
         options,
         readColor: (tokens, fallback) => readColorToken(root, tokens, fallback),
       });
+      instance.setFireworksParticleLimit?.(fireworksParticleLimit);
+      syncFireworks();
       instance.render(performance.now() / 1000, progress());
     } catch {
       fail();
@@ -215,7 +256,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
     resizeObserver = new ResizeObserver(onResize);
     resizeObserver.observe(root);
     window.addEventListener("scroll", kick, { passive: true });
-    document.addEventListener("visibilitychange", kick);
+    document.addEventListener("visibilitychange", onVisibility);
     kick();
   };
 
@@ -237,10 +278,14 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
       near.disconnect();
       setState("loading");
       const go = () => {
+        if (disposed) return;
         cancelIdle = onIdle(load, 2000);
       };
       if (document.readyState === "complete") go();
-      else window.addEventListener("load", go, { once: true });
+      else {
+        onLoad = go;
+        window.addEventListener("load", go, { once: true });
+      }
     },
     { rootMargin: "0px 0px 100% 0px" },
   );
@@ -250,6 +295,12 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
     (entries) => {
       inView = entries[entries.length - 1].isIntersecting;
       if (inView) kick();
+      else {
+        syncFireworks();
+        instance?.clearEffects?.();
+        if (raf) cancelAnimationFrame(raf);
+        raf = 0;
+      }
     },
     { rootMargin: "40px 0px" },
   );
@@ -265,6 +316,7 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
     near.disconnect();
     visible.disconnect();
     cancelIdle?.();
+    if (onLoad) window.removeEventListener("load", onLoad);
     clearTimeout(loadTimer);
     reduce?.removeEventListener("change", onReduce);
     teardownInstance();
@@ -272,14 +324,36 @@ export function startScene({ root, stage, scene, options = {}, force = false }: 
   };
   reduce?.addEventListener("change", onReduce);
 
-  return () => {
+  const stop = () => {
     disposed = true;
     near.disconnect();
     visible.disconnect();
     reduce?.removeEventListener("change", onReduce);
     cancelIdle?.();
+    if (onLoad) window.removeEventListener("load", onLoad);
     clearTimeout(loadTimer);
     teardownInstance();
     setState("static");
   };
+  return Object.assign(stop, {
+    setFireworksParticleLimit(value: number) {
+      if (disposed) return;
+      fireworksParticleLimit = normalizeFireworksParticleLimit(value);
+      instance?.setFireworksParticleLimit?.(fireworksParticleLimit);
+    },
+    setFireworksFrequency(value: number) {
+      if (disposed) return;
+      fireworksFrequency = Number.isFinite(value) ? Math.max(0, value) : 0;
+      syncFireworks();
+    },
+    trigger(effect: SceneEffect) {
+      if (disposed || !instance || frozen || !inView || document.hidden || shouldStayStatic(force)) return false;
+      // The observer's prewarm margin may include a footer that is just outside the viewport.
+      if (!isInViewport()) {
+        instance.clearEffects?.();
+        return false;
+      }
+      return instance.trigger?.(effect) ?? false;
+    },
+  });
 }
