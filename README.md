@@ -182,6 +182,13 @@ npm run storybook
 
 ## Trigger Horizon fireworks from React
 
+The fireworks API is included in v1.6.0. After that release is published, install it in
+your consuming app:
+
+```bash
+npm install @noahwright/design@^1.6.0
+```
+
 Create a stable handle with `useSceneEffects()` (or `createSceneEffects()` outside React).
 Pass it to `SceneFooter` through `effects`, and share it with an activity through props or
 your app's React context. Keep spelling, scoring, and quiz decisions in your app:
