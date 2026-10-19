@@ -14,7 +14,7 @@ HamburgerMenu renders the classic three-line icon used to open and close mobile 
 - Optional click handler.
 
 ### Outputs
-A button element displaying three horizontal lines that animate into a transformed shape when open.
+A button element displaying three rounded SVG strokes that form a cross when open. `HamburgerMenu` delegates to the hamburger preset of `ToggleIcon`.
 
 ### Guarantees / Constraints
 - The component is always a native button, ensuring keyboard accessibility.
@@ -32,9 +32,10 @@ Three stacked horizontal lines are the default appearance. When the open state i
 The button is sized by CSS to suit its context and uses the theme foreground color.
 
 ## Acceptance
-1. Renders a button containing three line elements.
+1. Renders a button containing an inline SVG with three rounded strokes.
 2. Shows the lines in the closed/resting position by default.
 3. Shows the transformed open state via CSS when the open state is active.
-4. Carries an accessible label of "Menu" and communicates its expanded state to assistive technology.
+4. Carries an accessible action label of "Open menu" or "Close menu" and communicates its pressed and expanded states to assistive technology.
 5. Clicking the button invokes the provided handler.
 6. Keyboard activation works the same as clicking.
+7. Strokes settle with the shared spring easing; reduced motion applies the final state immediately.

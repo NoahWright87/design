@@ -50,7 +50,7 @@ export function Example() {
       <Header
         left={<span>Logo</span>}
         center={<Heading level={2}>My App</Heading>}
-        right={<Button onClick={() => toggleThemeMode()}>🌙</Button>}
+        right={<ThemeToggle />}
         mobileMenu={<Menu trigger="≡" items={[]} />}
       />
 
@@ -109,18 +109,44 @@ writeFileSync("public/theme.css", buildThemeCss(theme), "utf8");
 Use `setThemeMode`, `getThemeMode`, or `toggleThemeMode`:
 
 ```tsx
-import { toggleThemeMode } from "@noahwright/design";
+import { useEffect, useState } from "react";
+import { ToggleIcon, getThemeMode, subscribeThemeMode, toggleThemeMode } from "@noahwright/design";
 
 export function ThemeToggle() {
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    setDark(getThemeMode() === "dark");
+    return subscribeThemeMode(mode => setDark(mode === "dark"));
+  }, []);
   return (
-    <button onClick={() => toggleThemeMode()}>
-      {getThemeMode() === "dark" ? "☀️" : "🌙"}
-    </button>
+    <ToggleIcon
+      preset="moon-sun"
+      isToggled={dark}
+      onChange={() => setDark(toggleThemeMode() === "dark")}
+    />
   );
 }
 ```
 
 The system applies a `data-theme="dark"` attribute to `<html>` and provides dark-mode colors via CSS variable overrides. Customize dark colors in your theme or update `src/styles/theme.css`.
+
+## Animated SVG icons
+
+`ToggleIcon` includes twelve presets with rounded strokes and reversible, bouncy
+transitions: `hamburger`, `moon-sun`, `circle`, `arrow`, `plus-minus`, `eye`,
+`play-pause`, `mute`, `thumbs`, `heart`, `bookmark`, and `lock`. Existing props
+remain supported. Set `size` to `sm`, `md`, or `lg`; use `label` for a custom action.
+
+```tsx
+<ToggleIcon preset="heart" onChange={liked => console.log(liked)} />
+<ToggleIcon preset="play-pause" isToggled={playing} onChange={setPlaying} />
+```
+
+`moon-sun` shows the current mode: sun when false, crescent when true. Connect it
+to the theme utilities as above. SVGs inherit text color and use the shared motion
+tokens; reduced motion applies state changes immediately. Keyboard focus, action
+labels, and pressed state are built in. `HamburgerMenu` inherits the new SVG motion.
+Preview the collection in Storybook under **Examples → Animated Icons → Collection**.
 
 ## Old browser redirect (optional)
 

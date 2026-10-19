@@ -27,7 +27,7 @@ A five-page site viewable as Storybook stories or as a standalone site launched 
 
 ## Behavior
 
-The site functions as a navigable multi-page website. Navigation is available via the hamburger menu in the header on all screen sizes. The avatar in the right header slot opens a menu with a theme toggle and a login placeholder. Internal links navigate between pages; external links open in a new tab.
+The site functions as a navigable multi-page website. Navigation is available via the hamburger menu in the header on all screen sizes. A dedicated theme button sits beside the avatar, whose menu contains a login placeholder. The theme button morphs between sun and crescent, follows theme changes from elsewhere, and releases its subscription on unmount. Internal links navigate between pages; external links open in a new tab.
 
 ## Interface
 
@@ -35,7 +35,7 @@ The site functions as a navigable multi-page website. Navigation is available vi
 Present on every page with three slots:
 - **Left** — hamburger menu triggering navigation to all five pages.
 - **Center** — logo or icon and site title from the Nonsense Atom.
-- **Right** — avatar opening a dropdown with a theme toggle and a login placeholder.
+- **Right** — animated SVG theme toggle beside an avatar opening a dropdown with a login placeholder.
 
 ### Site-Wide Footer
 Present on every page with three sections:
@@ -61,3 +61,4 @@ The footer has a visually distinct background (using the theme primary color) th
 6. All placeholder content uses the Nonsense Atom.
 7. The contact form shows the success modal on submission.
 8. Images use the future Image component throughout.
+9. The theme icon shows sun in light mode and crescent in dark mode, including after an external theme change.

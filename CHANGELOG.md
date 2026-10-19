@@ -11,6 +11,8 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- Replace all twelve `ToggleIcon` glyph presets with animated SVGs: sun/crescent morph, spring menu strokes, playback, sound, favorites, and more. Preserve the existing API, honor reduced motion, synchronize the portfolio theme control, and add an interactive icon gallery.
+
 - Prepare the v1.6.0 minor release: synchronize package and lockfile versions, document installation, and move completed release notes into version history.
 
 ## Version history
