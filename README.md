@@ -26,6 +26,8 @@ Peer deps required in your app:
 
 ## Usage (components)
 
+This example uses the `ThemeToggle` component defined in [Light/Dark Theme Toggle](#lightdark-theme-toggle) below.
+
 ```tsx
 import {
   Button,
@@ -132,8 +134,8 @@ The system applies a `data-theme="dark"` attribute to `<html>` and provides dark
 
 ## Animated SVG icons
 
-`ToggleIcon` includes twelve presets with rounded strokes and reversible, bouncy
-transitions: `hamburger`, `moon-sun`, `circle`, `arrow`, `plus-minus`, `eye`,
+`ToggleIcon` includes twelve presets with full rounded strokes and continuous,
+reversible Marshmallow Orbit spring motion: `hamburger`, `moon-sun`, `circle`, `arrow`, `plus-minus`, `eye`,
 `play-pause`, `mute`, `thumbs`, `heart`, `bookmark`, and `lock`. Existing props
 remain supported. Set `size` to `sm`, `md`, or `lg`; use `label` for a custom action.
 
@@ -143,8 +145,10 @@ remain supported. Set `size` to `sm`, `md`, or `lg`; use `label` for a custom ac
 ```
 
 `moon-sun` shows the current mode: sun when false, crescent when true. Connect it
-to the theme utilities as above. SVGs inherit text color and use the shared motion
-tokens; reduced motion applies state changes immediately. Keyboard focus, action
+to the theme utilities as above. SVGs inherit text color. The sun/moon matches the Marshmallow Orbit reference
+with capsule rays that emerge outward, rotate, and overshoot, plus a slim crescent
+that briefly thins on return. All presets retain spring momentum when toggled
+mid-motion; reduced motion applies state changes immediately. Keyboard focus, action
 labels, and pressed state are built in. `HamburgerMenu` inherits the new SVG motion.
 Preview the collection in Storybook under **Examples → Animated Icons → Collection**.
 

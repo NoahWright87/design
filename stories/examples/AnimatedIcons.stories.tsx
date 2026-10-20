@@ -4,7 +4,7 @@ import { Button, ToggleIcon, getThemeMode, subscribeThemeMode, toggleThemeMode }
 import type { ToggleIconPreset } from "../../src";
 
 const presets: { preset: ToggleIconPreset; title: string; detail: string }[] = [
-  { preset: "moon-sun", title: "Day & night", detail: "Rays dissolve into a crescent" },
+  { preset: "moon-sun", title: "Day & night", detail: "Capsule rays orbit into a soft crescent" },
   { preset: "hamburger", title: "Navigation", detail: "Three strokes become a close control" },
   { preset: "heart", title: "Favorite", detail: "A little love, a little lift" },
   { preset: "bookmark", title: "Save for later", detail: "An outline becomes a keepsake" },
@@ -42,7 +42,7 @@ function IconGallery() {
           <div>
             <p style={{ color: "var(--primary)", letterSpacing: "0.15em", fontSize: "var(--text-sm)" }}>SMALL DETAILS. FULL OF LIFE.</p>
             <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", margin: "0.25em 0", lineHeight: 1.05 }}>Icons with a little spring.</h1>
-            <p style={{ maxWidth: "35rem", lineHeight: 1.6 }}>Twelve familiar controls, drawn as one family. Tap an icon to feel its transition, or switch the whole collection together.</p>
+            <p style={{ maxWidth: "35rem", lineHeight: 1.6 }}>Twelve familiar controls with the soft shapes and spring of Marshmallow Orbit. Tap again mid-motion to feel the momentum reverse, or switch the whole collection together.</p>
           </div>
           <div style={{ display: "grid", justifyItems: "center", gap: "0.5rem" }}>
             <ToggleIcon preset="moon-sun" size="lg" isToggled={dark} onChange={() => setDark(toggleThemeMode() === "dark")} />

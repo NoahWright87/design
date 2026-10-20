@@ -38,4 +38,4 @@ The button is sized by CSS to suit its context and uses the theme foreground col
 4. Carries an accessible action label of "Open menu" or "Close menu" and communicates its pressed and expanded states to assistive technology.
 5. Clicking the button invokes the provided handler.
 6. Keyboard activation works the same as clicking.
-7. Strokes settle with the shared spring easing; reduced motion applies the final state immediately.
+7. Full rounded strokes settle with the shared Marshmallow Orbit damped spring and preserve momentum when reversed; reduced motion applies the final state immediately.
