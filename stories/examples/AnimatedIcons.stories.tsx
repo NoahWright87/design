@@ -6,7 +6,7 @@ import type { ToggleIconPreset } from "../../src";
 const presets: { preset: ToggleIconPreset; title: string; detail: string }[] = [
   { preset: "moon-sun", title: "Day & night", detail: "Capsule rays orbit into a soft crescent" },
   { preset: "hamburger", title: "Navigation", detail: "Three strokes become a close control" },
-  { preset: "heart", title: "Favorite", detail: "A little love, a little lift" },
+  { preset: "heart", title: "Favorite", detail: "Fills like a game heart, with a little thump" },
   { preset: "bookmark", title: "Save for later", detail: "An outline becomes a keepsake" },
   { preset: "play-pause", title: "Playback", detail: "One shape, two useful states" },
   { preset: "mute", title: "Sound", detail: "Waves return as audio opens up" },

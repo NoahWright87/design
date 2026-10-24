@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./toggle-icon.css";
 import { usePrefersReducedMotion } from "../../../atoms/usePrefersReducedMotion.js";
-import { clamp, mix, moonSunGeometry, stepIconSpring } from "./spring.js";
+import { clamp, heartGeometry, mix, moonSunGeometry, stepIconSpring } from "./spring.js";
 
 export type ToggleIconPreset =
   | "hamburger"   // Menu → close
@@ -54,11 +54,11 @@ export interface ToggleIconProps {
 function useIconSpring(target: number) {
   const reduced = usePrefersReducedMotion();
   const state = React.useRef({ position: target, velocity: 0 });
-  const [position, setPosition] = React.useState(target);
+  const [snapshot, setSnapshot] = React.useState(state.current);
   React.useEffect(() => {
     if (reduced) {
       state.current = { position: target, velocity: 0 };
-      setPosition(target);
+      setSnapshot(state.current);
       return;
     }
     if (state.current.position === target && state.current.velocity === 0) return;
@@ -67,16 +67,16 @@ function useIconSpring(target: number) {
     function tick(now: number) {
       state.current = stepIconSpring(state.current, target, previous === null ? 0 : (now - previous) / 1000);
       previous = now;
-      setPosition(state.current.position);
+      setSnapshot(state.current);
       if (state.current.position !== target || state.current.velocity !== 0) frame = window.requestAnimationFrame(tick);
     }
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
   }, [target, reduced]);
-  return reduced ? target : position;
+  return reduced ? { position: target, velocity: 0 } : snapshot;
 }
 
-function IconGeometry({ preset, maskId, progress: p }: { preset: ToggleIconPreset; maskId: string; progress: number }) {
+function IconGeometry({ preset, maskId, progress: p, velocity }: { preset: ToggleIconPreset; maskId: string; progress: number; velocity: number }) {
   const t = clamp(p);
   const centerTransform = (transform: string) => `translate(12 12) ${transform} translate(-12 -12)`;
   switch (preset) {
@@ -118,11 +118,24 @@ function IconGeometry({ preset, maskId, progress: p }: { preset: ToggleIconPrese
       <g transform={centerTransform(`scale(${mix(1, 0.6, p)})`)} opacity={1 - t}><path d="M16 9L22 15M22 9L16 15" /></g>
     </>;
     case "thumbs": return <g transform={centerTransform(`rotate(${180 * p})`)}><path d="M7 10L11 3C12 1 15 3 14 6L13 9H19C21 9 21 11 20.5 13L19 19C18.8 20 18 21 17 21H7ZM3 10H7V21H3Z" /></g>;
-    case "heart":
+    case "heart": {
+      const heart = "M20.5 5.5C18 3 14 4 12 7C10 4 6 3 3.5 5.5C0 9 3 14 12 21C21 14 24 9 20.5 5.5Z";
+      const g = heartGeometry(p, velocity);
+      const clipId = `${maskId}-heart-fill`;
+      return <g transform={`translate(0 ${g.drop}) ${centerTransform(`scale(${g.scale})`)}`}>
+        <defs>
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+            <rect x="0" y={g.fillY} width="24" height={g.fillHeight} />
+          </clipPath>
+        </defs>
+        <path d={heart} fill="currentColor" stroke="none" clipPath={`url(#${clipId})`} />
+        <path d={heart} fill="none" />
+      </g>;
+    }
     case "bookmark": return <path
       fill="currentColor" fillOpacity={t}
       transform={centerTransform(`scale(${1 + 0.12 * Math.sin(p * Math.PI) + 0.04 * p})`)}
-      d={preset === "heart" ? "M20.5 5.5C18 3 14 4 12 7C10 4 6 3 3.5 5.5C0 9 3 14 12 21C21 14 24 9 20.5 5.5Z" : "M7 3H17Q18 3 18 4V20Q18 21 17 20.4L12 17L7 20.4Q6 21 6 20V4Q6 3 7 3Z"}
+      d="M7 3H17Q18 3 18 4V20Q18 21 17 20.4L12 17L7 20.4Q6 21 6 20V4Q6 3 7 3Z"
     />;
     case "lock": return <>
       <path d={`M8 11V7A4 4 0 0 1 16 7V${7 + 4 * p}`} />
@@ -177,7 +190,7 @@ export function ToggleIcon({
       aria-expanded={preset === "hamburger" ? currentToggled : undefined}
     >
       <svg className="nw-toggle-icon__svg" viewBox={preset === "moon-sun" ? "0 0 100 100" : "0 0 24 24"} width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-        <IconGeometry preset={preset} maskId={maskId} progress={progress} />
+        <IconGeometry preset={preset} maskId={maskId} progress={progress.position} velocity={progress.velocity} />
       </svg>
     </button>
   );

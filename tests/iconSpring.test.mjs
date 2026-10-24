@@ -5,7 +5,7 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../src/components/molecules/ToggleIcon/spring.ts", import.meta.url), "utf8");
 const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } }).outputText;
-const { stepIconSpring, moonSunGeometry } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
+const { stepIconSpring, moonSunGeometry, heartGeometry } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
 
 test("both directions overshoot and settle at the exact requested endpoint", () => {
   for (const target of [0, 1]) {
@@ -61,4 +61,26 @@ test("reference overtravel extends sun rays and briefly thins the moon", () => {
   assert.equal(moon.rayOpacity, 0);
   assert.ok(moon.cutX < 56.3);
   assert.ok(moon.cutRadius > 19.4);
+});
+
+test("heart fills upward with a thump, drains with a small dip, and settles neutrally", () => {
+  for (const target of [1, 0]) {
+    let state = { position: 1 - target, velocity: 0 };
+    let maxScale = 1;
+    let maxDrop = 0;
+    for (let frame = 0; frame < 240; frame++) {
+      state = stepIconSpring(state, target, 1 / 60);
+      const pose = heartGeometry(state.position, state.velocity);
+      assert.ok(pose.fillHeight >= 0 && pose.fillHeight <= 18);
+      assert.equal(pose.fillY + pose.fillHeight, 21, "fill remains anchored at the heart's bottom");
+      maxScale = Math.max(maxScale, pose.scale);
+      maxDrop = Math.max(maxDrop, pose.drop);
+    }
+    const resting = heartGeometry(state.position, state.velocity);
+    assert.equal(resting.scale, 1);
+    assert.equal(resting.drop, 0);
+    assert.equal(resting.fillHeight, target * 18);
+    if (target) assert.ok(maxScale > 1.08 && maxScale < 1.18, "filling makes a modest heartbeat");
+    else assert.ok(maxDrop > 0.4 && maxDrop < 1, "draining dips by less than one canvas unit");
+  }
 });

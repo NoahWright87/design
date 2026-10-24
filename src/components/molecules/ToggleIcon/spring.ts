@@ -7,6 +7,17 @@ export const clamp = (value: number) => Math.max(0, Math.min(1, value));
 export const mix = (from: number, to: number, progress: number) => from + (to - from) * progress;
 const ease = (value: number) => { const t = clamp(value); return t * t * (3 - 2 * t); };
 
+/** Velocity keeps the heartbeat continuous through interrupted and reversed toggles. */
+export function heartGeometry(position: number, velocity: number) {
+  const fill = clamp(position);
+  return {
+    fillY: 21 - 18 * fill,
+    fillHeight: 18 * fill,
+    scale: 1 + 0.17 * Math.tanh(Math.max(0, velocity) / 7),
+    drop: 0.9 * Math.tanh(Math.max(0, -velocity) / 7),
+  };
+}
+
 /** Marshmallow Orbit's damped spring; retain velocity when the target reverses. */
 export function stepIconSpring(state: IconSpring, target: number, elapsed: number): IconSpring {
   const dt = Math.max(0, Math.min(elapsed, 0.04));
