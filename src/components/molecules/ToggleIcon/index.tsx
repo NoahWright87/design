@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./toggle-icon.css";
 import { usePrefersReducedMotion } from "../../../atoms/usePrefersReducedMotion.js";
-import { clamp, heartGeometry, mix, moonSunGeometry, stepIconSpring } from "./spring.js";
+import { clamp, heartGeometry, mix, moonSunGeometry, restingHeart, stepHeartMotion, stepIconSpring, targetHeart } from "./spring.js";
 
 export type ToggleIconPreset =
   | "hamburger"   // Menu → close
@@ -51,32 +51,44 @@ export interface ToggleIconProps {
   size?: "sm" | "md" | "lg";
 }
 
-function useIconSpring(target: number) {
+function useIconSpring(target: number, heartMode: boolean) {
   const reduced = usePrefersReducedMotion();
-  const state = React.useRef({ position: target, velocity: 0 });
+  const state = React.useRef({ position: target, velocity: 0, width: 0, height: 0 });
+  const heart = React.useRef(restingHeart(target));
   const [snapshot, setSnapshot] = React.useState(state.current);
   React.useEffect(() => {
     if (reduced) {
-      state.current = { position: target, velocity: 0 };
+      state.current = { position: target, velocity: 0, width: 0, height: 0 };
+      heart.current = restingHeart(target);
       setSnapshot(state.current);
       return;
     }
-    if (state.current.position === target && state.current.velocity === 0) return;
+    if (heartMode) {
+      heart.current = targetHeart(heart.current, target);
+      if (heart.current.phase === "idle") return;
+    } else if (state.current.position === target && state.current.velocity === 0) return;
     let frame = 0;
     let previous: number | null = null;
     function tick(now: number) {
-      state.current = stepIconSpring(state.current, target, previous === null ? 0 : (now - previous) / 1000);
+      const dt = previous === null ? 0 : (now - previous) / 1000;
+      if (heartMode) {
+        heart.current = stepHeartMotion(heart.current, dt);
+        state.current = { position: heart.current.fill, velocity: 0, width: heart.current.width.position, height: heart.current.height.position };
+      } else {
+        state.current = { ...stepIconSpring(state.current, target, dt), width: 0, height: 0 };
+      }
       previous = now;
       setSnapshot(state.current);
-      if (state.current.position !== target || state.current.velocity !== 0) frame = window.requestAnimationFrame(tick);
+      const active = heartMode ? heart.current.phase !== "idle" : state.current.position !== target || state.current.velocity !== 0;
+      if (active) frame = window.requestAnimationFrame(tick);
     }
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
-  }, [target, reduced]);
-  return reduced ? { position: target, velocity: 0 } : snapshot;
+  }, [target, reduced, heartMode]);
+  return reduced ? { position: target, velocity: 0, width: 0, height: 0 } : snapshot;
 }
 
-function IconGeometry({ preset, maskId, progress: p, velocity }: { preset: ToggleIconPreset; maskId: string; progress: number; velocity: number }) {
+function IconGeometry({ preset, maskId, progress: p, width, height }: { preset: ToggleIconPreset; maskId: string; progress: number; width: number; height: number }) {
   const t = clamp(p);
   const centerTransform = (transform: string) => `translate(12 12) ${transform} translate(-12 -12)`;
   switch (preset) {
@@ -120,16 +132,16 @@ function IconGeometry({ preset, maskId, progress: p, velocity }: { preset: Toggl
     case "thumbs": return <g transform={centerTransform(`rotate(${180 * p})`)}><path d="M7 10L11 3C12 1 15 3 14 6L13 9H19C21 9 21 11 20.5 13L19 19C18.8 20 18 21 17 21H7ZM3 10H7V21H3Z" /></g>;
     case "heart": {
       const heart = "M20.5 5.5C18 3 14 4 12 7C10 4 6 3 3.5 5.5C0 9 3 14 12 21C21 14 24 9 20.5 5.5Z";
-      const g = heartGeometry(p, velocity);
+      const g = heartGeometry(p, width, height);
       const clipId = `${maskId}-heart-fill`;
-      return <g transform={`translate(12 ${21 + g.drop}) scale(${g.scale}) translate(-12 -21)`}>
+      return <g transform={`translate(12 21) scale(${g.scaleX} ${g.scaleY}) translate(-12 -21)`}>
         <defs>
           <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
             <rect x="0" y={g.fillY} width="24" height={g.fillHeight} />
           </clipPath>
         </defs>
         <path d={heart} fill="currentColor" stroke="none" clipPath={`url(#${clipId})`} />
-        <path d={heart} fill="none" />
+        <path d={heart} fill="none" vectorEffect="non-scaling-stroke" strokeWidth="0.1em" />
       </g>;
     }
     case "bookmark": return <path
@@ -159,7 +171,7 @@ export function ToggleIcon({
 
   const currentToggled = isControlled ? isToggled : internalToggled;
 
-  const progress = useIconSpring(currentToggled ? 1 : 0);
+  const progress = useIconSpring(currentToggled ? 1 : 0, preset === "heart");
 
   function handleClick() {
     const next = !currentToggled;
@@ -190,7 +202,7 @@ export function ToggleIcon({
       aria-expanded={preset === "hamburger" ? currentToggled : undefined}
     >
       <svg className="nw-toggle-icon__svg" viewBox={preset === "moon-sun" ? "0 0 100 100" : "0 0 24 24"} width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-        <IconGeometry preset={preset} maskId={maskId} progress={progress.position} velocity={progress.velocity} />
+        <IconGeometry preset={preset} maskId={maskId} progress={progress.position} width={progress.width} height={progress.height} />
       </svg>
     </button>
   );

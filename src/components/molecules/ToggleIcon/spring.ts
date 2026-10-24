@@ -7,14 +7,53 @@ export const clamp = (value: number) => Math.max(0, Math.min(1, value));
 export const mix = (from: number, to: number, progress: number) => from + (to - from) * progress;
 const ease = (value: number) => { const t = clamp(value); return t * t * (3 - 2 * t); };
 
-/** Velocity keeps the heartbeat continuous through interrupted and reversed toggles. */
-export function heartGeometry(position: number, velocity: number) {
+export interface HeartMotion {
+  fill: number;
+  from: number;
+  target: number;
+  elapsed: number;
+  phase: "idle" | "fill" | "reaction";
+  width: IconSpring;
+  height: IconSpring;
+}
+
+export function restingHeart(target: number): HeartMotion {
+  return { fill: target, from: target, target, elapsed: 0, phase: "idle", width: { position: 0, velocity: 0 }, height: { position: 0, velocity: 0 } };
+}
+
+export function targetHeart(state: HeartMotion, target: number): HeartMotion {
+  return state.target === target ? state : { ...state, from: state.fill, target, elapsed: 0, phase: "fill" };
+}
+
+/** Fill completes before the reaction impulse; retargeting cancels the old pending beat. */
+export function stepHeartMotion(state: HeartMotion, elapsed: number): HeartMotion {
+  if (state.phase === "idle") return state;
+  const dt = Math.max(0, Math.min(elapsed, 0.04));
+  const width = stepIconSpring(state.width, 0, dt);
+  const height = stepIconSpring(state.height, 0, dt);
+  if (state.phase === "fill") {
+    const time = state.elapsed + dt;
+    const duration = 0.26 * Math.abs(state.target - state.from);
+    if (time >= duration) {
+      return {
+        ...state, fill: state.target, elapsed: 0, phase: "reaction",
+        width: { position: width.position, velocity: width.velocity + 1.92 },
+        height: { position: height.position, velocity: height.velocity + (state.target === 1 ? 3.84 : -3.52) },
+      };
+    }
+    return { ...state, elapsed: time, fill: mix(state.from, state.target, ease(time / duration)), width, height };
+  }
+  const resting = width.position === 0 && width.velocity === 0 && height.position === 0 && height.velocity === 0;
+  return { ...state, width, height, phase: resting ? "idle" : "reaction" };
+}
+
+export function heartGeometry(position: number, width: number, height: number) {
   const fill = clamp(position);
   return {
     fillY: 21 - 18 * fill,
     fillHeight: 18 * fill,
-    scale: 1 + 0.17 * Math.tanh(Math.max(0, velocity) / 7),
-    drop: 0.9 * Math.tanh(Math.max(0, -velocity) / 7),
+    scaleX: 1 + width,
+    scaleY: 1 + height,
   };
 }
 

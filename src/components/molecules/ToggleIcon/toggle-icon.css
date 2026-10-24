@@ -21,6 +21,8 @@
   background-color: color-mix(in srgb, var(--foreground) 8%, transparent);
 }
 .nw-toggle-icon:active { transform: scale(0.92); }
+/* Heart reactions happen after filling; a generic press-scale would move its tip. */
+.nw-toggle-icon[data-preset="heart"]:active { transform: none; }
 .nw-toggle-icon:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .nw-toggle-icon--sm { font-size: var(--text-sm, 0.875rem); }
 .nw-toggle-icon--md { font-size: var(--text-xl, 1.25rem); }
