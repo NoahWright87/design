@@ -25,7 +25,7 @@ Three variants showing responsive label hiding, a functional light/dark theme to
 
 **Label hiding:** Labels configured in header slots are visible on larger screens and hidden on smaller screens. Only the slot content (icon or element) remains visible on small screens.
 
-**Theme toggle:** A button in the right slot toggles between light and dark themes. The current theme is reflected by the button's icon and the page's background color. The selected theme is saved so subsequent page loads restore the same preference. Switching themes applies a short color transition when motion preferences allow it. The theme can also be toggled with the keyboard shortcut shown by the example.
+**Theme toggle:** A button in the right slot toggles between light and dark themes. The current theme, including changes from elsewhere, is reflected by the animated SVG button's sun or crescent icon and the page's background color. The selected theme is saved so subsequent page loads restore the same preference. Switching themes applies a short color transition when motion preferences allow it. The theme can also be toggled with the keyboard shortcut shown by the example.
 
 **Variant 1:** Left slot has an icon and app-name label. Center has a page label. Right has a theme toggle.
 
@@ -48,3 +48,5 @@ On desktop-sized viewports, labels are visible alongside slot content. On mobile
 8. The keyboard shortcut toggles the current theme.
 9. The drawer opens on desktop and mobile, contains keyboard focus, and closes through its Close button, Escape, or outside click.
 10. Selecting a drawer destination updates the page and returns focus to the menu button.
+
+11. External theme changes synchronize the SVG icon; reduced motion applies its final state immediately.
