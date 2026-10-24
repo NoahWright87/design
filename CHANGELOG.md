@@ -11,7 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- Give the heart icon a bottom-to-top game-style fill, a swelling heartbeat on filling, and a slight downward bounce while draining; preserve smooth reversals and reduced motion.
+- Give the heart icon a bottom-to-top game-style fill, a swelling heartbeat anchored at its bottom tip, and a slight downward bounce while draining; preserve smooth reversals and reduced motion.
 
 - Replace all twelve `ToggleIcon` glyph presets with animated SVGs and an interactive gallery. Match the Marshmallow Orbit sun/crescent reference and carry its rounded shapes and continuous damped spring across the family, preserving momentum on reversal, reduced motion, the existing API, and synchronized theme controls.
 

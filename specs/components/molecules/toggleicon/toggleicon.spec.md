@@ -48,5 +48,5 @@ Storybook's Examples → Animated Icons gallery offers individual controls, a pa
 10. Sun rays have rounded capsule silhouettes and overtravel, while moon overtravel briefly thins the crescent and keeps rays hidden.
 11. All presets use full rounded strokes and the reference's shared spring motion; playback and lock geometry morph through SVG attributes.
 12. The heart reveals solid fill from bottom to top while its outline stays visible; emptying drains from top to bottom.
-13. Filling briefly enlarges the heart; draining dips it downward slightly. Both states settle at the same size and position, and reduced motion renders the final fill with a neutral pose.
+13. Filling briefly enlarges the heart around its bottom tip, so growth rises upward and settling lowers the heart toward the fill. Draining dips it downward slightly. Scaling keeps the tip anchored apart from that deliberate dip. Both states settle at the same size and position, and reduced motion renders the final fill with a neutral pose.
 14. Multiple heart instances have unique, correctly linked fill clipping references.

@@ -122,7 +122,7 @@ function IconGeometry({ preset, maskId, progress: p, velocity }: { preset: Toggl
       const heart = "M20.5 5.5C18 3 14 4 12 7C10 4 6 3 3.5 5.5C0 9 3 14 12 21C21 14 24 9 20.5 5.5Z";
       const g = heartGeometry(p, velocity);
       const clipId = `${maskId}-heart-fill`;
-      return <g transform={`translate(0 ${g.drop}) ${centerTransform(`scale(${g.scale})`)}`}>
+      return <g transform={`translate(12 ${21 + g.drop}) scale(${g.scale}) translate(-12 -21)`}>
         <defs>
           <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
             <rect x="0" y={g.fillY} width="24" height={g.fillHeight} />
