@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./toggle-icon.css";
 import { usePrefersReducedMotion } from "../../../atoms/usePrefersReducedMotion.js";
-import { clamp, heartGeometry, mix, moonSunGeometry, restingHeart, stepHeartMotion, stepIconSpring, targetHeart } from "./spring.js";
+import { clamp, heartGeometry, mix, moonSunGeometry, playbackGeometry, restingHeart, stepHeartMotion, stepIconSpring, targetHeart } from "./spring.js";
 
 export type ToggleIconPreset =
   | "hamburger"   // Menu → close
@@ -51,19 +51,22 @@ export interface ToggleIconProps {
   size?: "sm" | "md" | "lg";
 }
 
-function useIconSpring(target: number, heartMode: boolean) {
+function useIconSpring(target: number, mode: "spring" | "fill" | "playback") {
+  const fillMode = mode === "fill";
   const reduced = usePrefersReducedMotion();
   const state = React.useRef({ position: target, velocity: 0, width: 0, height: 0 });
   const heart = React.useRef(restingHeart(target));
+  const previousMode = React.useRef(mode);
   const [snapshot, setSnapshot] = React.useState(state.current);
   React.useEffect(() => {
-    if (reduced) {
+    if (reduced || previousMode.current !== mode) {
+      previousMode.current = mode;
       state.current = { position: target, velocity: 0, width: 0, height: 0 };
       heart.current = restingHeart(target);
       setSnapshot(state.current);
       return;
     }
-    if (heartMode) {
+    if (fillMode) {
       heart.current = targetHeart(heart.current, target);
       if (heart.current.phase === "idle") return;
     } else if (state.current.position === target && state.current.velocity === 0) return;
@@ -71,20 +74,20 @@ function useIconSpring(target: number, heartMode: boolean) {
     let previous: number | null = null;
     function tick(now: number) {
       const dt = previous === null ? 0 : (now - previous) / 1000;
-      if (heartMode) {
+      if (fillMode) {
         heart.current = stepHeartMotion(heart.current, dt);
         state.current = { position: heart.current.fill, velocity: 0, width: heart.current.width.position, height: heart.current.height.position };
       } else {
-        state.current = { ...stepIconSpring(state.current, target, dt), width: 0, height: 0 };
+        state.current = { ...stepIconSpring(state.current, target, dt, mode === "playback" ? 8 : 14.5), width: 0, height: 0 };
       }
       previous = now;
       setSnapshot(state.current);
-      const active = heartMode ? heart.current.phase !== "idle" : state.current.position !== target || state.current.velocity !== 0;
+      const active = fillMode ? heart.current.phase !== "idle" : state.current.position !== target || state.current.velocity !== 0;
       if (active) frame = window.requestAnimationFrame(tick);
     }
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
-  }, [target, reduced, heartMode]);
+  }, [target, reduced, mode, fillMode]);
   return reduced ? { position: target, velocity: 0, width: 0, height: 0 } : snapshot;
 }
 
@@ -120,35 +123,36 @@ function IconGeometry({ preset, maskId, progress: p, width, height }: { preset: 
       <circle cx="12" cy="12" r="3" transform={centerTransform(`scale(${mix(1, 0.2, p)})`)} opacity={1 - t} />
       <path pathLength="1" d="M3 3L21 21" strokeDasharray="1" strokeDashoffset={1 - t} />
     </>;
-    case "play-pause": return <g fill="currentColor">
-      <path d={`M6 4L${mix(12, 9, p)} ${mix(8, 4, p)}L${mix(12, 9, p)} ${mix(16, 20, p)}L6 20Z`} />
-      <path d={`M${mix(12, 15, p)} ${mix(8, 4, p)}L${mix(20, 18, p)} ${mix(12, 4, p)}L${mix(20, 18, p)} ${mix(12, 20, p)}L${mix(12, 15, p)} ${mix(16, 20, p)}Z`} />
-    </g>;
+    case "play-pause": {
+      const g = playbackGeometry(p);
+      return <g fill="currentColor" strokeWidth="1.2">
+        <path d={g.primary} />
+        <path d={g.secondary} opacity={g.secondaryOpacity} />
+      </g>;
+    }
     case "mute": return <>
       <path d="M3 9H7L12 5V19L7 15H3Z" />
       <g transform={centerTransform(`scale(${mix(0.6, 1, p)})`)} opacity={t}><path d="M16 8C18 10 18 14 16 16" /><path d="M19 5C23 9 23 15 19 19" /></g>
       <g transform={centerTransform(`scale(${mix(1, 0.6, p)})`)} opacity={1 - t}><path d="M16 9L22 15M22 9L16 15" /></g>
     </>;
     case "thumbs": return <g transform={centerTransform(`rotate(${180 * p})`)}><path d="M7 10L11 3C12 1 15 3 14 6L13 9H19C21 9 21 11 20.5 13L19 19C18.8 20 18 21 17 21H7ZM3 10H7V21H3Z" /></g>;
-    case "heart": {
-      const heart = "M20.5 5.5C18 3 14 4 12 7C10 4 6 3 3.5 5.5C0 9 3 14 12 21C21 14 24 9 20.5 5.5Z";
+    case "heart":
+    case "bookmark": {
+      const shape = preset === "heart"
+        ? "M20.5 5.5C18 3 14 4 12 7C10 4 6 3 3.5 5.5C0 9 3 14 12 21C21 14 24 9 20.5 5.5Z"
+        : "M7 3H17Q18 3 18 4V21L12 17L6 21V4Q6 3 7 3Z";
       const g = heartGeometry(p, width, height);
-      const clipId = `${maskId}-heart-fill`;
+      const clipId = `${maskId}-${preset}-fill`;
       return <g transform={`translate(12 21) scale(${g.scaleX} ${g.scaleY}) translate(-12 -21)`}>
         <defs>
           <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
             <rect x="0" y={g.fillY} width="24" height={g.fillHeight} />
           </clipPath>
         </defs>
-        <path d={heart} fill="currentColor" stroke="none" clipPath={`url(#${clipId})`} />
-        <path d={heart} fill="none" vectorEffect="non-scaling-stroke" strokeWidth="0.1em" />
+        <path d={shape} fill="currentColor" stroke="none" clipPath={`url(#${clipId})`} />
+        <path d={shape} fill="none" vectorEffect="non-scaling-stroke" strokeWidth="0.1em" />
       </g>;
     }
-    case "bookmark": return <path
-      fill="currentColor" fillOpacity={t}
-      transform={centerTransform(`scale(${1 + 0.12 * Math.sin(p * Math.PI) + 0.04 * p})`)}
-      d="M7 3H17Q18 3 18 4V20Q18 21 17 20.4L12 17L7 20.4Q6 21 6 20V4Q6 3 7 3Z"
-    />;
     case "lock": return <>
       <path d={`M8 11V7A4 4 0 0 1 16 7V${7 + 4 * p}`} />
       <rect x="5" y="11" width="14" height="10" rx="3" />
@@ -171,7 +175,8 @@ export function ToggleIcon({
 
   const currentToggled = isControlled ? isToggled : internalToggled;
 
-  const progress = useIconSpring(currentToggled ? 1 : 0, preset === "heart");
+  const mode = preset === "heart" || preset === "bookmark" ? "fill" : preset === "play-pause" ? "playback" : "spring";
+  const progress = useIconSpring(currentToggled ? 1 : 0, mode);
 
   function handleClick() {
     const next = !currentToggled;

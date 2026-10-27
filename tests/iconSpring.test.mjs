@@ -5,7 +5,7 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../src/components/molecules/ToggleIcon/spring.ts", import.meta.url), "utf8");
 const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } }).outputText;
-const { stepIconSpring, moonSunGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
+const { stepIconSpring, moonSunGeometry, playbackGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
 
 test("both directions overshoot and settle at the exact requested endpoint", () => {
   for (const target of [0, 1]) {
@@ -129,4 +129,52 @@ test("retargeting during a reaction preserves the existing pose and momentum", (
   for (let i = 0; i < 240; i++) state = stepHeartMotion(i === 0 ? reversed : state, 1 / 60);
   assert.equal(state.fill, 0);
   assert.equal(state.phase, "idle");
+});
+
+test("playback hits the right wall before rebounding and releasing the second bar", () => {
+  const play = playbackGeometry(0);
+  assert.equal(play.secondaryOpacity, 0);
+  assert.equal(play.left, 6);
+  assert.equal(play.right, 20);
+  const impact = playbackGeometry(0.5);
+  assert.equal(impact.right, 22);
+  assert.ok(impact.right - impact.left < 3, "impact rectangle is narrow");
+  assert.ok(impact.bottom - impact.top > 18, "impact rectangle is tall");
+  assert.equal(impact.secondaryOpacity, 0, "second bar waits for impact and rebound");
+  const rebound = playbackGeometry(0.68);
+  assert.equal(rebound.right - rebound.left, 4);
+  assert.equal(rebound.secondaryOpacity, 0);
+  const split = playbackGeometry(0.84);
+  assert.ok(split.secondaryOpacity > 0);
+  assert.ok(split.spawnTop < 20, "new bar grows upward from the original bar's foot");
+  const pause = playbackGeometry(1);
+  assert.equal(pause.left, 15);
+  assert.equal(pause.right, 19);
+  assert.equal(pause.top, 4);
+  assert.equal(pause.bottom, 20);
+  assert.equal(pause.secondaryOpacity, 1);
+  assert.match(pause.secondary, /^M6 4H10V20H6Z$/);
+});
+
+test("playback stages stay continuous at boundaries and during reversed spring travel", () => {
+  for (const boundary of [0.18, 0.5, 0.68, 1]) {
+    const before = playbackGeometry(boundary - 1e-7);
+    const after = playbackGeometry(boundary + 1e-7);
+    for (const property of ["left", "right", "top", "bottom", "spawnTop", "secondaryOpacity"]) {
+      assert.ok(Math.abs(before[property] - after[property]) < 0.001, `${property} stays continuous at ${boundary}`);
+    }
+  }
+  let state = { position: 0, velocity: 0 };
+  for (let i = 0; i < 14; i++) state = stepIconSpring(state, 1, 1 / 60, 8);
+  const pose = playbackGeometry(state.position);
+  const reversed = stepIconSpring(state, 0, 0, 8);
+  assert.deepEqual(playbackGeometry(reversed.position), pose);
+  for (let i = 0; i < 240; i++) {
+    state = stepIconSpring(i === 0 ? reversed : state, 0, 1 / 60, 8);
+    const g = playbackGeometry(state.position);
+    assert.doesNotMatch(g.primary + g.secondary, /NaN|Infinity/);
+    assert.ok(g.right > g.left);
+    assert.ok(g.bottom > g.top);
+  }
+  assert.deepEqual(state, { position: 0, velocity: 0 });
 });
