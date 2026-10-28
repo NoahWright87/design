@@ -112,12 +112,17 @@ export function stepLockMotion(state: LockMotion, elapsed: number): LockMotion {
 
 export function lockGeometry(position: number) {
   const opening = clamp(1 - position);
-  const lift = 1.5 * ease(opening / 0.35);
-  const angle = 0 - 55 * ease((opening - 0.35) / 0.65) - 20 * Math.max(0, -position);
+  const lift = 3.5 * ease(opening / 0.35);
+  const swivel = 180 * ease((opening - 0.35) / 0.65) + 20 * Math.max(0, -position);
+  const projection = Math.cos(swivel * Math.PI / 180);
+  // Project around the vertical left post without flattening the wire's stroke.
+  const projectX = (x: number) => 8 + (x - 8) * projection;
+  const shoulder = 7 - lift;
+  const crown = 3 - lift;
+  const k = 2.209139;
   return {
-    lift, angle,
-    shackle: `M8 11V${7 - lift}A4 4 0 0 1 16 ${7 - lift}V${11 - lift}`,
-    transform: `translate(8 11) rotate(${angle}) translate(-8 -11)`,
+    lift, swivel, projection, rightX: projectX(16), rightY: 11 - lift,
+    shackle: `M8 11V${shoulder}C8 ${shoulder - k} ${projectX(12 - k)} ${crown} ${projectX(12)} ${crown}C${projectX(12 + k)} ${crown} ${projectX(16)} ${shoulder - k} ${projectX(16)} ${shoulder}V${11 - lift}`,
   };
 }
 

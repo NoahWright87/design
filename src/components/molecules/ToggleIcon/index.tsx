@@ -176,7 +176,7 @@ function IconGeometry({ preset, maskId, progress: p, width, height, rotation }: 
     case "lock": {
       const g = lockGeometry(p);
       return <g transform={`translate(12 16) rotate(${rotation}) translate(-12 -16)`}>
-        <path d={g.shackle} transform={g.transform} />
+        <path d={g.shackle} />
         <rect x="5" y="11" width="14" height="10" rx="3" />
         <path d="M12 15V17" />
       </g>;

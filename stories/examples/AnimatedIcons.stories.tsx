@@ -11,7 +11,7 @@ const presets: { preset: ToggleIconPreset; title: string; detail: string }[] = [
   { preset: "play-pause", title: "Playback", detail: "Wind up, dash, crash, and spring into pause" },
   { preset: "mute", title: "Sound", detail: "Waves return as audio opens up" },
   { preset: "eye", title: "Visibility", detail: "Lashes, a sleepy squish, and a springy wake-up" },
-  { preset: "lock", title: "Security", detail: "Lift, swing left, then snap and sling back" },
+  { preset: "lock", title: "Security", detail: "Lift, swivel in depth, then snap and rock" },
   { preset: "plus-minus", title: "Add & remove", detail: "One stroke folds into the other" },
   { preset: "arrow", title: "Disclosure", detail: "A quarter turn points the way" },
   { preset: "circle", title: "Selection", detail: "From possibility to selected" },

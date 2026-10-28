@@ -246,19 +246,26 @@ test("eye overtravels down with a squish when closing and up when opening", () =
   }
 });
 
-test("lock shackle lifts clear before swinging outward to the left", () => {
-  const shut = lockGeometry(1), lifting = lockGeometry(0.8), raised = lockGeometry(0.65), open = lockGeometry(0);
+test("lock shackle lifts, swivels edge-on about its left post, and opens on the left", () => {
+  const shut = lockGeometry(1), lifting = lockGeometry(0.8), raised = lockGeometry(0.65), edgeOn = lockGeometry(0.325), open = lockGeometry(0);
   assert.equal(shut.lift, 0);
-  assert.equal(shut.angle, 0);
+  assert.equal(shut.swivel, 0);
+  assert.equal(shut.rightX, 16);
   assert.ok(lifting.lift > 0);
-  assert.equal(lifting.angle, 0);
-  assert.equal(raised.lift, 1.5);
-  assert.equal(raised.angle, 0);
+  assert.equal(lifting.swivel, 0);
+  assert.equal(raised.lift, 3.5);
+  assert.equal(raised.swivel, 0);
+  assert.ok(raised.rightY + 1.2 < 11 - 1.2, "rounded wire clears the body's rounded top stroke");
+  assert.ok(Math.abs(edgeOn.swivel - 90) < 1e-10);
+  assert.ok(Math.abs(edgeOn.rightX - 8) < 1e-10, "shackle projects edge-on onto the left post");
   assert.equal(open.lift, raised.lift);
-  assert.equal(open.angle, -55);
-  for (const p of [-0.15, 0, 0.35, 0.65, 1, 1.15]) {
+  assert.equal(open.swivel, 180);
+  assert.equal(open.rightX, 0, "formerly right arm hangs to the left of the post");
+  assert.equal(open.rightY, raised.rightY, "swiveling leaves vertical height unchanged");
+  for (const p of [-0.15, 0, 0.325, 0.65, 1, 1.15]) {
     const g = lockGeometry(p);
-    assert.doesNotMatch(g.shackle + g.transform, /NaN|Infinity/);
+    assert.match(g.shackle, /^M8 11V/, "left post remains attached");
+    assert.doesNotMatch(g.shackle, /NaN|Infinity/);
   }
 });
 
