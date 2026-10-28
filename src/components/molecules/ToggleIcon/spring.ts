@@ -72,30 +72,50 @@ export function stepIconSpring(state: IconSpring, target: number, elapsed: numbe
     : { position, velocity };
 }
 
-/** Continuous stages let a reversed toggle retrace the crash from its current pose. */
+/** Both halves share one progress value, including their elastic overtravel. */
 export function playbackGeometry(position: number) {
-  const slide = ease(position / 0.18);
-  const impact = ease((position - 0.18) / 0.32);
-  const reboundProgress = clamp((position - 0.5) / 0.18);
-  const back = (t: number) => 1 + 2.4 * (t - 1) ** 3 + 1.4 * (t - 1) ** 2;
-  const rebound = back(reboundProgress);
+  const windup = ease(position / 0.22);
+  const dash = ease((position - 0.22) / 0.24);
+  const impact = ease((position - 0.46) / 0.22);
   const split = Math.max(0, (position - 0.68) / 0.32);
-  const overtravel = Math.max(0, position - 1);
-  const emerge = split <= 1 ? back(split) : 1 + overtravel * 1.2;
-  const recoil = Math.min(0, position) * 2;
-  const left = position < 0.5 ? mix(6 + slide * 2 + recoil, 19.6, impact) : mix(19.6, 15, rebound);
-  const right = position < 0.5 ? mix(20 + slide * 2 + recoil, 22, impact) : mix(22, 19, rebound);
-  const top = position < 0.5 ? mix(4, 2, impact) : mix(2, 4, rebound) - overtravel * 4;
-  const bottom = position < 0.5 ? mix(20, 22, impact) : mix(22, 20, rebound) + overtravel * 4;
-  const tipTop = position < 0.5 ? mix(12, 2, impact) : top;
-  const tipBottom = position < 0.5 ? mix(12, 22, impact) : bottom;
-  const spawnX = mix(15, 6, emerge);
-  const spawnTop = 20 - 16 * emerge;
+  // Zero slope at either side of the final pose keeps the overshoot handoff smooth.
+  const settle = split <= 1 ? ease(split) : 1 + 0.12 * (1 - Math.exp(-(((split - 1) / 0.2) ** 2)));
+  let left = mix(6, 4.2, windup);
+  let right = mix(20, 18.8, windup);
+  let top = mix(4, 2.8, windup);
+  let bottom = mix(20, 21.2, windup);
+  let tipTop = 12, tipBottom = 12;
+  if (position >= 0.22) {
+    left = mix(4.2, 17.2, dash);
+    right = mix(18.8, 23.4, dash);
+    top = mix(2.8, 8, dash);
+    bottom = mix(21.2, 16, dash);
+  }
+  if (position >= 0.46) {
+    left = mix(17.2, 19.4, impact);
+    right = 23.4;
+    top = mix(8, 1.8, impact);
+    bottom = mix(16, 22.2, impact);
+    tipTop = mix(12, 1.8, impact);
+    tipBottom = mix(12, 22.2, impact);
+  }
+  let leftBarLeft = left, leftBarRight = (left + right) / 2;
+  let rightBarLeft = leftBarRight, rightBarRight = right;
+  let seamTop = (top + tipTop) / 2, seamBottom = (bottom + tipBottom) / 2;
+  if (position >= 0.68) {
+    leftBarLeft = mix(19.4, 6, settle);
+    leftBarRight = mix(21.4, 10, settle);
+    rightBarLeft = mix(21.4, 15, settle);
+    rightBarRight = mix(23.4, 19, settle);
+    top = tipTop = seamTop = mix(1.8, 4, settle);
+    bottom = tipBottom = seamBottom = mix(22.2, 20, settle);
+  }
   return {
-    primary: `M${left} ${top}L${right} ${tipTop}L${right} ${tipBottom}L${left} ${bottom}Z`,
-    secondary: `M${spawnX} ${spawnTop}H${spawnX + 4}V20H${spawnX}Z`,
-    secondaryOpacity: clamp(split * 3),
-    left, right, top, bottom, spawnTop,
+    primary: `M${rightBarLeft} ${seamTop}L${rightBarRight} ${tipTop}L${rightBarRight} ${tipBottom}L${rightBarLeft} ${seamBottom}Z`,
+    secondary: `M${leftBarLeft} ${top}L${leftBarRight} ${seamTop}L${leftBarRight} ${seamBottom}L${leftBarLeft} ${bottom}Z`,
+    left, right, top, bottom, tipTop, tipBottom,
+    leftBarLeft, leftBarRight, rightBarLeft, rightBarRight,
+    splitProgress: settle,
   };
 }
 

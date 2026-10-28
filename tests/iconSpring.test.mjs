@@ -131,49 +131,71 @@ test("retargeting during a reaction preserves the existing pose and momentum", (
   assert.equal(state.phase, "idle");
 });
 
-test("playback hits the right wall before rebounding and releasing the second bar", () => {
+test("playback winds up, tapers into the wall, and flattens before splitting", () => {
   const play = playbackGeometry(0);
-  assert.equal(play.secondaryOpacity, 0);
+  const windup = playbackGeometry(0.22);
   assert.equal(play.left, 6);
   assert.equal(play.right, 20);
-  const impact = playbackGeometry(0.5);
-  assert.equal(impact.right, 22);
-  assert.ok(impact.right - impact.left < 3, "impact rectangle is narrow");
-  assert.ok(impact.bottom - impact.top > 18, "impact rectangle is tall");
-  assert.equal(impact.secondaryOpacity, 0, "second bar waits for impact and rebound");
-  const rebound = playbackGeometry(0.68);
-  assert.equal(rebound.right - rebound.left, 4);
-  assert.equal(rebound.secondaryOpacity, 0);
-  const split = playbackGeometry(0.84);
-  assert.ok(split.secondaryOpacity > 0);
-  assert.ok(split.spawnTop < 20, "new bar grows upward from the original bar's foot");
+  assert.ok(windup.left < play.left && windup.right < play.right);
+  assert.ok(windup.top < play.top && windup.bottom > play.bottom);
+  const dash = playbackGeometry(0.46);
+  assert.equal(dash.right, 23.4, "tip plus rounded stroke reaches the canvas edge");
+  assert.ok(dash.right - dash.left < windup.right - windup.left);
+  assert.ok(dash.bottom - dash.top < windup.bottom - windup.top);
+  assert.equal(dash.tipTop, dash.tipBottom, "dash is still a triangle at contact");
+  const impact = playbackGeometry(0.68);
+  assert.equal(impact.leftBarRight, impact.rightBarLeft, "both halves remain joined through impact");
+  assert.ok(impact.bottom - impact.top > 16);
+  assert.ok(Math.abs(impact.tipTop - impact.top) < 1e-12);
+  assert.ok(Math.abs(impact.tipBottom - impact.bottom) < 1e-12);
   const pause = playbackGeometry(1);
-  assert.equal(pause.left, 15);
-  assert.equal(pause.right, 19);
+  assert.equal(pause.leftBarLeft, 6);
+  assert.equal(pause.leftBarRight, 10);
+  assert.equal(pause.rightBarLeft, 15);
+  assert.equal(pause.rightBarRight, 19);
   assert.equal(pause.top, 4);
   assert.equal(pause.bottom, 20);
-  assert.equal(pause.secondaryOpacity, 1);
-  assert.match(pause.secondary, /^M6 4H10V20H6Z$/);
 });
 
-test("playback stages stay continuous at boundaries and during reversed spring travel", () => {
-  for (const boundary of [0.18, 0.5, 0.68, 1]) {
+test("pause bars split, overshoot, and settle on the same timing", () => {
+  for (const progress of [0.72, 0.8, 0.9, 1, 1.06, 1.12]) {
+    const g = playbackGeometry(progress);
+    const leftTravel = (19.4 - g.leftBarLeft) / (19.4 - 6);
+    const rightTravel = (21.4 - g.rightBarLeft) / (21.4 - 15);
+    assert.ok(Math.abs(leftTravel - rightTravel) < 1e-12);
+    assert.ok(Math.abs(leftTravel - g.splitProgress) < 1e-12);
+    assert.ok(Math.abs(g.top - g.tipTop) < 1e-12);
+    assert.ok(Math.abs(g.bottom - g.tipBottom) < 1e-12);
+  }
+  const overtravel = playbackGeometry(1.1);
+  assert.ok(overtravel.leftBarLeft < 6 && overtravel.rightBarLeft < 15);
+  assert.ok(overtravel.leftBarLeft > 4, "overtravel stays modest");
+});
+
+test("playback poses stay continuous at boundaries and during reversals", () => {
+  for (const boundary of [0.22, 0.46, 0.68, 1]) {
     const before = playbackGeometry(boundary - 1e-7);
     const after = playbackGeometry(boundary + 1e-7);
-    for (const property of ["left", "right", "top", "bottom", "spawnTop", "secondaryOpacity"]) {
+    for (const property of ["top", "bottom", "tipTop", "tipBottom", "leftBarLeft", "leftBarRight", "rightBarLeft", "rightBarRight"]) {
       assert.ok(Math.abs(before[property] - after[property]) < 0.001, `${property} stays continuous at ${boundary}`);
+      const at = playbackGeometry(boundary);
+      const h = 1e-5;
+      const incoming = (at[property] - playbackGeometry(boundary - h)[property]) / h;
+      const outgoing = (playbackGeometry(boundary + h)[property] - at[property]) / h;
+      assert.ok(Math.abs(incoming - outgoing) < 0.1, `${property} has a smooth velocity handoff at ${boundary}`);
     }
   }
   let state = { position: 0, velocity: 0 };
-  for (let i = 0; i < 14; i++) state = stepIconSpring(state, 1, 1 / 60, 8);
+  for (let i = 0; i < 14; i++) state = stepIconSpring(state, 1, 1 / 60, 6.5);
   const pose = playbackGeometry(state.position);
-  const reversed = stepIconSpring(state, 0, 0, 8);
+  const reversed = stepIconSpring(state, 0, 0, 6.5);
   assert.deepEqual(playbackGeometry(reversed.position), pose);
   for (let i = 0; i < 240; i++) {
-    state = stepIconSpring(i === 0 ? reversed : state, 0, 1 / 60, 8);
+    state = stepIconSpring(i === 0 ? reversed : state, 0, 1 / 60, 6.5);
     const g = playbackGeometry(state.position);
     assert.doesNotMatch(g.primary + g.secondary, /NaN|Infinity/);
-    assert.ok(g.right > g.left);
+    assert.ok(g.rightBarRight > g.rightBarLeft);
+    assert.ok(g.leftBarRight > g.leftBarLeft);
     assert.ok(g.bottom > g.top);
   }
   assert.deepEqual(state, { position: 0, velocity: 0 });

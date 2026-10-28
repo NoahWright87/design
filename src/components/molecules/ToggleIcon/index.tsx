@@ -78,7 +78,7 @@ function useIconSpring(target: number, mode: "spring" | "fill" | "playback") {
         heart.current = stepHeartMotion(heart.current, dt);
         state.current = { position: heart.current.fill, velocity: 0, width: heart.current.width.position, height: heart.current.height.position };
       } else {
-        state.current = { ...stepIconSpring(state.current, target, dt, mode === "playback" ? 8 : 14.5), width: 0, height: 0 };
+        state.current = { ...stepIconSpring(state.current, target, dt, mode === "playback" ? 6.5 : 14.5), width: 0, height: 0 };
       }
       previous = now;
       setSnapshot(state.current);
@@ -127,7 +127,7 @@ function IconGeometry({ preset, maskId, progress: p, width, height }: { preset: 
       const g = playbackGeometry(p);
       return <g fill="currentColor" strokeWidth="1.2">
         <path d={g.primary} />
-        <path d={g.secondary} opacity={g.secondaryOpacity} />
+        <path d={g.secondary} />
       </g>;
     }
     case "mute": return <>

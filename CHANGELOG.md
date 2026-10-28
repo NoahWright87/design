@@ -11,7 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- Give heart and bookmark a game-style fill/drain followed by a thump when full or squish when empty, anchored at the bottom. Playback slides into a tall, narrow crash rectangle, rebounds, and releases a second pause bar with a pop; preserve reversals and reduced motion.
+- Give heart and bookmark a game-style fill/drain followed by a thump when full or squish when empty, anchored at the bottom. Playback winds up, dashes into the right edge as a tapered triangle, flattens into a tall rectangle, and splits into pause bars with synchronized elastic settling; preserve reversals and reduced motion.
 
 - Replace all twelve `ToggleIcon` glyph presets with animated SVGs and an interactive gallery. Match the Marshmallow Orbit sun/crescent reference and carry its rounded shapes and continuous damped spring across the family, preserving momentum on reversal, reduced motion, the existing API, and synchronized theme controls.
 
