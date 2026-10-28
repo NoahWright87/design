@@ -5,7 +5,7 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../src/components/molecules/ToggleIcon/spring.ts", import.meta.url), "utf8");
 const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } }).outputText;
-const { stepIconSpring, moonSunGeometry, playbackGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
+const { stepIconSpring, eyeGeometry, moonSunGeometry, playbackGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
 
 test("both directions overshoot and settle at the exact requested endpoint", () => {
   for (const target of [0, 1]) {
@@ -199,4 +199,35 @@ test("playback poses stay continuous at boundaries and during reversals", () => 
     assert.ok(g.bottom > g.top);
   }
   assert.deepEqual(state, { position: 0, velocity: 0 });
+});
+
+
+test("eye lowers only the upper lid and collapses the opening completely", () => {
+  const open = eyeGeometry(0), halfway = eyeGeometry(0.5), shut = eyeGeometry(1);
+  assert.equal(open.controlY, 4);
+  assert.equal(halfway.controlY, 12);
+  assert.equal(shut.controlY, 20);
+  assert.equal(open.lower, halfway.lower);
+  assert.equal(open.lower, shut.lower);
+  assert.equal(shut.upper, shut.lower);
+  for (const position of [-0.1, 0, 0.25, 0.5, 0.75, 1, 1.15]) {
+    const g = eyeGeometry(position);
+    assert.ok(g.controlY >= 4 && g.controlY <= 20, "spring overtravel keeps the aperture valid");
+    assert.doesNotMatch(g.aperture, /NaN|Infinity/);
+  }
+});
+
+test("five attached lashes foreshorten mid-turn and face down when shut", () => {
+  const open = eyeGeometry(0), middle = eyeGeometry(0.5), shut = eyeGeometry(1);
+  assert.equal(open.lashes.length, 5);
+  for (let i = 0; i < 5; i++) {
+    const a = open.lashes[i], b = middle.lashes[i], c = shut.lashes[i];
+    assert.ok(a.endY < a.y, "open lashes fan upward");
+    assert.ok(c.endY > c.y, "closed lashes fan downward");
+    assert.ok(Math.hypot(b.endX - b.x, b.endY - b.y) < 0.01, "foreshortened lashes pass edge-on");
+    assert.ok(Math.hypot(c.endX - c.x, c.endY - c.y) > 2, "closed lashes remain visible");
+    assert.equal(a.x, c.x, "lash roots follow the same point on the moving curve");
+  }
+  const before = eyeGeometry(0.5 - 1e-6), after = eyeGeometry(0.5 + 1e-6);
+  for (let i = 0; i < 5; i++) assert.ok(Math.abs(before.lashes[i].endY - after.lashes[i].endY) < 0.001);
 });

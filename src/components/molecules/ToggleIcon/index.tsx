@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./toggle-icon.css";
 import { usePrefersReducedMotion } from "../../../atoms/usePrefersReducedMotion.js";
-import { clamp, heartGeometry, mix, moonSunGeometry, playbackGeometry, restingHeart, stepHeartMotion, stepIconSpring, targetHeart } from "./spring.js";
+import { clamp, eyeGeometry, heartGeometry, mix, moonSunGeometry, playbackGeometry, restingHeart, stepHeartMotion, stepIconSpring, targetHeart } from "./spring.js";
 
 export type ToggleIconPreset =
   | "hamburger"   // Menu → close
@@ -118,11 +118,23 @@ function IconGeometry({ preset, maskId, progress: p, width, height }: { preset: 
     case "circle": return <circle cx="12" cy="12" r={8 + Math.sin(p * Math.PI) * 0.7} fill="currentColor" fillOpacity={t} />;
     case "arrow": return <g transform={centerTransform(`rotate(${90 * p})`)}><path d="M4 12H20M13 5L20 12L13 19" /></g>;
     case "plus-minus": return <><path d="M5 12H19" /><path d="M12 5V19" transform={centerTransform(`rotate(${90 * p}) scale(1 ${1 - p})`)} opacity={1 - t} /></>;
-    case "eye": return <>
-      <path d="M2 12C6 4 18 4 22 12C18 20 6 20 2 12Z" />
-      <circle cx="12" cy="12" r="3" transform={centerTransform(`scale(${mix(1, 0.2, p)})`)} opacity={1 - t} />
-      <path pathLength="1" d="M3 3L21 21" strokeDasharray="1" strokeDashoffset={1 - t} />
-    </>;
+    case "eye": {
+      const g = eyeGeometry(p);
+      const clipId = `${maskId}-eye-opening`;
+      return <>
+        <defs>
+          <clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+            <path d={g.aperture} fill="currentColor" />
+          </clipPath>
+        </defs>
+        <path d={g.lower} strokeWidth="1.8" />
+        <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none" clipPath={`url(#${clipId})`} />
+        <path d={g.upper} />
+        <g strokeWidth="1.6">
+          {g.lashes.map((lash, i) => <path key={i} d={`M${lash.x} ${lash.y}L${lash.endX} ${lash.endY}`} />)}
+        </g>
+      </>;
+    }
     case "play-pause": {
       const g = playbackGeometry(p);
       return <g fill="currentColor" strokeWidth="1.2">

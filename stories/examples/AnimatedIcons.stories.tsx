@@ -10,7 +10,7 @@ const presets: { preset: ToggleIconPreset; title: string; detail: string }[] = [
   { preset: "bookmark", title: "Save for later", detail: "Fill, then thump. Drain, then squish." },
   { preset: "play-pause", title: "Playback", detail: "Wind up, dash, crash, and spring into pause" },
   { preset: "mute", title: "Sound", detail: "Waves return as audio opens up" },
-  { preset: "eye", title: "Visibility", detail: "Draw the veil, reveal the content" },
+  { preset: "eye", title: "Visibility", detail: "A lowering lid and lashes with a little depth" },
   { preset: "lock", title: "Security", detail: "The shackle settles into place" },
   { preset: "plus-minus", title: "Add & remove", detail: "One stroke folds into the other" },
   { preset: "arrow", title: "Disclosure", detail: "A quarter turn points the way" },

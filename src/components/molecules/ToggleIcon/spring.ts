@@ -57,6 +57,27 @@ export function heartGeometry(position: number, width: number, height: number) {
   };
 }
 
+/** Project the lashes through a half-turn as the upper lid folds toward the viewer. */
+export function eyeGeometry(position: number) {
+  const closed = clamp(position);
+  const controlY = mix(4, 20, closed);
+  const upper = `M3 12C7 ${controlY} 17 ${controlY} 21 12`;
+  const lower = "M3 12C7 20 17 20 21 12";
+  const aperture = `${upper}C17 20 7 20 3 12Z`;
+  const projection = Math.cos(Math.PI * position);
+  const length = mix(3.2, 2.6, closed);
+  const lashes = [0.16, 0.33, 0.5, 0.67, 0.84].map(t => {
+    const u = 1 - t;
+    const x = 3 * u ** 3 + 21 * u ** 2 * t + 51 * u * t ** 2 + 21 * t ** 3;
+    const y = 12 * (u ** 3 + t ** 3) + 3 * controlY * (u ** 2 * t + u * t ** 2);
+    const dx = 12 * u ** 2 + 60 * u * t + 12 * t ** 2;
+    const dy = 3 * (controlY - 12) * (u ** 2 - t ** 2);
+    const magnitude = Math.hypot(dx, dy);
+    return { x, y, endX: x + dy / magnitude * length * projection, endY: y - dx / magnitude * length * projection };
+  });
+  return { upper, lower, aperture, controlY, lashes };
+}
+
 /** Marshmallow Orbit's damped spring; retain velocity when the target reverses. */
 export function stepIconSpring(state: IconSpring, target: number, elapsed: number, omega = 14.5): IconSpring {
   const dt = Math.max(0, Math.min(elapsed, 0.04));
