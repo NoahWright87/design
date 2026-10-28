@@ -75,7 +75,50 @@ export function eyeGeometry(position: number) {
     const magnitude = Math.hypot(dx, dy);
     return { x, y, endX: x + dy / magnitude * length * projection, endY: y - dx / magnitude * length * projection };
   });
-  return { upper, lower, aperture, controlY, lashes };
+  const closingOvertravel = Math.max(0, position - 1);
+  const openingOvertravel = Math.max(0, -position);
+  return {
+    upper, lower, aperture, controlY, lashes,
+    offsetY: 6 * (closingOvertravel - openingOvertravel),
+    scaleX: 1 + 0.45 * closingOvertravel,
+    scaleY: 1 - 0.3 * closingOvertravel + 0.2 * openingOvertravel,
+  };
+}
+
+export interface LockMotion {
+  progress: IconSpring;
+  recoil: IconSpring;
+  target: number;
+  latched: boolean;
+}
+
+export function restingLock(target: number): LockMotion {
+  return { progress: { position: target, velocity: 0 }, recoil: { position: 0, velocity: 0 }, target, latched: target === 1 };
+}
+
+export function targetLock(state: LockMotion, target: number): LockMotion {
+  return { ...state, target, latched: target === 0 ? false : state.latched };
+}
+
+export function stepLockMotion(state: LockMotion, elapsed: number): LockMotion {
+  const progress = stepIconSpring(state.progress, state.target, elapsed);
+  const snap = state.target === 1 && !state.latched && progress.position >= 1;
+  const recoil = stepIconSpring({
+    position: state.recoil.position,
+    velocity: state.recoil.velocity + (snap ? 240 : 0),
+  }, 0, elapsed);
+  return { ...state, progress, recoil, latched: state.latched || snap };
+}
+
+export function lockGeometry(position: number) {
+  const opening = clamp(1 - position);
+  const lift = 1.5 * ease(opening / 0.35);
+  const angle = 0 - 55 * ease((opening - 0.35) / 0.65) - 20 * Math.max(0, -position);
+  return {
+    lift, angle,
+    shackle: `M8 11V${7 - lift}A4 4 0 0 1 16 ${7 - lift}V${11 - lift}`,
+    transform: `translate(8 11) rotate(${angle}) translate(-8 -11)`,
+  };
 }
 
 /** Marshmallow Orbit's damped spring; retain velocity when the target reverses. */

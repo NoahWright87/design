@@ -5,7 +5,7 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../src/components/molecules/ToggleIcon/spring.ts", import.meta.url), "utf8");
 const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } }).outputText;
-const { stepIconSpring, eyeGeometry, moonSunGeometry, playbackGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
+const { stepIconSpring, eyeGeometry, lockGeometry, restingLock, targetLock, stepLockMotion, moonSunGeometry, playbackGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
 
 test("both directions overshoot and settle at the exact requested endpoint", () => {
   for (const target of [0, 1]) {
@@ -230,4 +230,67 @@ test("five attached lashes foreshorten mid-turn and face down when shut", () => 
   }
   const before = eyeGeometry(0.5 - 1e-6), after = eyeGeometry(0.5 + 1e-6);
   for (let i = 0; i < 5; i++) assert.ok(Math.abs(before.lashes[i].endY - after.lashes[i].endY) < 0.001);
+});
+
+
+test("eye overtravels down with a squish when closing and up when opening", () => {
+  const shutOvertravel = eyeGeometry(1.12);
+  assert.ok(shutOvertravel.offsetY > 0);
+  assert.ok(shutOvertravel.scaleX > 1 && shutOvertravel.scaleY < 1);
+  const openOvertravel = eyeGeometry(-0.12);
+  assert.ok(openOvertravel.offsetY < 0);
+  for (const resting of [eyeGeometry(0), eyeGeometry(1)]) {
+    assert.equal(resting.offsetY, 0);
+    assert.equal(resting.scaleX, 1);
+    assert.equal(resting.scaleY, 1);
+  }
+});
+
+test("lock shackle lifts clear before swinging outward to the left", () => {
+  const shut = lockGeometry(1), lifting = lockGeometry(0.8), raised = lockGeometry(0.65), open = lockGeometry(0);
+  assert.equal(shut.lift, 0);
+  assert.equal(shut.angle, 0);
+  assert.ok(lifting.lift > 0);
+  assert.equal(lifting.angle, 0);
+  assert.equal(raised.lift, 1.5);
+  assert.equal(raised.angle, 0);
+  assert.equal(open.lift, raised.lift);
+  assert.equal(open.angle, -55);
+  for (const p of [-0.15, 0, 0.35, 0.65, 1, 1.15]) {
+    const g = lockGeometry(p);
+    assert.doesNotMatch(g.shackle + g.transform, /NaN|Infinity/);
+  }
+});
+
+test("lock recoil starts at the latch, swings both ways, and fires once", () => {
+  let state = targetLock(restingLock(0), 1);
+  let snaps = 0, maximum = 0, minimum = 0;
+  for (let frame = 0; frame < 240; frame++) {
+    const latched = state.latched;
+    state = stepLockMotion(state, 1 / 60);
+    if (!latched && state.latched) {
+      snaps++;
+      assert.ok(state.progress.position >= 1);
+    }
+    if (!state.latched) assert.equal(state.recoil.position, 0);
+    maximum = Math.max(maximum, state.recoil.position);
+    minimum = Math.min(minimum, state.recoil.position);
+  }
+  assert.equal(snaps, 1);
+  assert.ok(maximum > 5 && maximum < 15);
+  assert.ok(minimum < -0.4, "rotation slings back past neutral");
+  assert.deepEqual(state.progress, { position: 1, velocity: 0 });
+  assert.deepEqual(state.recoil, { position: 0, velocity: 0 });
+});
+
+test("opening during lock recoil preserves the existing pose and momentum", () => {
+  let state = targetLock(restingLock(0), 1);
+  for (let frame = 0; frame < 24; frame++) state = stepLockMotion(state, 1 / 60);
+  assert.ok(state.latched);
+  const reversed = targetLock(state, 0);
+  assert.deepEqual(reversed.progress, state.progress);
+  assert.deepEqual(reversed.recoil, state.recoil);
+  for (let frame = 0; frame < 240; frame++) state = stepLockMotion(frame === 0 ? reversed : state, 1 / 60);
+  assert.deepEqual(state.progress, { position: 0, velocity: 0 });
+  assert.deepEqual(state.recoil, { position: 0, velocity: 0 });
 });

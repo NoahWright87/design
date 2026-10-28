@@ -11,7 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- Make the eye close with a lowering upper lid, a pupil clipped to the opening, and five lashes that foreshorten through the turn and remain visible open or shut.
+- Keep every icon button’s circular surface stationary; animate SVGs for feedback. Add whole-eye closing squish/opening rise with elastic settling, lowering lid and foreshortened lashes; the lock lifts and swings its arm left, then snaps shut with a rotating recoil.
 
 - Give heart and bookmark a game-style fill/drain followed by a thump when full or squish when empty, anchored at the bottom. Playback winds up, dashes into the right edge as a tapered triangle, flattens into a tall rectangle, and splits into pause bars with synchronized elastic settling; preserve reversals and reduced motion.
 
