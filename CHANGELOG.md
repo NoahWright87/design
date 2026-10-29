@@ -11,6 +11,12 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- Keep every icon button’s circular surface stationary; animate SVGs for feedback. Add whole-eye closing squish/opening rise with elastic settling, lowering lid and foreshortened lashes; the lock anticipates each action, lifts and swivels around its left post, then transfers arrival momentum into a leftward opening rock or a stronger, longer closing recoil.
+
+- Give heart and bookmark a game-style fill/drain followed by a thump when full or squish when empty, anchored at the bottom. Playback winds up, dashes into the right edge as a tapered triangle, flattens into a tall rectangle, and splits into pause bars with synchronized elastic settling; preserve reversals and reduced motion.
+
+- Replace all twelve `ToggleIcon` glyph presets with animated SVGs and an interactive gallery. Match the Marshmallow Orbit sun/crescent reference and carry its rounded shapes and continuous damped spring across the family, preserving momentum on reversal, reduced motion, the existing API, and synchronized theme controls.
+
 - Prepare the v1.6.0 minor release: synchronize package and lockfile versions, document installation, and move completed release notes into version history.
 
 ## Version history

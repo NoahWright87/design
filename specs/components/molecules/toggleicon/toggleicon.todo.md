@@ -3,6 +3,8 @@
 Standalone atom that animates between two icon states. Used as the trigger for `Menu` and wherever a two-state icon toggle is needed. Replaces the icon responsibility previously held by `HamburgerMenu`.
 
 ## Sooner
+- [x] Match the Marshmallow Orbit reference geometry and continuous damped spring across the icon family, including interrupted reversals and live reduced-motion changes.
+- [x] Replace glyph swaps with a consistent animated SVG family, including a sun-to-crescent transition and spring menu strokes; documented in `toggleicon.spec.md`.
 - [x] Core two-state toggle: Animate between two icon states on click. Support `isToggled` (controlled) and `defaultToggled` (uncontrolled) props.
 - [x] Built-in presets:
   - Hamburger → X (default; replaces HamburgerMenu icon)
