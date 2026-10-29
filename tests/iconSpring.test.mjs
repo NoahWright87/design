@@ -284,7 +284,7 @@ test("lock recoil starts at the latch, swings both ways, and fires once", () => 
     minimum = Math.min(minimum, state.recoil.position);
   }
   assert.equal(snaps, 1);
-  assert.ok(maximum > 5 && maximum < 15);
+  assert.ok(maximum > 10 && maximum < 18, "closing rock is exaggerated but controlled");
   assert.ok(minimum < -0.4, "rotation slings back past neutral");
   assert.deepEqual(state.progress, { position: 1, velocity: 0 });
   assert.deepEqual(state.recoil, { position: 0, velocity: 0 });
@@ -292,7 +292,7 @@ test("lock recoil starts at the latch, swings both ways, and fires once", () => 
 
 test("opening during lock recoil preserves the existing pose and momentum", () => {
   let state = targetLock(restingLock(0), 1);
-  for (let frame = 0; frame < 24; frame++) state = stepLockMotion(state, 1 / 60);
+  for (let frame = 0; frame < 90 && !state.latched; frame++) state = stepLockMotion(state, 1 / 60);
   assert.ok(state.latched);
   const reversed = targetLock(state, 0);
   assert.deepEqual(reversed.progress, state.progress);
@@ -300,4 +300,66 @@ test("opening during lock recoil preserves the existing pose and momentum", () =
   for (let frame = 0; frame < 240; frame++) state = stepLockMotion(frame === 0 ? reversed : state, 1 / 60);
   assert.deepEqual(state.progress, { position: 0, velocity: 0 });
   assert.deepEqual(state.recoil, { position: 0, velocity: 0 });
+});
+
+
+test("lock gives both directions a readable arm-only windup before traveling", () => {
+  for (const target of [0, 1]) {
+    let state = targetLock(restingLock(1 - target), target);
+    let maximumAnticipation = 0;
+    for (let frame = 0; frame < 6; frame++) {
+      state = stepLockMotion(state, 1 / 60);
+      assert.equal(state.phase, "windup");
+      assert.equal(state.progress.position, 1 - target);
+      assert.equal(state.recoil.position, 0, "windup leaves the body still");
+      maximumAnticipation = Math.max(maximumAnticipation, Math.abs(state.anticipation));
+    }
+    assert.ok(maximumAnticipation > 0.8);
+    const prepared = lockGeometry(state.progress.position, target === 1 ? 1 : -1);
+    if (target === 0) {
+      assert.ok(prepared.lift < -1, "opening compresses the shackle before release");
+      assert.equal(prepared.rightY, 11, "housing hides the depressed free end");
+    } else assert.ok(prepared.lift > 4.5, "closing gathers the shackle upward before swinging in");
+    for (let frame = 0; frame < 40; frame++) state = stepLockMotion(state, 1 / 60);
+    assert.ok(target === 1 ? state.latched : state.opened);
+  }
+});
+
+test("opening rocks left only at full extension and settles after a visible follow-through", () => {
+  let state = targetLock(restingLock(1), 0);
+  let arrivals = 0, minimum = 0, maximum = 0, arrivalFrame = 0, lastVisibleFrame = 0;
+  for (let frame = 0; frame < 240; frame++) {
+    const arrived = state.opened;
+    state = stepLockMotion(state, 1 / 60);
+    if (!arrived && state.opened) {
+      arrivals++;
+      arrivalFrame = frame;
+      assert.ok(state.progress.position <= 0);
+    }
+    if (!state.opened) assert.equal(state.recoil.position, 0);
+    minimum = Math.min(minimum, state.recoil.position);
+    maximum = Math.max(maximum, state.recoil.position);
+    if (Math.abs(state.recoil.position) > 0.5) lastVisibleFrame = frame;
+  }
+  assert.equal(arrivals, 1);
+  assert.ok(arrivalFrame / 60 > 0.35 && arrivalFrame / 60 < 0.65, "travel stays quick but readable");
+  assert.ok(minimum < -8 && minimum > -16, "opening transfers momentum leftward");
+  assert.ok(maximum > 0.5, "body slings back across neutral");
+  assert.ok((lastVisibleFrame - arrivalFrame) / 60 > 0.4, "follow-through lasts long enough to read");
+  assert.equal(state.phase, "idle");
+});
+
+test("new closing recoil is larger and lasts longer than the previous endpoint bounce", () => {
+  let old = { position: 0, velocity: 240 }, next = { position: 0, velocity: 300 };
+  let oldPeak = 0, nextPeak = 0, oldLast = 0, nextLast = 0;
+  for (let frame = 0; frame < 240; frame++) {
+    old = stepIconSpring(old, 0, 1 / 60, 14.5);
+    next = stepIconSpring(next, 0, 1 / 60, 11);
+    oldPeak = Math.max(oldPeak, old.position);
+    nextPeak = Math.max(nextPeak, next.position);
+    if (Math.abs(old.position) > 0.5) oldLast = frame;
+    if (Math.abs(next.position) > 0.5) nextLast = frame;
+  }
+  assert.ok(nextPeak > oldPeak * 1.3);
+  assert.ok((nextLast - oldLast) / 60 > 0.08);
 });

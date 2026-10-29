@@ -90,29 +90,53 @@ export interface LockMotion {
   recoil: IconSpring;
   target: number;
   latched: boolean;
+  opened: boolean;
+  phase: "idle" | "windup" | "move";
+  elapsed: number;
+  anticipation: number;
 }
 
 export function restingLock(target: number): LockMotion {
-  return { progress: { position: target, velocity: 0 }, recoil: { position: 0, velocity: 0 }, target, latched: target === 1 };
+  return { progress: { position: target, velocity: 0 }, recoil: { position: 0, velocity: 0 }, target, latched: target === 1, opened: target === 0, phase: "idle", elapsed: 0, anticipation: 0 };
 }
 
 export function targetLock(state: LockMotion, target: number): LockMotion {
-  return { ...state, target, latched: target === 0 ? false : state.latched };
+  if (state.target === target) return state;
+  return {
+    ...state, target, latched: target === 0 ? false : state.latched,
+    opened: target === 1 ? false : state.opened,
+    phase: state.phase === "idle" ? "windup" : "move", elapsed: 0,
+  };
 }
 
 export function stepLockMotion(state: LockMotion, elapsed: number): LockMotion {
-  const progress = stepIconSpring(state.progress, state.target, elapsed);
+  if (state.phase === "idle") return state;
+  let dt = Math.max(0, Math.min(elapsed, 0.04));
+  if (state.phase === "windup") {
+    const time = state.elapsed + dt;
+    if (time < 0.12) {
+      return { ...state, elapsed: time, anticipation: (state.target === 1 ? 1 : -1) * Math.sin(Math.PI * time / 0.12) ** 2 };
+    }
+    dt = time - 0.12;
+    state = { ...state, phase: "move", elapsed: 0, anticipation: 0 };
+  }
+  const progress = stepIconSpring(state.progress, state.target, dt, 8);
   const snap = state.target === 1 && !state.latched && progress.position >= 1;
+  const swungOpen = state.target === 0 && !state.opened && progress.position <= 0;
+  // Transfer the arm's arrival into the body only when it reaches its endpoint.
   const recoil = stepIconSpring({
     position: state.recoil.position,
-    velocity: state.recoil.velocity + (snap ? 240 : 0),
-  }, 0, elapsed);
-  return { ...state, progress, recoil, latched: state.latched || snap };
+    velocity: state.recoil.velocity + (snap ? 300 : swungOpen ? -240 : 0),
+  }, 0, dt, 11);
+  const remainingAnticipation = state.anticipation * Math.exp(-30 * dt);
+  const anticipation = Math.abs(remainingAnticipation) < 0.00035 ? 0 : remainingAnticipation;
+  const resting = progress.position === state.target && progress.velocity === 0 && recoil.position === 0 && recoil.velocity === 0 && anticipation === 0;
+  return { ...state, progress, recoil, anticipation, phase: resting ? "idle" : "move", latched: state.latched || snap, opened: state.opened || swungOpen };
 }
 
-export function lockGeometry(position: number) {
+export function lockGeometry(position: number, anticipation = 0) {
   const opening = clamp(1 - position);
-  const lift = 3.5 * ease(opening / 0.35);
+  const lift = 3.5 * ease(opening / 0.35) + anticipation * 1.2;
   const swivel = 180 * ease((opening - 0.35) / 0.65) + 20 * Math.max(0, -position);
   const projection = Math.cos(swivel * Math.PI / 180);
   // Project around the vertical left post without flattening the wire's stroke.
@@ -120,9 +144,10 @@ export function lockGeometry(position: number) {
   const shoulder = 7 - lift;
   const crown = 3 - lift;
   const k = 2.209139;
+  const rightY = 11 - Math.max(0, lift);
   return {
-    lift, swivel, projection, rightX: projectX(16), rightY: 11 - lift,
-    shackle: `M8 11V${shoulder}C8 ${shoulder - k} ${projectX(12 - k)} ${crown} ${projectX(12)} ${crown}C${projectX(12 + k)} ${crown} ${projectX(16)} ${shoulder - k} ${projectX(16)} ${shoulder}V${11 - lift}`,
+    lift, swivel, projection, rightX: projectX(16), rightY,
+    shackle: `M8 11V${shoulder}C8 ${shoulder - k} ${projectX(12 - k)} ${crown} ${projectX(12)} ${crown}C${projectX(12 + k)} ${crown} ${projectX(16)} ${shoulder - k} ${projectX(16)} ${shoulder}V${rightY}`,
   };
 }
 

@@ -54,7 +54,7 @@ export interface ToggleIconProps {
 function useIconSpring(target: number, mode: "spring" | "fill" | "playback" | "lock") {
   const fillMode = mode === "fill";
   const reduced = usePrefersReducedMotion();
-  const state = React.useRef({ position: target, velocity: 0, width: 0, height: 0, rotation: 0 });
+  const state = React.useRef({ position: target, velocity: 0, width: 0, height: 0, rotation: 0, anticipation: 0 });
   const heart = React.useRef(restingHeart(target));
   const lock = React.useRef(restingLock(target));
   const previousMode = React.useRef(mode);
@@ -62,7 +62,7 @@ function useIconSpring(target: number, mode: "spring" | "fill" | "playback" | "l
   React.useEffect(() => {
     if (reduced || previousMode.current !== mode) {
       previousMode.current = mode;
-      state.current = { position: target, velocity: 0, width: 0, height: 0, rotation: 0 };
+      state.current = { position: target, velocity: 0, width: 0, height: 0, rotation: 0, anticipation: 0 };
       heart.current = restingHeart(target);
       lock.current = restingLock(target);
       setSnapshot(state.current);
@@ -73,7 +73,7 @@ function useIconSpring(target: number, mode: "spring" | "fill" | "playback" | "l
       if (heart.current.phase === "idle") return;
     } else if (mode === "lock") {
       lock.current = targetLock(lock.current, target);
-      if (lock.current.progress.position === target && lock.current.progress.velocity === 0 && lock.current.recoil.position === 0 && lock.current.recoil.velocity === 0) return;
+      if (lock.current.phase === "idle") return;
     } else if (state.current.position === target && state.current.velocity === 0) return;
     let frame = 0;
     let previous: number | null = null;
@@ -81,25 +81,25 @@ function useIconSpring(target: number, mode: "spring" | "fill" | "playback" | "l
       const dt = previous === null ? 0 : (now - previous) / 1000;
       if (fillMode) {
         heart.current = stepHeartMotion(heart.current, dt);
-        state.current = { position: heart.current.fill, velocity: 0, width: heart.current.width.position, height: heart.current.height.position, rotation: 0 };
+        state.current = { position: heart.current.fill, velocity: 0, width: heart.current.width.position, height: heart.current.height.position, rotation: 0, anticipation: 0 };
       } else if (mode === "lock") {
         lock.current = stepLockMotion(lock.current, dt);
-        state.current = { ...lock.current.progress, width: 0, height: 0, rotation: lock.current.recoil.position };
+        state.current = { ...lock.current.progress, width: 0, height: 0, rotation: lock.current.recoil.position, anticipation: lock.current.anticipation };
       } else {
-        state.current = { ...stepIconSpring(state.current, target, dt, mode === "playback" ? 6.5 : 14.5), width: 0, height: 0, rotation: 0 };
+        state.current = { ...stepIconSpring(state.current, target, dt, mode === "playback" ? 6.5 : 14.5), width: 0, height: 0, rotation: 0, anticipation: 0 };
       }
       previous = now;
       setSnapshot(state.current);
-      const active = fillMode ? heart.current.phase !== "idle" : state.current.position !== target || state.current.velocity !== 0 || (mode === "lock" && (lock.current.recoil.position !== 0 || lock.current.recoil.velocity !== 0));
+      const active = fillMode ? heart.current.phase !== "idle" : mode === "lock" ? lock.current.phase !== "idle" : state.current.position !== target || state.current.velocity !== 0;
       if (active) frame = window.requestAnimationFrame(tick);
     }
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
   }, [target, reduced, mode, fillMode]);
-  return reduced ? { position: target, velocity: 0, width: 0, height: 0, rotation: 0 } : snapshot;
+  return reduced ? { position: target, velocity: 0, width: 0, height: 0, rotation: 0, anticipation: 0 } : snapshot;
 }
 
-function IconGeometry({ preset, maskId, progress: p, width, height, rotation }: { preset: ToggleIconPreset; maskId: string; progress: number; width: number; height: number; rotation: number }) {
+function IconGeometry({ preset, maskId, progress: p, width, height, rotation, anticipation }: { preset: ToggleIconPreset; maskId: string; progress: number; width: number; height: number; rotation: number; anticipation: number }) {
   const t = clamp(p);
   const centerTransform = (transform: string) => `translate(12 12) ${transform} translate(-12 -12)`;
   switch (preset) {
@@ -174,7 +174,7 @@ function IconGeometry({ preset, maskId, progress: p, width, height, rotation }: 
       </g>;
     }
     case "lock": {
-      const g = lockGeometry(p);
+      const g = lockGeometry(p, anticipation);
       return <g transform={`translate(12 16) rotate(${rotation}) translate(-12 -16)`}>
         <path d={g.shackle} />
         <rect x="5" y="11" width="14" height="10" rx="3" />
@@ -230,7 +230,7 @@ export function ToggleIcon({
       aria-expanded={preset === "hamburger" ? currentToggled : undefined}
     >
       <svg className="nw-toggle-icon__svg" viewBox={preset === "moon-sun" ? "0 0 100 100" : "0 0 24 24"} width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
-        <IconGeometry preset={preset} maskId={maskId} progress={progress.position} width={progress.width} height={progress.height} rotation={progress.rotation} />
+        <IconGeometry preset={preset} maskId={maskId} progress={progress.position} width={progress.width} height={progress.height} rotation={progress.rotation} anticipation={progress.anticipation} />
       </svg>
     </button>
   );

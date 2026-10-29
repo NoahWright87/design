@@ -11,7 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- Keep every icon button’s circular surface stationary; animate SVGs for feedback. Add whole-eye closing squish/opening rise with elastic settling, lowering lid and foreshortened lashes; the lock lifts and swivels its shackle in depth around its left post, then snaps shut with a rotating recoil.
+- Keep every icon button’s circular surface stationary; animate SVGs for feedback. Add whole-eye closing squish/opening rise with elastic settling, lowering lid and foreshortened lashes; the lock anticipates each action, lifts and swivels around its left post, then transfers arrival momentum into a leftward opening rock or a stronger, longer closing recoil.
 
 - Give heart and bookmark a game-style fill/drain followed by a thump when full or squish when empty, anchored at the bottom. Playback winds up, dashes into the right edge as a tapered triangle, flattens into a tall rectangle, and splits into pause bars with synchronized elastic settling; preserve reversals and reduced motion.
 
