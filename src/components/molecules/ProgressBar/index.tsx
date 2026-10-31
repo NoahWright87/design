@@ -34,7 +34,8 @@ export function ProgressBar({
   const colors = getProgressColor(progress.percentage, colorRanges, color, textColor);
   const display = typeof text === "function" ? text(progress) : text === undefined ? `${Math.round(progress.percentage)}%` : text;
   const ref = React.useRef<HTMLDivElement>(null);
-  useProgressPulse(ref, progress, pulse);
+  const fillRef = React.useRef<HTMLSpanElement>(null);
+  useProgressPulse(ref, progress, pulse, fillRef);
 
   return (
     <div
@@ -47,7 +48,7 @@ export function ProgressBar({
       aria-valuenow={progress.value}
       aria-valuetext={display === false ? undefined : display}
     >
-      <span className="nw-progress-bar__fill" style={{ width: `${progress.percentage}%`, backgroundColor: colors.color }} />
+      <span ref={fillRef} className="nw-progress-bar__fill" style={{ width: `${progress.percentage}%`, backgroundColor: colors.color }} />
       {display !== false && <ProgressText percentage={progress.percentage} filledColor={colors.textColor}>{display}</ProgressText>}
     </div>
   );

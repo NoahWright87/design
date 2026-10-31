@@ -34,7 +34,7 @@ The bar uses shared normalization, range selection, and endpoint feedback. Its t
 
 Text is centered across the whole bar in the theme's monospace family. Two aligned copies are clipped at the same boundary as the fill: foreground text on the track and the selected filled-text color on the fill. Custom light fills can supply a contrasting filled-text color, including per range. Long text clips within the available width. Text defaults to a rounded whole percentage, while the fill and accessible value retain fractional precision.
 
-The bar has a thick dark outline and square corners by default. Rounding follows the theme radius. Full and empty transitions use the shared wobble; `pulse={false}` leaves the bar still. Reduced motion makes fill and text updates immediate and disables the wobble. Forced-colors mode uses system colors for outline, fill, and text.
+The bar has a thick dark outline and square corners by default. Rounding follows the theme radius. At the end of fill movement, full gives a slight outward wobble and empty gives a slight inward wobble, each with small opposite-direction overtravel. Interrupted movement cancels the pending pulse, and the latest endpoint pulses when its movement finishes. `pulse={false}` leaves the bar still. Reduced motion makes fill and text updates immediate and disables the wobble. Forced-colors mode uses system colors for outline, fill, and text.
 
 ## Interface
 `ProgressBar` is a controlled, noninteractive indicator with progressbar semantics, an accessible label, bounds, and current value. Visible text also supplies the accessible value description. Hiding text retains numeric accessibility values. Updates remain available through progressbar semantics while leaving announcement frequency to the application.
@@ -50,6 +50,6 @@ Storybook includes default, rounded, hidden-text, endpoint, and interactive exam
 4. `min`, `max`, and `value` follow shared normalization in both fill and accessibility attributes.
 5. Color stops support both low-danger and high-danger mappings, with fallback colors outside configured stops.
 6. Two text colors remain aligned with the fill at empty, partial, half, and full states, including during transitions and reduced motion.
-7. Endpoint transitions wobble once when enabled and remain still on mount or with reduced motion.
+7. Endpoint transitions wobble once upon visible fill completion: outward when full and inward when empty. Mounting, cancelled arrivals, disabled pulses, and reduced motion stay still.
 8. Forced-colors mode preserves the outline and distinguishes filled and unfilled text.
 9. All five composed examples update from their respective live value sources and clean up active timers on unmount.

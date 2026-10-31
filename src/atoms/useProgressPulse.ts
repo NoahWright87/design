@@ -8,7 +8,8 @@ import { usePrefersReducedMotion } from "./usePrefersReducedMotion.js";
 export function useProgressPulse(
   ref: RefObject<HTMLElement>,
   progress: Pick<ProgressState, "isEmpty" | "isFull">,
-  enabled = true
+  enabled = true,
+  motionRef?: RefObject<HTMLElement>
 ): void {
   const reduced = usePrefersReducedMotion();
   const boundary = progress.isEmpty ? "empty" : progress.isFull ? "full" : "active";
@@ -20,16 +21,37 @@ export function useProgressPulse(
     const element = ref.current;
     if (!arrived || !enabled || reduced || !element?.animate) return;
 
-    // Different peaks on each axis give the pulse its small, elastic wobble.
-    const animation = element.animate([
-      { transform: "scale(1, 1)", offset: 0 },
-      { transform: "scale(1.035, 1.08)", offset: 0.24 },
-      { transform: "scale(1.02, 1.16)", offset: 0.38 },
-      { transform: "scale(0.985, 0.94)", offset: 0.62 },
-      { transform: "scale(1.008, 1.035)", offset: 0.8 },
-      { transform: "scale(1, 1)", offset: 1 },
-    ], { duration: 520, easing: "ease-in-out" });
+    let cancelled = false;
+    let animation: Animation | undefined;
+    let frame: number | undefined;
+    const direction = boundary === "empty" ? -1 : 1;
+    const play = () => {
+      if (cancelled) return;
+      // Stagger the axis peaks; empty mirrors the full pulse around resting size.
+      animation = element.animate([
+        { transform: "scale(1, 1)", offset: 0 },
+        { transform: `scale(${1 + direction * 0.025}, ${1 + direction * 0.045})`, offset: 0.24 },
+        { transform: `scale(${1 + direction * 0.015}, ${1 + direction * 0.08})`, offset: 0.38 },
+        { transform: `scale(${1 - direction * 0.01}, ${1 - direction * 0.025})`, offset: 0.62 },
+        { transform: `scale(${1 + direction * 0.005}, ${1 + direction * 0.015})`, offset: 0.8 },
+        { transform: "scale(1, 1)", offset: 1 },
+      ], { duration: 520, easing: "ease-in-out" });
+    };
 
-    return () => animation.cancel();
-  }, [boundary, enabled, reduced, ref]);
+    if (motionRef?.current && typeof window !== "undefined") {
+      // Let styles commit, then follow the actual transition, including reversals
+      // and consumer duration overrides, rather than guessing a timeout.
+      frame = window.requestAnimationFrame(() => {
+        const movements = motionRef.current?.getAnimations?.() ?? [];
+        if (movements.length === 0) play();
+        else void Promise.all(movements.map(movement => movement.finished)).then(play, () => {});
+      });
+    } else play();
+
+    return () => {
+      cancelled = true;
+      if (frame !== undefined) window.cancelAnimationFrame(frame);
+      animation?.cancel();
+    };
+  }, [boundary, enabled, reduced, ref, motionRef]);
 }
