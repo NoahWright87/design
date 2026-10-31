@@ -5,7 +5,7 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../src/components/molecules/ToggleIcon/spring.ts", import.meta.url), "utf8");
 const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } }).outputText;
-const { stepIconSpring, eyeGeometry, lockGeometry, restingLock, targetLock, stepLockMotion, moonSunGeometry, playbackGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
+const { stepIconSpring, hamburgerGeometry, plusMinusGeometry, eyeGeometry, lockGeometry, restingLock, targetLock, stepLockMotion, moonSunGeometry, playbackGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
 
 test("both directions overshoot and settle at the exact requested endpoint", () => {
   for (const target of [0, 1]) {
@@ -362,4 +362,64 @@ test("new closing recoil is larger and lasts longer than the previous endpoint b
   }
   assert.ok(nextPeak > oldPeak * 1.3);
   assert.ok((nextLast - oldLast) / 60 > 0.08);
+});
+
+
+test("hamburger merges three strokes into one before rotating into the X", () => {
+  const menu = hamburgerGeometry(0), merging = hamburgerGeometry(0.25), merged = hamburgerGeometry(0.5), cross = hamburgerGeometry(1);
+  assert.equal(menu.topY, 6);
+  assert.equal(menu.bottomY, 18);
+  assert.equal(menu.middleOpacity, 1);
+  assert.ok(merging.topY > 6 && merging.bottomY < 18);
+  assert.equal(merging.angle, 0, "rotation waits for the center merge");
+  assert.equal(merged.topY, 12);
+  assert.equal(merged.bottomY, 12);
+  assert.equal(merged.angle, 0);
+  assert.equal(merged.middleOpacity, 0);
+  assert.equal(cross.topY, 12);
+  assert.equal(cross.bottomY, 12);
+  assert.equal(cross.angle, 45);
+  assert.ok(hamburgerGeometry(1.1).angle > 45, "X overtravels before settling");
+  assert.ok(hamburgerGeometry(-0.1).topY < 6, "menu strokes overspread on return");
+});
+
+test("plus and minus both compress to the same oversized dot before expanding", () => {
+  const plus = plusMinusGeometry(0), minus = plusMinusGeometry(1);
+  assert.equal(plus.horizontalHalf, 7);
+  assert.equal(plus.verticalHalf, 7);
+  assert.equal(minus.horizontalHalf, 7);
+  assert.equal(minus.verticalHalf, 0);
+  for (const p of [0.4, 0.5, 0.6]) {
+    const dot = plusMinusGeometry(p);
+    assert.equal(dot.horizontalHalf, 0);
+    assert.equal(dot.verticalHalf, 0);
+    assert.ok(dot.dotRadius * 2 > 2.4, "dot is plumper than the strokes");
+  }
+  assert.deepEqual(plusMinusGeometry(0.4), plusMinusGeometry(0.6));
+  assert.ok(plusMinusGeometry(0.2).horizontalHalf < 7);
+  assert.ok(plusMinusGeometry(0.8).horizontalHalf < 7);
+  assert.ok(plusMinusGeometry(-0.1).verticalHalf > 7);
+  assert.ok(plusMinusGeometry(1.1).horizontalHalf > 7);
+});
+
+test("compression stage handoffs and reversed travel stay smooth", () => {
+  for (const [geometry, boundaries, properties] of [
+    [hamburgerGeometry, [0, 0.5, 1], ["topY", "bottomY", "angle", "halfLength"]],
+    [plusMinusGeometry, [0, 0.4, 0.6, 1], ["horizontalHalf", "verticalHalf", "dotRadius"]],
+  ]) {
+    for (const p of boundaries) for (const key of properties) {
+      const h = 1e-5;
+      const before = geometry(p - h)[key], at = geometry(p)[key], after = geometry(p + h)[key];
+      assert.ok(Math.abs(before - after) < 0.001, `${key} has no position jump`);
+      assert.ok(Math.abs((at - before) / h - (after - at) / h) < 0.2, `${key} has no abrupt velocity handoff`);
+    }
+    let state = { position: 0, velocity: 0 };
+    for (let i = 0; i < 10; i++) state = stepIconSpring(state, 1, 1 / 60, 8);
+    assert.deepEqual(geometry(stepIconSpring(state, 0, 0, 8).position), geometry(state.position));
+    for (let i = 0; i < 240; i++) {
+      state = stepIconSpring(state, 0, 1 / 60, 8);
+      for (const key of properties) assert.ok(Number.isFinite(geometry(state.position)[key]));
+    }
+    assert.deepEqual(state, { position: 0, velocity: 0 });
+  }
 });

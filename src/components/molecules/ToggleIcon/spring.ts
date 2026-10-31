@@ -7,6 +7,38 @@ export const clamp = (value: number) => Math.max(0, Math.min(1, value));
 export const mix = (from: number, to: number, progress: number) => from + (to - from) * progress;
 const ease = (value: number) => { const t = clamp(value); return t * t * (3 - 2 * t); };
 
+/** Smooth stage handoffs retain a modest elastic overshoot outside either endpoint. */
+const elasticEase = (value: number): number => {
+  const overtravel = (distance: number) => 0.12 * (1 - Math.exp(-((distance / 0.2) ** 2)));
+  if (value < 0) return -overtravel(-value);
+  if (value > 1) return 1 + overtravel(value - 1);
+  return ease(value);
+};
+
+export function hamburgerGeometry(position: number) {
+  const merge = elasticEase(Math.min(1, position / 0.5));
+  const rotation = elasticEase(Math.max(0, (position - 0.5) / 0.5));
+  return {
+    topY: mix(6, 12, merge),
+    bottomY: mix(18, 12, merge),
+    angle: 45 * rotation,
+    halfLength: 8 + 0.5 * Math.sin(Math.PI * clamp(position / 0.5)) ** 2,
+    // At this handoff the two outer strokes cover the middle stroke completely.
+    middleOpacity: position < 0.5 ? 1 : 0,
+  };
+}
+
+export function plusMinusGeometry(position: number) {
+  const compress = elasticEase(Math.min(1, position / 0.4));
+  const expand = elasticEase(Math.max(0, (position - 0.6) / 0.4));
+  const dot = ease(position / 0.4) * (1 - ease((position - 0.6) / 0.4));
+  return {
+    horizontalHalf: 7 * (1 - compress + expand),
+    verticalHalf: 7 * (1 - compress),
+    dotRadius: 1.2 + 0.9 * dot,
+  };
+}
+
 export interface HeartMotion {
   fill: number;
   from: number;

@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./toggle-icon.css";
 import { usePrefersReducedMotion } from "../../../atoms/usePrefersReducedMotion.js";
-import { clamp, eyeGeometry, heartGeometry, lockGeometry, mix, moonSunGeometry, playbackGeometry, restingHeart, restingLock, stepHeartMotion, stepIconSpring, stepLockMotion, targetHeart, targetLock } from "./spring.js";
+import { clamp, eyeGeometry, hamburgerGeometry, heartGeometry, lockGeometry, mix, moonSunGeometry, playbackGeometry, plusMinusGeometry, restingHeart, restingLock, stepHeartMotion, stepIconSpring, stepLockMotion, targetHeart, targetLock } from "./spring.js";
 
 export type ToggleIconPreset =
   | "hamburger"   // Menu → close
@@ -51,7 +51,7 @@ export interface ToggleIconProps {
   size?: "sm" | "md" | "lg";
 }
 
-function useIconSpring(target: number, mode: "spring" | "fill" | "playback" | "lock") {
+function useIconSpring(target: number, mode: "spring" | "fill" | "playback" | "lock" | "compress") {
   const fillMode = mode === "fill";
   const reduced = usePrefersReducedMotion();
   const state = React.useRef({ position: target, velocity: 0, width: 0, height: 0, rotation: 0, anticipation: 0 });
@@ -86,7 +86,7 @@ function useIconSpring(target: number, mode: "spring" | "fill" | "playback" | "l
         lock.current = stepLockMotion(lock.current, dt);
         state.current = { ...lock.current.progress, width: 0, height: 0, rotation: lock.current.recoil.position, anticipation: lock.current.anticipation };
       } else {
-        state.current = { ...stepIconSpring(state.current, target, dt, mode === "playback" ? 6.5 : 14.5), width: 0, height: 0, rotation: 0, anticipation: 0 };
+        state.current = { ...stepIconSpring(state.current, target, dt, mode === "playback" ? 6.5 : mode === "compress" ? 8 : 14.5), width: 0, height: 0, rotation: 0, anticipation: 0 };
       }
       previous = now;
       setSnapshot(state.current);
@@ -103,11 +103,15 @@ function IconGeometry({ preset, maskId, progress: p, width, height, rotation, an
   const t = clamp(p);
   const centerTransform = (transform: string) => `translate(12 12) ${transform} translate(-12 -12)`;
   switch (preset) {
-    case "hamburger": return <>
-      <path d="M4 6H20" transform={`translate(12 ${6 + 6 * p}) rotate(${45 * p}) translate(-12 -6)`} />
-      <path d="M4 12H20" transform={centerTransform(`scale(${1 - p} 1)`)} opacity={clamp(1 - t)} />
-      <path d="M4 18H20" transform={`translate(12 ${18 - 6 * p}) rotate(${-45 * p}) translate(-12 -18)`} />
-    </>;
+    case "hamburger": {
+      const g = hamburgerGeometry(p);
+      const line = `M${12 - g.halfLength} 0H${12 + g.halfLength}`;
+      return <>
+        <path d="M4 12H20" opacity={g.middleOpacity} />
+        <path d={line} transform={`translate(12 ${g.topY}) rotate(${g.angle}) translate(-12 0)`} />
+        <path d={line} transform={`translate(12 ${g.bottomY}) rotate(${-g.angle}) translate(-12 0)`} />
+      </>;
+    }
     case "moon-sun": {
       const g = moonSunGeometry(1 - p);
       return <g fill="currentColor" stroke="none">
@@ -125,7 +129,14 @@ function IconGeometry({ preset, maskId, progress: p, width, height, rotation, an
     }
     case "circle": return <circle cx="12" cy="12" r={8 + Math.sin(p * Math.PI) * 0.7} fill="currentColor" fillOpacity={t} />;
     case "arrow": return <g transform={centerTransform(`rotate(${90 * p})`)}><path d="M4 12H20M13 5L20 12L13 19" /></g>;
-    case "plus-minus": return <><path d="M5 12H19" /><path d="M12 5V19" transform={centerTransform(`rotate(${90 * p}) scale(1 ${1 - p})`)} opacity={1 - t} /></>;
+    case "plus-minus": {
+      const g = plusMinusGeometry(p);
+      return <>
+        <path d={`M${12 - g.horizontalHalf} 12H${12 + g.horizontalHalf}`} />
+        <path d={`M12 ${12 - g.verticalHalf}V${12 + g.verticalHalf}`} />
+        <circle cx="12" cy="12" r={g.dotRadius} fill="currentColor" stroke="none" />
+      </>;
+    }
     case "eye": {
       const g = eyeGeometry(p);
       const clipId = `${maskId}-eye-opening`;
@@ -198,7 +209,7 @@ export function ToggleIcon({
 
   const currentToggled = isControlled ? isToggled : internalToggled;
 
-  const mode = preset === "heart" || preset === "bookmark" ? "fill" : preset === "play-pause" ? "playback" : preset === "lock" ? "lock" : "spring";
+  const mode = preset === "heart" || preset === "bookmark" ? "fill" : preset === "play-pause" ? "playback" : preset === "lock" ? "lock" : preset === "hamburger" || preset === "plus-minus" ? "compress" : "spring";
   const progress = useIconSpring(currentToggled ? 1 : 0, mode);
 
   function handleClick() {
