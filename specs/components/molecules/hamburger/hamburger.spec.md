@@ -27,7 +27,7 @@ Clicking the button invokes the provided click handler. The visual appearance re
 
 ## Interface
 
-Three stacked horizontal lines are the default appearance. When opening, the outer strokes first move into the center to form one horizontal line. The middle stroke hides behind them, then the outer pair rotate into an X and elastically settle. Closing flattens the X into one line before spreading the three strokes back out, with a small overspread and settling. The button has no visible label text — its purpose is conveyed through the icon and its accessible label.
+Three stacked horizontal lines are the default appearance. When opening, the outer strokes first move into the center to form one horizontal line. The middle stroke hides behind them, and the merged line pauses with a small increase in length and thickness before the outer pair rotate into an X and elastically settle. Closing flattens the X into one line before spreading the three strokes back out, with a small overspread and settling. The button has no visible label text — its purpose is conveyed through the icon and its accessible label.
 
 The button is sized by CSS to suit its context and uses the theme foreground color.
 
@@ -41,3 +41,5 @@ The button is sized by CSS to suit its context and uses the theme foreground col
 7. Full rounded strokes settle with the shared Marshmallow Orbit damped spring and preserve momentum when reversed; reduced motion applies the final state immediately.
 
 8. The center merge completes before X rotation begins; reversal flattens the X before the menu strokes spread apart.
+
+9. The merged center line holds briefly and puffs up before expansion in either direction.

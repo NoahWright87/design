@@ -16,26 +16,29 @@ const elasticEase = (value: number): number => {
 };
 
 export function hamburgerGeometry(position: number) {
-  const merge = elasticEase(Math.min(1, position / 0.5));
-  const rotation = elasticEase(Math.max(0, (position - 0.5) / 0.5));
+  const merge = elasticEase(Math.min(1, position / 0.32));
+  const rotation = elasticEase(Math.max(0, (position - 0.68) / 0.32));
+  const emphasis = Math.sin(Math.PI * clamp((position - 0.32) / 0.36)) ** 2;
   return {
     topY: mix(6, 12, merge),
     bottomY: mix(18, 12, merge),
     angle: 45 * rotation,
-    halfLength: 8 + 0.5 * Math.sin(Math.PI * clamp(position / 0.5)) ** 2,
+    halfLength: 8 + 0.5 * Math.sin(Math.PI * clamp(position / 0.32)) ** 2 + emphasis,
+    strokeWidth: 2.4 + 0.8 * emphasis,
     // At this handoff the two outer strokes cover the middle stroke completely.
-    middleOpacity: position < 0.5 ? 1 : 0,
+    middleOpacity: position < 0.32 ? 1 : 0,
   };
 }
 
 export function plusMinusGeometry(position: number) {
-  const compress = elasticEase(Math.min(1, position / 0.4));
-  const expand = elasticEase(Math.max(0, (position - 0.6) / 0.4));
-  const dot = ease(position / 0.4) * (1 - ease((position - 0.6) / 0.4));
+  const compress = elasticEase(Math.min(1, position / 0.32));
+  const expand = elasticEase(Math.max(0, (position - 0.68) / 0.32));
+  const dot = ease(position / 0.32) * (1 - ease((position - 0.68) / 0.32));
+  const emphasis = Math.sin(Math.PI * clamp((position - 0.32) / 0.36)) ** 2;
   return {
     horizontalHalf: 7 * (1 - compress + expand),
     verticalHalf: 7 * (1 - compress),
-    dotRadius: 1.2 + 0.9 * dot,
+    dotRadius: 1.2 + 0.9 * dot + 0.7 * emphasis,
   };
 }
 

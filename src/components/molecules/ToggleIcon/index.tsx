@@ -108,8 +108,8 @@ function IconGeometry({ preset, maskId, progress: p, width, height, rotation, an
       const line = `M${12 - g.halfLength} 0H${12 + g.halfLength}`;
       return <>
         <path d="M4 12H20" opacity={g.middleOpacity} />
-        <path d={line} transform={`translate(12 ${g.topY}) rotate(${g.angle}) translate(-12 0)`} />
-        <path d={line} transform={`translate(12 ${g.bottomY}) rotate(${-g.angle}) translate(-12 0)`} />
+        <path d={line} strokeWidth={g.strokeWidth} transform={`translate(12 ${g.topY}) rotate(${g.angle}) translate(-12 0)`} />
+        <path d={line} strokeWidth={g.strokeWidth} transform={`translate(12 ${g.bottomY}) rotate(${-g.angle}) translate(-12 0)`} />
       </>;
     }
     case "moon-sun": {

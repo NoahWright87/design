@@ -389,13 +389,13 @@ test("plus and minus both compress to the same oversized dot before expanding", 
   assert.equal(plus.verticalHalf, 7);
   assert.equal(minus.horizontalHalf, 7);
   assert.equal(minus.verticalHalf, 0);
-  for (const p of [0.4, 0.5, 0.6]) {
+  for (const p of [0.32, 0.5, 0.68]) {
     const dot = plusMinusGeometry(p);
     assert.equal(dot.horizontalHalf, 0);
     assert.equal(dot.verticalHalf, 0);
     assert.ok(dot.dotRadius * 2 > 2.4, "dot is plumper than the strokes");
   }
-  assert.deepEqual(plusMinusGeometry(0.4), plusMinusGeometry(0.6));
+  assert.deepEqual(plusMinusGeometry(0.32), plusMinusGeometry(0.68));
   assert.ok(plusMinusGeometry(0.2).horizontalHalf < 7);
   assert.ok(plusMinusGeometry(0.8).horizontalHalf < 7);
   assert.ok(plusMinusGeometry(-0.1).verticalHalf > 7);
@@ -404,8 +404,8 @@ test("plus and minus both compress to the same oversized dot before expanding", 
 
 test("compression stage handoffs and reversed travel stay smooth", () => {
   for (const [geometry, boundaries, properties] of [
-    [hamburgerGeometry, [0, 0.5, 1], ["topY", "bottomY", "angle", "halfLength"]],
-    [plusMinusGeometry, [0, 0.4, 0.6, 1], ["horizontalHalf", "verticalHalf", "dotRadius"]],
+    [hamburgerGeometry, [0, 0.32, 0.5, 0.68, 1], ["topY", "bottomY", "angle", "halfLength", "strokeWidth"]],
+    [plusMinusGeometry, [0, 0.32, 0.5, 0.68, 1], ["horizontalHalf", "verticalHalf", "dotRadius"]],
   ]) {
     for (const p of boundaries) for (const key of properties) {
       const h = 1e-5;
@@ -421,5 +421,31 @@ test("compression stage handoffs and reversed travel stay smooth", () => {
       for (const key of properties) assert.ok(Number.isFinite(geometry(state.position)[key]));
     }
     assert.deepEqual(state, { position: 0, velocity: 0 });
+  }
+});
+
+
+test("compressed poses pause and puff up before expanding in either direction", () => {
+  const lineEntry = hamburgerGeometry(0.32), linePeak = hamburgerGeometry(0.5), lineExit = hamburgerGeometry(0.68);
+  assert.ok(linePeak.halfLength > lineEntry.halfLength);
+  assert.ok(linePeak.strokeWidth > lineEntry.strokeWidth);
+  assert.equal(lineEntry.halfLength, lineExit.halfLength);
+  assert.ok(plusMinusGeometry(0.5).dotRadius > plusMinusGeometry(0.32).dotRadius);
+  for (const target of [0, 1]) {
+    let state = { position: 1 - target, velocity: 0 };
+    let heldFrames = 0;
+    for (let frame = 0; frame < 180; frame++) {
+      state = stepIconSpring(state, target, 1 / 60, 8);
+      if (state.position >= 0.32 && state.position <= 0.68) {
+        const line = hamburgerGeometry(state.position), dot = plusMinusGeometry(state.position);
+        assert.equal(line.topY, 12);
+        assert.equal(line.bottomY, 12);
+        assert.equal(line.angle, 0, "line holds before its next expansion");
+        assert.equal(dot.horizontalHalf, 0);
+        assert.equal(dot.verticalHalf, 0);
+        heldFrames++;
+      }
+    }
+    assert.ok(heldFrames / 60 >= 0.08, "compressed pose gets a readable brief hold");
   }
 });

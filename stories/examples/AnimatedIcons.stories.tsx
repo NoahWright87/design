@@ -5,14 +5,14 @@ import type { ToggleIconPreset } from "../../src";
 
 const presets: { preset: ToggleIconPreset; title: string; detail: string }[] = [
   { preset: "moon-sun", title: "Day & night", detail: "Capsule rays orbit into a soft crescent" },
-  { preset: "hamburger", title: "Navigation", detail: "Merge into one line, then spring into an X" },
+  { preset: "hamburger", title: "Navigation", detail: "Merge, hold with a puff, then spring into an X" },
   { preset: "heart", title: "Favorite", detail: "Fill, then thump. Drain, then squish." },
   { preset: "bookmark", title: "Save for later", detail: "Fill, then thump. Drain, then squish." },
   { preset: "play-pause", title: "Playback", detail: "Wind up, dash, crash, and spring into pause" },
   { preset: "mute", title: "Sound", detail: "Waves return as audio opens up" },
   { preset: "eye", title: "Visibility", detail: "Lashes, a sleepy squish, and a springy wake-up" },
   { preset: "lock", title: "Security", detail: "Wind up, swivel, then throw its weight into a rock" },
-  { preset: "plus-minus", title: "Add & remove", detail: "Squish into a plump dot, then spring back out" },
+  { preset: "plus-minus", title: "Add & remove", detail: "Squish, pause with a puff, then spring back out" },
   { preset: "arrow", title: "Disclosure", detail: "A quarter turn points the way" },
   { preset: "circle", title: "Selection", detail: "From possibility to selected" },
   { preset: "thumbs", title: "Feedback", detail: "A fresh perspective with a half turn" },
