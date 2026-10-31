@@ -1,0 +1,47 @@
+@property --nw-progress-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+.nw-progress-text {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: var(--font-family-mono);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  line-height: 1;
+}
+
+.nw-progress-text > span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: clip-path var(--progress-duration, 220ms) ease-out;
+}
+
+.nw-progress-text--pie {
+  transition: --nw-progress-angle var(--progress-duration, 220ms) ease-out;
+}
+
+.nw-progress-text--pie > span:first-child {
+  mask-image: conic-gradient(transparent 0deg var(--nw-progress-angle), #000 var(--nw-progress-angle) 360deg);
+}
+
+.nw-progress-text--pie > span:last-child {
+  mask-image: conic-gradient(#000 0deg var(--nw-progress-angle), transparent var(--nw-progress-angle) 360deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-progress-text--pie,
+  .nw-progress-text > span { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .nw-progress-text > span:first-child { color: CanvasText !important; }
+  .nw-progress-text > span:last-child { color: HighlightText !important; }
+}
