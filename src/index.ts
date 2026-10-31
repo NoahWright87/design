@@ -5,6 +5,8 @@ export * from "./atoms/nonsense.js";
 export * from "./atoms/usePrefersReducedMotion.js";
 export * from "./atoms/typewriterDiff.js";
 export * from "./atoms/useTypewriter.js";
+export * from "./atoms/progress.js";
+export * from "./atoms/useProgressPulse.js";
 
 // Molecules
 export * from "./components/molecules/Button/index.js";
@@ -25,6 +27,8 @@ export * from "./components/molecules/Badge/index.js";
 export * from "./components/molecules/Box/index.js";
 export * from "./components/molecules/Tooltip/index.js";
 export * from "./components/molecules/TextCarousel/index.js";
+export * from "./components/molecules/ProgressText/index.js";
+export * from "./components/molecules/ProgressBar/index.js";
 
 // Organisms
 export * from "./components/organisms/Hero/index.js";

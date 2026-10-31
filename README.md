@@ -74,6 +74,49 @@ export function Example() {
 }
 ```
 
+## Progress indicators
+
+`ProgressBar` takes a controlled value with optional bounds. The default is a
+primary-colored, square-cornered bar with centered monospace percentage text.
+
+```tsx
+import { ProgressBar } from "@noahwright/design";
+
+<ProgressBar label="Completion" value={65} rounded />
+<ProgressBar
+  label="Experience"
+  value={350}
+  max={1000}
+  text={({ value, max }) => `${value} / ${max} XP`}
+/>
+<ProgressBar
+  label="Health"
+  value={health}
+  colorRanges={[
+    { upTo: 25, color: "var(--danger)" },
+    { upTo: 65, color: "var(--secondary)" },
+    { upTo: 100, color: "var(--confirm)" },
+  ]}
+/>
+```
+
+Color stops use inclusive upper **percentages**, regardless of the value domain.
+The smallest matching stop wins; values above all stops use `color` (primary by
+default). Reverse the colors for weapon heat. Each stop can set `textColor` for
+contrast on light fills. Text clips into separate track/fill colors and stays
+aligned as progress changes. `text={false}` hides the visible label, and
+`pulse={false}` disables the full/empty wobble. Reduced motion disables animation.
+
+Timers can pass elapsed or remaining time; XP can use `max={nextLevelXp}`; scrolling
+can pass `scrollTop` with `max={scrollHeight - clientHeight}` when that distance is
+positive. Applications own these value sources and their lifecycle.
+`getProgressState`, `getProgressColor`, `useProgressPulse`, and `ProgressText` are
+also exported for composing further indicators. `ProgressText` currently supports
+horizontal fills starting at the left edge.
+
+Explore **Components → Molecules → ProgressBar** and **Examples → Progress indicators**
+in Storybook (`npm run storybook`).
+
 ## Theming (typed, build-time + runtime toggle)
 
 In your app repo, create a typed `theme.ts`:

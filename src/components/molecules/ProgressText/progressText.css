@@ -1,0 +1,23 @@
+.nw-progress-text {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: var(--font-family-mono);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  line-height: 1;
+}
+
+.nw-progress-text > span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: clip-path var(--progress-duration, 220ms) ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nw-progress-text > span { transition: none; }
+}
