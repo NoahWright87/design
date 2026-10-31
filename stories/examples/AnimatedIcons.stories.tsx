@@ -14,7 +14,7 @@ const presets: { preset: ToggleIconPreset; title: string; detail: string }[] = [
   { preset: "lock", title: "Security", detail: "Wind up, swivel, then throw its weight into a rock" },
   { preset: "plus-minus", title: "Add & remove", detail: "Squish, pause with a puff, then spring back out" },
   { preset: "arrow", title: "Disclosure", detail: "A quarter turn points the way" },
-  { preset: "circle", title: "Selection", detail: "From possibility to selected" },
+  { preset: "circle", title: "Selection", detail: "Fill from the center, then pop and settle" },
   { preset: "thumbs", title: "Feedback", detail: "A fresh perspective with a half turn" },
 ];
 

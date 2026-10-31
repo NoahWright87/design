@@ -5,7 +5,7 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../src/components/molecules/ToggleIcon/spring.ts", import.meta.url), "utf8");
 const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } }).outputText;
-const { stepIconSpring, hamburgerGeometry, plusMinusGeometry, eyeGeometry, lockGeometry, restingLock, targetLock, stepLockMotion, moonSunGeometry, playbackGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
+const { stepIconSpring, selectionGeometry, hamburgerGeometry, plusMinusGeometry, eyeGeometry, lockGeometry, restingLock, targetLock, stepLockMotion, moonSunGeometry, playbackGeometry, heartGeometry, restingHeart, targetHeart, stepHeartMotion } = await import(`data:text/javascript;base64,${Buffer.from(code).toString("base64")}`);
 
 test("both directions overshoot and settle at the exact requested endpoint", () => {
   for (const target of [0, 1]) {
@@ -448,4 +448,43 @@ test("compressed poses pause and puff up before expanding in either direction", 
     }
     assert.ok(heldFrames / 60 >= 0.08, "compressed pose gets a readable brief hold");
   }
+});
+
+
+test("selection fills radially before popping, and empties before its smaller rebound", () => {
+  assert.deepEqual(selectionGeometry(0), { fillRadius: 0, scale: 1 });
+  assert.deepEqual(selectionGeometry(1), { fillRadius: 7, scale: 1 });
+  for (const target of [0, 1]) {
+    let state = { position: 1 - target, velocity: 0 };
+    let maxScale = 1, minScale = 1, sawPartialFill = false;
+    for (let frame = 0; frame < 240; frame++) {
+      state = stepIconSpring(state, target, 1 / 60, 8);
+      const g = selectionGeometry(state.position);
+      assert.ok(g.fillRadius >= 0 && g.fillRadius <= 7);
+      if (state.position >= 0 && state.position <= 1) assert.equal(g.scale, 1, "outline stays put during the radial fill");
+      if (g.scale > 1) assert.equal(g.fillRadius, 7, "pop follows complete filling");
+      if (g.scale < 1) assert.equal(g.fillRadius, 0, "shrink follows complete emptying");
+      sawPartialFill ||= g.fillRadius > 0 && g.fillRadius < 7;
+      maxScale = Math.max(maxScale, g.scale);
+      minScale = Math.min(minScale, g.scale);
+    }
+    assert.ok(sawPartialFill);
+    assert.equal(selectionGeometry(state.position).scale, 1);
+    if (target) assert.ok(maxScale > 1.08 && maxScale < 1.16);
+    else assert.ok(minScale < 0.95 && minScale > 0.9);
+  }
+});
+
+test("selection endpoint pops have smooth handoffs and preserve reversal poses", () => {
+  for (const endpoint of [0, 1]) for (const key of ["fillRadius", "scale"]) {
+    const h = 1e-5;
+    const before = selectionGeometry(endpoint - h)[key], at = selectionGeometry(endpoint)[key], after = selectionGeometry(endpoint + h)[key];
+    assert.ok(Math.abs(before - after) < 0.001);
+    assert.ok(Math.abs((at - before) / h - (after - at) / h) < 0.1);
+  }
+  let state = { position: 0, velocity: 0 };
+  for (let frame = 0; frame < 10; frame++) state = stepIconSpring(state, 1, 1 / 60, 8);
+  const reversed = stepIconSpring(state, 0, 0, 8);
+  assert.deepEqual(reversed, state);
+  assert.deepEqual(selectionGeometry(reversed.position), selectionGeometry(state.position));
 });

@@ -11,7 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- Stage hamburger as three strokes merging into one line before springing into an X. Both it and plus/minus pause at compression with an emphasizing puff in the center line or dot, then expand with smooth reversals and elastic overtravel.
+- Add compressed holds and puffs to hamburger and plus/minus, and a center-out selection fill with a full-state pop and smaller empty-state shrink/rebound. Preserve smooth stage handoffs and spring reversals.
 
 - Keep every icon button’s circular surface stationary; animate SVGs for feedback. Add whole-eye closing squish/opening rise with elastic settling, lowering lid and foreshortened lashes; the lock anticipates each action, lifts and swivels around its left post, then transfers arrival momentum into a leftward opening rock or a stronger, longer closing recoil.
 

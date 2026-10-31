@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./toggle-icon.css";
 import { usePrefersReducedMotion } from "../../../atoms/usePrefersReducedMotion.js";
-import { clamp, eyeGeometry, hamburgerGeometry, heartGeometry, lockGeometry, mix, moonSunGeometry, playbackGeometry, plusMinusGeometry, restingHeart, restingLock, stepHeartMotion, stepIconSpring, stepLockMotion, targetHeart, targetLock } from "./spring.js";
+import { clamp, eyeGeometry, hamburgerGeometry, heartGeometry, lockGeometry, mix, moonSunGeometry, playbackGeometry, plusMinusGeometry, restingHeart, restingLock, selectionGeometry, stepHeartMotion, stepIconSpring, stepLockMotion, targetHeart, targetLock } from "./spring.js";
 
 export type ToggleIconPreset =
   | "hamburger"   // Menu → close
@@ -127,7 +127,13 @@ function IconGeometry({ preset, maskId, progress: p, width, height, rotation, an
         <circle cx="50" cy="50" r={g.radius} mask={`url(#${maskId})`} />
       </g>;
     }
-    case "circle": return <circle cx="12" cy="12" r={8 + Math.sin(p * Math.PI) * 0.7} fill="currentColor" fillOpacity={t} />;
+    case "circle": {
+      const g = selectionGeometry(p);
+      return <g transform={centerTransform(`scale(${g.scale})`)}>
+        <circle cx="12" cy="12" r={g.fillRadius} fill="currentColor" stroke="none" />
+        <circle cx="12" cy="12" r="8" fill="none" vectorEffect="non-scaling-stroke" strokeWidth="0.1em" />
+      </g>;
+    }
     case "arrow": return <g transform={centerTransform(`rotate(${90 * p})`)}><path d="M4 12H20M13 5L20 12L13 19" /></g>;
     case "plus-minus": {
       const g = plusMinusGeometry(p);
@@ -209,7 +215,7 @@ export function ToggleIcon({
 
   const currentToggled = isControlled ? isToggled : internalToggled;
 
-  const mode = preset === "heart" || preset === "bookmark" ? "fill" : preset === "play-pause" ? "playback" : preset === "lock" ? "lock" : preset === "hamburger" || preset === "plus-minus" ? "compress" : "spring";
+  const mode = preset === "heart" || preset === "bookmark" ? "fill" : preset === "play-pause" ? "playback" : preset === "lock" ? "lock" : preset === "hamburger" || preset === "plus-minus" || preset === "circle" ? "compress" : "spring";
   const progress = useIconSpring(currentToggled ? 1 : 0, mode);
 
   function handleClick() {

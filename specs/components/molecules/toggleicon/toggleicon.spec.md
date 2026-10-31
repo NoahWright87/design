@@ -39,6 +39,8 @@ From rest, the lock first anticipates the action with a brief shackle-only windu
 
 Plus/minus uses the same plump dot in either direction. The outgoing lines shrink into their shared center as the dot swells slightly wider than their stroke. During a brief hold at the dot pose, the dot swells further for emphasis. It then contracts and the destination lines expand, overtravel, and settle. The minus-to-plus direction follows the same sequence in reverse. Both it and hamburger use a slower spring to make compression and expansion readable, retain momentum on reversal, and render final poses immediately with reduced motion.
 
+Selection fills with a solid small circle expanding outward from the center to meet the outline. The outline stays at its resting size during filling; completing the fill triggers a slightly larger whole-icon pop before springing back. Emptying contracts the solid fill inward to nothing, followed by a smaller whole-icon shrink and rebound. The outer circular button surface stays still, the outline keeps constant stroke thickness, and both resting poses have the same size. Interrupted toggles retain spring momentum, while reduced motion selects the final radial fill and neutral scale immediately.
+
 ## Interface
 Icons use a consistent square canvas, rounded strokes, transparent background, generous button targets, stationary hover feedback, and visible keyboard focus. The circular button surface and focus ring retain their position and size while pressed; each preset animates its SVG geometry for feedback. Motion is exaggerated, bouncy, and cartoony while preserving legibility. Fast actions include a readable windup and follow-through: anticipation, movement, impact or arrival, then elastic overtravel and settling. An endpoint bounce alone is insufficient when the travel feels sudden. The whole sequence stays quick without compressing its stages into frantic motion. Default labels describe the next action; custom labels support application-specific meaning.
 
@@ -81,3 +83,5 @@ Storybook's Examples → Animated Icons gallery offers individual controls, a pa
 28. Plus/minus passes through a slightly oversized dot with zero line length in both directions, then expands the destination lines with spring overtravel. Stage handoffs stay smooth.
 
 29. Hamburger and plus/minus briefly hold their fully compressed pose in both directions. The center line lengthens and thickens during the hold, and the dot swells further, before either expands into its destination.
+
+30. Selection uses a growing solid center circle rather than opacity fading. It fills completely before popping larger, and empties completely before a smaller shrink/rebound, with smooth endpoint handoffs and neutral resting scales.

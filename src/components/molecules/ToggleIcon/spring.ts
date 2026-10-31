@@ -42,6 +42,15 @@ export function plusMinusGeometry(position: number) {
   };
 }
 
+export function selectionGeometry(position: number) {
+  const pop = (overtravel: number) => 1 - Math.exp(-((overtravel / 0.1) ** 2));
+  return {
+    // A slight overlap with the inner outline edge keeps the filled state seamless.
+    fillRadius: 7 * ease(position),
+    scale: 1 + 0.15 * pop(Math.max(0, position - 1)) - 0.09 * pop(Math.max(0, -position)),
+  };
+}
+
 export interface HeartMotion {
   fill: number;
   from: number;
