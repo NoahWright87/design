@@ -26,6 +26,4 @@
 @media (forced-colors: active) {
   .nw-progress-bar { border-color: CanvasText; }
   .nw-progress-bar__fill { background: Highlight !important; }
-  .nw-progress-text > span:first-child { color: CanvasText !important; }
-  .nw-progress-text > span:last-child { color: HighlightText !important; }
 }

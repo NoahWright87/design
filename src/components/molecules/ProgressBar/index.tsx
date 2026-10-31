@@ -1,21 +1,13 @@
 "use client";
 import * as React from "react";
-import { getProgressColor, getProgressState } from "../../../atoms/progress.js";
-import type { ProgressColorRange, ProgressOptions, ProgressState } from "../../../atoms/progress.js";
+import { getProgressColor, getProgressState, getProgressText } from "../../../atoms/progress.js";
+import type { ProgressIndicatorProps } from "../../../atoms/progress.js";
 import { useProgressPulse } from "../../../atoms/useProgressPulse.js";
 import { ProgressText } from "../ProgressText/index.js";
 import "./progressBar.css";
 
-export interface ProgressBarProps extends ProgressOptions {
-  /** Accessible name, independent of the visible text. */
-  label: string;
-  /** Omit for a rounded percentage; false hides the visible text. */
-  text?: string | false | ((progress: ProgressState) => string);
+export interface ProgressBarProps extends ProgressIndicatorProps {
   rounded?: boolean;
-  color?: string;
-  textColor?: string;
-  colorRanges?: readonly ProgressColorRange[];
-  pulse?: boolean;
 }
 
 export function ProgressBar({
@@ -32,7 +24,7 @@ export function ProgressBar({
 }: ProgressBarProps) {
   const progress = getProgressState({ value, min, max });
   const colors = getProgressColor(progress.percentage, colorRanges, color, textColor);
-  const display = typeof text === "function" ? text(progress) : text === undefined ? `${Math.round(progress.percentage)}%` : text;
+  const display = getProgressText(progress, text);
   const ref = React.useRef<HTMLDivElement>(null);
   const fillRef = React.useRef<HTMLSpanElement>(null);
   useProgressPulse(ref, progress, pulse, fillRef);

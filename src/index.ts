@@ -29,6 +29,7 @@ export * from "./components/molecules/Tooltip/index.js";
 export * from "./components/molecules/TextCarousel/index.js";
 export * from "./components/molecules/ProgressText/index.js";
 export * from "./components/molecules/ProgressBar/index.js";
+export * from "./components/molecules/ProgressPie/index.js";
 
 // Organisms
 export * from "./components/organisms/Hero/index.js";

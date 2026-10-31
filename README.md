@@ -76,13 +76,15 @@ export function Example() {
 
 ## Progress indicators
 
-`ProgressBar` takes a controlled value with optional bounds. The default is a
-primary-colored, square-cornered bar with centered monospace percentage text.
+`ProgressBar` and `ProgressPie` take a controlled value with optional bounds.
+Both default to primary fill with centered monospace percentage text. The bar
+has square corners; the solid pie fills clockwise from twelve o'clock.
 
 ```tsx
-import { ProgressBar } from "@noahwright/design";
+import { ProgressBar, ProgressPie } from "@noahwright/design";
 
 <ProgressBar label="Completion" value={65} rounded />
+<ProgressPie label="Completion" value={65} size={128} />
 <ProgressBar
   label="Experience"
   value={350}
@@ -105,17 +107,22 @@ The smallest matching stop wins; values above all stops use `color` (primary by
 default). Reverse the colors for weapon heat. Each stop can set `textColor` for
 contrast on light fills. Text clips into separate track/fill colors and stays
 aligned as progress changes. `text={false}` hides the visible label, and
-`pulse={false}` disables the full/empty wobble. Reduced motion disables animation.
+`pulse={false}` disables the full/empty wobble. Full pulses outward and empty
+pulses inward after the visible fill or sweep finishes. Reduced motion disables animation.
 
 Timers can pass elapsed or remaining time; XP can use `max={nextLevelXp}`; scrolling
 can pass `scrollTop` with `max={scrollHeight - clientHeight}` when that distance is
 positive. Applications own these value sources and their lifecycle.
-`getProgressState`, `getProgressColor`, `useProgressPulse`, and `ProgressText` are
-also exported for composing further indicators. `ProgressText` currently supports
-horizontal fills starting at the left edge.
+`ProgressIndicatorProps` is the shared contract for both shapes. `getProgressState`,
+`getProgressColor`, `getProgressText`, `useProgressPulse`, and `ProgressText` are
+also exported for composing further indicators. `ProgressText` defaults to
+horizontal fills starting at the left edge; `shape="pie"` masks text for a
+clockwise sweep from twelve o'clock. The pie uses registered CSS custom properties
+for smooth angle animation in modern browsers.
 
-Explore **Components → Molecules → ProgressBar** and **Examples → Progress indicators**
-in Storybook (`npm run storybook`).
+Explore **Components → Molecules → ProgressBar / ProgressPie** and
+**Examples → Progress indicators** in Storybook (`npm run storybook`). The shared
+examples switch between bar and pie while preserving the live value sources.
 
 ## Theming (typed, build-time + runtime toggle)
 

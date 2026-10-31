@@ -11,7 +11,7 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- Add composable progress normalization, percentage color ranges, split-background text, and a thick outlined `ProgressBar` with optional rounding and reduced-motion-aware endpoint wobble. Full pulses outward and empty pulses inward after visible fill movement completes. Include interactive completion, countdown, XP, heat, and scrolling stories.
+- Add shared progress normalization, formatting, percentage color ranges, and split-background text for outlined `ProgressBar` and solid clockwise `ProgressPie` indicators. Full pulses outward and empty pulses inward after visible movement completes, with reduced-motion support. Include interactive completion, countdown, XP, heat, and scrolling stories with a shape switch.
 - Prepare the v1.6.0 minor release: synchronize package and lockfile versions, document installation, and move completed release notes into version history.
 
 ## Version history

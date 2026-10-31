@@ -21,6 +21,22 @@ export interface ProgressColorRange {
   textColor?: string;
 }
 
+export type ProgressTextValue = string | false | ((progress: ProgressState) => string);
+
+/** Common contract for canonical indicator shapes. */
+export interface ProgressIndicatorProps extends ProgressOptions {
+  label: string;
+  text?: ProgressTextValue;
+  color?: string;
+  textColor?: string;
+  colorRanges?: readonly ProgressColorRange[];
+  pulse?: boolean;
+}
+
+export function getProgressText(progress: ProgressState, text?: ProgressTextValue): string | false {
+  return typeof text === "function" ? text(progress) : text === undefined ? `${Math.round(progress.percentage)}%` : text;
+}
+
 /** Shared by all indicator shapes; callers own timers, scoring, and scroll sources. */
 export function getProgressState({ value, min = 0, max = 100 }: ProgressOptions): ProgressState {
   if (!Number.isFinite(min) || !Number.isFinite(max) || max <= min || !Number.isFinite(max - min)) {
