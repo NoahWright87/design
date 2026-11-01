@@ -6,6 +6,7 @@ Provide a solid circular progress indicator that fills like a pie chart, sharing
 ## Related
 - [Progress atoms](../../../atoms/progress.spec.md)
 - [Progress bar and shared text](../progressbar/progressbar.spec.md)
+- [Shared radial base, rings, and layers](../progress/progress.spec.md)
 
 ## Contract
 ### Inputs
@@ -16,6 +17,8 @@ Provide a solid circular progress indicator that fills like a pie chart, sharing
 - `color?: string = primary color`, `textColor?: string = background color`, and `colorRanges?: readonly ProgressColorRange[] = []` choose the filled sector and its text color.
 - `pulse?: boolean = true` enables completion-timed endpoint feedback.
 - `size?: number = 128` sets the outer diameter in CSS pixels; finite positive sizes apply, and other values restore the default.
+- `layers?: readonly ProgressLayerOptions[] = []` supplies independent auxiliary sectors or bands under the shared layer contract.
+- `className?: string`, `style?: CSSProperties`, and `children?: ReactNode | ((progress: ProgressState) => ReactNode)` support application wrappers. Decorative children replace visible default text.
 ### Outputs
 A solid circular progressbar with a dark outline, clockwise filled sector, and optional centered monospace text.
 ### Guarantees / Constraints
@@ -25,6 +28,8 @@ The component uses React and CSS with shared progress atoms. Server rendering pr
 The sweep starts at twelve o'clock and fills clockwise. Empty shows the background throughout, halfway fills the right half, and full fills the entire circle. The circle stays solid through its center. The theme background fills the remainder; the thick dark outline matches the bar.
 
 The sweep and text masks animate with the same angle, timing, and easing. Text remains centered across the whole circle, using foreground color over the unfilled sector and the configured filled-text color over the filled sector. Range-specific filled-text colors support custom light fills. Long text clips to the circle. Hiding text preserves the accessible numeric value.
+
+`ProgressPie` is a thin wrapper over the public `RadialProgress` base, which also renders rings. Auxiliary layers, custom content, and application styling follow the shared base contract. Layered controls use a background-backed label and named group semantics with independently accessible values.
 
 Full pulses slightly outward and empty pulses slightly inward, after the visible sweep finishes. Reversals follow actual animation completion. Cancelled arrivals stay quiet. Mounting at an endpoint stays still. Reduced motion updates the sweep and masks immediately and keeps endpoint feedback still. Forced-colors mode uses system colors and preserves the solid sector.
 
@@ -42,3 +47,4 @@ Storybook includes partial and endpoint states, sizes, hidden text, percentage c
 6. Full and empty feedback starts at sweep completion with the matching outward or inward pulse; cancellation and reduced motion follow shared behavior.
 7. Server-rendered accessibility remains valid with custom text and hidden text.
 8. Forced-colors mode preserves the sector and distinguishes text over filled and unfilled areas.
+9. Pies and rings share the radial base; layered and application-wrapped pies follow the common presentation contract.

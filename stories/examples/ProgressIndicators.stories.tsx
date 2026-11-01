@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ProgressBar, ProgressPie } from "../../src";
+import { ProgressBar, ProgressPie, ProgressRing, ProgressSegmentedBar } from "../../src";
 import type { ProgressColorRange } from "../../src";
 
 const meta: Meta = { title: "Examples/Progress indicators" };
@@ -20,8 +20,8 @@ const heat: readonly ProgressColorRange[] = [
 
 export const Collection: Story = {
   render: function Collection() {
-    const [shape, setShape] = React.useState<"bar" | "pie">("bar");
-    const Indicator = shape === "pie" ? ProgressPie : ProgressBar;
+    const [shape, setShape] = React.useState<"bar" | "pie" | "ring" | "segments">("bar");
+    const Indicator = shape === "pie" ? ProgressPie : shape === "ring" ? ProgressRing : shape === "segments" ? ProgressSegmentedBar : ProgressBar;
     const [completion, setCompletion] = React.useState(50);
     const [remaining, setRemaining] = React.useState(15);
     const [running, setRunning] = React.useState(false);
@@ -44,9 +44,11 @@ export const Collection: Story = {
 
     return <div style={{ display: "grid", gap: "2rem", maxWidth: "44rem", padding: "1rem", color: "var(--foreground)", background: "var(--background)" }}>
       <h1>Many shapes. Shared progress.</h1>
-      <label>Indicator shape <select value={shape} onChange={event => setShape(event.target.value as "bar" | "pie")}>
+      <label>Indicator shape <select value={shape} onChange={event => setShape(event.target.value as typeof shape)}>
         <option value="bar">Bar</option>
         <option value="pie">Pie</option>
+        <option value="ring">Ring</option>
+        <option value="segments">Segmented bar</option>
       </select></label>
       <section>
         <h2>Completion</h2>
@@ -61,7 +63,7 @@ export const Collection: Story = {
       </section>
       <section>
         <h2>Experience</h2>
-        <Indicator label="Experience toward next level" value={xp} max={1000} color="var(--secondary)" text={({ value, max }) => shape === "pie" ? `${value} XP` : `${value} / ${max} XP`} />
+        <Indicator label="Experience toward next level" value={xp} max={1000} color="var(--secondary)" text={({ value, max }) => shape === "pie" || shape === "ring" ? `${value} XP` : `${value} / ${max} XP`} />
         <button onClick={() => setXp(value => Math.min(1000, value + 125))}>Earn 125 XP</button>{" "}
         <button onClick={() => setXp(0)}>New level</button>
       </section>

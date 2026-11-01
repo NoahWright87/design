@@ -23,6 +23,17 @@ export interface ProgressColorRange {
 
 export type ProgressTextValue = string | false | ((progress: ProgressState) => string);
 
+export interface ProgressLayerOptions extends ProgressOptions {
+  id: string;
+  label: string;
+  color?: string;
+  colorRanges?: readonly ProgressColorRange[];
+  /** Behind the primary fill by default; over layers default to a thin band. */
+  placement?: "behind" | "over";
+  /** Cross-axis band width in CSS pixels; radial bands follow the outer edge. */
+  thickness?: number;
+}
+
 /** Common contract for canonical indicator shapes. */
 export interface ProgressIndicatorProps extends ProgressOptions {
   label: string;
@@ -31,6 +42,7 @@ export interface ProgressIndicatorProps extends ProgressOptions {
   textColor?: string;
   colorRanges?: readonly ProgressColorRange[];
   pulse?: boolean;
+  layers?: readonly ProgressLayerOptions[];
 }
 
 export function getProgressText(progress: ProgressState, text?: ProgressTextValue): string | false {

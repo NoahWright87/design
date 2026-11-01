@@ -11,7 +11,8 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
-- Add shared progress normalization, formatting, percentage color ranges, and split-background text for outlined `ProgressBar` and solid clockwise `ProgressPie` indicators. Full pulses outward and empty pulses inward after visible movement completes, with reduced-motion support. Include interactive completion, countdown, XP, heat, and scrolling stories with a shape switch.
+- Add public `LinearProgress` and `RadialProgress` bases with thin bar, segmented-bar, pie, and ring wrappers. Share normalization, formatting, color ranges, text, geometry styles, and completion-timed pulses; support both bar orientations and reduced motion.
+- Add independently valued behind/over layers with separate accessible values, application styling/content slots, and shared live examples. Include an interactive health/armor/poison/damage-trail example across all presentations.
 - Prepare the v1.6.0 minor release: synchronize package and lockfile versions, document installation, and move completed release notes into version history.
 
 ## Version history
