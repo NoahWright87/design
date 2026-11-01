@@ -8,7 +8,7 @@ import { Button } from "../../components/molecules/Button/index.js";
 import { Modal } from "../../components/organisms/Modal/index.js";
 import { Text } from "../../components/molecules/Text/index.js";
 import { Heading } from "../../components/molecules/Heading/index.js";
-import { toggleThemeMode, getThemeMode } from "../../styles/themeToggle.js";
+import { toggleThemeMode, getThemeMode, subscribeThemeMode } from "../../styles/themeToggle.js";
 import { ToggleIcon } from "../../components/molecules/ToggleIcon/index.js";
 import { getNonsense } from "../../atoms/nonsense.js";
 
@@ -24,11 +24,11 @@ export function PortfolioHeader({ onNavigate }: PortfolioHeaderProps) {
 
   React.useEffect(() => {
     setIsDark(getThemeMode() === 'dark');
+    return subscribeThemeMode(mode => setIsDark(mode === 'dark'));
   }, []);
 
-  function handleThemeToggle(toggled: boolean) {
-    toggleThemeMode();
-    setIsDark(toggled);
+  function handleThemeToggle() {
+    setIsDark(toggleThemeMode() === 'dark');
   }
 
   const navItems = [

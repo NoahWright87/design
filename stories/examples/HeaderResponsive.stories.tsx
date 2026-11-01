@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Header, Menu, MenuItem, Button, getThemeMode, toggleThemeMode, initThemeMode } from "../../src";
+import { Header, Menu, MenuItem, Button, ToggleIcon, getThemeMode, toggleThemeMode, initThemeMode, subscribeThemeMode } from "../../src";
 
 const meta: Meta<typeof Header> = {
   title: "Examples/Header Responsive",
@@ -104,25 +104,20 @@ function ThemeToggle() {
       }
     }
     document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
+    const unsubscribe = subscribeThemeMode(setMode);
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      unsubscribe();
+    };
   }, []);
 
   return (
-    <button
-      onClick={() => {
-        const newMode = toggleThemeMode();
-        setMode(newMode);
-      }}
-      style={{
-        background: "transparent",
-        border: "none",
-        cursor: "pointer",
-        fontSize: "1.5rem",
-        padding: "0",
-      }}
-    >
-      {mode === "dark" ? "☀️" : "🌙"}
-    </button>
+    <ToggleIcon
+      preset="moon-sun"
+      isToggled={mode === "dark"}
+      onChange={() => setMode(toggleThemeMode())}
+      size="lg"
+    />
   );
 }
 
