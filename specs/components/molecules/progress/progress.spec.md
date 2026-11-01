@@ -1,80 +1,66 @@
-# Shared linear and radial progress presentations
+# Progress
 
 ## Purpose
-Provide maintainable, public composition bases for continuous and segmented bars in both orientations, solid pies, and open-center rings. Share normalization, text, layers, accessibility, and pulse timing across every canonical presentation.
+One public progress component presents scalar or densely layered information using a shared value model across horizontal bars, vertical bars, pies, and rings. Layers select styling; ordered series stack as amounts within each layer.
 
 ## Related
 - [Progress atoms](../../../atoms/progress.spec.md)
-- [Bar and shared text](../progressbar/progressbar.spec.md)
-- [Pie](../progresspie/progresspie.spec.md)
-- Sources: [shared bases](../../../../src/components/molecules/Progress/index.tsx), [ring wrapper](../../../../src/components/molecules/ProgressRing/index.tsx), [segmented wrapper](../../../../src/components/molecules/ProgressSegmentedBar/index.tsx)
+- [Design system](../../../design-system.spec.md)
+- [Source](../../../../src/components/molecules/Progress/index.tsx)
 
 ## Contract
 ### Inputs
-All presentations extend `ProgressIndicatorProps`: required `value: number`, `label: string`; optional `min: number = 0`, `max: number = 100`, `text: ProgressTextValue` (rounded percentage), `color: string` (primary), `textColor: string` (background), `colorRanges: readonly ProgressColorRange[] = []`, `pulse: boolean = true`, and `layers: readonly ProgressLayerOptions[] = []`.
+`ProgressProps`:
+- `label: string` is the required accessible name.
+- `shape?: ProgressShape = "BarHorizontal"`; alternatives are `BarVertical`, `Pie`, and `Ring`.
+- `value?: number = 0`, `min?: number = 0`, `max?: number = 100` provide the scalar shortcut. Explicit `layers` are authoritative when supplied. In layer mode root max is the fallback layer capacity; min applies to scalar mode.
+- `color?: string` defaults to primary. `colorRanges?: readonly ProgressColorRange[] = []` provides fallback percentage-based colors for series. A series-specific range list overrides this list, including an empty list. Uncovered percentages use the series color or root color.
+- `text?: ProgressTextValue` defaults to the first layer's total percentage or scalar percentage; `textColor?: string` defaults to background for scalar split text.
+- `labelPosition?: "center" | "top" | "bottom" | "left" | "right" | "none" = "center"`. Position none hides visual text while preserving its accessible description. `text={false}` hides the automatic label and description.
+- `segments?: number | null = 0`. Zero, null, negative, nonfinite, and counts rounding below two produce continuous progress. Valid counts round down and cap at one hundred, for every shape.
+- `gap?: number = 3`, in pixels for bars and degrees for radial cells; finite nonnegative values apply, others restore the default. Effective gaps cap at half a cell.
+- `layers?: readonly ProgressLayer[]` defines explicit layers. Empty arrays render an empty canvas and named accessible group.
+- `size?: number = 128` sets radial diameter in CSS pixels. Finite positive values apply; others restore the default.
+- `thickness?: number = 16` sets radial band width; `layerGap?: number = 3` sets radial spacing. Invalid widths restore the default, invalid negative spacing restores the default, and both fit available radial space.
+- `rounded?: boolean = false` applies theme corner rounding to bars.
+- `pulse?: boolean = true` enables first-layer/scalar endpoint feedback.
+- `className?: string`, `style?: CSSProperties`, and `children?: ReactNode | ((state: ProgressState) => ReactNode)` support app composition. Decorative children replace visible automatic text and follow labelPosition; text still supplies the accessible description.
 
-`ProgressPresentationProps` adds:
-- `className?: string` and `style?: CSSProperties` for application styling. Consumer styles override default dimensions and custom properties.
-- `children?: ReactNode | ((progress: ProgressState) => ReactNode)` for decorative custom content, replacing the default visible label. The ordinary text formatter still supplies the accessible value description.
+`ProgressLayer`: required `id: string`, `label: string`, and `series: readonly ProgressSeries[]`; optional `max?: number` inherits root max, `appearance?: "solid" | "hatched" | "outline" = "solid"`, `opacity?: number = 1` clamped to zero through one with nonfinite values restoring one, and `outlineWidth?: number = 3` in pixels, capped at twenty with invalid values restoring three.
 
-`LinearProgressProps` adds:
-- `orientation?: "horizontal" | "vertical" = "horizontal"`.
-- `rounded?: boolean = false` using the theme radius.
-- `segments?: number = 1` for visual divisions. Finite positive counts round down and clamp to one through one hundred; other counts become one.
-- `gap?: number = 3` for division gaps in CSS pixels. Finite nonnegative values apply; other values restore the default. Effective gaps fit within half a cell.
-
-`RadialProgressProps` adds:
-- `variant?: "pie" | "ring" = "pie"`.
-- `size?: number = 128`, the outer diameter in CSS pixels. Finite positive values apply; other values restore the default.
-- `thickness?: number = 16`, the ring band in CSS pixels. Finite positive values apply; other values restore the default. Width caps to leave a center opening where the diameter permits.
-
-Canonical wrappers:
-- `ProgressBarProps` exposes the linear base inputs except segments and gap.
-- `ProgressSegmentedBarProps` exposes all linear inputs, defaulting segments to ten.
-- `ProgressPieProps` exposes radial inputs except variant and thickness, choosing pie.
-- `ProgressRingProps` exposes radial inputs except variant, choosing ring.
-
-`ProgressLayerOptions` contains:
-- Required `id: string`, `label: string`, and `value: number`.
-- `min?: number = 0`, `max?: number = 100`, `color?: string` (inherits the main fallback color), and `colorRanges?: readonly ProgressColorRange[] = []`.
-- `placement?: "behind" | "over" = "behind"` chooses paint order relative to the primary fill.
-- `thickness?: number` makes a cross-axis strip or outer radial band. Behind layers default to the full primary geometry. Over layers default to a thin band of six CSS pixels. Invalid explicitly supplied widths use six. Radial layers fit the radial radius, and ring layers stay inside the ring's band.
+`ProgressSeries`: required `id: string`, `label: string`, `value: number`; optional `color?: string` and `colorRanges?: readonly ProgressColorRange[]`. Values are amounts, not cumulative endpoints. Color thresholds are inclusive upper percentages of this series' effective amount divided by its layer capacity.
 
 ### Outputs
-Controlled progress presentations; one accessible progressbar for a single value, or a named group containing separately named progressbars when auxiliary layers are present.
+One accessible progressbar in scalar mode, or a named group of layer groups containing totals and separately named series progressbars in explicit-layer mode. Every shape renders the same resolved series intervals.
 
 ### Guarantees / Constraints
-Both public bases share one renderer. Canonical wrappers choose geometry defaults and contain no value, motion, accessibility, or layer implementation. React and CSS supply all runtime behavior; server rendering emits meaningful static state. Applications own scoring, damage, timers, and scroll values.
+`Progress` is the only public progress UI component; shape-specific render geometry stays internal. Normalization, stacking, colors, labels, segments, semantics, motion, and app slots share one implementation. Runtime dependencies remain React and CSS, with meaningful server-rendered state.
 
 ## Behavior
-Horizontal fills grow from the left; vertical fills grow from the bottom. The default horizontal footprint is full width and compact height; the vertical footprint is a narrow, taller meter. Orientation changes the fill axis and text clipping together. Segments divide the track and every fill into equal cells with gaps, preserving continuous fractional values within a cell. The final full cell reaches the track edge.
+Each layer starts at zero. Series add sequentially: amounts seventy-five and ten occupy the first seventy-five percent and the following ten percent, leaving the final fifteen percent empty. Values clamp to remaining capacity, so overflow clips later series; negative and nonfinite amounts consume zero. Each layer has an independent capacity. Duplicate layer IDs and duplicate series IDs within a layer use the first entry. Input data stays unchanged.
 
-Pies and rings share the clockwise sweep from twelve o'clock and the same motion. A ring masks the center of the track and every layer, leaving the center transparent, with dark inner and outer outlines. Its centered label uses the foreground color over the opening. Ring thickness changes the band without changing the sweep, value, or outer footprint. Each radial layer uses its own band width, capped to the ring band for rings.
+Colors respond to each series' own effective percentage. For example, red through ten percent, yellow through fifty, then green. The entire series changes color when its value crosses a threshold. This value-driven coloring is distinct from stacking differently colored series in separate intervals. Fixed colors and value-driven colors can coexist across layers.
 
-Auxiliary values normalize independently using their own bounds. They overlay the same value scale in space rather than adding to the primary percentage. Behind layers paint first in array order, followed by the primary fill, then over layers in array order. Later layers within a placement paint on top. Stable IDs retain layer identity; duplicate IDs use the first entry. Empty layer arrays preserve single-indicator behavior. Horizontal strips follow the top edge; vertical strips follow the right edge; radial bands follow the outer edge.
+Bars share geometry except for axis: horizontal fills grow from the left; vertical fills grow from the bottom. Layers overlay in array order, with later layers on top. Solid, diagonal hatch, outline-only, opacity, and outline width distinguish overlapping values.
 
-Every fill animates independently with shared timing and reduced-motion rules. Primary full/empty arrivals pulse the whole control after primary movement completes. Auxiliary values retain independent visual transitions while the primary controls endpoint pulses. Cancelled arrivals stay quiet.
+Radial layers occupy disjoint concentric regions, with the first layer innermost and later layers successively outside it. Pie uses an innermost disk surrounded by bands. Ring uses bands throughout, retaining an open center. Each region has its own track, capacity, series, and styling. All series sweep clockwise from twelve o'clock. Segmentation divides every region angularly, or every bar layer along the fill axis.
 
-Single continuous bars and pies use shared split-background text. Rings keep text in the open center. Segmented and layered controls use a small background-backed label so changing layers and gaps preserve readability. Custom decorative children replace this visible label and receive normalized primary state when provided as a function. Text and custom children stay inert to assistive technology; the indicator's numeric semantics and configured text description remain available.
+Single scalar continuous bars and pies use shared split-background text. Rings, segmented controls, and explicit layers use a small background-backed caption for readable labeling across regions, patterns, and gaps. Labels can move outside the canvas; custom decorative content follows the same placement. Hidden labels retain numeric accessibility.
 
-Forced-colors mode uses system colors for outlines, tracks, fills, and labels. Reduced motion updates all values and masks immediately and keeps pulses still. Frame scheduling, animation promises, and cancellation remain in the shared pulse hook.
+The first layer's total controls the default label and endpoint pulse. Full pulses slightly outward, empty slightly inward, with a small opposite-direction settling motion. Pulse begins after the first layer's series movements complete, including both interval boundaries, and is cancelled by interrupted arrivals. Initial and repeated endpoints stay still. Other layers animate independently. Reduced motion updates all geometry immediately and disables pulses. Forced colors use system colors while retaining hatch/outline distinctions.
 
 ## Interface
-Apps extend behavior by composing `LinearProgress` or `RadialProgress` in their own wrappers, choosing geometry options, styling the root, and optionally providing decorative content. Both bases accept identical layer descriptors, so changing presentation preserves application value logic.
+Apps compose `Progress` with shape props rather than selecting separate public components. Scalar values support completion, time, XP, heat, and scroll position. Layer arrays support health/poison intervals plus shield or reserve layers. Application logic owns timers, poison consumption, damage projection, and scoring.
 
-With auxiliary layers the root is a named group, and visually hidden sibling progressbars expose the primary and every auxiliary value separately. This keeps layer semantics outside a progressbar's presentational descendants. Visual fills and labels are decorative. Single controls retain their existing root progressbar semantics.
-
-Storybook includes ring widths, custom application content, segmented bars, horizontal/vertical controls, and shared completion/countdown/XP/heat/scroll examples. The layered combat example switches all shapes and both linear orientations while preserving health, armor, and recent-damage state. Normal damage consumes armor first; poison bypasses armor; a delayed trail catches up to health. Timer ownership and cleanup belong to that application example.
+Storybook's unified Progress stories expose shape, value, segmentation, and label placement; threshold examples use danger, warning, and confirm colors. Examples/Progress indicators includes editable stacked health/poison with independent shield and outline reserve layers, plus live timer, XP, and scroll examples.
 
 ## Acceptance
-1. Canonical bar/segmented presentations use the same linear base, and pie/ring presentations use the same radial base and shared renderer.
-2. Horizontal and vertical presentations retain identical normalized values and accessibility, with fill and text using the correct axis.
-3. Ring sweeps retain an open center and consistent outer footprint through thickness and value changes, including auxiliary bands.
-4. Segmented tracks and fills share cell boundaries, support fractional cells and both orientations, and sanitize counts and gaps.
-5. Independently bounded layers render behind/primary/over in documented order and expose separately named numeric progress values.
-6. Duplicate layer IDs use the first descriptor, and all input arrays and descriptors remain unchanged.
-7. Primary endpoint pulses keep completion timing, direction, cancellation, and reduced-motion behavior across every presentation.
-8. Custom classes, styles, and decorative render-function children support application wrappers while preserving primary semantics.
-9. Existing bar/pie defaults and text formatting remain compatible; empty layers preserve root progressbar semantics.
-10. Segmented and layered labels stay readable over gaps and multiple colors; decorative children replace visible labels while retaining the configured accessible description.
-11. The combat example preserves independent values across geometry switches and clears poison/trail timers on unmount or reset.
+1. The public UI exposes one Progress component and all four shapes use the same resolved model.
+2. Series seventy-five plus ten produce intervals zero-to-seventy-five and seventy-five-to-eighty-five for all shapes, with the remaining track empty.
+3. Layers overlay with distinguishable styling on bars and occupy concentric regions on pies/rings.
+4. Threshold boundaries select red through ten percent, yellow through fifty, and green above fifty; series-specific thresholds override root thresholds.
+5. Overflow, invalid amounts/capacities, duplicate IDs, and empty inputs resolve predictably without mutating caller data.
+6. All shapes support continuous and segmented rendering while preserving fractional values.
+7. All label positions, hidden labels, and decorative app content preserve accessible value information.
+8. Endpoint pulses retain direction, actual-completion timing, and cancellation across multiple moving series.
+9. Reduced-motion and forced-colors behavior apply across all layers and series.

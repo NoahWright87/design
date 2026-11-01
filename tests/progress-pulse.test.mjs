@@ -15,8 +15,8 @@ function harness({ moving = true, supported = true } = {}) {
   let cleanup;
   let reduced = false;
   let frame;
-  let finish;
-  let reject;
+  let finishes = [];
+  let rejects = [];
   const previous = { current: undefined };
   const calls = [];
   const animations = [];
@@ -26,9 +26,12 @@ function harness({ moving = true, supported = true } = {}) {
     return animation;
   } } : {} };
   const motion = { current: { getAnimations: () => animations } };
-  const startMovement = () => {
-    const finished = new Promise((resolve, rejectPromise) => { finish = resolve; reject = rejectPromise; });
-    animations.splice(0, animations.length, { finished });
+  const startMovement = (count = 1) => {
+    finishes = [];
+    rejects = [];
+    animations.splice(0, animations.length, ...Array.from({ length: count }, () => ({
+      finished: new Promise((resolve, reject) => { finishes.push(resolve); rejects.push(reject); }),
+    })));
   };
   if (moving) startMovement();
   const exports = {};
@@ -52,14 +55,26 @@ function harness({ moving = true, supported = true } = {}) {
       exports.useProgressPulse(target, { isEmpty: boundary === "empty", isFull: boundary === "full" }, enabled, motion);
     },
     flushFrame() { const callback = frame; frame = undefined; callback?.(); },
-    async finish() { finish?.(); await settle(); },
-    async interrupt() { reject?.(new Error("Transition cancelled")); await settle(); },
+    async finish(index) { if (index === undefined) finishes.forEach(finish => finish()); else finishes[index]?.(); await settle(); },
+    async interrupt() { rejects.forEach(reject => reject(new Error("Transition cancelled"))); await settle(); },
     startMovement,
     unmount() { cleanup?.(); },
   };
 }
 
 const scales = call => call.keyframes.map(frame => frame.transform.match(/scale\(([^,]+), ([^)]+)\)/).slice(1).map(Number));
+
+test("endpoint pulse waits for every series movement in the first layer", async () => {
+  const hook = harness({ moving: false });
+  hook.startMovement(2);
+  hook.render("active");
+  hook.render("full");
+  hook.flushFrame();
+  await hook.finish(0);
+  assert.equal(hook.calls.length, 0);
+  await hook.finish(1);
+  assert.equal(hook.calls.length, 1);
+});
 
 test("full expands and empty contracts, with small opposite-direction overtravel", async () => {
   for (const boundary of ["full", "empty"]) {

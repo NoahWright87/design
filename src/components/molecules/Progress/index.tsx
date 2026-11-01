@@ -1,139 +1,88 @@
 "use client";
 import * as React from "react";
-import { getProgressColor, getProgressState, getProgressText } from "../../../atoms/progress.js";
-import type { ProgressIndicatorProps, ProgressLayerOptions, ProgressState } from "../../../atoms/progress.js";
+import { getProgressColor, getProgressState, getProgressText, resolveProgressLayers } from "../../../atoms/progress.js";
+import type { ProgressColorRange, ProgressLayer, ProgressShape, ProgressState, ProgressTextValue } from "../../../atoms/progress.js";
 import { useProgressPulse } from "../../../atoms/useProgressPulse.js";
 import { ProgressText } from "../ProgressText/index.js";
 import "./progress.css";
 
-export interface ProgressPresentationProps extends ProgressIndicatorProps {
-  className?: string;
-  style?: React.CSSProperties;
-  /** Decorative custom content replaces the default visible text. */
-  children?: React.ReactNode | ((progress: ProgressState) => React.ReactNode);
-}
-
-export interface LinearProgressProps extends ProgressPresentationProps {
-  orientation?: "horizontal" | "vertical";
-  rounded?: boolean;
-  /** Visual divisions; fractional cells preserve the exact percentage. */
-  segments?: number;
+export interface ProgressProps {
+  label: string;
+  shape?: ProgressShape;
+  /** Scalar shortcut. Explicit layers, when supplied, are authoritative. */
+  value?: number;
+  min?: number;
+  max?: number;
+  color?: string;
+  colorRanges?: readonly ProgressColorRange[];
+  textColor?: string;
+  text?: ProgressTextValue;
+  labelPosition?: "center" | "top" | "bottom" | "left" | "right" | "none";
+  segments?: number | null;
+  /** Pixels for bars; degrees for radial shapes. */
   gap?: number;
-}
-
-export interface RadialProgressProps extends ProgressPresentationProps {
-  variant?: "pie" | "ring";
+  layers?: readonly ProgressLayer[];
   size?: number;
   thickness?: number;
+  layerGap?: number;
+  rounded?: boolean;
+  pulse?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+  children?: React.ReactNode | ((state: ProgressState) => React.ReactNode);
 }
+const positive = (value: number, fallback: number) => Number.isFinite(value) && value > 0 ? value : fallback;
+const nonnegative = (value: number, fallback: number) => Number.isFinite(value) && value >= 0 ? value : fallback;
+const attributes = (state: ProgressState, label: string, text?: string | false) => ({ role: "progressbar", "aria-label": label, "aria-valuemin": state.min, "aria-valuemax": state.max, "aria-valuenow": state.value, "aria-valuetext": text === false ? undefined : text });
 
-interface ProgressBaseProps extends LinearProgressProps, RadialProgressProps {
-  geometry: "linear" | "radial";
-}
-
-const positive = (value: number | undefined, fallback: number) => value !== undefined && Number.isFinite(value) && value > 0 ? value : fallback;
-
-function progressAttributes(progress: ProgressState, label: string, text?: string | false) {
-  return {
-    role: "progressbar",
-    "aria-label": label,
-    "aria-valuemin": progress.min,
-    "aria-valuemax": progress.max,
-    "aria-valuenow": progress.value,
-    "aria-valuetext": text === false ? undefined : text,
-  };
-}
-
-/** All geometry wrappers share value resolution, layering, semantics and motion. */
-function ProgressBase({
-  geometry, value, min, max, label, text, color = "var(--primary)",
-  textColor = "var(--background)", colorRanges, pulse = true, layers = [],
-  orientation = "horizontal", rounded = false, segments = 1, gap = 3,
-  variant = "pie", size = 128, thickness = 16, className, style, children,
-}: ProgressBaseProps) {
-  const progress = getProgressState({ value, min, max });
-  const colors = getProgressColor(progress.percentage, colorRanges, color, textColor);
-  const display = getProgressText(progress, text);
+export function Progress({ label, shape = "BarHorizontal", value = 0, min, max = 100, color = "var(--primary)", colorRanges,
+  textColor = "var(--background)", text, labelPosition = "center", segments = 0, gap = 3, layers,
+  size = 128, thickness = 16, layerGap = 3, rounded = false, pulse = true, className, style, children }: ProgressProps) {
+  const scalar = getProgressState({ value, min, max });
+  const resolved = resolveProgressLayers(layers ?? [{ id: "value", label, max: 100, series: [{ id: "value", label, value: scalar.percentage, color, colorRanges }] }], max, color, colorRanges);
+  const state = layers === undefined ? scalar : resolved[0]?.state ?? getProgressState({ value: 0, max });
+  const display = getProgressText(state, text);
+  const radial = shape === "Pie" || shape === "Ring";
+  const ring = shape === "Ring";
+  const vertical = shape === "BarVertical";
+  const count = segments && Number.isFinite(segments) && segments > 0 ? Math.min(100, Math.floor(segments)) : 0;
   const diameter = positive(size, 128);
-  const ringWidth = Math.min(positive(thickness, 16), Math.max(1, (diameter - 6) / 2 - 1));
-  const count = Math.min(100, Math.max(1, Math.floor(positive(segments, 1))));
-  const spacing = Number.isFinite(gap) && gap >= 0 ? gap : 3;
-  const radial = geometry === "radial";
-  const vertical = !radial && orientation === "vertical";
-  const ring = radial && variant === "ring";
-  const divided = !radial && count > 1;
+  const radius = Math.max(1, (diameter - 6) / 2);
+  const bands = Math.max(1, resolved.length - (ring ? 0 : 1));
+  const spacing = Math.min(nonnegative(layerGap, 3), radius / Math.max(1, resolved.length * 2));
+  const band = Math.min(positive(thickness, 16), Math.max(0.1, (radius - spacing * Math.max(0, resolved.length - 1) - 0.1) / bands));
   const root = React.useRef<HTMLDivElement>(null);
-  const fill = React.useRef<HTMLSpanElement>(null);
-  useProgressPulse(root, progress, pulse, fill);
-
-  // Stable IDs preserve each layer's transition through reordering; first ID wins.
-  const unique = new Map<string, ProgressLayerOptions>();
-  for (const layer of layers) if (!unique.has(layer.id)) unique.set(layer.id, layer);
-  const auxiliary = [...unique.values()];
-  const grouped = auxiliary.length > 0;
-  const plate = grouped || divided;
-  const fillClass = radial ? "nw-progress-pie__fill" : "nw-progress-bar__fill";
-
-  const paint = (state: ProgressState, fillColor: string, layer?: ProgressLayerOptions) => {
-    const band = layer?.thickness !== undefined || layer?.placement === "over";
-    const bandWidth = positive(layer?.thickness, 6);
-    const surfaceStyle: React.CSSProperties = radial
-      ? { "--nw-progress-band": `${band ? Math.min(bandWidth, ring ? ringWidth : diameter / 2) : ringWidth}px` } as React.CSSProperties
-      : band ? { clipPath: vertical ? `inset(0 0 0 max(0px, calc(100% - ${bandWidth}px)))` : `inset(0 0 max(0px, calc(100% - ${bandWidth}px)) 0)` } : {};
-    const fillStyle: React.CSSProperties = radial
-      ? { "--nw-progress-angle": `${state.percentage * 3.6}deg`, color: fillColor } as React.CSSProperties
-      : { [vertical ? "height" : "width"]: `${state.percentage}%`, backgroundColor: fillColor };
-    return <span
-      key={layer ? `layer:${layer.id}` : "primary"}
-      className={`nw-progress-surface${radial && (ring || band) ? " nw-progress-surface--band" : ""}`}
-      style={surfaceStyle}
-      data-progress-layer={layer?.id ?? "primary"}
-      aria-hidden="true"
-    >
-      <span ref={layer ? undefined : fill} className={fillClass} style={fillStyle} />
-    </span>;
-  };
-  const paintLayer = (layer: ProgressLayerOptions) => {
-    const state = getProgressState(layer);
-    return paint(state, getProgressColor(state.percentage, layer.colorRanges, layer.color ?? color).color, layer);
-  };
-  const classes = [
-    "nw-progress", radial ? "nw-progress-pie" : "nw-progress-bar",
-    vertical && "nw-progress--vertical", ring && "nw-progress--ring",
-    divided && "nw-progress--segmented", rounded && !radial && "nw-progress-bar--rounded", className,
-  ].filter(Boolean).join(" ");
-  const rootStyle = {
-    ...(radial ? { width: diameter, height: diameter } : {}),
-    "--nw-progress-band": `${ringWidth}px`,
-    "--nw-progress-segments": count,
-    "--nw-progress-gap": `${spacing}px`,
-    ...style,
-  } as React.CSSProperties;
-
-  return <div ref={root} className={classes} style={rootStyle}
-    {...(grouped ? { role: "group", "aria-label": label } : progressAttributes(progress, label, display))}>
-    <span className={`nw-progress-track${ring ? " nw-progress-surface--band" : ""}`} aria-hidden="true" />
-    {auxiliary.filter(layer => layer.placement !== "over").map(paintLayer)}
-    {paint(progress, colors.color)}
-    {auxiliary.filter(layer => layer.placement === "over").map(paintLayer)}
-    {children !== undefined
-      ? <span className="nw-progress-content" aria-hidden="true">{typeof children === "function" ? children(progress) : children}</span>
-      : display !== false && (plate
-        ? <span className="nw-progress-label" aria-hidden="true"><span>{display}</span></span>
-        : <ProgressText shape={radial ? "pie" : vertical ? "vertical" : "bar"} percentage={ring ? 0 : progress.percentage} filledColor={colors.textColor}>{display}</ProgressText>)}
-    {grouped && <span className="nw-progress-values">
-      <span {...progressAttributes(progress, label, display)} />
-      {auxiliary.map(layer => <span key={layer.id} {...progressAttributes(getProgressState(layer), layer.label)} />)}
+  const moving = React.useRef<HTMLSpanElement>(null);
+  useProgressPulse(root, state, pulse, moving);
+  const scalarColors = getProgressColor(scalar.percentage, colorRanges, color, textColor);
+  const split = layers === undefined && count < 2 && !ring && labelPosition === "center" && children === undefined;
+  const content = children !== undefined ? typeof children === "function" ? children(state) : children : display;
+  const visible = labelPosition !== "none" && (children !== undefined || display !== false);
+  const caption = <span className="nw-progress-caption" aria-hidden="true"><span>{content}</span></span>;
+  return <div className={["nw-progress", `nw-progress--${shape}`, `nw-progress--label-${labelPosition}`, rounded && "nw-progress--rounded", className].filter(Boolean).join(" ")}
+    style={style} {...(layers === undefined ? attributes(state, label, display) : { role: "group", "aria-label": label })}>
+    <div ref={root} className="nw-progress-canvas" style={{ ...(radial ? { width: diameter, height: diameter } : {}), "--nw-progress-count": count, "--nw-progress-gap": `${nonnegative(gap, 3)}${radial ? "deg" : "px"}` } as React.CSSProperties}>
+      {resolved.map((layer, index) => {
+        const inset = radial ? (resolved.length - 1 - index) * (band + spacing) : 0;
+        const isBand = radial && (ring || index > 0);
+        return <span key={layer.id} ref={index === 0 ? moving : undefined} data-layer={layer.id}
+          className={`nw-progress-layer${radial ? " nw-progress-layer--radial" : ""}${isBand ? " nw-progress-layer--band" : ""}`}
+          style={{ inset, "--nw-progress-band": `${band}px`, "--nw-progress-outline": `${Math.min(positive(layer.outlineWidth ?? 3, 3), 20)}px`, opacity: Math.min(1, Math.max(0, Number.isFinite(layer.opacity ?? 1) ? layer.opacity ?? 1 : 1)) } as React.CSSProperties} aria-hidden="true">
+          <span className={`nw-progress-cells${count > 1 ? " nw-progress-cells--segmented" : ""}${radial || index === 0 ? " nw-progress-cells--track" : ""}`}>
+            {layer.series.map(series => <span key={series.id} data-series={series.id} data-start={series.start} data-end={series.end}
+              className={`nw-progress-series nw-progress-series--${layer.appearance ?? "solid"}`}
+              style={{ "--nw-progress-start": `${series.start}%`, "--nw-progress-end": `${series.end}%`, color: series.resolvedColor } as React.CSSProperties} />)}
+          </span>
+        </span>;
+      })}
+      {visible && labelPosition === "center" && (split ? <ProgressText percentage={scalar.percentage} shape={radial ? "pie" : vertical ? "vertical" : "bar"} filledColor={scalarColors.textColor}>{String(display)}</ProgressText> : caption)}
+    </div>
+    {visible && labelPosition !== "center" && caption}
+    {layers !== undefined && <span className="nw-progress-values">
+      {resolved.map((layer, index) => <span key={layer.id} role="group" aria-label={layer.label}>
+        <span {...attributes(layer.state, `${layer.label} total`, index === 0 ? display : getProgressText(layer.state))} />
+        {layer.series.map(series => <span key={series.id} {...attributes(getProgressState({ value: series.amount, max: layer.max }), series.label)} />)}
+      </span>)}
     </span>}
   </div>;
-}
-
-/** Public composable base for bars in either orientation and segmented meters. */
-export function LinearProgress(props: LinearProgressProps) {
-  return <ProgressBase {...props} geometry="linear" />;
-}
-
-/** Public composable base for solid pies and rings. */
-export function RadialProgress(props: RadialProgressProps) {
-  return <ProgressBase {...props} geometry="radial" />;
 }

@@ -16,6 +16,7 @@ This design system is built for personal use and reflects specific preferences a
 
 ### Inputs
 - Design tokens, component specs, and example specs in this repository.
+- `Theme.warning?: string` configures the semantic yellow warning token; omitted values use the built-in light and dark theme defaults.
 - Changes to components and tests that must align with the taxonomy and authoring rules defined here.
 
 ### Outputs
@@ -55,7 +56,7 @@ The UI feels *on the user's side* — a recoverable experience, not a punishing 
 Atoms are immutable design values with no props and no variation. They define the shared vocabulary: color roles, spacing presets, typography scales, motion timing, radii, and shadows.
 
 Current atoms:
-- **Color tokens** — semantic roles: foreground, background, primary, secondary, confirm, danger, overlay.
+- **Color tokens** — semantic roles: foreground, background, primary, secondary, confirm, danger, warning, overlay. Warning defaults to yellow in light and dark themes and is configurable through `Theme.warning`.
 - **Spacing** — a scale of named size presets used for padding, margin, and gap.
 - **Typography** — font families (body, heading, and monospace) plus font size, weight, and line height presets. Body text uses the system sans-serif stack and code uses the system monospace stack. Headings use [Wright Sans](atoms/wright-sans.spec.md), the system's signature typeface, which ships inside the package in Regular, SemiBold, Bold, and Black; characters it lacks fall back to the body font. Each family is overridable per site through the theme.
 - **Motion** — timing and easing token presets.
@@ -98,3 +99,4 @@ All specs in `specs/components/` and `specs/examples/` are the source of truth f
 1. All components in the library follow the atomic taxonomy defined in this spec.
 2. Specs and tests reference this taxonomy when authoring and reviewing changes.
 3. Atoms are documented as non-rendering primitives that export no UI.
+4. The warning token resolves to yellow defaults in both themes and accepts a typed theme override.

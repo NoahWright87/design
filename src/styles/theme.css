@@ -39,6 +39,7 @@
   --foreground: #111111;
   --background: #ffffff;
   --primary: #2563eb;
+  --warning: #eab308;
   --secondary: #9333ea;
   --confirm: #16a34a;
   --danger: #dc2626;
@@ -102,6 +103,7 @@
   --foreground: #e5e7eb;
   --background: #0b1120;
   --primary: #60a5fa;
+  --warning: #facc15;
   --secondary: #c084fc;
   --confirm: #22c55e;
   --danger: #f87171;

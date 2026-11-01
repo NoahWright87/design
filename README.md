@@ -76,109 +76,72 @@ export function Example() {
 
 ## Progress indicators
 
-`ProgressBar`, `ProgressSegmentedBar`, `ProgressPie`, and `ProgressRing` take a
-controlled value with optional bounds. All share primary fill, centered monospace
-text, color ranges, and completion-timed pulses. Bars support horizontal or
-bottom-to-top vertical fill; radial indicators sweep clockwise from twelve o'clock.
+Use one `Progress` component with `shape="BarHorizontal" | "BarVertical" | "Pie" | "Ring"`.
+All shapes share normalization, value-based colors, segments, labels, layers, and
+completion-timed endpoint pulses. `segments={0}` or `segments={null}` means continuous.
 
 ```tsx
-import { ProgressBar, ProgressPie, ProgressRing, ProgressSegmentedBar } from "@noahwright/design";
+import { Progress } from "@noahwright/design";
 
-<ProgressBar label="Completion" value={65} rounded />
-<ProgressPie label="Completion" value={65} size={128} />
-<ProgressRing label="Completion" value={65} size={128} thickness={16} />
-<ProgressBar label="Charge" value={65} orientation="vertical" />
-<ProgressSegmentedBar label="Ammo" value={7} max={10} segments={10} text="7 / 10" />
-<ProgressBar
-  label="Experience"
-  value={350}
-  max={1000}
-  text={({ value, max }) => `${value} / ${max} XP`}
-/>
-<ProgressBar
-  label="Health"
-  value={health}
-  colorRanges={[
-    { upTo: 25, color: "var(--danger)" },
-    { upTo: 65, color: "var(--secondary)" },
-    { upTo: 100, color: "var(--confirm)" },
-  ]}
-/>
+<Progress label="Completion" shape="Ring" value={65} labelPosition="bottom" />
+<Progress label="Health" value={35} colorRanges={[
+  { upTo: 10, color: "var(--danger)" },
+  { upTo: 50, color: "var(--warning)", textColor: "var(--foreground)" },
+  { upTo: 100, color: "var(--confirm)" },
+]} />
 ```
 
-Color stops use inclusive upper **percentages**, regardless of the value domain.
-The smallest matching stop wins; values above all stops use `color` (primary by
-default). Reverse the colors for weapon heat. Each stop can set `textColor` for
-contrast on light fills. Text clips into separate track/fill colors and stays
-aligned as progress changes. `text={false}` hides the visible label, and
-`pulse={false}` disables the full/empty wobble. Full pulses outward and empty
-pulses inward after the visible fill or sweep finishes. Reduced motion disables animation.
+Each range is an inclusive upper percentage threshold. It changes the entire
+series' color based on that series' effective value, rather than painting fixed
+color bands along the track.
 
-Timers can pass elapsed or remaining time; XP can use `max={nextLevelXp}`; scrolling
-can pass `scrollTop` with `max={scrollHeight - clientHeight}` when that distance is
-positive. Applications own these value sources and their lifecycle.
-`ProgressIndicatorProps` is the shared value contract for every shape. `getProgressState`,
-`getProgressColor`, `getProgressText`, `useProgressPulse`, and `ProgressText` are
-also exported for composing further indicators. `ProgressText` defaults to
-horizontal fills starting at the left edge; `shape="vertical"` clips bottom-to-top,
-and `shape="pie"` masks text for a clockwise sweep from twelve o'clock. Radial fills use registered CSS custom properties
-for smooth angle animation in modern browsers.
-
-The public `LinearProgress` and `RadialProgress` bases share one renderer. The four
-canonical components are thin wrappers around those bases. Apps can build their own
-wrappers with `className`, `style`, and decorative children, including a render
-function receiving normalized primary state:
+Layers define styling. Series define sequential amounts within a layer:
 
 ```tsx
-import { LinearProgress, RadialProgress } from "@noahwright/design";
-import type { LinearProgressProps } from "@noahwright/design";
-
-export function ChargeMeter(props: LinearProgressProps) {
-  return <LinearProgress {...props} rounded orientation="vertical" />;
-}
-
-<RadialProgress variant="ring" label="Experience" value={350} max={1000} thickness={12}>
-  {({ percentage }) => <span>Level 7<br />{Math.round(percentage)}% XP</span>}
-</RadialProgress>
+<Progress label="Player status" shape="Pie" size={200} labelPosition="bottom"
+  text="Health and shield" layers={[
+    { id: "health", label: "Health", appearance: "solid", series: [
+      { id: "hp", label: "Safe health", value: 75, color: "var(--danger)" },
+      { id: "poison", label: "Pending poison", value: 10, color: "var(--confirm)" },
+    ] },
+    { id: "shield", label: "Shield", appearance: "hatched", series: [
+      { id: "shield", label: "Shield charge", value: 60, color: "var(--primary)" },
+    ] },
+  ]} />
 ```
 
-Custom children replace the visible label; `text` still supplies the accessible
-value description. Rings keep their centers transparent. Segmented bars preserve
-partial-cell percentages, default to ten segments, and accept `gap` in CSS pixels.
-Segmented controls use a small background-backed label for readability over gaps.
+Health occupies 0–75%, poison occupies 75–85%, and 85–100% stays empty.
+The same data works on every shape. Bars overlap styled layers in array order.
+Radial layers are concentric: the first is innermost, subsequent layers surround it.
+Pie has an inner disk; Ring has an open center. Layers support `solid`, `hatched`,
+and `outline` appearances, `opacity`, and `outlineWidth`.
 
-Use `layers` on any presentation to combine independent values in one control:
+Layers have independent capacities (`max`, defaulting to root max). Series use
+amounts, not endpoints, and may each have their own color ranges. Overflow clips
+later series to remaining capacity; negative/nonfinite amounts consume zero.
+Stable IDs identify layers and series; duplicate IDs use the first entry.
+Explicit `layers` replace the scalar shortcut. The first layer total controls the
+default percentage and endpoint pulse.
 
-```tsx
-<ProgressBar
-  label="Health"
-  value={60}
-  text="60 HP"
-  color="var(--confirm)"
-  layers={[
-    { id: "damage", label: "Health before recent damage", value: 80, color: "var(--danger)" },
-    { id: "armor", label: "Armor", value: 30, max: 50, color: "var(--primary)", placement: "over", thickness: 6 },
-  ]}
-/>
-```
+Label positions are `center`, `top`, `bottom`, `left`, `right`, or `none`.
+`text` accepts a string, a formatter receiving normalized state, or false.
+Decorative `children` can replace visible text, including a render function;
+`className` and `style` support app wrappers. Layered and segmented labels use a
+background backing for readability. Every explicit layer and series exposes its
+own accessible numeric value.
 
-Layers use their own bounds and color ranges. Behind layers paint first, then the
-primary fill, then over layers; later entries in each placement paint on top.
-Behind layers default to the whole fill geometry. Over layers default to a thin
-band; `thickness` sets the cross-axis strip or outer radial band in CSS pixels.
-Ring layers stay inside the ring. Stable unique IDs preserve layer identity;
-duplicate IDs use the first entry. Values overlay rather than add together.
+`size`, `thickness`, and `layerGap` configure radial geometry; `rounded` applies to
+bars. `gap` is pixels for bar segments and degrees for radial segments. All shapes
+support segmentation. Full pulses outward and empty pulses inward after visible
+movement completes; `pulse={false}` disables feedback. Reduced motion disables
+animation. Smooth sweep interpolation uses registered CSS properties in modern browsers.
 
-Layered controls expose a named group with independently accessible progress
-values and use a background-backed primary label. The primary value controls the
-whole control's endpoint pulse. Applications own damage rules, poison ticks, and
-delayed trail values; each visual layer animates independently.
+Applications own timer, XP, poison, damage, and scrolling state. Pure helpers
+`getProgressState`, `getProgressColor`, `getProgressText`, and
+`resolveProgressLayers` are exported alongside the component.
 
-Explore **Components → Molecules → ProgressBar / ProgressSegmentedBar / ProgressPie / ProgressRing**,
-**Examples → Progress indicators**, and **Examples → Layered progress → Combat**
-in Storybook (`npm run storybook`). The shared examples switch presentations while
-preserving live value sources; the combat example includes armor, poison, and a
-delayed damage trail.
+Explore **Components → Molecules → Progress** and **Examples → Progress indicators**
+in Storybook (`npm run storybook`).
 
 ## Theming (typed, build-time + runtime toggle)
 

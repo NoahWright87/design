@@ -6,6 +6,7 @@ export const cssTokenNames = [
   '--secondary',
   '--confirm',
   '--danger',
+  '--warning',
   '--overlay',
 ] as const;
 

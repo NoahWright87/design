@@ -42,7 +42,7 @@ export function useProgressPulse(
       // Let styles commit, then follow the actual transition, including reversals
       // and consumer duration overrides, rather than guessing a timeout.
       frame = window.requestAnimationFrame(() => {
-        const movements = motionRef.current?.getAnimations?.() ?? [];
+        const movements = motionRef.current?.getAnimations?.({ subtree: true }) ?? [];
         if (movements.length === 0) play();
         else void Promise.all(movements.map(movement => movement.finished)).then(play, () => {});
       });

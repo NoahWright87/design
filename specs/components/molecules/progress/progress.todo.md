@@ -1,7 +1,7 @@
-# Shared progress presentations — Roadmap
+# Progress — Roadmap
 
 ## Sooner
-- Current bases, canonical wrappers, and independent layers are described in [the spec](progress.spec.md).
+- The unified component, styled layers, stacked series, and concentric radial regions are described in [the spec](progress.spec.md).
 
 ## Later
 - Consider arbitrary sweep directions when a concrete consumer needs them.

@@ -27,12 +27,7 @@ export * from "./components/molecules/Badge/index.js";
 export * from "./components/molecules/Box/index.js";
 export * from "./components/molecules/Tooltip/index.js";
 export * from "./components/molecules/TextCarousel/index.js";
-export * from "./components/molecules/ProgressText/index.js";
-export * from "./components/molecules/ProgressBar/index.js";
-export * from "./components/molecules/ProgressPie/index.js";
 export * from "./components/molecules/Progress/index.js";
-export * from "./components/molecules/ProgressRing/index.js";
-export * from "./components/molecules/ProgressSegmentedBar/index.js";
 
 // Organisms
 export * from "./components/organisms/Hero/index.js";
@@ -64,6 +59,7 @@ export type Theme = {
   secondary?: string;
   confirm?: string;
   danger?: string;
+  warning?: string;
   overlay?: string;
   
   // Spacing

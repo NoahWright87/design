@@ -1,51 +1,41 @@
-# Progress atoms
+# Progress value model
 
 ## Purpose
-Give progress indicators a shared interpretation of bounded values, percentage color ranges, and playful endpoint feedback, independent of shape or value source.
+Normalize values, resolve value-based colors, and stack series into bounded intervals independently of presentation shape. Keep endpoint feedback reusable and tied to visible completion.
 
 ## Related
-- [Progress bar and text](../components/molecules/progressbar/progressbar.spec.md)
-- [Progress pie](../components/molecules/progresspie/progresspie.spec.md)
-- [Shared presentations and layers](../components/molecules/progress/progress.spec.md)
+- [Progress component](../components/molecules/progress/progress.spec.md)
 - [Reduced motion](useprefersreducedmotion.spec.md)
 
 ## Contract
 ### Inputs
-- `getProgressState(options: ProgressOptions)` takes required `value: number`, `min?: number = 0`, and `max?: number = 100`.
-- `ProgressIndicatorProps` extends `ProgressOptions` with required `label: string`, optional `text: ProgressTextValue`, `color: string` (primary), `textColor: string` (background), `colorRanges: readonly ProgressColorRange[]` (empty), `pulse: boolean` (true), and `layers: readonly ProgressLayerOptions[]` (empty). `ProgressTextValue` is `string | false | ((progress: ProgressState) => string)`.
-- `ProgressLayerOptions` extends `ProgressOptions` with required `id: string`, `label: string`, optional `color: string`, `colorRanges: readonly ProgressColorRange[]`, `placement: "behind" | "over"` (behind), and `thickness: number`. Presentation defaults, width constraints, and layer accessibility follow the shared presentation spec.
-- `getProgressText(progress: ProgressState, text?: ProgressTextValue)` returns a rounded percentage by default, preserves supplied strings or false, and calls formatters with normalized state.
-- `getProgressColor(percentage: number, ranges: readonly ProgressColorRange[] = [], fallback: string = primary color, textColor: string = background color)` accepts percentage stops. Each stop has `upTo: number`, `color: string`, and optional `textColor: string` inheriting the fallback text color.
-- `useProgressPulse(ref: RefObject<HTMLElement>, progress: Pick<ProgressState, "isEmpty" | "isFull">, enabled: boolean = true, motionRef?: RefObject<HTMLElement>)` accepts a pulse target, normalized endpoints, and an optional moving element whose animation completion determines pulse timing.
+- `getProgressState({value: number, min?: number = 0, max?: number = 100})`.
+- `getProgressColor(percentage, ranges = [], fallback = primary, textColor = background)`; each range has inclusive `upTo: number`, `color: string`, optional `textColor: string`.
+- `getProgressText(state, text?: string | false | ((state: ProgressState) => string))`.
+- `resolveProgressLayers(layers: readonly ProgressLayer[], max: number = 100, color: string = primary, ranges: readonly ProgressColorRange[] = [])`. Layer/series inputs follow the component contract.
+- `useProgressPulse(ref, state: Pick<ProgressState, "isEmpty" | "isFull">, enabled = true, motionRef?)` accepts the pulse target and optional element containing movements to await.
 ### Outputs
-- `ProgressState` contains finite, clamped `value`, valid `min` and `max`, `percentage` from zero to one hundred, and `isEmpty` and `isFull` flags.
-- Color resolution returns `{ color: string, textColor: string }`.
-- Shared text formatting returns a string or false, with false indicating hidden visual text.
-- The pulse hook animates the target on arrival at an endpoint.
+- Finite clamped state with value, bounds, percentage, and endpoint flags.
+- Resolved fill/text colors, formatted string or false, or resolved layers with effective series amounts and start/end percentages.
+- Endpoint animation after actual movement completion when a moving target is supplied.
 ### Guarantees / Constraints
-- Pure normalization and color resolution support server rendering and preserve caller inputs.
-- Browser animation runs in effects and respects the live reduced-motion preference.
+Pure helpers preserve inputs and support SSR. Browser animation runs in effects and respects live reduced-motion preferences.
 
 ## Behavior
-Finite values clamp to the bounds. A nonfinite value becomes the minimum. Nonfinite, reversed, equal, or overflowing bounds restore the zero-to-one-hundred domain. Negative minima and fractional values work normally.
+Scalar nonfinite values become min; finite values clamp. Nonfinite, equal, reversed, or overflowing bounds restore the zero-to-one-hundred domain. Fractional values and negative scalar minima work normally.
 
-The smallest matching inclusive upper percentage stop wins; equal bounds use the first matching entry. Stops outside zero to one hundred or with nonfinite bounds are skipped. Values above every stop use the supplied fallback colors. Stops can express either increasing safety or increasing danger, using any CSS color or theme token.
+The smallest matching inclusive upper threshold wins regardless of input order; equal thresholds use the first entry. Nonfinite and out-of-percentage bounds are skipped. Uncovered values use fallback colors. Default text rounds percentage while numeric state stays precise.
 
-All canonical presentations share their common input contract and text formatting. The default label rounds the percentage for display while normalized numeric values retain their precision. Formatters receive normalized bounds, clamped value, percentage, and endpoint flags. Auxiliary layers use the same normalization and color selection independently.
+Layers resolve independently. Invalid capacities become one hundred. Series amounts clamp to zero and remaining capacity; invalid amounts become zero. Duplicate IDs use first entries, scoped per layer for series. Color percentages use effective amounts relative to capacity, with series overrides and root fallbacks. Series intervals are cumulative and bounded; layer totals derive from their sum.
 
-The pulse runs when active progress reaches empty or full, or jumps directly between endpoints. Mounting at an endpoint stays still. Repeated values at the same endpoint stay still. Full gives a slight outward pulse; empty gives a slight inward pulse. Both have a small opposite-direction overtravel and settle with staggered horizontal and vertical peaks.
-
-With a moving-element ref, the pulse waits for that element's current animations to finish. Actual completion governs timing, including shortened reversed transitions and custom durations. A moving element already at rest pulses on the next frame. Omitting the moving element plays the pulse immediately upon endpoint arrival. Cancelled movement stays quiet. Leaving the endpoint, disabling the hook, reduced motion, and unmounting cancel both pending and active pulses. Targets lacking browser animation support stay still.
+Pulse direction is outward for full, inward for empty, with staggered axes and small overtravel. With a moving ref, its own and descendant animation promises determine completion. Cancelled movements and superseded arrivals stay quiet. Initial/repeated endpoints stay quiet. Disabled pulses, reduced motion, and unmount cancel pending and active feedback. Unsupported animation stays still.
 
 ## Interface
-Applications provide controlled values from completion, remaining or elapsed time, XP, or scroll position. Further shapes reuse the normalized state, range selection, and pulse hook. Timer lifecycle and scrolling event ownership remain with the application.
+Progress uses these helpers for every shape and app value source. Applications own state lifecycle; the component owns presentation and completion feedback.
 
 ## Acceptance
-1. Values below and above valid bounds clamp to the matching endpoint.
-2. Nonfinite values and invalid bounds resolve to finite accessible state.
-3. Nonzero and negative minima yield correct percentages and endpoint flags.
-4. Unsorted stops resolve by the smallest inclusive upper bound without mutating input; unmatched and invalid stops preserve fallback behavior.
-5. Each endpoint arrival plays one wobble: full initially expands, empty initially contracts, and both settle with small overtravel; initial and repeated endpoints stay still.
-6. Reduced motion, disabled pulses, unsupported animation, and unmounting leave the target at rest.
-7. A moving-element ref delays the pulse until movement completes, including reversed transitions; cancelled or superseded arrivals stay quiet.
-8. Shared text formatting produces identical defaults, custom strings, formatter results, and hidden-text signals for bar and pie.
+1. Invalid scalar inputs yield finite bounded values.
+2. Color thresholds are inclusive, order-independent, and immutable.
+3. Ordered series produce cumulative bounded intervals and independent layer totals.
+4. Color selection uses each effective series amount and supports inherited or overridden ranges.
+5. Endpoint feedback awaits all descendant movements and preserves cancellation, direction, and reduced-motion behavior.
