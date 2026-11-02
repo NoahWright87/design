@@ -11,11 +11,11 @@ One public progress component presents scalar or densely layered information usi
 ## Contract
 ### Inputs
 `ProgressProps`:
-- `label: string` is the required accessible name.
+- `label: string` is the required accessible name and default visible label.
 - `shape?: ProgressShape = "BarHorizontal"`; alternatives are `BarVertical`, `Pie`, and `Ring`.
 - `value?: number = 0`, `min?: number = 0`, `max?: number = 100` provide the scalar shortcut. Explicit `layers` are authoritative when supplied. In layer mode root max is the fallback layer capacity; min applies to scalar mode.
 - `color?: string` defaults to primary. `colorRanges?: readonly ProgressColorRange[] = []` provides fallback percentage-based colors for series. A series-specific range list overrides this list, including an empty list. Uncovered percentages use the series color or root color.
-- `text?: ProgressTextValue` defaults to the first layer's total percentage or scalar percentage; `textColor?: string` defaults to background for scalar split text.
+- `text?: ProgressTextValue` defaults to the configured label followed by the first layer's total percentage or scalar percentage. Explicit strings and formatters replace that visible text while label remains the accessible name. `textColor?: string` defaults to background for scalar split text.
 - `labelPosition?: "center" | "top" | "bottom" | "left" | "right" | "none" = "center"`. Position none hides visual text while preserving its accessible description. `text={false}` hides the automatic label and description.
 - `segments?: number | null = 0`. Zero, null, negative, nonfinite, and counts rounding below two produce continuous progress. Valid counts round down and cap at one hundred, for every shape.
 - `gap?: number = 3`, in pixels for bars and degrees for radial cells; finite nonnegative values apply, others restore the default. Effective gaps cap at half a cell.
@@ -52,7 +52,7 @@ The first layer's total controls the default label and endpoint pulse. Full puls
 ## Interface
 Apps compose `Progress` with shape props rather than selecting separate public components. Scalar values support completion, time, XP, heat, and scroll position. Layer arrays support health/poison intervals plus shield or reserve layers. Application logic owns timers, poison consumption, damage projection, and scoring.
 
-Storybook's unified Progress stories expose shape, value, segmentation, and label placement; threshold examples use danger, warning, and confirm colors. Examples/Progress indicators includes editable stacked health/poison with independent shield and outline reserve layers, plus live timer, XP, and scroll examples.
+Storybook's unified Progress stories expose shape, value, segmentation, and label placement; threshold examples use danger, warning, and confirm colors. Examples/Progress indicators/Showcase exposes three styled layers with two editable series each, fixed and range-driven colors, all presentation settings, and a live resolved-value legend. The showcase spec defines its complete interaction contract. Live timer, XP, and scroll examples remain available separately.
 
 ## Acceptance
 1. The public UI exposes one Progress component and all four shapes use the same resolved model.
@@ -64,3 +64,4 @@ Storybook's unified Progress stories expose shape, value, segmentation, and labe
 7. All label positions, hidden labels, and decorative app content preserve accessible value information.
 8. Endpoint pulses retain direction, actual-completion timing, and cancellation across multiple moving series.
 9. Reduced-motion and forced-colors behavior apply across all layers and series.
+10. Setting label alone renders that text plus the percentage in any visible label position; custom text overrides visible content, and none/false hides it while preserving the accessible name and numeric values.

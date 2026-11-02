@@ -69,6 +69,20 @@ test("label positions and hidden labels preserve numeric accessibility", () => {
     else assert.match(markup, /Charging/);
   }
 });
+test("the configured label is visible by default and explicit text overrides it", () => {
+  for (const shape of ["BarHorizontal", "BarVertical", "Pie", "Ring"]) {
+    for (const labelPosition of ["center", "top", "bottom", "left", "right"]) {
+      const markup = render({ label: "My health", value: 65, shape, labelPosition });
+      assert.match(markup, />My health 65%<\/span>/);
+    }
+    assert.match(render({ label: "My health", layers: [health], shape }), />My health 85%<\/span>/);
+  }
+  const custom = render({ label: "My health", value: 65, text: "Ready" });
+  assert.match(custom, />Ready<\/span>/);
+  assert.doesNotMatch(custom, />My health 65%<\/span>/);
+  assert.match(custom, /aria-label="My health"/);
+  assert.doesNotMatch(render({ label: "My health", value: 65, text: false }), /nw-progress-text|nw-progress-caption/);
+});
 test("scalar domains remain normalized and explicit layers are authoritative", () => {
   assert.equal(getProgressState({ value: 0, min: -50, max: 150 }).percentage, 25);
   for (const value of [NaN, Infinity, -Infinity]) assert.equal(getProgressState({ value }).value, 0);

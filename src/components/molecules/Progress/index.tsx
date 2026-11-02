@@ -7,6 +7,7 @@ import { ProgressText } from "../ProgressText/index.js";
 import "./progress.css";
 
 export interface ProgressProps {
+  /** Accessible name and default visible caption, followed by the percentage. */
   label: string;
   shape?: ProgressShape;
   /** Scalar shortcut. Explicit layers, when supplied, are authoritative. */
@@ -41,7 +42,7 @@ export function Progress({ label, shape = "BarHorizontal", value = 0, min, max =
   const scalar = getProgressState({ value, min, max });
   const resolved = resolveProgressLayers(layers ?? [{ id: "value", label, max: 100, series: [{ id: "value", label, value: scalar.percentage, color, colorRanges }] }], max, color, colorRanges);
   const state = layers === undefined ? scalar : resolved[0]?.state ?? getProgressState({ value: 0, max });
-  const display = getProgressText(state, text);
+  const display = text === undefined ? `${label} ${getProgressText(state)}` : getProgressText(state, text);
   const radial = shape === "Pie" || shape === "Ring";
   const ring = shape === "Ring";
   const vertical = shape === "BarVertical";

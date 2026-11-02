@@ -124,6 +124,8 @@ Explicit `layers` replace the scalar shortcut. The first layer total controls th
 default percentage and endpoint pulse.
 
 Label positions are `center`, `top`, `bottom`, `left`, `right`, or `none`.
+By default, visible text includes `label` followed by the percentage (for example,
+`Health 85%`). Setting `label` updates both the visible text and accessible name.
 `text` accepts a string, a formatter receiving normalized state, or false.
 Decorative `children` can replace visible text, including a render function;
 `className` and `style` support app wrappers. Layered and segmented labels use a
@@ -140,8 +142,10 @@ Applications own timer, XP, poison, damage, and scrolling state. Pure helpers
 `getProgressState`, `getProgressColor`, `getProgressText`, and
 `resolveProgressLayers` are exported alongside the component.
 
-Explore **Components → Molecules → Progress** and **Examples → Progress indicators**
-in Storybook (`npm run storybook`).
+Explore **Components → Molecules → Progress** and **Examples → Progress indicators → Showcase**
+in Storybook (`npm run storybook`). The showcase has six independently editable
+series across three styled layers, per-series color/range controls, presentation
+and label settings, a resolved-value legend, and empty/fill/reset controls.
 
 ## Theming (typed, build-time + runtime toggle)
 

@@ -13,6 +13,7 @@ This file documents planned and completed changes for the repository.
 
 - Add one public `Progress` component with horizontal/vertical bar, pie, and ring variants, label positioning, segmentation, value-based colors, and completion-timed pulses.
 - Layers define solid/hatch/outline styling and contain stacked series. Bars overlay layers; radial shapes use concentric regions. Include independent accessible values, a warning color token, and unified interactive examples/specs/tests.
+- Show configured labels in default visible captions and add a complete six-series showcase with per-series range/color controls, layer styling, all presentation settings, and a live resolved-value legend.
 - Prepare the v1.6.0 minor release: synchronize package and lockfile versions, document installation, and move completed release notes into version history.
 
 ## Version history
