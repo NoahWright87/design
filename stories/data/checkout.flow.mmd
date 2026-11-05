@@ -1,0 +1,12 @@
+flowchart LR
+  %% A plain Mermaid file: the %% lines keep it rendering in GitHub and the Mermaid editor.
+  Shopper([Shopper]) --> Cart[Cart]
+    %% success:90 error:10
+  Cart --> Pay{Payment}
+    %% success:80
+  Pay --> Done((Done))
+    %% success:70
+  Pay -.->|declined| Retry(Retry)
+    %% error:10|6
+  Retry -.-> Cart
+    %% error:4
