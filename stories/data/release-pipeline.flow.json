@@ -1,0 +1,19 @@
+{
+  "direction": "LR",
+  "dots": {
+    "pr": { "color": "primary", "shape": "circle" },
+    "hotfix": { "color": "danger", "shape": "diamond" }
+  },
+  "nodes": {
+    "devs": { "label": "Developers", "shape": "stadium" },
+    "review": { "label": "Code review", "shape": "round" },
+    "ci": { "label": "CI", "shape": "rect" },
+    "deploy": { "label": "Deploy", "shape": "circle" }
+  },
+  "edges": [
+    { "from": "devs", "to": "review", "flows": [{ "type": "pr", "dpm": 40, "pile": 12 }] },
+    { "from": "devs", "to": "ci", "line": "dashed", "flows": [{ "type": "hotfix", "dpm": 6 }] },
+    { "from": "review", "to": "ci", "flows": [{ "type": "pr", "dpm": 12 }] },
+    { "from": "ci", "to": "deploy", "flows": [{ "type": "success", "dpm": 15 }, { "type": "error", "dpm": 3 }] }
+  ]
+}
