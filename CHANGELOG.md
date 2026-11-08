@@ -11,6 +11,10 @@ This file documents planned and completed changes for the repository.
 
 ## WIP
 
+- Add `FlowDiagram` (new organism): flowcharts from Mermaid-flavored text or JSON-shaped data (with an optional separate layout), whose edges carry color-coded streams of moving dots set in dots per minute, with loose piles for bottlenecks and two-way traffic. Lines, dots and symbols stack in that order; dots get random stable layers; reduced motion shows a still snapshot. No new dependencies.
+
+- `FlowDiagram` labels ride the traffic: one dot per stream becomes a slow label-pill (mark leading, text trailing) that shrinks back before nodes and piles. Hover, click, tap or arrow-key any dot to hold it as a pill with a tooltip. `labelMotion="still"` (forced by reduced motion) puts labels beside their lines instead.
+
 - Add compressed holds and puffs to hamburger and plus/minus, and a center-out selection fill with a full-state pop and smaller empty-state shrink/rebound. Preserve smooth stage handoffs and spring reversals.
 
 - Keep every icon button’s circular surface stationary; animate SVGs for feedback. Add whole-eye closing squish/opening rise with elastic settling, lowering lid and foreshortened lashes; the lock anticipates each action, lifts and swivels around its left post, then transfers arrival momentum into a leftward opening rock or a stronger, longer closing recoil.

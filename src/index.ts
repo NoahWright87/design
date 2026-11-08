@@ -39,6 +39,7 @@ export * from "./components/organisms/Card/index.js";
 export * from "./components/organisms/Carousel/index.js";
 export * from "./components/organisms/Modal/index.js";
 export * from "./components/organisms/Breadcrumbs/index.js";
+export * from "./components/organisms/FlowDiagram/index.js";
 
 // Sites
 export * from "./sites/portfolio/index.js";

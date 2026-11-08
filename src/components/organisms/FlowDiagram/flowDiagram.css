@@ -1,0 +1,154 @@
+.nw-flow {
+  margin: 0;
+  width: 100%;
+}
+
+/* Three stacked layers: lines (in flow), dots (canvas), symbols (top svg). */
+.nw-flow__stage {
+  position: relative;
+  width: 100%;
+}
+
+.nw-flow__layer {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.nw-flow__canvas,
+.nw-flow__top {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.nw-flow__edge {
+  fill: none;
+  stroke: var(--nw-flow-edge-color, color-mix(in srgb, var(--foreground) 35%, var(--background)));
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nw-flow__edge--dashed {
+  stroke-dasharray: 8 6;
+  stroke-linecap: butt;
+}
+
+.nw-flow__edge--dotted {
+  stroke-dasharray: 0.1 7;
+  stroke-width: 3;
+}
+
+.nw-flow__edge--thick {
+  stroke-width: 4;
+}
+
+.nw-flow__arrow {
+  fill: var(--nw-flow-edge-color, color-mix(in srgb, var(--foreground) 35%, var(--background)));
+}
+
+/* Nodes are opaque so dots disappear beneath them. */
+.nw-flow__node {
+  fill: color-mix(in srgb, var(--primary) 10%, var(--background));
+  stroke: color-mix(in srgb, var(--foreground) 50%, var(--background));
+  stroke-width: 1.5;
+}
+
+.nw-flow__node-label {
+  fill: var(--foreground);
+  font-family: var(--font-family, system-ui, sans-serif);
+}
+
+/* Still labels sit beside their line, outlined in the background color so they read over anything. */
+.nw-flow__edge-label {
+  fill: color-mix(in srgb, var(--foreground) 80%, var(--background));
+  font-family: var(--font-family, system-ui, sans-serif);
+  stroke: var(--background);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+.nw-flow__stage:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: var(--radius, 0.5rem);
+}
+
+/* Tooltip for a held dot; matches the Tooltip molecule's inverted look. */
+.nw-flow__tip {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 2px;
+  max-width: 240px;
+  padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
+  border-radius: calc(var(--radius, 0.5rem) * 0.5);
+  background: var(--foreground);
+  color: var(--background);
+  font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--text-xs, 0.75rem);
+  line-height: 1.4;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 10px));
+}
+
+.nw-flow__tip[data-place="below"] {
+  transform: translate(-50%, 28px);
+}
+
+.nw-flow__tip[data-align="start"] {
+  transform: translate(-16px, calc(-100% - 10px));
+}
+
+.nw-flow__tip[data-align="start"][data-place="below"] {
+  transform: translate(-16px, 28px);
+}
+
+.nw-flow__tip[data-align="end"] {
+  transform: translate(calc(-100% + 16px), calc(-100% - 10px));
+}
+
+.nw-flow__tip[data-align="end"][data-place="below"] {
+  transform: translate(calc(-100% + 16px), 28px);
+}
+
+.nw-flow__tip-title {
+  font-weight: 600;
+}
+
+.nw-flow__tip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nw-flow__tip-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--background);
+}
+
+.nw-flow__tip-route {
+  opacity: 0.75;
+}
+
+/* Text description for assistive technology. */
+.nw-flow__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
