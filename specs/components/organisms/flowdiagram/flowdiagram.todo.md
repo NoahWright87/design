@@ -6,7 +6,9 @@
 - [ ] Multi-line node labels (`<br>` in Mermaid) and text wrapping for long labels.
 
 ## Later
-- [ ] Hover or focus a node or edge to see its streams and rates.
+- [ ] Hover or focus a node to see all traffic in and out of it.
+- [ ] Option for one roaming pill per line (instead of one per type) on busy lines.
+- [ ] Live pile count in the tooltip ("4 of 6 waiting").
 - [ ] Timed scripts: change rates over time, such as an error spike after ten seconds.
 - [ ] Orthogonal (right-angle) edge routing as an alternative to curves.
 - [ ] Optional raw YAML text input via a small built-in YAML subset parser.

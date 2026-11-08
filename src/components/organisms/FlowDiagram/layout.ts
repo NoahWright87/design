@@ -153,8 +153,9 @@ export function placeNodes(diagram: NormalizedDiagram, layout?: FlowDiagramLayou
   const maxW = Math.max(84, ...sizes.map((s) => s.w));
   const maxH = Math.max(44, ...sizes.map((s) => s.h));
   const horizontal = diagram.direction === "LR" || diagram.direction === "RL";
-  const colStep = maxW + (horizontal ? 120 : 48);
-  const rowStep = maxH + (horizontal ? 56 : 110);
+  // Generous spacing along the flow leaves room for traveling label-pills and piles.
+  const colStep = maxW + (horizontal ? 150 : 48);
+  const rowStep = maxH + (horizontal ? 56 : 130);
 
   const nodes: PlacedNode[] = diagram.nodes.map((n, i) => {
     const cell = layout?.[n.id] ?? auto.get(n.id) ?? [0, 0];

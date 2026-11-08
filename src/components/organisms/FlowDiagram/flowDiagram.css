@@ -63,17 +63,85 @@
   font-family: var(--font-family, system-ui, sans-serif);
 }
 
-.nw-flow__edge-label-bg {
-  fill: var(--background);
+/* Still labels sit beside their line, outlined in the background color so they read over anything. */
+.nw-flow__edge-label {
+  fill: color-mix(in srgb, var(--foreground) 80%, var(--background));
+  font-family: var(--font-family, system-ui, sans-serif);
+  stroke: var(--background);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  paint-order: stroke;
 }
 
-.nw-flow__edge-label {
-  fill: color-mix(in srgb, var(--foreground) 75%, var(--background));
+.nw-flow__stage:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: var(--radius, 0.5rem);
+}
+
+/* Tooltip for a held dot; matches the Tooltip molecule's inverted look. */
+.nw-flow__tip {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 2px;
+  max-width: 240px;
+  padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
+  border-radius: calc(var(--radius, 0.5rem) * 0.5);
+  background: var(--foreground);
+  color: var(--background);
   font-family: var(--font-family, system-ui, sans-serif);
+  font-size: var(--text-xs, 0.75rem);
+  line-height: 1.4;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 10px));
+}
+
+.nw-flow__tip[data-place="below"] {
+  transform: translate(-50%, 28px);
+}
+
+.nw-flow__tip[data-align="start"] {
+  transform: translate(-16px, calc(-100% - 10px));
+}
+
+.nw-flow__tip[data-align="start"][data-place="below"] {
+  transform: translate(-16px, 28px);
+}
+
+.nw-flow__tip[data-align="end"] {
+  transform: translate(calc(-100% + 16px), calc(-100% - 10px));
+}
+
+.nw-flow__tip[data-align="end"][data-place="below"] {
+  transform: translate(calc(-100% + 16px), 28px);
+}
+
+.nw-flow__tip-title {
+  font-weight: 600;
+}
+
+.nw-flow__tip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nw-flow__tip-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--background);
+}
+
+.nw-flow__tip-route {
+  opacity: 0.75;
 }
 
 /* Text description for assistive technology. */
-.nw-flow__summary {
+.nw-flow__sr {
   position: absolute;
   width: 1px;
   height: 1px;

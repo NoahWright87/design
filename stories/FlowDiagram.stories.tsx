@@ -13,8 +13,9 @@ const meta: Meta<typeof FlowDiagram> = {
     speed: { control: { type: "range", min: 10, max: 200, step: 5 } },
     dotSize: { control: { type: "range", min: 2, max: 8, step: 0.5 } },
     paused: { control: "boolean" },
+    labelMotion: { control: "inline-radio", options: ["travel", "still"] },
   },
-  args: { speed: 70, dotSize: 4, paused: false },
+  args: { speed: 70, dotSize: 4, paused: false, labelMotion: "travel" },
 };
 export default meta;
 
@@ -86,6 +87,22 @@ export const TwoWay: Story = {
   Server <==> Cache((Cache))
     primary:30
     <confirm:30`,
+  },
+};
+
+export const Labels: Story = {
+  name: "Labels (traveling pills, hover any dot)",
+  args: {
+    title: "Labeled traffic: hover, click, or tap any dot to see what it is",
+    source: `flowchart LR
+  Signup([Sign-up form]) -->|submitted| Verify(Verify email)
+    success:50 error:12
+  Verify -->|verified| Welcome((Welcome))
+    success:40
+  Verify -->|bounced| Support{Support}
+    error:12|6
+  Support -.->|resend| Verify
+    primary:8`,
   },
 };
 
