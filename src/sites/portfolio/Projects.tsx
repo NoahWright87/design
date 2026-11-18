@@ -5,7 +5,6 @@ import { Card, CardGrid } from "../../components/organisms/Card/index.js";
 import { Heading } from "../../components/molecules/Heading/index.js";
 import { Text } from "../../components/molecules/Text/index.js";
 import { Button } from "../../components/molecules/Button/index.js";
-import { Link } from "../../components/molecules/Link/index.js";
 import { Image } from "../../components/molecules/Image/index.js";
 import { Pill } from "../../components/molecules/Pill/index.js";
 import { Select } from "../../components/molecules/Select/index.js";
