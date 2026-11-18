@@ -161,8 +161,10 @@ export function SceneFooter({
   const options = sceneOptions ?? {};
   // A scene-only footer (no slots, bottom strip or children) skips the content row, whose
   // minimum height would otherwise override a smaller `seaHeight`.
-  const hasContent = [left, center, right, bottom, children].some(
-    (node) => node != null && node !== false && node !== "",
+  // `Children.toArray` flattens arrays and drops null, undefined and booleans, so `[]` or a
+  // `cond && <Link />` that resolved to false counts as empty, just as React renders it.
+  const hasContent = [left, center, right, bottom, children].some((node) =>
+    React.Children.toArray(node).some((child) => child !== ""),
   );
   const style: React.CSSProperties = {
     ...(isBuiltInScene(scene) ? BUILT_IN_SCENES[scene].staticStyle?.(options) : undefined),
