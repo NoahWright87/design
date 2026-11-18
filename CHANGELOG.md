@@ -25,6 +25,8 @@ This file documents planned and completed changes for the repository.
 
 - Prepare the v1.6.0 minor release: synchronize package and lockfile versions, document installation, and move completed release notes into version history.
 
+- `SceneFooter` skips its empty content row when no slots, bottom strip or children are given, so a small `seaHeight` is honored for scene-only footers.
+
 ## Version history
 
 ### v1.6.0
