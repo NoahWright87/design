@@ -25,9 +25,10 @@ type InputOwnProps = {
 
 /**
  * Native attributes (`spellCheck`, `autoComplete`, `inputMode`, `maxLength`, `onKeyDown`, …) that
- * pass straight through to the field. `className` stays with the design system's own classes.
+ * pass straight through to the field. `className` stays with the design system's own classes, and
+ * `children` / `dangerouslySetInnerHTML` are left out because a field can't hold content.
  */
-type NativeFieldProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, keyof InputOwnProps | "className">;
+type NativeFieldProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, keyof InputOwnProps | "className" | "children" | "dangerouslySetInnerHTML">;
 
 export type InputProps = InputOwnProps & NativeFieldProps;
 
