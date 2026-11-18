@@ -18,6 +18,8 @@ Input provides a styled text field with an integrated label, error state, and re
 - Optional `rows` — visible row count when `multiline` is true.
 - Optional `randomDisabledCursor` — shows a randomly selected "no" emoji cursor (🙅 ❌ ⛔ 🚫) when disabled.
 - Optional `style` overrides.
+- Optional `ref`, forwarded to the native field (the `<textarea>` when `multiline` is true), so a consumer can move focus to it.
+- Any other native field attribute, such as `spellCheck`, `autoComplete`, `autoCorrect`, `autoCapitalize`, `inputMode`, `enterKeyHint`, `maxLength`, `onKeyDown` or `onBlur`, passed through to the field. The design system keeps its own class names on the field.
 
 ### Outputs
 A labeled text field with appropriate visual states: default, focused, error, and disabled. When an error message is provided, it is displayed below the field with error styling applied to the border.
@@ -46,6 +48,8 @@ A labeled text field with appropriate visual states: default, focused, error, an
 
 **Multiline:** When `multiline` is true, a `<textarea>` is rendered instead of `<input>`. It is resizable vertically and has a minimum height. All validation, error display, and styling behave identically to the single-line variant.
 
+**Native attributes and ref:** Extra native attributes land on the field itself, so a spelling quiz can turn off spellcheck and autocorrect and a consumer can focus the field through a ref. A consumer's `onBlur` runs alongside the built-in required check, and the component's own label and error wiring stays in charge of the accessibility attributes.
+
 **Error waggle:** When an error message appears (from either `error` or inline required validation), the field performs a side-to-side waggle animation to draw attention.
 
 ## Interface
@@ -65,3 +69,5 @@ The label appears above the field. The field has a bordered, rounded appearance 
 10. When `multiline` is set, renders a resizable `<textarea>` with the same label, error, and validation behavior.
 11. When `randomDisabledCursor` is set and the field is disabled, a random "no" emoji cursor is shown.
 12. Error states set aria-invalid and associate the error text with the field; cleared errors remove that association.
+13. A ref passed to `Input` points at the native `<input>`, or at the `<textarea>` when `multiline` is set.
+14. Native attributes such as `spellCheck={false}` and `autoComplete="off"` appear on the field, and a consumer `onBlur` runs while required validation still triggers.

@@ -25,6 +25,8 @@ This file documents planned and completed changes for the repository.
 
 - Prepare the v1.6.0 minor release: synchronize package and lockfile versions, document installation, and move completed release notes into version history.
 
+- `Input` forwards a `ref` to its field and passes other native attributes through (`spellCheck`, `autoComplete`, `inputMode`, `onKeyDown`, …), composing `onBlur` with required validation.
+
 ## Version history
 
 ### v1.6.0
