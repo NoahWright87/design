@@ -1,10 +1,8 @@
 import * as React from "react";
 import { Header } from "../../components/organisms/Header/index.js";
 import { Menu } from "../../components/organisms/Menu/index.js";
-import { MenuItem } from "../../components/molecules/MenuItem.js";
 import { HamburgerMenu } from "../../components/molecules/HamburgerMenu/index.js";
 import { Avatar } from "../../components/molecules/Avatar/index.js";
-import { Button } from "../../components/molecules/Button/index.js";
 import { Modal } from "../../components/organisms/Modal/index.js";
 import { Text } from "../../components/molecules/Text/index.js";
 import { Heading } from "../../components/molecules/Heading/index.js";
