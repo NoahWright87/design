@@ -3,7 +3,7 @@ import "./input.css";
 import { pickRandomDisabledCursor } from "../_shared/randomDisabledCursor";
 import { useWaggle } from "../_shared/useWaggle";
 
-export type InputProps = {
+type InputOwnProps = {
   label: string;
   name?: string;
   type?: "text" | "email" | "password" | "number" | "tel" | "url" | "search";
@@ -23,7 +23,16 @@ export type InputProps = {
   style?: React.CSSProperties;
 };
 
-export function Input({
+/**
+ * Native attributes (`spellCheck`, `autoComplete`, `inputMode`, `maxLength`, `onKeyDown`, …) that
+ * pass straight through to the field. `className` stays with the design system's own classes, and
+ * `children` / `dangerouslySetInnerHTML` are left out because a field can't hold content.
+ */
+type NativeFieldProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, keyof InputOwnProps | "className" | "children" | "dangerouslySetInnerHTML">;
+
+export type InputProps = InputOwnProps & NativeFieldProps;
+
+export const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(function Input({
   label,
   name,
   type = "text",
@@ -38,7 +47,9 @@ export function Input({
   rows,
   randomDisabledCursor = false,
   style,
-}: InputProps) {
+  onBlur,
+  ...nativeProps
+}, ref) {
   const rootRef = React.useRef<HTMLLabelElement>(null);
   const errorId = React.useId();
   const labelId = React.useId();
@@ -66,8 +77,9 @@ export function Input({
     onChange?.(e);
   }
 
-  function handleBlur() {
+  function handleBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setTouched(true);
+    onBlur?.(e as React.FocusEvent<HTMLInputElement>);
   }
 
   const classNames = [
@@ -99,6 +111,8 @@ export function Input({
       <label ref={rootRef} className={classNames} style={rootStyle}>
         {labelInner}
         <textarea
+          {...(nativeProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+          ref={ref as React.Ref<HTMLTextAreaElement>}
           aria-labelledby={labelId}
           aria-invalid={!!effectiveError}
           aria-describedby={effectiveError ? errorId : undefined}
@@ -126,6 +140,8 @@ export function Input({
     <label ref={rootRef} className={classNames} style={rootStyle}>
       {labelInner}
       <input
+        {...nativeProps}
+        ref={ref as React.Ref<HTMLInputElement>}
         aria-labelledby={labelId}
         aria-invalid={!!effectiveError}
         aria-describedby={effectiveError ? errorId : undefined}
@@ -144,6 +160,6 @@ export function Input({
       {errorEl}
     </label>
   );
-}
+});
 
 export default Input;

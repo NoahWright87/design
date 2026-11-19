@@ -27,6 +27,7 @@ This file documents planned and completed changes for the repository.
 
 - Remove dead code: the unreferenced `HeaderExample` and unused imports in the portfolio site and motion lab types.
 - `SceneFooter` skips its empty content row when no slots, bottom strip or children are given, so a small `seaHeight` is honored for scene-only footers.
+- `Input` forwards a `ref` to its field and passes other native attributes through (`spellCheck`, `autoComplete`, `inputMode`, `onKeyDown`, …), composing `onBlur` with required validation.
 
 ## Version history
 
