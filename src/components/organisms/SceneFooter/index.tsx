@@ -159,6 +159,13 @@ export function SceneFooter({
   }, [scene, animate, optionsKey]);
 
   const options = sceneOptions ?? {};
+  // A scene-only footer (no slots, bottom strip or children) skips the content row, whose
+  // minimum height would otherwise override a smaller `seaHeight`.
+  // `Children.toArray` flattens arrays and drops null, undefined and booleans, so `[]` or a
+  // `cond && <Link />` that resolved to false counts as empty, just as React renders it.
+  const hasContent = [left, center, right, bottom, children].some((node) =>
+    React.Children.toArray(node).some((child) => child !== ""),
+  );
   const style: React.CSSProperties = {
     ...(isBuiltInScene(scene) ? BUILT_IN_SCENES[scene].staticStyle?.(options) : undefined),
     ...(skyHeight ? { ["--nw-scene-sky-height" as string]: skyHeight } : undefined),
@@ -178,17 +185,19 @@ export function SceneFooter({
       </div>
       <div className="nw-scene-footer__sky" aria-hidden="true" />
       <div className="nw-scene-footer__sea">
-        <div className="nw-scene-footer__content">
-          <FooterContent
-            left={left}
-            center={center}
-            right={right}
-            bottom={bottom}
-            hasBottomSeparator={hasBottomSeparator}
-          >
-            {children}
-          </FooterContent>
-        </div>
+        {hasContent && (
+          <div className="nw-scene-footer__content">
+            <FooterContent
+              left={left}
+              center={center}
+              right={right}
+              bottom={bottom}
+              hasBottomSeparator={hasBottomSeparator}
+            >
+              {children}
+            </FooterContent>
+          </div>
+        )}
       </div>
       <div className="nw-scene-footer__stage" ref={stageRef} aria-hidden="true" />
     </footer>
