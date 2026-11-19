@@ -25,6 +25,8 @@ This file documents planned and completed changes for the repository.
 
 - Prepare the v1.6.0 minor release: synchronize package and lockfile versions, document installation, and move completed release notes into version history.
 
+- Remove dead code: the unreferenced `HeaderExample` and unused imports in the portfolio site and motion lab types.
+
 ## Version history
 
 ### v1.6.0
