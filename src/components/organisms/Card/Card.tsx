@@ -245,6 +245,12 @@ export function Card({
     ? ({ "--card-accent": resolveAccent(accent) } as React.CSSProperties)
     : undefined;
   const cardStyle = accentStyle ? { ...accentStyle, ...style } : style;
+  // The expanded view keeps the accent (including a consumer's own
+  // `--card-accent` override) but not layout styles meant for the inline card.
+  const styleAccent = (style as Record<string, unknown> | undefined)?.["--card-accent"];
+  const overlayStyle = accentStyle && styleAccent != null
+    ? ({ ...accentStyle, "--card-accent": styleAccent } as React.CSSProperties)
+    : accentStyle;
 
   const cls = [
     "nw-card",
@@ -364,7 +370,7 @@ export function Card({
         <div
           ref={overlayRef}
           className={expandedCls}
-          style={accentStyle}
+          style={overlayStyle}
           role="dialog"
           aria-modal="true"
           aria-labelledby={title ? expandedTitleId : undefined}
