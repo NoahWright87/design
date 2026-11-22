@@ -22,6 +22,21 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
+/* Accent: `--card-accent` is set inline from the `accent` prop, so children can
+   reuse it (e.g. color-mix(in srgb, var(--card-accent) 13%, transparent)).
+   The tint mixes into the theme background, so it follows light and dark mode. */
+.nw-card--accent {
+  background: color-mix(in srgb, var(--card-accent) 6%, var(--background, #fff));
+}
+
+.nw-card--accent-left {
+  border-left: 4px solid var(--card-accent);
+}
+
+.nw-card--accent-top {
+  border-top: 4px solid var(--card-accent);
+}
+
 .nw-card--link {
   display: block;
   text-decoration: none;
