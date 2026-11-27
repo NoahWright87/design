@@ -15,6 +15,8 @@ Card groups related content into a visually distinct, rounded container. It supp
 - Optional title element: a heading level from two to six, or a plain block for a purely visual title. Defaults to a level-three heading.
 - Optional elevated flag for added visual prominence.
 - Optional interactive flag for hover-lift behavior.
+- Optional accent color: one of the theme's named colors (primary, secondary, confirm, danger) or any CSS color, including a custom property reference. No accent by default.
+- Optional accent edge: left (default), top, or none. Only meaningful alongside an accent color.
 - Optional additional CSS class name and other HTML attributes to spread onto the card element.
 - Optional longer description, shown only once the card expands into its modal-like view.
 - Optional choice of where the image sits once expanded — above the title, or between the short and long description.
@@ -31,6 +33,8 @@ A rounded, themed container holding the provided content sections. Elevated card
 - A card only becomes expandable when a longer description is supplied; without one, the card behaves exactly as it always has.
 - The expand and grow animations respect the user's reduced-motion preference, jumping directly between states with no motion.
 - Pressing Escape, clicking outside the expanded card, or clicking its dedicated shrink button always collapses it.
+- A card without an accent color looks exactly as it did before accents existed.
+- The accent tint is mixed into the theme background, so an accented card reads correctly in both light and dark mode without separate values.
 - The expanded card is presented above the rest of the page behind a darkened, non-interactive backdrop, so at most one card can be expanded at a time.
 
 ## Behavior
@@ -40,6 +44,8 @@ A rounded, themed container holding the provided content sections. Elevated card
 **Title:** The title is set in the heading font and is a real heading (level three unless the consumer picks another level), so screen-reader users can jump between cards by heading. Its visual size and weight stay the same at every level, so choosing a level only changes the document outline. The expanded view uses the same element for its title.
 
 **Elevated:** The card appears more visually prominent — a stronger shadow gives the impression of higher elevation.
+
+**Accent:** When an accent color is given, a thick stripe in that color runs along the card's left edge (or its top edge, or nowhere when the edge is set to none), and the card's surface is tinted faintly toward the color. The accent color is also made available to the card's children as a shared custom property, so nested parts such as a highlight box or tab outlines can reuse it at other strengths. Accents combine with elevation, flat, interactive, link, and expandable cards; the expanded view keeps the same stripe and tint.
 
 **Interactive:** When interactive mode is enabled, hovering over the card lifts it slightly. The shadow intensifies and the card shifts upward. When reduced motion is preferred, the lift is skipped.
 
@@ -76,6 +82,7 @@ The expand button sits in the card's top-right corner as a small square icon but
 ### Visual States
 - **Default** — flat with a subtle shadow.
 - **Elevated** — stronger shadow for visual prominence.
+- **Accented** — a colored stripe on the chosen edge and a faint tint of the same color across the surface.
 - **Interactive hover** — card lifts with increased shadow.
 - **Expandable, collapsed** — an expand button is visible; the card's cursor indicates it is clickable when not also a link.
 - **Expanded** — the card is enlarged, centered over a darkened backdrop, with the shrink button, longer description, and repositioned image visible.
@@ -104,3 +111,7 @@ The expand button sits in the card's top-right corner as a small square icon but
 21. The expand and collapse animations are skipped when the user prefers reduced motion; the card jumps directly between collapsed and expanded states.
 22. CardGrid fills its container's width, and inside a vertical Container its rows are as tall as the tallest card's content.
 23. The title renders in the heading font as a level-three heading by default, as the chosen heading level when one is given, and as a plain block when a plain title is chosen, looking the same in every case.
+24. Given an accent color, the card shows a stripe in that color on its left edge and a faint tint of the color across its surface; a named theme color follows light and dark mode.
+25. The accent edge places the stripe on the top edge when set to top, and shows only the tint when set to none.
+26. The accent color is available to the card's children as a custom property they can reuse.
+27. A card without an accent color shows no stripe and no tint.

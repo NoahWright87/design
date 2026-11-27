@@ -10,6 +10,9 @@ import "./card.css";
 export type CardMediaPosition = "left" | "right" | "top";
 export type CardExpandedImagePosition = "top" | "between";
 export type CardTitleElement = "h2" | "h3" | "h4" | "h5" | "h6" | "div";
+/** A design token name, or any CSS color (hex, `rgb()`, `var(--x)`, …). */
+export type CardAccent = "primary" | "secondary" | "confirm" | "danger" | (string & {});
+export type CardAccentEdge = "left" | "top" | "none";
 type CardExpandPhase = "closed" | "opening" | "open" | "closing";
 
 export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
@@ -49,6 +52,14 @@ export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "titl
   maxHeight?: string | number;
   /** Additional CSS class name. */
   className?: string;
+  /**
+   * Accent color: a design token (`"primary"`, `"secondary"`, `"confirm"`,
+   * `"danger"`) or any CSS color. Draws an edge stripe, tints the surface
+   * toward the color, and exposes it as `--card-accent` for children to reuse.
+   */
+  accent?: CardAccent;
+  /** Which edge carries the accent stripe. Default `"left"`. Ignored without `accent`. */
+  accentEdge?: CardAccentEdge;
 
   /**
    * Longer content revealed only when the card expands into a modal-like view.
@@ -74,6 +85,13 @@ export interface CardProps extends Omit<React.HTMLAttributes<HTMLElement>, "titl
   expandLabel?: string;
   /** Accessible label for the shrink button on the expanded card. Default `"Collapse"`. */
   collapseLabel?: string;
+}
+
+const ACCENT_TOKENS = ["primary", "secondary", "confirm", "danger"];
+
+/** Token names map to their theme variable; anything else is used as a CSS color. */
+function resolveAccent(accent: CardAccent): string {
+  return ACCENT_TOKENS.includes(accent) ? `var(--${accent})` : accent;
 }
 
 function prefersReducedMotion(): boolean {
@@ -109,6 +127,9 @@ export function Card({
   maxHeight,
   mediaPosition = "top",
   className = "",
+  accent,
+  accentEdge = "left",
+  style,
   longDescription,
   expandedImagePosition = "between",
   expanded: expandedProp,
@@ -217,6 +238,20 @@ export function Card({
   const clickableToExpand = isExpandable && !href;
   const isSideMedia = Boolean(image) && mediaPosition !== "top";
 
+  const accentClasses = accent
+    ? ["nw-card--accent", accentEdge !== "none" && `nw-card--accent-${accentEdge}`]
+    : [];
+  const accentStyle = accent
+    ? ({ "--card-accent": resolveAccent(accent) } as React.CSSProperties)
+    : undefined;
+  const cardStyle = accentStyle ? { ...accentStyle, ...style } : style;
+  // The expanded view keeps the accent (including a consumer's own
+  // `--card-accent` override) but not layout styles meant for the inline card.
+  const styleAccent = (style as Record<string, unknown> | undefined)?.["--card-accent"];
+  const overlayStyle = accentStyle && styleAccent != null
+    ? ({ ...accentStyle, "--card-accent": styleAccent } as React.CSSProperties)
+    : accentStyle;
+
   const cls = [
     "nw-card",
     elevated && !flat && "nw-card--elevated",
@@ -224,6 +259,7 @@ export function Card({
     clickableToExpand && "nw-card--expandable",
     phase !== "closed" && "nw-card--placeholder",
     isSideMedia && `nw-card--media-${mediaPosition}`,
+    ...accentClasses,
     className,
   ]
     .filter(Boolean)
@@ -294,6 +330,7 @@ export function Card({
       ref={rootRef as React.Ref<HTMLAnchorElement>}
       className={[cls, "nw-card--link"].filter(Boolean).join(" ")}
       href={href}
+      style={cardStyle}
       {...(restWithoutClick as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       onClick={onClickRest as React.MouseEventHandler<HTMLAnchorElement> | undefined}
     >
@@ -303,6 +340,7 @@ export function Card({
     <article
       ref={rootRef as React.Ref<HTMLElement>}
       className={cls}
+      style={cardStyle}
       {...restWithoutClick}
       onClick={handleCardClick}
     >
@@ -314,6 +352,7 @@ export function Card({
     "nw-card",
     "nw-card__expanded",
     elevated && !flat && "nw-card--elevated",
+    ...accentClasses,
     className,
   ]
     .filter(Boolean)
@@ -331,6 +370,7 @@ export function Card({
         <div
           ref={overlayRef}
           className={expandedCls}
+          style={overlayStyle}
           role="dialog"
           aria-modal="true"
           aria-labelledby={title ? expandedTitleId : undefined}

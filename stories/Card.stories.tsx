@@ -58,6 +58,15 @@ const meta: Meta<typeof Card> = {
       options: ["top", "between"],
       description: "Where the image sits once the card is expanded.",
     },
+    accent: {
+      control: "text",
+      description: "Accent color: a token (primary, secondary, confirm, danger) or any CSS color. Draws an edge stripe, tints the surface, and sets --card-accent.",
+    },
+    accentEdge: {
+      control: "radio",
+      options: ["left", "top", "none"],
+      description: "Which edge carries the accent stripe. Default left.",
+    },
   },
 };
 
@@ -234,6 +243,43 @@ export const Scrollable: Story = {
       </Card>
     </div>
   ),
+};
+
+export const Accents: Story = {
+  name: "Accent colors",
+  render: () => (
+    <CardGrid gap="md">
+      <Card title="Token accent" subtitle={'accent="primary"'} accent="primary">
+        Design tokens map to the theme, so the stripe and tint follow light and dark mode.
+      </Card>
+      <Card title="Danger, top edge" subtitle={'accent="danger" accentEdge="top"'} accent="danger" accentEdge="top">
+        The stripe can sit on the top edge instead.
+      </Card>
+      <Card
+        title="Any CSS color"
+        subtitle="accent is a color-mix() expression"
+        accent="color-mix(in srgb, var(--primary) 50%, var(--secondary))"
+      >
+        Hex, rgb() and color-mix() values work as-is.
+      </Card>
+      <Card title="Custom property" subtitle={'accent="var(--confirm)"'} accent="var(--confirm)" interactive>
+        <p style={{ margin: "0 0 8px" }}>A var() reference passes straight through.</p>
+        <div
+          style={{
+            padding: 8,
+            borderRadius: 8,
+            background: "color-mix(in srgb, var(--card-accent) 13%, transparent)",
+          }}
+        >
+          Children can reuse <code>--card-accent</code> for nested callouts.
+        </div>
+      </Card>
+      <Card title="Tint only" subtitle={'accentEdge="none"'} accent="secondary" accentEdge="none" flat>
+        No stripe, just the tinted surface.
+      </Card>
+    </CardGrid>
+  ),
+  parameters: { layout: "padded" },
 };
 
 export const GridLayout: Story = {
