@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Header, Menu, MenuItem, Button, ToggleIcon, getThemeMode, toggleThemeMode, initThemeMode, subscribeThemeMode } from "../../src";
+import { Header, Menu, ToggleIcon, toggleThemeMode, initThemeMode, subscribeThemeMode } from "../../src";
 
 const meta: Meta<typeof Header> = {
   title: "Examples/Header Responsive",
@@ -123,12 +123,6 @@ function ThemeToggle() {
 
 export const ResponsiveHeaderWithMenu: Story = {
   render: () => {
-    const navItems = [
-      { text: "Home", href: "/" },
-      { text: "About", href: "/about" },
-      { text: "Contact", href: "/contact" },
-    ];
-
     return (
       <div style={{ minHeight: "100vh", background: "var(--background)" }}>
         <Header
